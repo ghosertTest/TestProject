@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app PUBLIC
+	"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+	"http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+
+	<!--
+		After you finish the configuration above, Web container will load /WEB-INF/applicationContext.xml
+		and instance ApplicationContext automatically, if you want to specify the location, you can set 
+		context-param like below:
+		
+		<context-param>
+		    <param-name>contextConfigLocation</param-name>
+		    <param-value>/WEB-INF/myApplicationContext.xml</param-value>
+		</context-param>
+		
+		Then you can get the reference of ApplicationContext with the method:
+		WebApplicationContextUtils.getWebApplicationContext
+	-->
+
+	<servlet>
+		<servlet-name>Dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/Config.xml</param-value>
+		</init-param>
+	</servlet>
+
+    <!--
+        If you don't specify the location like above,
+        Web container will load /WEB-INF/<servlet-name>-servlet.xml
+        Here is: /WEB-INF/Dispatcher-servlet.xml
+		and maintain the inner ApplicationContext for this servlet automatically, 
+		
+	-->
+	
+	<servlet-mapping>
+		<servlet-name>Dispatcher</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>/jsp/index.jsp</welcome-file>
+    </welcome-file-list>
+
+</web-app>

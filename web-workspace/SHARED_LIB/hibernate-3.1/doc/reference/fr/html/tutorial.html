@@ -1,0 +1,1154 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;1.&nbsp;Introduction &agrave; Hibernate</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="preface.html" title="Pr&eacute;face"><link rel="next" href="architecture.html" title="Chapitre&nbsp;2.&nbsp;Architecture"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;1.&nbsp;Introduction &agrave; Hibernate</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="preface.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="architecture.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="tutorial"></a>Chapitre&nbsp;1.&nbsp;Introduction &agrave; Hibernate</h2></div></div><div></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tutorial-intro"></a>1.1.&nbsp;Pr&eacute;face</h2></div></div><div></div></div><p>
+            Ce chapitre est un didacticiel introductif destin&eacute; aux nouveaux utilisateurs
+            d'Hibernate. Nous commen&ccedil;ons avec une simple application en ligne de commande
+            utilisant une base de donn&eacute;es en m&eacute;moire, et la d&eacute;veloppons en &eacute;tapes faciles
+            &agrave; comprendre.
+        </p><p>
+            Ce didacticiel est destin&eacute; aux nouveaux utilisateurs d'Hibernate mais requiert
+            des connaissances Java et SQL. Il est bas&eacute; sur un didacticiel de Michael Gloegl,
+            les biblioth&egrave;ques tierces que nous nommons sont pour les JDK 1.4 et 5.0. Vous
+            pourriez avoir besoin d'autres biblioth&egrave;ques pour le JDK 1.3.
+        </p><p>
+            Le code source de ce tutoriel est inclus dans la distribution dans le r&eacute;pertoire
+            <tt class="literal">doc/reference/tutorial/</tt>.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tutorial-firstapp"></a>1.2.&nbsp;Partie 1 - Premi&egrave;re application Hibernate</h2></div></div><div></div></div><p>
+            D'abord, nous cr&eacute;erons une simple application Hibernate en console. Nous utilisons
+            une base de donn&eacute;es en m&eacute;moire (HSQL DB), donc nous n'avons pas &agrave; installer de
+            serveur de base de donn&eacute;es.
+        </p><p>
+            Supposons que nous ayons besoin d'une petite application de base de donn&eacute;es qui
+            puisse stocker des &eacute;v&eacute;nements que nous voulons suivre, et des informations &agrave; propos
+            des h&ocirc;tes de ces &eacute;v&eacute;nements.
+        </p><p>
+            La premi&egrave;re chose que nous faisons est de configurer notre r&eacute;pertoire de
+            d&eacute;veloppement et de mettre toutes les biblioth&egrave;ques dont nous avons besoin dedans.
+            T&eacute;l&eacute;chargez la distribution Hibernate &agrave; partir du site web d'Hibernate.
+            Extrayez le paquet et placez toutes les biblioth&egrave;ques requises trouv&eacute;es dans
+            <tt class="literal">/lib</tt> dans le r&eacute;pertoire <tt class="literal">/lib</tt> de votre
+            nouveau r&eacute;pertoire de travail. Il devrait ressembler &agrave; &ccedil;a :
+        </p><pre class="programlisting">.
++lib
+  antlr.jar
+  cglib-full.jar
+  asm.jar
+  asm-attrs.jars
+  commons-collections.jar
+  commons-logging.jar
+  ehcache.jar
+  hibernate3.jar
+  jta.jar
+  dom4j.jar
+  log4j.jar </pre><p>
+            Ceci est l'ensemble minimum de biblioth&egrave;ques requises (notez que nous avons aussi
+            copi&eacute; hibernate3.jar, l'archive principale) pour Hibernate. Lisez le fichier
+            <tt class="literal">README.txt</tt> dans le r&eacute;pertoire <tt class="literal">lib/</tt> de la
+            distribution Hibernate pour plus d'informations &agrave; propos des bilioth&egrave;ques tierces
+            requises et optionnelles. (En fait, log4j n'est pas requis mais pr&eacute;f&eacute;r&eacute; par beaucoup
+            de d&eacute;veloppeurs.)
+        </p><p>
+            Ensuite, nous cr&eacute;ons une classe qui r&eacute;pr&eacute;sente l'&eacute;v&eacute;nement que nous voulons
+            stocker dans notre base de donn&eacute;es.
+        </p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-firstapp-firstclass"></a>1.2.1.&nbsp;La premi&egrave;re classe</h3></div></div><div></div></div><p>
+                Notre premi&egrave;re classe persistante est une simple classe JavaBean avec
+                quelques propri&eacute;t&eacute;s :
+            </p><pre class="programlisting">package events;
+
+import java.util.Date;
+
+public class Event {
+    private Long id;
+
+    private String title;
+    private Date date;
+
+    public Event() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    private void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+}</pre><p>
+                Vous pouvez voir que cette classe utilise les conventions de nommage standard JavaBean
+                pour les m&eacute;thodes getter/setter des propri&eacute;t&eacute;s, ainsi qu'une visibilit&eacute; priv&eacute;e
+                pour les champs. Ceci est la conception recommand&eacute;e - mais pas obligatoire. Hibernate peut
+                aussi acc&eacute;der aux champs directement, le b&eacute;n&eacute;fice des m&eacute;thodes d'acc&egrave;s est la robustesse
+                pour la refonte de code. Le constructeur sans argument est requis pour instancier
+                un objet de cette classe via reflexion.
+            </p><p>
+                La propri&eacute;t&eacute; <tt class="literal">id</tt> contient la valeur d'un identifiant unique pour un
+                &eacute;v&eacute;nement particulier. Toutes les classes d'entit&eacute;s persistantes (ainsi que les classes
+                d&eacute;pendantes de moindre importance) auront besoin d'une telle propri&eacute;t&eacute; identifiante si nous
+                voulons utiliser l'ensemble complet des fonctionnalit&eacute;s d'Hibernate. En fait, la plupart des
+                applications (surtout les applications web) ont besoin de distinguer des objets par des
+                identifiants, donc vous devriez consid&eacute;rer &ccedil;a comme une fonctionnalit&eacute; plut&ocirc;t que comme une
+                limitation. Cependant, nous ne manipulons g&eacute;n&eacute;ralement pas l'identit&eacute; d'un objet, dor&eacute;navant
+                la m&eacute;thode setter devrait &ecirc;tre priv&eacute;e. Seul Hibernate assignera les identifiants lorsqu'un
+                objet est sauvegard&eacute;. Vous pouvez voir qu'Hibernate peut acc&eacute;der aux m&eacute;thodes publiques,
+                priv&eacute;es et prot&eacute;g&eacute;es, ainsi qu'aux champs (publics, priv&eacute;s, prot&eacute;g&eacute;s) directement. Le choix
+                vous est laiss&eacute;, et vous pouvez l'ajuster &agrave; la conception de votre application.
+            </p><p>
+                Le constructeur sans argument est requis pour toutes les classes persistantes ;
+                Hibernate doit cr&eacute;er des objets pour vous en utilisant la r&eacute;flexion Java. Le
+                constructeur peut &ecirc;tre priv&eacute;, cependant, la visibilit&eacute; du paquet est requise
+                pour la g&eacute;n&eacute;ration de proxy &agrave; l'ex&eacute;cution et une r&eacute;cup&eacute;ration des donn&eacute;es efficaces
+                sans instrumentation du bytecode.
+            </p><p>
+                Placez ce fichier source Java dans un r&eacute;pertoire appel&eacute; <tt class="literal">src</tt>
+                dans le dossier de d&eacute;veloppement. Ce r&eacute;pertoire devrait maintenant ressembler
+                &agrave; &ccedil;a :
+            </p><pre class="programlisting">.
++lib
+  &lt;Hibernate et biblioth&egrave;ques tierces&gt;
++src
+  +events
+    Event.java</pre><p>
+                Dans la prochaine &eacute;tape, nous informons Hibernate de cette classe persistante.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-firstapp-mapping"></a>1.2.2.&nbsp;Le fichier de mapping</h3></div></div><div></div></div><p>
+                Hibernate a besoin de savoir comment charger et stocker des objets d'une classe
+                persistante. C'est l&agrave; qu'intervient le fichier de mapping Hibernate. Le fichier
+                de mapping indique &agrave; Hibernate &agrave; quelle table dans la base de donn&eacute;es il doit
+                acc&eacute;der, et quelles colonnes de cette table il devra utiliser.
+            </p><p>
+                La structure basique de ce fichier de mapping ressemble &agrave; &ccedil;a :
+            </p><pre class="programlisting">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;
+
+&lt;hibernate-mapping&gt;
+[...]
+&lt;/hibernate-mapping&gt;</pre><p>
+                Notez que la DTD Hibernate est tr&egrave;s sophistiqu&eacute;e. Vous pouvez l'utiliser
+                pour l'auto-compl&eacute;tement des &eacute;l&eacute;ments et des attributs de mapping XML dans
+                votre &eacute;diteur ou votre IDE. Vous devriez aussi ouvrir le fichier DTD dans
+                votre &eacute;diteur de texte - c'est le moyen le plus facile d'obtenir une vue
+                d'ensemble de tous les &eacute;l&eacute;ments et attributs, et de voir les valeurs par
+                d&eacute;faut, ainsi que quelques commentaires. Notez qu'Hibernate ne chargera
+                pas le fichier DTD &agrave; partir du web, mais regardera d'abord dans le classpath
+                de l'application. Le fichier DTD est inclus dans <tt class="literal">hibernate3.jar</tt>
+                ainsi que dans le r&eacute;pertoire <tt class="literal">src</tt> de la distribution
+                Hibernate.
+            </p><p>
+                Nous omettrons la d&eacute;claration de la DTD dans les exemples futurs pour
+                raccourcir le code. Bien s&ucirc;r il n'est pas optionnel.
+            </p><p>
+                Entre les deux balises <tt class="literal">hibernate-mapping</tt>, incluez un
+                &eacute;l&eacute;ment <tt class="literal">class</tt>. Toutes les classes d'entit&eacute;s persistantes
+                (encore une fois, il pourrait y avoir des classes d&eacute;pendantes plus tard,
+                qui ne sont pas des entit&eacute;s m&egrave;re) ont besoin d'un mapping vers une table
+                de la base de donn&eacute;es SQL :
+            </p><pre class="programlisting">&lt;hibernate-mapping&gt;
+
+    &lt;class name="Event" table="EVENTS"&gt;
+
+    &lt;/class&gt;
+
+&lt;/hibernate-mapping&gt;</pre><p>
+                Plus loin, nous disons &agrave; Hibernate comment persister et charger un objet de la classe
+                <tt class="literal">Event</tt> dans la table <tt class="literal">EVENTS</tt>, chaque instance est
+                repr&eacute;sent&eacute;e par une ligne dans cette table. Maintenant nous continuons avec le mapping de
+                la propri&eacute;t&eacute; de l'identifiant unique vers la clef primaire de la table. De plus, comme
+                nous ne voulons pas nous occuper de la gestion de cet identifiant, nous utilisons une
+                strat&eacute;gie de g&eacute;n&eacute;ration d'identifiant d'Hibernate pour la colonne de la clef primaire
+                subrog&eacute;e :
+            </p><pre class="programlisting">&lt;hibernate-mapping&gt;
+
+    &lt;class name="Event" table="EVENTS"&gt;
+        &lt;id name="id" column="EVENT_ID"&gt;
+            &lt;generator class="increment"/&gt;
+        &lt;/id&gt;
+    &lt;/class&gt;
+
+&lt;/hibernate-mapping&gt;</pre><p>
+                L'&eacute;l&eacute;ment <tt class="literal">id</tt> est la d&eacute;claration de la propri&eacute;t&eacute; de l'identifiant,
+                <tt class="literal">name="id"</tt> d&eacute;clare le nom de la propri&eacute;t&eacute; Java - Hibernate
+                utilisera les m&eacute;thodes getter et setter pour acc&eacute;der &agrave; la propri&eacute;t&eacute;. L'attribut
+                <tt class="literal">column</tt> indique &agrave; Hibernate quelle colonne de la table
+                <tt class="literal">EVENTS</tt> nous utilisons pour cette clef primaire. L'&eacute;l&eacute;ment
+                <tt class="literal">generator</tt> imbriqu&eacute; sp&eacute;cifie la strat&eacute;gie de g&eacute;n&eacute;ration de
+                l'identifiant, dans ce cas nous avons utilis&eacute; <tt class="literal">increment</tt>,
+                laquelle est une m&eacute;thode tr&egrave;s simple utile surtout pour les tests
+                (et didacticiels). Hibernate supporte aussi les identifiants g&eacute;n&eacute;r&eacute;s par les
+                bases de donn&eacute;es, globalement uniques, ainsi que les identifiants assign&eacute;s par
+                l'application (ou n'importe quelle strat&eacute;gie que vous avez &eacute;crit en extension).
+            </p><p>
+                Finalement nous incluons des d&eacute;clarations pour les propri&eacute;t&eacute;s persistantes de la classe
+                dans le fichier de mapping. Par d&eacute;faut, aucune propri&eacute;t&eacute; de la classe n'est consid&eacute;r&eacute;e
+                comme persistante :
+            </p><pre class="programlisting">
+&lt;hibernate-mapping&gt;
+
+    &lt;class name="Event" table="EVENTS"&gt;
+        &lt;id name="id" column="EVENT_ID"&gt;
+            &lt;generator class="increment"/&gt;
+        &lt;/id&gt;
+        &lt;property name="date" type="timestamp" column="EVENT_DATE"/&gt;
+        &lt;property name="title"/&gt;
+    &lt;/class&gt;
+
+&lt;/hibernate-mapping&gt;</pre><p>
+                Comme avec l'&eacute;l&eacute;ment <tt class="literal">id</tt>, l'attribut <tt class="literal">name</tt>
+                de l'&eacute;l&eacute;ment <tt class="literal">property</tt> indique &agrave; Hibernate quels getters/setters
+                utiliser.
+            </p><p>
+                Pourquoi le mapping de la propri&eacute;t&eacute; <tt class="literal">date</tt> inclut
+                l'attribut <tt class="literal">column</tt>, mais pas <tt class="literal">title</tt> ?
+                Sans l'attribut <tt class="literal">column</tt> Hibernate utilise par d&eacute;faut
+                le nom de la propri&eacute;t&eacute; comme nom de colonne. Ca fonctionne bien pour
+                <tt class="literal">title</tt>. Cependant, <tt class="literal">date</tt> est un mot clef
+                r&eacute;serv&eacute; dans la plupart des bases de donn&eacute;es, donc nous utilisons un nom
+                diff&eacute;rent pour le mapping.
+            </p><p>
+                La prochaine chose int&eacute;ressante est que le mapping de <tt class="literal">title</tt>
+                manque aussi d'un attribut <tt class="literal">type</tt>. Les types que nous d&eacute;clarons
+                et utilisons dans les fichiers de mapping ne sont pas, comme vous pourriez vous
+                y attendre, des types de donn&eacute;es Java. Ce ne sont pas, non plus, des types de
+                base de donn&eacute;es SQL. Ces types sont donc appel&eacute;s des <span class="emphasis"><em>types de mapping
+                Hibernate</em></span>, des convertisseurs qui peuvent traduire des types Java en
+                types SQL et vice versa. De plus, Hibernate tentera de d&eacute;terminer la bonne conversion
+                et le type de mapping lui-m&ecirc;me si l'attribut <tt class="literal">type</tt> n'est pas
+                pr&eacute;sent dans le mapping. Dans certains cas, cette d&eacute;tection automatique (utilisant
+                la r&eacute;flexion sur la classe Java) pourrait ne pas donner la valeur attendue ou
+                dont vous avez besoin. C'est le cas avec la propri&eacute;t&eacute; <tt class="literal">date</tt>.
+                Hibernate ne peut pas savoir si la propri&eacute;t&eacute; "mappera" une colonne SQL de type
+                <tt class="literal">date</tt>, <tt class="literal">timestamp</tt> ou <tt class="literal">time</tt>.
+                Nous d&eacute;clarons que nous voulons conserver des informations avec une date compl&egrave;te
+                et l'heure en mappant la propri&eacute;t&eacute; avec un <tt class="literal">timestamp</tt>.
+            </p><p>
+                Ce fichier de mapping devrait &ecirc;tre sauvegard&eacute; en tant que <tt class="literal">Event.hbm.xml</tt>,
+                juste dans le r&eacute;pertoire &agrave; c&ocirc;t&eacute; du fichier source de la classe Java <tt class="literal">Event</tt>.
+                Le nommage des fichiers de mapping peut &ecirc;tre arbitraire, cependant le suffixe
+                <tt class="literal">hbm.xml</tt> est devenu une convention dans la communaut&eacute; des
+                d&eacute;veloppeurs Hibernate. La structure du r&eacute;pertoire devrait ressembler &agrave; &ccedil;a :
+            </p><pre class="programlisting">.
++lib
+  &lt;Hibernate et biblioth&egrave;ques tierces&gt;
++src
+  Event.java
+  Event.hbm.xml</pre><p>
+                 Nous poursuivons avec la configuration principale d'Hibernate.
+             </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-firstapp-configuration"></a>1.2.3.&nbsp;Configuration d'Hibernate</h3></div></div><div></div></div><p>
+                Nous avons maintenant une classe persistante et son fichier de mapping. Il est temps de
+                configurer Hibernate. Avant &ccedil;a, nous avons besoin d'une base de donn&eacute;es. HSQL DB, un
+                SGBD SQL bas&eacute; sur Java et travaillant en m&eacute;moire, peut &ecirc;tre t&eacute;l&eacute;charg&eacute; &agrave; partir du site
+                web de HSQL. En fait, vous avez seulement besoin de <tt class="literal">hsqldb.jar</tt>. Placez
+                ce fichier dans le r&eacute;pertoire <tt class="literal">lib/</tt> du dossier de d&eacute;veloppement.
+            </p><p>
+                Cr&eacute;ez un r&eacute;pertoire appel&eacute; <tt class="literal">data</tt> &agrave; la racine du r&eacute;pertoire de d&eacute;veloppement - 
+                c'est l&agrave; que HSQL DB stockera ses fichiers de donn&eacute;es. D&eacute;marrez maintenant votre base de donn&eacute;es
+                en ex&eacute;cutant <tt class="literal">java -classpath lib/hsqldb.jar org.hsqldb.Server</tt> dans votre r&eacute;pertoire de travail.
+                Vous observez qu'elle d&eacute;marre et ouvre une socket TCP/IP, c'est l&agrave; que notre application
+                se connectera plus tard. Si vous souhaitez d&eacute;marrez &agrave; partir d'une nouvelle base de donn&eacute;es
+                pour ce tutoriel (faites <tt class="literal">CTRL + C</tt> dans la fen&ecirc;tre the window), effacez
+                le r&eacute;pertoire <tt class="literal">data/</tt> et red&eacute;marrez HSQL DB &agrave; nouveau.
+                
+            </p><p>
+                Hibernate est la couche de votre application qui se connecte &agrave; cette base de donn&eacute;es,
+                donc il a besoin des informations de connexion. Les connexions sont &eacute;tablies &agrave; travers
+                un pool de connexions JDBC, que nous devons aussi configurer. La distribution Hibernate
+                contient diff&eacute;rents outils de gestion de pools de connexions JDBC open source, mais
+                pour ce didacticiel nous utiliserons le pool de connexions int&eacute;gr&eacute; &agrave; Hibernate. Notez
+                que vous devez copier les biblioth&egrave;ques requises dans votre classpath et utiliser
+                une configuration de pool de connexions diff&eacute;rente si vous voulez utiliser
+                un logiciel de gestion de pools JDBC tiers avec une qualit&eacute; de production.
+            </p><p>
+                Pour la configuration d'Hibernate, nous pouvons utiliser un simple fichier
+                <tt class="literal">hibernate.properties</tt>, un fichier <tt class="literal">hibernate.cfg.xml</tt>
+                l&eacute;g&egrave;rement plus sophistiqu&eacute;, ou m&ecirc;me une configuration compl&egrave;te par programmation. La
+                plupart des utilisateurs pr&eacute;f&egrave;rent le fichier de configuration XML :
+            </p><pre class="programlisting">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"&gt;
+
+&lt;hibernate-configuration&gt;
+
+    &lt;session-factory&gt;
+
+        &lt;!-- Database connection settings --&gt;
+        &lt;property name="connection.driver_class"&gt;org.hsqldb.jdbcDriver&lt;/property&gt;
+        &lt;property name="connection.url"&gt;jdbc:hsqldb:hsql://localhost&lt;/property&gt;
+        &lt;property name="connection.username"&gt;sa&lt;/property&gt;
+        &lt;property name="connection.password"&gt;&lt;/property&gt;
+
+        &lt;!-- JDBC connection pool (use the built-in) --&gt;
+        &lt;property name="connection.pool_size"&gt;1&lt;/property&gt;
+
+        &lt;!-- SQL dialect --&gt;
+        &lt;property name="dialect"&gt;org.hibernate.dialect.HSQLDialect&lt;/property&gt;
+
+        &lt;!-- Enable Hibernate's automatic session context management --&gt;
+        &lt;property name="current_session_context_class"&gt;thread&lt;/property&gt;
+
+        &lt;!-- Disable the second-level cache  --&gt;
+        &lt;property name="cache.provider_class"&gt;org.hibernate.cache.NoCacheProvider&lt;/property&gt;
+
+        &lt;!-- Echo all executed SQL to stdout --&gt;
+        &lt;property name="show_sql"&gt;true&lt;/property&gt;
+
+        &lt;!-- Drop and re-create the database schema on startup --&gt;
+        &lt;property name="hbm2ddl.auto"&gt;create&lt;/property&gt;
+
+        &lt;mapping resource="events/Event.hbm.xml"/&gt;
+
+    &lt;/session-factory&gt;
+
+&lt;/hibernate-configuration&gt;</pre><p>
+                Notez que cette configuration XML utilise une DTD diff&eacute;rente. Nous configurons
+                une <tt class="literal">SessionFactory</tt> d'Hibernate - une fabrique globale responsable
+                d'une base de donn&eacute;es particuli&egrave;re. Si vous avez plusieurs base de donn&eacute;es, utilisez
+                plusieurs configurations <tt class="literal">&lt;session-factory&gt;</tt>, g&eacute;n&eacute;ralement
+                dans des fichiers de configuration diff&eacute;rents (pour un d&eacute;marrage plus facile).
+            </p><p>
+                Les quatre premiers &eacute;l&eacute;ments <tt class="literal">property</tt> contiennent la configuration
+                n&eacute;cessaire pour la connexion JDBC. L'&eacute;l&eacute;ment <tt class="literal">property</tt> du dialecte
+                sp&eacute;cifie quelle variante du SQL Hibernate va g&eacute;n&eacute;rer.  La gestion automatique des sessions
+                d'Hibernate pour les contextes de persistance sera d&eacute;taill&eacute;e tr&egrave;s vite.
+                L'option <tt class="literal">hbm2ddl.auto</tt> active la g&eacute;n&eacute;ration automatique des sch&eacute;mas de
+                base de donn&eacute;es - directement dans la base de donn&eacute;es. Cela peut bien s&ucirc;r aussi &ecirc;tre
+                d&eacute;sactiv&eacute; (en supprimant l'option de configuration) ou redirig&eacute; vers un fichier avec
+                l'aide de la t&acirc;che Ant <tt class="literal">SchemaExport</tt>. Finalement, nous ajoutons
+                le(s) fichier(s) de mapping pour les classes persistantes.
+            </p><p>
+                Copiez ce fichier dans le r&eacute;pertoire source, il terminera dans la racine
+                du classpath. Hibernate cherchera automatiquement, au d&eacute;marrage, un fichier appel&eacute;
+                <tt class="literal">hibernate.cfg.xml</tt> dans la racine du classpath.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-firstapp-ant"></a>1.2.4.&nbsp;Construction avec Ant</h3></div></div><div></div></div><p>
+                Nous allons maintenant construire le didacticiel avec Ant. Vous aurez besoin d'avoir Ant
+                d'install&eacute; - r&eacute;cup&eacute;rez-le &agrave; partir de <a href="http://ant.apache.org/bindownload.cgi" target="_top"> la page
+                de t&eacute;l&eacute;chargement de Ant</a>. Comment installer Ant ne sera pas couvert ici. R&eacute;f&eacute;rez-vous
+                au <a href="http://ant.apache.org/manual/index.html" target="_top">manuel d'Ant</a>. Apr&egrave;s que
+                vous aurez install&eacute; Ant, nous pourrons commencer &agrave; cr&eacute;er le fichier de construction. Il
+                s'appellera <tt class="literal">build.xml</tt> et sera plac&eacute; directement dans le r&eacute;pertoire de
+                d&eacute;veloppement.
+            </p><p>
+                Un fichier de construction basique ressemble &agrave; &ccedil;a :
+            </p><pre class="programlisting">&lt;project name="hibernate-tutorial" default="compile"&gt;
+
+    &lt;property name="sourcedir" value="${basedir}/src"/&gt;
+    &lt;property name="targetdir" value="${basedir}/bin"/&gt;
+    &lt;property name="librarydir" value="${basedir}/lib"/&gt;
+
+    &lt;path id="libraries"&gt;
+        &lt;fileset dir="${librarydir}"&gt;
+            &lt;include name="*.jar"/&gt;
+        &lt;/fileset&gt;
+    &lt;/path&gt;
+
+    &lt;target name="clean"&gt;
+        &lt;delete dir="${targetdir}"/&gt;
+        &lt;mkdir dir="${targetdir}"/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="compile" depends="clean, copy-resources"&gt;
+      &lt;javac srcdir="${sourcedir}"
+             destdir="${targetdir}"
+             classpathref="libraries"/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="copy-resources"&gt;
+        &lt;copy todir="${targetdir}"&gt;
+            &lt;fileset dir="${sourcedir}"&gt;
+                &lt;exclude name="**/*.java"/&gt;
+            &lt;/fileset&gt;
+        &lt;/copy&gt;
+    &lt;/target&gt;
+
+&lt;/project&gt;</pre><p>
+                Cela dira &agrave; Ant d'ajouter tous les fichiers du r&eacute;pertoire lib finissant par
+                <tt class="literal">.jar</tt> dans le classpath utilis&eacute; pour la compilation. Cela copiera aussi
+                tous les fichiers source non Java dans le r&eacute;pertoire cible, par exemple les fichiers de
+                configuration et de mapping d'Hibernate. Si vous lancez Ant maintenant, vous devriez
+                obtenir cette sortie :
+            </p><pre class="programlisting">C:\hibernateTutorial\&gt;ant
+Buildfile: build.xml
+
+copy-resources:
+     [copy] Copying 2 files to C:\hibernateTutorial\bin
+
+compile:
+    [javac] Compiling 1 source file to C:\hibernateTutorial\bin
+
+BUILD SUCCESSFUL
+Total time: 1 second </pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-firstapp-helpers"></a>1.2.5.&nbsp;D&eacute;marrage et aides</h3></div></div><div></div></div><p>
+                Il est temps de charger et de stocker quelques objets <tt class="literal">Event</tt>,
+                mais d'abord nous devons compl&eacute;ter la configuration avec du code
+                d'infrastructure. Nous devons d&eacute;marrer Hibernate. Ce d&eacute;marrage inclut la construction
+                d'un objet <tt class="literal">SessionFactory</tt> global et le stocker quelque part
+                facile d'acc&egrave;s dans le code de l'application. Une <tt class="literal">SessionFactory</tt>
+                peut ouvrir des nouvelles <tt class="literal">Session</tt>s. Une <tt class="literal">Session</tt>
+                repr&eacute;sente une unit&eacute; de travail simplement "thread&eacute;e", la <tt class="literal">SessionFactory</tt>
+                est un objet global "thread-safe", instanci&eacute; une seule fois.
+            </p><p>
+                Nous cr&eacute;erons une classe d'aide <tt class="literal">HibernateUtil</tt> qui s'occupe du
+                d&eacute;marrage et rend la gestion des <tt class="literal">Session</tt>s plus facile. 
+                Regardons l'impl&eacute;mentation :
+            </p><pre class="programlisting">package util;
+
+import org.hibernate.*;
+import org.hibernate.cfg.*;
+
+public class HibernateUtil {
+    public static final SessionFactory sessionFactory;
+
+    static {
+        try {
+            // Cr&eacute;ation de la SessionFactory &agrave; partir de hibernate.cfg.xml
+            sessionFactory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            // Make sure you log the exception, as it might be swallowed
+            System.err.println("Initial SessionFactory creation failed." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+    }
+
+    public static final ThreadLocal session = new ThreadLocal();
+
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+}</pre><p>
+                Cette classe ne produit pas seulement la <tt class="literal">SessionFactory</tt> globale
+                dans un initialiseur statique (appel&eacute; une seule fois par la JVM lorsque la classe
+                est charg&eacute;e), elle masque le fait qu'elle exploite un singleton. Elle pourrait aussi
+                obtenir la <tt class="literal">SessionFactory</tt> depuis JNDI dans un serveur d'applications.
+            </p><p>
+                Si vous nommez la <tt class="literal">SessionFactory</tt> dans votre fichier de configuration,
+                Hibernate tentera la r&eacute;cup&eacute;ration depuis JNDI. Pour &eacute;viter ce code, vous pouvez aussi
+                utiliser un d&eacute;ploiement JMX et laisser le conteneur (compatible JMX) instancier et lier
+                un <tt class="literal">HibernateService</tt> &agrave; JNDI. Ces options avanc&eacute;es sont d&eacute;taill&eacute;es dans
+                la documentation de r&eacute;f&eacute;rence Hibernate.
+            </p><p>
+                Placez <tt class="literal">HibernateUtil.java</tt> dans le r&eacute;pertoire source de d&eacute;veloppement,
+                et ensuite <tt class="literal">Event.java</tt> :
+            </p><pre class="programlisting">.
++lib
+  &lt;Hibernate and third-party libraries&gt;
++src
+  +events
+    Event.java
+    Event.hbm.xml
+  +util
+    HibernateUtil.java
+  hibernate.cfg.xml
++data
+build.xml</pre><p>
+                Cela devrait encore compiler sans probl&egrave;me. Nous avons finalement besoin de configurer
+                le syst&egrave;me de "logs" - Hibernate utilise commons-logging et vous laisse le choix entre
+                log4j et le syst&egrave;me de logs du JDK 1.4. La plupart des d&eacute;veloppeurs pr&eacute;f&egrave;rent log4j :
+                copiez <tt class="literal">log4j.properties</tt> de la distribution d'Hibernate (il est dans
+                le r&eacute;pertoire <tt class="literal">etc/</tt>) dans votre r&eacute;pertoire <tt class="literal">src</tt>,
+                puis faites de m&ecirc;me avec <tt class="literal">hibernate.cfg.xml</tt>. Regardez la configuration
+                d'exemple et changez les param&egrave;tres si vous voulez une sortie plus verbeuse. Par d&eacute;faut,
+                seul le message de d&eacute;marrage d'Hibernate est affich&eacute; sur la sortie standard.
+            </p><p>
+                L'infrastructure de ce didacticiel est compl&egrave;te - et nous sommes pr&ecirc;ts &agrave; effectuer un
+                travail r&eacute;el avec Hibernate.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-firstapp-workingpersistence"></a>1.2.6.&nbsp;Charger et stocker des objets</h3></div></div><div></div></div><p>
+                Finalement nous pouvons utiliser Hibernate pour charger et stocker des objets.
+                Nous &eacute;crivons une classe <tt class="literal">EventManager</tt> avec une m&eacute;thode
+                <tt class="literal">main()</tt> :
+            </p><pre class="programlisting">package events;
+import org.hibernate.Session;
+
+import java.util.Date;
+
+import util.HibernateUtil;
+
+public class EventManager {
+
+    public static void main(String[] args) {
+        EventManager mgr = new EventManager();
+
+        if (args[0].equals("store")) {
+            mgr.createAndStoreEvent("My Event", new Date());
+        }
+
+        HibernateUtil.getSessionFactory().close();
+    }
+
+    private void createAndStoreEvent(String title, Date theDate) {
+
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+        session.beginTransaction();
+
+        Event theEvent = new Event();
+        theEvent.setTitle(title);
+        theEvent.setDate(theDate);
+
+        session.save(theEvent);
+
+        session.getTransaction().commit();
+    }</pre><p>
+                Nous cr&eacute;ons un nouvel objet <tt class="literal">Event</tt>, et le remettons &agrave; Hibernate.
+                Hibernate s'occupe maintenant du SQL et ex&eacute;cute les <tt class="literal">INSERT</tt>s
+                dans la base de donn&eacute;es. Regardons le code de gestion de la <tt class="literal">Session</tt>
+                et de la <tt class="literal">Transaction</tt> avant de lancer &ccedil;a.
+            </p><p>
+                Une <tt class="literal">Session</tt> est une unit&eacute; de travail. Pour le moment, nous allons faire
+                les choses simplement et assumer une granularit&eacute; un-un entre une <tt class="literal">Session</tt>
+                hibernate et une transaction &agrave; la base de donn&eacute;es. Pour isoler notre code du syst&egrave;me de transaction
+                sous-jacent (dans notre cas, du pure JDBC, mais cela pourrait &ecirc;tre JTA), nous utilisons l'API
+                <tt class="literal">Transaction</tt> qui est disponible depuis la <tt class="literal">Session</tt> Hibernate.
+            </p><p>
+                Que fait <tt class="literal">sessionFactory.getCurrentSession()</tt> ? Premi&egrave;rement, vous pouvez
+                l'invoquer autant de fois que vous le voulez et n'importe o&ugrave; du moment que vous avez votre
+                <tt class="literal">SessionFactory</tt> (facile gr&acirc;ce &agrave; <tt class="literal">HibernateUtil</tt>). 
+                La m&eacute;thode <tt class="literal">getCurrentSession()</tt> renvoie toujours l'unit&eacute; de travail courante.
+                Souvenez vous que nous avons bascul&eacute; notre option de configuration au m&eacute;canisme bas&eacute; sur le "thread"
+                dans <tt class="literal">hibernate.cfg.xml</tt>. Par cons&eacute;quent, le scope de l'unit&eacute; de travail
+                courante est le thread java courant d'ex&eacute;cution. Ceci n'est pas totalement vrai. Une
+                <tt class="literal">Session</tt> commence lorsqu'elle est vraiment utilis&eacute;e la premi&egrave;re fois,
+                Lorsque nous appelons pour la premi&egrave;re fois <tt class="literal">getCurrentSession()</tt>.
+                Ensuite, elle est li&eacute;e, par Hibernate, au thread courant. Lorsque la transaction s'ach&egrave;ve
+                (commit ou rollback), Hibernate d&eacute;lie la <tt class="literal">Session</tt> du thread et la ferme
+                pour vous. Si vous invoquez <tt class="literal">getCurrentSession()</tt> une autre fois, vous obtenez
+                une nouvelle <tt class="literal">Session</tt> et pouvez entamer une nouvelle unit&eacute; de travail.
+                Ce mod&egrave;le de programmation "<span class="emphasis"><em>thread-bound</em></span>" est le moyen le plus 
+                populaire d'utiliser Hibernate.
+            </p><p>
+                Lisez <a href="transactions.html" title="Chapitre&nbsp;11.&nbsp;Transactions et acc&egrave;s concurrents">Chapitre&nbsp;11, <i>Transactions et acc&egrave;s concurrents</i></a> pour plus d'informations sur la gestion des transactions et leur d&eacute;marcations.
+                Nous n'avons pas g&eacute;r&eacute; les erreurs et rollback sur l'exemple pr&eacute;c&eacute;dent.
+            </p><p>
+                Pour lancer cette premi&egrave;re routine, nous devons ajouter une cible appelable dans
+                le fichier de construction de Ant :
+            </p><pre class="programlisting">&lt;target name="run" depends="compile"&gt;
+    &lt;java fork="true" classname="events.EventManager" classpathref="libraries"&gt;
+        &lt;classpath path="${targetdir}"/&gt;
+        &lt;arg value="${action}"/&gt;
+    &lt;/java&gt;
+&lt;/target&gt;</pre><p>
+                La valeur de l'argument <tt class="literal">action</tt> correspond &agrave; la ligne de commande
+                qui appelle la cible :
+            </p><pre class="programlisting">C:\hibernateTutorial\&gt;ant run -Daction=store</pre><p>
+                Vous devriez voir, apr&egrave;s la compilation, Hibernate d&eacute;marrer et, en fonction de votre
+                configuration, beaucoup de traces sur la sortie. &Agrave; la fin vous trouverez la ligne suivante :
+            </p><pre class="programlisting">[java] Hibernate: insert into EVENTS (EVENT_DATE, title, EVENT_ID) values (?, ?, ?)</pre><p>
+                C'est l'<tt class="literal">INSERT</tt> ex&eacute;cut&eacute; par Hibernate, les points d'interrogation
+                repr&eacute;sentent les param&egrave;tres JDBC li&eacute;s. Pour voir les valeurs li&eacute;es aux arguments, ou
+                pour r&eacute;duire la verbosit&eacute; des traces, v&eacute;rifier votre <tt class="literal">log4j.properties</tt>.
+            </p><p>
+                Maintenant nous aimerions aussi lister les &eacute;v&eacute;nements stock&eacute;s, donc nous ajoutons une
+                option &agrave; la m&eacute;thode principale :
+            </p><pre class="programlisting">if (args[0].equals("store")) {
+    mgr.createAndStoreEvent("My Event", new Date());
+}
+else if (args[0].equals("list")) {
+    List events = mgr.listEvents();
+    for (int i = 0; i &lt; events.size(); i++) {
+        Event theEvent = (Event) events.get(i);
+        System.out.println("Event: " + theEvent.getTitle() +
+                           " Time: " + theEvent.getDate());
+    }
+}</pre><p>
+                Nous ajoutons aussi une nouvelle m&eacute;thode <tt class="literal">listEvents()</tt> :
+            </p><pre class="programlisting">private List listEvents() {
+
+    Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+    session.beginTransaction();
+
+    List result = session.createQuery("from Event").list();
+
+    session.getTransaction().commit();
+
+    return result;
+}</pre><p>
+                Ce que nous faisons ici c'est utiliser une requ&ecirc;te HQL (Hibernate Query Language) pour
+                charger tous les objets <tt class="literal">Event</tt> existants de la base de donn&eacute;es.
+                Hibernate g&eacute;n&eacute;rera le SQL appropri&eacute;, l'enverra &agrave; la base de donn&eacute;es et peuplera des
+                objets <tt class="literal">Event</tt> avec les donn&eacute;es. Vous pouvez cr&eacute;er des requ&ecirc;tes plus
+                complexes avec HQL, bien s&ucirc;r.
+            </p><p>
+                Maintenant, pour ex&eacute;cuter et tester tout &ccedil;a, suivez ces &eacute;tapes :
+            </p><div class="itemizedlist"><ul type="disc"><li><p>
+                        Ex&eacute;cutez <tt class="literal">ant run -Daction=store</tt> pour stocker quelque
+                        chose dans la base de donn&eacute;es et, bien s&ucirc;r, pour g&eacute;n&eacute;rer, avant, le sch&eacute;ma
+                        de la base de donn&eacute;es gr&acirc;ce &agrave; hbm2ddl.
+                    </p></li><li><p>
+                        Maintenant d&eacute;sactivez hbm2ddl en commentant la propri&eacute;t&eacute; dans votre fichier
+                        <tt class="literal">hibernate.cfg.xml</tt>. G&eacute;n&eacute;ralement vous la laissez seulement
+                        activ&eacute;e dans des tests unitaires en continu, mais une autre ex&eacute;cution de hbm2ddl
+                        <span class="emphasis"><em>effacerait</em></span> tout ce que vous avez stock&eacute; - le param&egrave;tre de
+                        configuration <tt class="literal">create</tt> se traduit en fait par "supprimer toutes les
+                        tables du sch&eacute;ma, puis re-cr&eacute;er toutes les tables, lorsque la SessionFactory est
+                        construite".
+                    </p></li></ul></div><p>
+                Si maintenant vous appelez Ant avec <tt class="literal">-Daction=list</tt>, vous devriez voir
+                les &eacute;v&eacute;nements que vous avez stock&eacute;s jusque l&agrave;. Vous pouvez bien s&ucirc;r aussi appeler l'action
+                <tt class="literal">store</tt> plusieurs fois.
+            </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tutorial-associations"></a>1.3.&nbsp;Partie 2 - Mapper des associations</h2></div></div><div></div></div><p>
+            Nous avons mapp&eacute; une classe d'une entit&eacute; persistante vers une table. Partons de l&agrave; et
+            ajoutons quelques associations de classe. D'abord nous ajouterons des gens &agrave; notre
+            application, et stockerons une liste d'&eacute;v&eacute;nements auxquels ils participent.
+        </p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-associations-mappinguser"></a>1.3.1.&nbsp;Mapper la classe Person</h3></div></div><div></div></div><p>
+                La premi&egrave;re version de la classe <tt class="literal">Person</tt> est simple :
+            </p><pre class="programlisting">package events;
+
+public class Person {
+
+    private Long id;
+    private int age;
+    private String firstname;
+    private String lastname;
+
+    public Person() {}
+
+    // Accessor methods for all properties, private setter for 'id'
+
+}</pre><p>
+                Cr&eacute;ez un nouveau fichier de mapping appel&eacute; <tt class="literal">Person.hbm.xml</tt> 
+                (n'oubliez pas la r&eacute;f&eacute;rence &agrave; la DTD)
+            </p><pre class="programlisting">&lt;hibernate-mapping&gt;
+
+    &lt;class name="events.Person" table="PERSON"&gt;
+        &lt;id name="id" column="PERSON_ID"&gt;
+            &lt;generator class="native"/&gt;
+        &lt;/id&gt;
+        &lt;property name="age"/&gt;
+        &lt;property name="firstname"/&gt;
+        &lt;property name="lastname"/&gt;
+    &lt;/class&gt;
+
+&lt;/hibernate-mapping&gt;</pre><p>
+                Finalement, ajoutez la nouveau mapping &agrave; la configuration d'Hibernate :
+            </p><pre class="programlisting">&lt;mapping resource="events/Event.hbm.xml"/&gt;
+&lt;mapping resource="events/Person.hbm.xml"/&gt;</pre><p>
+                Nous allons maintenant cr&eacute;er une association entre ces deux entit&eacute;s. &Eacute;videmment,
+                des personnes peuvent participer aux &eacute;v&eacute;nements, et des &eacute;v&eacute;nements ont des participants.
+                Les questions de conception que nous devons traiter sont : direction, cardinalit&eacute; et comportement
+                de la collection.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-associations-unidirset"></a>1.3.2.&nbsp;Une association unidirectionnelle bas&eacute;e sur Set</h3></div></div><div></div></div><p>
+                Nous allons ajouter une collection d'&eacute;v&eacute;nements &agrave; la classe <tt class="literal">Person</tt>. De
+                cette mani&egrave;re nous pouvons facilement naviguer dans les &eacute;v&eacute;nements d'une personne
+                particuli&egrave;re, sans ex&eacute;cuter une requ&ecirc;te explicite - en appelant
+                <tt class="literal">aPerson.getEvents()</tt>. Nous utilisons une collection Java, un
+                <tt class="literal">Set</tt>, parce que la collection ne contiendra pas d'&eacute;l&eacute;ments dupliqu&eacute;s et
+                l'ordre ne nous importe pas.
+            </p><p>
+                Nous avons besoin d'une association unidirectionnelle, pluri-valu&eacute;e, impl&eacute;ment&eacute;e avec
+                un <tt class="literal">Set</tt>. &Eacute;crivons le code pour &ccedil;a dans les classes Java et mappons les :
+            </p><pre class="programlisting">public class Person {
+
+    private Set events = new HashSet();
+
+    public Set getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set events) {
+        this.events = events;
+    }
+}</pre><p>
+                D'abord nous mappons cette association, mais pensez &agrave; l'autre c&ocirc;t&eacute;. Clairement, nous pouvons
+                la laisser unidirectionnelle. Ou alors, nous pourrions cr&eacute;er une autre collection sur
+                <tt class="literal">Event</tt>, si nous voulons &ecirc;tre capable de la parcourir de mani&egrave;re
+                bidirectionnelle, c'est-&agrave;-dire avoir <tt class="literal">anEvent.getParticipants()</tt>.
+                Ce n'est pas n&eacute;cessaire d'un point de vue fonctionnel. Vous pourrez toujours ex&eacute;cuter une requ&ecirc;te
+                explicite pour r&eacute;cup&eacute;rer les participants d'un "event" particulier. Ce choix de conception
+                vous est laiss&eacute;, mais ce qui reste certains est la cardinalit&eacute; de l'association: "plusieurs"
+                des deux c&ocirc;t&eacute;s, nous appelons cela une association <span class="emphasis"><em>many-to-many</em></span>. 
+                Par cons&eacute;quent nous utilisons un mapping Hibernate many-to-many:
+            </p><pre class="programlisting">&lt;class name="events.Person" table="PERSON"&gt;
+    &lt;id name="id" column="PERSON_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;property name="age"/&gt;
+    &lt;property name="firstname"/&gt;
+    &lt;property name="lastname"/&gt;
+
+    &lt;set name="events" table="PERSON_EVENT"&gt;
+        &lt;key column="PERSON_ID"/&gt;
+        &lt;many-to-many column="EVENT_ID" class="Event"/&gt;
+    &lt;/set&gt;
+
+&lt;/class&gt;</pre><p>
+                Hibernate supporte toutes sortes de mapping de collection, un <tt class="literal">&lt;set&gt;</tt>
+                &eacute;tant le plus commun. Pour une association many-to-many (ou une relation
+                d'entit&eacute; <span class="emphasis"><em>n:m</em></span>), une table d'association est requise. Chaque ligne dans cette table repr&eacute;sente un lien entre une personne et un &eacute;v&eacute;nement. Le nom de la table est
+                configur&eacute; avec l'attribut <tt class="literal">table</tt> de l'&eacute;l&eacute;ment <tt class="literal">set</tt>. Le
+                nom de la colonne identifiant dans l'association, du c&ocirc;t&eacute; de la personne, est d&eacute;fini avec
+                l'&eacute;l&eacute;ment <tt class="literal">&lt;key&gt;</tt>, et le nom de la colonne pour l'&eacute;v&eacute;nement dans
+                l'attribut <tt class="literal">column</tt> de <tt class="literal">&lt;many-to-many&gt;</tt>. Vous
+                devez aussi donner &agrave; Hibernate la classe des objets de votre collection (c'est-&agrave;-dire : la
+                classe de l'autre c&ocirc;t&eacute; de la collection).
+            </p><p>
+                Le sch&eacute;ma de base de donn&eacute;es pour ce mapping est donc :
+            </p><pre class="programlisting">
+    _____________        __________________
+   |             |      |                  |       _____________
+   |   EVENTS    |      |   PERSON_EVENT   |      |             |
+   |_____________|      |__________________|      |    PERSON   |
+   |             |      |                  |      |_____________|
+   | *EVENT_ID   | &lt;--&gt; | *EVENT_ID        |      |             |
+   |  EVENT_DATE |      | *PERSON_ID       | &lt;--&gt; | *PERSON_ID  |
+   |  TITLE      |      |__________________|      |  AGE        |
+   |_____________|                                |  FIRSTNAME  |
+                                                  |  LASTNAME   |
+                                                  |_____________|
+ </pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-associations-working"></a>1.3.3.&nbsp;Travailler avec l'association</h3></div></div><div></div></div><p>
+                R&eacute;unissons quelques personnes et quelques &eacute;v&eacute;nements dans une nouvelle m&eacute;thode dans
+                <tt class="literal">EventManager</tt> :
+            </p><pre class="programlisting">private void addPersonToEvent(Long personId, Long eventId) {
+
+    Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+    session.beginTransaction();
+
+    Person aPerson = (Person) session.load(Person.class, personId);
+    Event anEvent = (Event) session.load(Event.class, eventId);
+
+    aPerson.getEvents().add(anEvent);
+
+    session.getTransaction().commit();
+}</pre><p>
+                Apr&egrave;s le chargement d'une <tt class="literal">Person</tt> et d'un <tt class="literal">Event</tt>, modifiez
+                simplement la collection en utilisant les m&eacute;thodes normales de la collection. Comme vous
+                pouvez le voir, il n'y a pas d'appel explicite &agrave; <tt class="literal">update()</tt> ou
+                <tt class="literal">save()</tt>, Hibernate d&eacute;tecte automatiquement que la collection a &eacute;t&eacute;
+                modifi&eacute;e et a besoin d'&ecirc;tre mise &agrave; jour. Ceci est appel&eacute; <span class="emphasis"><em>la v&eacute;rification sale
+                automatique</em></span> (NdT : "automatic dirty checking"), et vous pouvez aussi l'essayer en
+                modifiant le nom ou la propri&eacute;t&eacute; date de n'importe lequel de vos objets. Tant qu'ils sont dans
+                un &eacute;tat <span class="emphasis"><em>persistant</em></span>, c'est-&agrave;-dire, li&eacute;s &agrave; une <tt class="literal">Session</tt> Hibernate
+                particuli&egrave;re (c-&agrave;-d qu'ils ont juste &eacute;t&eacute; charg&eacute;s ou sauvegard&eacute;s dans une unit&eacute; de travail),
+                Hibernate surveille les changements et ex&eacute;cute le SQL correspondant. Le processus de
+                synchronisation de l'&eacute;tat de la m&eacute;moire avec la base de donn&eacute;es, g&eacute;n&eacute;ralement seulement &agrave; la fin
+                d'une unit&eacute; de travail, est appel&eacute; <span class="emphasis"><em>flushing</em></span>. Dans notre code, l'unit&eacute; de travail
+                s'ach&egrave;ve par un commit (ou rollback) de la transaction avec la base de donn&eacute;es - comme d&eacute;fini 
+                par notre option <tt class="literal">thread</tt> de configuration pour la classe <tt class="literal">CurrentSessionContext</tt>.
+            </p><p>
+                Vous pourriez bien s&ucirc;r charger une personne et un &eacute;v&eacute;nement dans diff&eacute;rentes unit&eacute;s de travail. Ou
+                vous modifiez un objet &agrave; l'ext&eacute;rieur d'une <tt class="literal">Session</tt>, s'il n'est pas dans un &eacute;tat
+                persistant (s'il &eacute;tait persistant avant, nous appelons cet &eacute;tat <span class="emphasis"><em>d&eacute;tach&eacute;</em></span>). 
+                Vous pouvez m&ecirc;me modifier une collection lorsqu'elle est d&eacute;tach&eacute;e:
+            </p><pre class="programlisting">private void addPersonToEvent(Long personId, Long eventId) {
+
+    Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+    session.beginTransaction();
+
+    Person aPerson = (Person) session
+            .createQuery("select p from Person p left join fetch p.events where p.id = :pid")
+            .setParameter("pid", personId)
+            .uniqueResult(); // Eager fetch the collection so we can use it detached
+
+    Event anEvent = (Event) session.load(Event.class, eventId);
+
+    session.getTransaction().commit();
+
+    // End of first unit of work
+
+    aPerson.getEvents().add(anEvent); // aPerson (and its collection) is detached
+
+    // Begin second unit of work
+
+    Session session2 = HibernateUtil.getSessionFactory().getCurrentSession();
+    session2.beginTransaction();
+
+    session2.update(aPerson); // Reattachment of aPerson
+
+    session2.getTransaction().commit();
+}</pre><p>
+                L'appel &agrave; <tt class="literal">update</tt> rend un objet d&eacute;tach&eacute; &agrave; nouveau persistant, vous pourriez
+                dire qu'il le lie &agrave; une unit&eacute; de travail, ainsi toutes les modifications (ajout, suppression) que vous avez faites
+                pendant qu'il &eacute;tait d&eacute;tach&eacute; peuvent &ecirc;tre sauvegard&eacute;es dans la base de donn&eacute;es
+                (il se peut que vous ayez besoin de modifier quelques unes des m&eacute;thodes pr&eacute;c&eacute;dentes
+                pour retourner cet identifiant).
+            </p><pre class="programlisting">else if (args[0].equals("addpersontoevent")) {
+    Long eventId = mgr.createAndStoreEvent("My Event", new Date());
+    Long personId = mgr.createAndStorePerson("Foo", "Bar");
+    mgr.addPersonToEvent(personId, eventId);
+    System.out.println("Added person " + personId + " to event " + eventId);</pre><p>
+                Ce n'est pas tr&egrave;s utile dans notre situation actuelle, mais c'est un concept important
+                que vous pouvez mettre dans votre propre application.
+                Pour le moment, compl&eacute;tez cet exercice en ajoutant une nouvelle action &agrave; la m&eacute;thode
+                principale des <tt class="literal">EventManager</tt>s et appelez la &agrave; partir de la ligne de
+                commande. Si vous avez besoin des identifiants d'une personne et d'un &eacute;v&eacute;nement - la
+                m&eacute;thode <tt class="literal">save()</tt> les retourne.
+            </p><p>
+                C'&eacute;tait un exemple d'une association entre deux classes de m&ecirc;me importance, deux entit&eacute;s.
+                Comme mentionn&eacute; plus t&ocirc;t, il y a d'autres classes et d'autres types dans un mod&egrave;le typique,
+                g&eacute;n&eacute;ralement "moins importants". Vous en avez d&eacute;j&agrave; vu certains, comme un <tt class="literal">int</tt>
+                ou une <tt class="literal">String</tt>. Nous appelons ces classes des <span class="emphasis"><em>types de valeur</em></span>,
+                et leurs instances <span class="emphasis"><em>d&eacute;pendent</em></span> d'une entit&eacute; particuli&egrave;re. Des instances de ces
+                types n'ont pas leur propre identit&eacute;, elles ne sont pas non plus partag&eacute;es entre des entit&eacute;s (deux
+                personnes ne r&eacute;f&eacute;rencent pas le m&ecirc;me objet <tt class="literal">firstname</tt>, m&ecirc;me si elles ont le
+                m&ecirc;me pr&eacute;nom). Bien s&ucirc;r, des types de valeur ne peuvent pas seulement &ecirc;tre trouv&eacute;s dans
+                le JDK (en fait, dans une application Hibernate toutes les classes du JDK sont consid&eacute;r&eacute;es
+                comme des types de valeur), vous pouvez aussi &eacute;crire vous-m&ecirc;me des classes d&eacute;pendantes,
+                <tt class="literal">Address</tt> ou <tt class="literal">MonetaryAmount</tt>, par exemple.
+            </p><p>
+                Vous pouvez aussi concevoir une collection de types de valeur. C'est conceptuellement tr&egrave;s
+                diff&eacute;rent d'une collection de r&eacute;f&eacute;rences vers d'autres entit&eacute;s, mais tr&egrave;s ressemblant en Java.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-associations-valuecollections"></a>1.3.4.&nbsp;Collection de valeurs</h3></div></div><div></div></div><p>
+                Nous ajoutons une collection d'objets de type de valeur &agrave; l'entit&eacute; <tt class="literal">Person</tt>.
+                Nous voulons stocker des adresses email, donc le type que nous utilisons est <tt class="literal">String</tt>,
+                et la collection est encore un <tt class="literal">Set</tt> :
+            </p><pre class="programlisting">private Set emailAddresses = new HashSet();
+
+public Set getEmailAddresses() {
+    return emailAddresses;
+}
+
+public void setEmailAddresses(Set emailAddresses) {
+    this.emailAddresses = emailAddresses;
+}</pre><p>
+                Le mapping de ce <tt class="literal">Set</tt> :
+            </p><pre class="programlisting">&lt;set name="emailAddresses" table="PERSON_EMAIL_ADDR"&gt;
+    &lt;key column="PERSON_ID"/&gt;
+    &lt;element type="string" column="EMAIL_ADDR"/&gt;
+&lt;/set&gt;</pre><p>
+                La diff&eacute;rence compar&eacute;e au mapping vu plus t&ocirc;t est la partie <tt class="literal">element</tt>,
+                laquelle dit &agrave; Hibernate que la collection ne contient pas de r&eacute;f&eacute;rences vers une autre entit&eacute;,
+                mais une collection d'&eacute;l&eacute;ments de type <tt class="literal">String</tt> (le nom en minuscule vous
+                indique que c'est un type/convertisseur du mapping Hibernate). Une fois encore, l'attribut
+                <tt class="literal">table</tt> de l'&eacute;l&eacute;ment <tt class="literal">set</tt> d&eacute;termine le nom de la table pour la
+                collection. L'&eacute;l&eacute;ment <tt class="literal">key</tt> d&eacute;finit le nom de la colonne de la clef &eacute;trang&egrave;re
+                dans la table de la collection. L'attribut <tt class="literal">column</tt> dans l'&eacute;l&eacute;ment
+                <tt class="literal">element</tt> d&eacute;finit le nom de la colonne o&ugrave; les valeurs de <tt class="literal">String</tt>
+                seront r&eacute;ellement stock&eacute;es.
+            </p><p>
+                Regardons le sch&eacute;ma mis &agrave; jour :
+            </p><pre class="programlisting">
+  _____________        __________________
+ |             |      |                  |       _____________
+ |   EVENTS    |      |   PERSON_EVENT   |      |             |       ___________________
+ |_____________|      |__________________|      |    PERSON   |      |                   |
+ |             |      |                  |      |_____________|      | PERSON_EMAIL_ADDR |
+ | *EVENT_ID   | &lt;--&gt; | *EVENT_ID        |      |             |      |___________________|
+ |  EVENT_DATE |      | *PERSON_ID       | &lt;--&gt; | *PERSON_ID  | &lt;--&gt; |  *PERSON_ID       |
+ |  TITLE      |      |__________________|      |  AGE        |      |  *EMAIL_ADDR      |
+ |_____________|                                |  FIRSTNAME  |      |___________________|
+                                                |  LASTNAME   |
+                                                |_____________|
+ </pre><p>
+                Vous pouvez voir que la clef primaire de la table de la collection est en fait une
+                clef compos&eacute;e, utilisant deux colonnes. Ceci implique aussi qu'il ne peut pas y avoir
+                d'adresses email dupliqu&eacute;es par personne, ce qui est exactement la s&eacute;mantique dont
+                nous avons besoin pour un ensemble en Java.
+            </p><p>
+                Vous pouvez maintenant tester et ajouter des &eacute;l&eacute;ments &agrave; cette collection, juste comme
+                nous l'avons fait avant en liant des personnes et des &eacute;v&eacute;nements. C'est le m&ecirc;me code
+                en Java.
+            </p><pre class="programlisting">private void addEmailToPerson(Long personId, String emailAddress) {
+
+    Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+    session.beginTransaction();
+
+    Person aPerson = (Person) session.load(Person.class, personId);
+
+    // The getEmailAddresses() might trigger a lazy load of the collection
+    aPerson.getEmailAddresses().add(emailAddress);
+
+    session.getTransaction().commit();
+}</pre><p>
+                Cette fois ci, nous n'avons pas utilis&eacute; une requ&ecirc;te de chargement agressif (<span class="emphasis"><em>fetch</em></span>)
+                pour initialiser la collection. Par cons&eacute;quent, l'invocation du getter d&eacute;clenchera un
+                select suppl&eacute;mentaire pour l'initialiser. Traquez les logs SQL et tentez d'optimiser
+                ce cas avec un chargement aggressif.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-associations-bidirectional"></a>1.3.5.&nbsp;Associations bidirectionnelles</h3></div></div><div></div></div><p>
+                Ensuite nous allons mapper une association bidirectionnelle - faire fonctionner
+                l'association entre une personne et un &eacute;v&eacute;nement &agrave; partir des deux c&ocirc;t&eacute;s en Java.
+                Bien s&ucirc;r, le sch&eacute;ma de la base de donn&eacute;es ne change pas, nous avons toujours une pluralit&eacute;
+                many-to-many. Une base de donn&eacute;es relationnelle est plus flexible qu'un langage de
+                programmation r&eacute;seau, donc elle n'a pas besoin de direction de navigation - les donn&eacute;es
+                peuvent &ecirc;tre vues et r&eacute;cup&eacute;r&eacute;es de toutes les mani&egrave;res possibles.
+            </p><p>
+                D'abord, ajouter une collection de participants &agrave; la classe <tt class="literal">Event</tt> :
+            </p><pre class="programlisting">private Set participants = new HashSet();
+
+public Set getParticipants() {
+    return participants;
+}
+
+public void setParticipants(Set participants) {
+    this.participants = participants;
+}</pre><p>
+                Maintenant mapper ce c&ocirc;t&eacute; de l'association aussi, dans <tt class="literal">Event.hbm.xml</tt>.
+            </p><pre class="programlisting">&lt;set name="participants" table="PERSON_EVENT" inverse="true"&gt;
+    &lt;key column="EVENT_ID"/&gt;
+    &lt;many-to-many column="PERSON_ID" class="events.Person"/&gt;
+&lt;/set&gt;</pre><p>
+                Comme vous le voyez, ce sont des mappings de <tt class="literal">set</tt>s normaux dans les
+                deux documents de mapping. Notez que les noms de colonne dans <tt class="literal">key</tt> et
+                <tt class="literal">many-to-many</tt> sont invers&eacute;s dans les 2 documents de mapping. L'ajout
+                le plus important ici est l'attribut <tt class="literal">inverse="true"</tt> dans l'&eacute;l&eacute;ment
+                <tt class="literal">set</tt> du mapping de la collection des <tt class="literal">Event</tt>s.
+            </p><p>
+                Ce que signifie qu'Hibernate devrait prendre l'autre c&ocirc;t&eacute; - la classe <tt class="literal">Person</tt> -
+                s'il a besoin de renseigner des informations &agrave; propos du lien entre les deux. Ce sera
+                beaucoup plus facile &agrave; comprendre une fois que vous verrez comment le lien bidirectionnel
+                entre les deux entit&eacute;s est cr&eacute;&eacute;.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-associations-usingbidir"></a>1.3.6.&nbsp;Travailler avec des liens bidirectionnels</h3></div></div><div></div></div><p>
+                Premi&egrave;rement, gardez &agrave; l'esprit qu'Hibernate n'affecte pas la s&eacute;mantique normale de Java.
+                Comment avons-nous cr&eacute;&eacute; un lien entre une <tt class="literal">Person</tt> et un <tt class="literal">Event</tt>
+                dans l'exemple unidirectionnel ? Nous avons ajout&eacute; une instance de <tt class="literal">Event</tt>
+                &agrave; la collection des r&eacute;f&eacute;rences d'&eacute;v&eacute;nement d'une instance de <tt class="literal">Person</tt>. Donc,
+                &eacute;videmment, si vous voulons rendre ce lien bidirectionnel, nous devons faire la m&ecirc;me chose de
+                l'autre c&ocirc;t&eacute; - ajouter une r&eacute;f&eacute;rence de <tt class="literal">Person</tt> &agrave; la collection d'un
+                <tt class="literal">Event</tt>. Cette "configuration du lien des deux c&ocirc;t&eacute;s" est absolument
+                n&eacute;cessaire et vous ne devriez jamais oublier de le faire.
+            </p><p>
+                Beaucoup de d&eacute;veloppeurs programment de mani&egrave;re d&eacute;fensive et cr&eacute;ent des
+                m&eacute;thodes de gestion de lien pour affecter correctement les deux c&ocirc;t&eacute;s,
+                par exemple dans <tt class="literal">Person</tt> :
+            </p><pre class="programlisting">protected Set getEvents() {
+    return events;
+}
+
+protected void setEvents(Set events) {
+    this.events = events;
+}
+
+public void addToEvent(Event event) {
+    this.getEvents().add(event);
+    event.getParticipants().add(this);
+}
+
+public void removeFromEvent(Event event) {
+    this.getEvents().remove(event);
+    event.getParticipants().remove(this);
+}</pre><p>
+                Notez que les m&eacute;thodes get et set pour la collection sont maintenant prot&eacute;g&eacute;es - ceci permet &agrave; des
+                classes du m&ecirc;me paquet et aux sous-classes d'acc&eacute;der encore aux m&eacute;thodes, mais emp&ecirc;che n'importe qui
+                d'autre de mettre le d&eacute;sordre directement dans les collections (enfin, presque). Vous devriez
+                probablement faire de m&ecirc;me avec la collection de l'autre c&ocirc;t&eacute;.
+            </p><p>
+                Et &agrave; propos de l'attribut de mapping <tt class="literal">inverse</tt> ? Pour vous, et pour Java, un lien
+                bidirectionnel est simplement une mani&egrave;re de configurer correctement les r&eacute;f&eacute;rences des deux c&ocirc;t&eacute;s.
+                Hibernate n'a cependant pas assez d'informations pour ordonner correctement les expressions SQL
+                <tt class="literal">INSERT</tt> et <tt class="literal">UPDATE</tt> (pour &eacute;viter les violations de contrainte), et
+                a besoin d'aide pour g&eacute;rer proprement les associations bidirectionnelles. Rendre
+                <tt class="literal">inverse</tt> un c&ocirc;t&eacute; d'une assocation dit &agrave; Hibernate de l'ignorer essentiellement, pour
+                le consid&eacute;rer comme un <span class="emphasis"><em>miroir</em></span> de l'autre c&ocirc;t&eacute;. C'est tout ce qui est n&eacute;cessaire &agrave;
+                Hibernate pour d&eacute;couvrir tout des probl&egrave;mes de transformation d'un mod&egrave;le de navigation
+                directionnelle vers un sch&eacute;ma SQL de base de donn&eacute;es. Les r&egrave;gles dont vous devez vous souvenir sont :
+                toutes les associations bidirectionnelles ont besoin d'un c&ocirc;t&eacute; marqu&eacute; <tt class="literal">inverse</tt>.
+                Dans une association un-vers-plusieurs vous pouvez choisir n'importe quel c&ocirc;t&eacute;, il n'y a pas de
+                diff&eacute;rence.
+            </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tutorial-webapp"></a>1.4.&nbsp;Part 3 - L'application web EventManager</h2></div></div><div></div></div><p>
+            Une application web Hibernate utilise la <tt class="literal">Session</tt> et <tt class="literal">Transaction</tt>
+            comme une application standalone. Cependant, quelques patterns sont utiles. Nous allons coder une
+            <tt class="literal">EventManagerServlet</tt>. Cette servlet peut lister tous les &eacute;v&egrave;nements stock&eacute;s dans
+            la base de donn&eacute;es, et fournir une formulaire HTML pour saisir d'autres &eacute;v&egrave;nements.
+        </p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-webapp-servlet"></a>1.4.1.&nbsp;Ecrire la servlet de base</h3></div></div><div></div></div><p>
+                Cr&eacute;ons une nouvelle classe dans notre r&eacute;pertoire source, dans le package <tt class="literal">events</tt>:
+            </p><pre class="programlisting">package events;
+
+// Imports
+
+public class EventManagerServlet extends HttpServlet {
+
+    private final SimpleDateFormat dateFormatter =
+                            new SimpleDateFormat("dd.MM.yyyy");
+
+    // Servlet code
+}</pre><p>
+                Le <tt class="literal">dateFormatter</tt> est un outil que nous utiliserons plus tard pour convertir les objets
+                <tt class="literal">Date</tt> depuis et vers des chaines de caract&egrave;res. Il est propice de n'avoir qu'un
+                formatter comme membre de la servlet.
+            </p><p>
+                La servlet n'accepte que les requ&ecirc;tes HTTP <tt class="literal">GET</tt>, la m&eacute;thode &agrave; impl&eacute;menter est donc
+				<tt class="literal">doGet()</tt>:
+            </p><pre class="programlisting">protected void doGet(HttpServletRequest request,
+                     HttpServletResponse response)
+        throws ServletException, IOException {
+
+    try {
+        // Begin unit of work
+        HibernateUtil.getSessionFactory()
+                .getCurrentSession().beginTransaction();
+
+        // Process request and render page...
+
+        // End unit of work
+        HibernateUtil.getSessionFactory()
+                .getCurrentSession().getTransaction().commit();
+
+    } catch (Exception ex) {
+        HibernateUtil.getSessionFactory()
+                .getCurrentSession().getTransaction().rollback();
+        throw new ServletException(ex);
+    }
+
+}</pre><p>
+                La pattern que nous utilisons ici est appel&eacute; <span class="emphasis"><em>session-per-request</em></span>.
+                Lorsqu'une requ&ecirc;te touche la servlet, une nouvelle <tt class="literal">Session</tt> hibernate est
+                ouverte &agrave; l'invocationde <tt class="literal">getCurrentSession()</tt> sur la
+                <tt class="literal">SessionFactory</tt>. Ensuite, une transaction avec la base de donn&eacute;es est d&eacute;marr&eacute;e&#8212;
+                tous les acc&egrave;s &agrave; la base de donn&eacute;es interviennent au sein de la transactiton, peu importe que les donn&eacute;es
+                soient lues ou &eacute;crites (nous n'utilisons pas le mode auto-commit dans les applications).
+            </p><p>
+                Ensuite, les actions possibles de la requ&ecirc;tes sont ex&eacute;cut&eacute;es et la r&eacute;ponse HTML
+                est rendue. Nous en parlerons plus tard.
+            </p><p>
+                Enfin, l'unit&eacute; de travail s'ach&egrave;ve lorsque l'ex&eacute;cution et le rendu sont achev&eacute;s.
+                Si un probl&egrave;me survient lors de ces deux phases, une exception est soulev&eacute;e et la
+                transaction avec la base de donn&eacute;es subit un rollback. Voila pour le pattern
+                <tt class="literal">session-per-request</tt>. Au lieu d'un code de d&eacute;marcation de transaction
+                au sein de chaque servlet, vous pouvez &eacute;crire un filtre de servlet.
+                Voir le site Hibernate et le Wiki pour plus d'information sur ce pattern, appel&eacute;
+				<span class="emphasis"><em>Open Session in View</em></span>&#8212; vous en aurez besoin d&egrave;s que vous
+				utiliserez des JSPs et non plus des servlets pour le rendu de vos vues.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-webapp-processing"></a>1.4.2.&nbsp;Proc&eacute;der et rendre</h3></div></div><div></div></div><p>
+                Impl&eacute;mentons l'ex&eacute;cution de la requ&ecirc;te et le rendu de la page.                
+            </p><pre class="programlisting">// Write HTML header
+PrintWriter out = response.getWriter();
+out.println("&lt;html&gt;&lt;head&gt;&lt;title&gt;Event Manager&lt;/title&gt;&lt;/head&gt;&lt;body&gt;");
+
+// Handle actions
+if ( "store".equals(request.getParameter("action")) ) {
+
+    String eventTitle = request.getParameter("eventTitle");
+    String eventDate = request.getParameter("eventDate");
+
+    if ( "".equals(eventTitle) || "".equals(eventDate) ) {
+        out.println("&lt;b&gt;&lt;i&gt;Please enter event title and date.&lt;/i&gt;&lt;/b&gt;");
+    } else {
+        createAndStoreEvent(eventTitle, dateFormatter.parse(eventDate));
+        out.println("&lt;b&gt;&lt;i&gt;Added event.&lt;/i&gt;&lt;/b&gt;");
+    }
+}
+
+// Print page
+printEventForm(out);
+listEvents(out);
+
+// Write HTML footer
+out.println("&lt;/body&gt;&lt;/html&gt;");
+out.flush();
+out.close();</pre><p>
+                Ce style de code avec un mix de Java et d'HTML ne serait pas scalable 
+                dans une application plus complexe&#8212;gardez &agrave; l'esprit que nous ne faisons qu'illustrer
+                les concepts basiques d'Hibernate dans ce tutoriel. Ce code affiche une en t&ecirc;te et un pied de page
+                HTML. Dans cette page, sont affich&eacute;s un formulaire pour la saisie d'&eacute;v&egrave;nements ainsi
+                qu'une liste de tous les &eacute;v&egrave;nements de la base de donn&eacute;es. La premi&egrave;re m&eacute;thode
+                est triviale est ne fait que sortir de l'HTML:
+            </p><pre class="programlisting">private void printEventForm(PrintWriter out) {
+    out.println("&lt;h2&gt;Add new event:&lt;/h2&gt;");
+    out.println("&lt;form&gt;");
+    out.println("Title: &lt;input name='eventTitle' length='50'/&gt;&lt;br/&gt;");
+    out.println("Date (e.g. 24.12.2009): &lt;input name='eventDate' length='10'/&gt;&lt;br/&gt;");
+    out.println("&lt;input type='submit' name='action' value='store'/&gt;");
+    out.println("&lt;/form&gt;");
+}</pre><p>
+                La m&eacute;thode <tt class="literal">listEvents()</tt> utilise la
+                <tt class="literal">Session</tt> Hibernate li&eacute;e au thread courant pour ex&eacute;cuter la
+                requ&ecirc;te:
+            </p><pre class="programlisting">private void listEvents(PrintWriter out) {
+    List result = HibernateUtil.getSessionFactory()
+                    .getCurrentSession().createCriteria(Event.class).list();
+    if (result.size() &gt; 0) {
+        out.println("&lt;h2&gt;Events in database:&lt;/h2&gt;");
+        out.println("&lt;table border='1'&gt;");
+        out.println("&lt;tr&gt;");
+        out.println("&lt;th&gt;Event title&lt;/th&gt;");
+        out.println("&lt;th&gt;Event date&lt;/th&gt;");
+        out.println("&lt;/tr&gt;");
+        for (Iterator it = result.iterator(); it.hasNext();) {
+            Event event = (Event) it.next();
+            out.println("&lt;tr&gt;");
+            out.println("&lt;td&gt;" + event.getTitle() + "&lt;/td&gt;");
+            out.println("&lt;td&gt;" + dateFormatter.format(event.getDate()) + "&lt;/td&gt;");
+            out.println("&lt;/tr&gt;");
+        }
+        out.println("&lt;/table&gt;");
+    }
+}</pre><p>
+                FEnfin, l'action <tt class="literal">store</tt> renvoie &agrave; la m&eacute;thode
+                <tt class="literal">createAndStoreEvent()</tt>, qui utilise aussi la
+                <tt class="literal">Session</tt> du thread courant:
+            </p><pre class="programlisting">protected void createAndStoreEvent(String title, Date theDate) {
+    Event theEvent = new Event();
+    theEvent.setTitle(title);
+    theEvent.setDate(theDate);
+
+    HibernateUtil.getSessionFactory()
+                    .getCurrentSession().save(theEvent);
+}</pre><p>
+                La servlet est faite. Une requ&ecirc;te &agrave; la servlet sera ex&eacute;cut&eacute;e par une seule
+                <tt class="literal">Session</tt> et <tt class="literal">Transaction</tt>. Comme pour une application
+                standalone, Hibernate peut automatiquement lier ces objets au thread courant d'ex&eacute;cution.
+                Cela vous laisse la libert&eacute; de s&eacute;parer votre code en couches et d'acc&eacute;der &agrave; la
+				<tt class="literal">SessionFactory</tt> par le moyen que vous voulez.
+				G&eacute;n&eacute;ralement, vous utiliserez des conceptions plus sophistiqu&eacute;es et d&eacute;placerez
+				le code d'acc&egrave;s aux donn&eacute;es dans une couche DAO. Voir le wiki Hibernate pour plus
+				d'exemples.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="tutorial-webapp-deploy"></a>1.4.3.&nbsp;D&eacute;ployer et tester</h3></div></div><div></div></div><p>
+                Pour d&eacute;ployer cette application, vous devez cr&eacute;er une archive Web, un War. Ajoutez
+                la cible Ant suivante dans votre <tt class="literal">build.xml</tt>:
+            </p><pre class="programlisting">&lt;target name="war" depends="compile"&gt;
+    &lt;war destfile="hibernate-tutorial.war" webxml="web.xml"&gt;
+        &lt;lib dir="${librarydir}"&gt;
+          &lt;exclude name="jsdk*.jar"/&gt;
+        &lt;/lib&gt;
+
+        &lt;classes dir="${targetdir}"/&gt;
+    &lt;/war&gt;
+&lt;/target&gt;</pre><p>
+                Cette cible cr&eacute;&eacute; un fichier nomm&eacute; <tt class="literal">hibernate-tutorial.war</tt>
+                dans le r&eacute;pertoire de votre projet. Elle package les biblioth&egrave;ques et le descripteur <tt class="literal">web.xml</tt>
+                qui est attendu dans le r&eacute;pertoire racine de votre projet:
+            </p><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app version="2.4"
+    xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"&gt;
+
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;Event Manager&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;events.EventManagerServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;Event Manager&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/eventmanager&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;</pre><p>
+                Avant de compiler et d&eacute;ployer l'application web, notez qu'une biblioth&egrave;que suppl&eacute;mentaire
+                est requise: <tt class="literal">jsdk.jar</tt>. C'est le kit de d&eacute;veloppement de Servlet Java,
+                si vous ne disposez pas de cette biblioth&egrave;que, prenez la sur le site de Sun et copiez la
+                dans votre r&eacute;pertoire des biblioth&egrave;ques. Cependant, elle ne sera utilis&eacute;e uniquement pour la
+                compilation et sera exclue du paackage WAR.
+            </p><p>
+                Pour construire et d&eacute;ployer, appelez <tt class="literal">ant war</tt> dans votre projet et
+                copier le fichier <tt class="literal">hibernate-tutorial.war</tt> dans le r&eacute;pertoire <tt class="literal">webapp</tt> de tomcat
+                Si vous n'avez pas install&eacute; Tomcat, t&eacute;l&eacute;chargez le et suivez la notice d'installation. 
+                Vous n'avez pas &agrave; modifier la configuration Tomcat pour d&eacute;ployer cette application.
+            </p><p>
+                Une fois l'application d&eacute;ploy&eacute;e et Tomcat lanc&eacute;, acc&eacute;dez &agrave; l'application via
+                <tt class="literal">http://localhost:8080/hibernate-tutorial/eventmanager</tt>. 
+                Assurez vous de consulter les traces tomcat pour observer l'initialisation
+                d'Hibernate &agrave; la premi&egrave;re requ&ecirc;te touchant votre servlet (l'initialisation statique dans <tt class="literal">HibernateUtil</tt>
+                est invoqu&eacute;e) et pour v&eacute;rifier qu'aucune exception ne survienne.
+            </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tutorial-summary"></a>1.5.&nbsp;R&eacute;sum&eacute;</h2></div></div><div></div></div><p>
+            Ce didacticiel a couvert les bases de l'&eacute;criture d'une simple application Hibernate ainsi qu'une petite application web.
+        </p><p>
+            Si vous &ecirc;tes d&eacute;j&agrave; confiants avec Hibernate, continuez &agrave; parcourir les sujets que vous trouvez
+            int&eacute;ressants &agrave; travers la table des mati&egrave;res de la documentation de r&eacute;f&eacute;rence - les plus
+            demand&eacute;s sont le traitement transactionnel (<a href="transactions.html" title="Chapitre&nbsp;11.&nbsp;Transactions et acc&egrave;s concurrents">Chapitre&nbsp;11, <i>Transactions et acc&egrave;s concurrents</i></a>), la performance
+            des r&eacute;cup&eacute;rations d'information (<a href="performance.html" title="Chapitre&nbsp;19.&nbsp;Am&eacute;liorer les performances">Chapitre&nbsp;19, <i>Am&eacute;liorer les performances</i></a>), ou l'utilisation de l'API
+            (<a href="objectstate.html" title="Chapitre&nbsp;10.&nbsp;Travailler avec des objets">Chapitre&nbsp;10, <i>Travailler avec des objets</i></a>) et les fonctionnalit&eacute;s des requ&ecirc;tes (<a href="objectstate.html#objectstate-querying" title="10.4.&nbsp;Requ&ecirc;tage">Section&nbsp;10.4, &laquo;&nbsp;Requ&ecirc;tage&nbsp;&raquo;</a>).
+        </p><p>
+            N'oubliez pas de v&eacute;rifier le site web d'Hibernate pour d'autres didacticiels (plus sp&eacute;cialis&eacute;s).
+        </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="preface.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="architecture.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Pr&eacute;face&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;2.&nbsp;Architecture</td></tr></table></div></body></html>

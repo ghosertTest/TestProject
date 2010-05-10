@@ -1,0 +1,52 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+	<head>
+		<title>Celebrity Collector</title>
+	</head>
+	<body>
+		<h1>Celebrity Collector</h1>
+		<p>Log in here, default u/p: user/secret </p>
+		<t:form t:id="loginForm">
+			<table>
+				<tr>
+					<td>
+					    <!-- The first way to use 't:label' component, set the component id 'userName' below to 't:for' -->
+					    <!-- In this way, tapestry will just ignore the text surrounded('Label for the first text box')
+					         and find the 't:for' component id get the value "userName", then present the value as "User Name" automatically. -->
+						<t:label t:for="userName">
+							Label for the first text box
+						</t:label>
+						:
+					</td>
+					<td>
+						<input type="text" t:id="userName"
+							t:type="TextField" t:value="userName" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<t:label t:for="password">
+							The second label
+						</t:label>
+						:
+					</td>
+					<td>
+					    <!-- The second way to use 't:label' component, define 't:label' directly in the component. -->
+					    <!-- If the sencod way works, tapestry just ignore the first way above. -->
+						<input type="text" t:id="password"
+							t:type="PasswordField" t:value="password" t:label="PassWord:" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center">
+						<input type="submit" value="Log In" />
+					</td>
+				</tr>
+			</table>
+		</t:form>
+		<p>
+			<a href="#" t:type="PageLink" t:page="Registration">
+				Or register
+			</a>
+		</p>
+	</body>
+</html>

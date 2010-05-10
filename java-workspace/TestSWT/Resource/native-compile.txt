@@ -1,0 +1,3 @@
+2 gcj rcp
+http://gcc.gnu.org/java/
+http://blog.csdn.net/upchina/archive/2003/06/27/13075.aspx

@@ -1,0 +1,12 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+    <head>
+        <title>Payment Page</title>
+    </head>
+    <body>
+        <h1>Payment Page</h1>
+        
+        <p>Some payment functionality goes here.</p>
+        
+        <p><t:PageLink t:page="Start">Back to the Start page</t:PageLink></p>
+    </body>
+</html>

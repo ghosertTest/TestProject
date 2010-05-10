@@ -1,0 +1,1 @@
+copy mysqldriver.jar to Tomcat 5.0\common\lib so that jndi datasource can work well.

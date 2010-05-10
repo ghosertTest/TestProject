@@ -1,0 +1,1228 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0068)http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/ -->
+<HTML><HEAD><TITLE>在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分: 使用 JFace 图像注册表</TITLE><!--XSLT stylesheet used to transform this file:  dw-document-html-4.1.xsl-->
+<META http-equiv=Content-Type content="text/html; charset=UTF-8">
+<META http-equiv=PICS-Label 
+content='(PICS-1.1&#10;    "http://www.icra.org/ratingsv02.html" l gen true r (cz 1 lz 1 nz 1 oz 1 vz 1)&#10;    "http://www.rsac.org/ratingsv01.html" l gen true r (n 0 s 0 v 0 l 0)&#10;    "http://www.classify.org/safesurf/" l gen true r (SS~~000 1))'>
+<META http-equiv=Expires content=0>
+<META 
+content="Eclipse, workbench, gui, components, 组件, platform, 平台, JFace, SWT, A. O. Van Emmenis, developerworks, open source zone, 开放源码专区" 
+name=KEYWORDS>
+<META 
+content="在本文中，A. O. Van Emmenis 继续研究在第 1 部分中着手构建的示例。他将完善内容提供程序和标签提供程序，并演示如何在 JFace 查看器中使用排序和过滤。他将演示如何给窗口添加状态行，给两个查看器添加图标，并讨论如何通过使用 JFace 图像注册表来节省系统资源。" 
+name=ABSTRACT>
+<META 
+content="在本文中，A. O. Van Emmenis 继续研究在第 1 部分中着手构建的示例。他将完善内容提供程序和标签提供程序，并演示如何在 JFace 查看器中使用排序和过滤。他将演示如何给窗口添加状态行，给两个查看器添加图标，并讨论如何通过使用 JFace 图像注册表来节省系统资源。" 
+name=DESCRIPTION>
+<META 
+content=https://www-130.ibm.com/developerworks/secure/feedback.jsp?domain=dwchina 
+name=OWNER>
+<META scheme=iso8601 content=2003-06-09 name=DC.Date>
+<META scheme=rfc1766 content=zh-cn name=DC.Language>
+<META content=cn name=IBM.Country>
+<META content="" name="Last update">
+<META content=Public name=SECURITY>
+<META content="Copyright (c) 2003 by IBM Corporation" name=DC.Rights>
+<META content=index,follow name=ROBOTS>
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/dwcss.js" 
+type=text/javascript><noscript><link type="text/css" href="/developerworks/cn/css/r1ss.css" rel="stylesheet"/></noscript><script src="/developerworks/js/spinbox.js" language="JavaScript" type="text/javascript"></SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>var title = "在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分: 使用 JFace 图像注册表"; </SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>var forumURL = ""; </SCRIPT>
+
+<SCRIPT language=JavaScript 
+type=text/javascript>var contentAreaList = ""; </SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/forumwindow.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>var emailAbstract = "在本文中，A. O. Van Emmenis 继续研究在第 1 部分中着手构建的示例。他将完善内容提供程序和标签提供程序，并演示如何在 JFace 查看器中使用排序和过滤。他将演示如何给窗口添加状态行，给两个查看器添加图标，并讨论如何通过使用 JFace 图像注册表来节省系统资源。"; </SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/grabtitle.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/emailfriend2.js" 
+type=text/javascript></SCRIPT>
+
+<META content="MSHTML 6.00.2900.2180" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff leftMargin=2 topMargin=2 marginheight="2" marginwidth="2">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD class=bbg width=110><A href="http://www.ibm.com/cn/"><IMG height=52 
+      alt=IBM® 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/ibm-logo.gif" 
+      width=110 border=0></A></TD>
+    <TD class=bbg><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=1 border=0></TD>
+    <TD class=mbbg align=right width=650>
+      <TABLE cellSpacing=0 cellPadding=0 align=right border=0>
+        <TBODY>
+        <TR class=cty-tou>
+          <TD class=upper-masthead-corner width=17 rowSpan=2><A 
+            href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#main"><IMG 
+            height=1 alt="Skip to main content" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=1 border=0></A></TD>
+          <TD align=left>
+            <TABLE cellSpacing=0 cellPadding=0 align=left border=0>
+              <TBODY>
+              <TR>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><B 
+                  class=country>中国</B><SPAN class=spacer>&nbsp;[</SPAN> <A 
+                  class=ur-link 
+                  href="http://www.ibm.com/developerworks/cn/country/">选择</A><SPAN 
+                  class=spacer>]</SPAN></TD>
+                <TD class=upper-masthead-divider 
+                width=29>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD align=left><A class=ur-link 
+                  href="http://www.ibm.com/legal/cn/">使用条款</A></TD></TR></TBODY></TABLE></TD>
+          <TD width=40>&nbsp;</TD></TR>
+        <TR>
+          <TD class=cty-tou-border colSpan=2 height=1><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=1></TD></TR>
+        <TR>
+          <TD colSpan=3><IMG height=8 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=1></TD></TR>
+        <TR>
+          <TD>&nbsp;</TD>
+          <TD align=middle colSpan=2>
+            <FORM id=form1 name=form1 
+            action=http://www-128.ibm.com/developerworks/search/searchResults.jsp 
+            method=get><INPUT type=hidden value=1 name=searchType><INPUT 
+            type=hidden value=dWChina name=searchSite><INPUT type=hidden 
+            value=zh name=pageLang><INPUT type=hidden value=UTF8 
+            name=langEncoding>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD width=1><IMG height=1 alt="Select a scope:" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=1></TD>
+                <TD align=right><LABEL for=sq><SELECT class=input-scope id=sq 
+                  name=searchScope> <OPTION value=dW selected>dW 全部内容</OPTION> 
+                    <OPTION value=dW>-----------------</OPTION> <OPTION 
+                    value=dmdd>&nbsp;&nbsp;DB2</OPTION> <OPTION 
+                    value=lotusdd>&nbsp;&nbsp;Lotus</OPTION> <OPTION 
+                    value=tivolidd>&nbsp;&nbsp;Tivoli</OPTION> <OPTION 
+                    value=wsdd>&nbsp;&nbsp;WebSphere</OPTION> <OPTION 
+                    value=dW>-----------------</OPTION> <OPTION 
+                    value=javaZ>&nbsp;&nbsp;Java 技术</OPTION> <OPTION 
+                    value=linuxZ>&nbsp;&nbsp;Linux</OPTION> <OPTION 
+                    value=opensrcZ>&nbsp;&nbsp;Open source</OPTION> <OPTION 
+                    value=securityZ>&nbsp;&nbsp;Security</OPTION> <OPTION 
+                    value=webservZ>&nbsp;&nbsp;SOA &amp; Web services</OPTION> 
+                    <OPTION value=webarchZ>&nbsp;&nbsp;Web architecture</OPTION> 
+                    <OPTION value=wirelessZ>&nbsp;&nbsp;Wireless</OPTION> 
+                    <OPTION value=xmlZ>&nbsp;&nbsp;XML</OPTION> <OPTION 
+                    value=dW>-----------------</OPTION> <OPTION value=all>IBM 
+                    全部内容</OPTION></SELECT> </LABEL></TD>
+                <TD align=right width=1><IMG height=1 alt="Search for:" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=1>&nbsp;&nbsp;</TD>
+                <TD align=right><INPUT class=input id=q maxLength=100 size=15 
+                  name=query> </TD>
+                <TD width=7>&nbsp;</TD>
+                <TD><LABEL for=q><INPUT type=image alt=搜索 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/search.gif" 
+                  value=搜索 name=Search> </LABEL></TD>
+                <TD 
+      width=20>&nbsp;</TD></TR></TBODY></TABLE></FORM></TD></TR></TBODY></TABLE></TD></TR>
+  <TR>
+    <TD class=blbg colSpan=3>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> </TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/cn/">首页</A> </TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/products/cn/">产品</A> </TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/servicessolutions/cn/">服务与解决方案</A> 
+</TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/support/cn/">支持与下载</A> </TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/account/cn/">个性化服务</A> </TD>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> 
+              </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><!--
+<script src="//www.ibm.com/common/v14/pmh.js" language="JavaScript" type="text/javascript"></script>
+--><!-- end masthead dw liquid -->
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD width=5><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=5 border=0></TD>
+    <TD width="100%">
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD width="100%"><IMG height=4 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=2 border=0><BR><A class=bctl 
+            href="http://www-128.ibm.com/developerworks/cn/">developerWorks 
+            中国</A><SPAN class=bct> &gt; </SPAN><A class=bctl 
+            href="http://www-128.ibm.com/developerworks/cn/linux/">Linux</A> 
+            <SPAN class=bct>&gt; </SPAN></TD>
+          <TD align=right width=136><A 
+            href="http://www-128.ibm.com/developerworks/cn/"><IMG height=24 
+            alt=developerWorks 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/dwlogo-small.gif" 
+            width=136 border=0></A></TD>
+          <TD width=5><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=5 border=0></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><A 
+name=main></A><A name=top></A>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD colSpan=5><IMG height=15 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=5 border=0></TD></TR>
+  <TR vAlign=top>
+    <TD width=2><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=2 border=0></TD>
+    <TD><SPAN class=astitle>在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分: 
+      </SPAN><SPAN class=atitle>使用 JFace 图像注册表</SPAN></TD>
+    <TD width=8><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=8 border=0></TD>
+    <TD align=right width=180><NOBR>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD align=right></TD>
+          <TD width=46>
+            <FORM 
+            action=https://www-130.ibm.com/developerworks/secure/email-it.jsp><INPUT 
+            type=hidden 
+            value="在本文中，A. O. Van Emmenis 继续研究在第 1 部分中着手构建的示例。他将完善内容提供程序和标签提供程序，并演示如何在 JFace 查看器中使用排序和过滤。他将演示如何给窗口添加状态行，给两个查看器添加图标，并讨论如何通过使用 JFace 图像注册表来节省系统资源。" 
+            name=body><INPUT type=hidden 
+            value="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分: 使用 JFace 图像注册表" 
+            name=subject><INPUT type=hidden value=cn name=lang><INPUT type=image 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/icon-email.gif" 
+            border=0 name=email></FORM></TD></TR></TBODY></TABLE></NOBR></TD>
+    <TD width=6><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=6 border=0></TD></TR>
+  <TR vAlign=top>
+    <TD bgColor=#000000 colSpan=5><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=100 border=0></TD></TR>
+  <TR vAlign=top>
+    <TD bgColor=#ffffff colSpan=5><IMG height=8 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=100 border=0></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD width=5><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=5 border=0></TD>
+    <TD width="100%">
+      <TABLE cellSpacing=0 cellPadding=0 width=168 align=right border=0>
+        <TBODY>
+        <TR>
+          <TD width=8><IMG height=21 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=5></TD>
+          <TD width=160>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=160 bgColor=#000000 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD align=middle 
+                background="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/bg-gold.gif" 
+                height=5><B>内容：</B></TD></TR>
+              <TR>
+                <TD width=160 bgColor=#666666 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD>
+                  <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#N10050">安装说明</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#N100A7">继续使用第 
+                        1 部分的示例</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#N100C4">设置窗口标题</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#N10116">给应用程序窗口添加状态行</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#N1016E">图标和图像</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#N101E2">JFace 
+                        图像注册表</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#N102A2">排序和过滤</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#N10350">结束语</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR><!--Standard links for every dw-article-->
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#resources">参考资料 
+                        </A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#author1">关于作者</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#rating">对本文的评价</A></TD></TR>
+                    <TR>
+                      <TD><IMG height=10 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=160 bgColor=#000000 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD align=middle 
+                background="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/bg-gold.gif" 
+                height=5><B>相关内容：</B></TD></TR>
+              <TR>
+                <TD width=160 bgColor=#666666 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD>
+                  <TABLE cellSpacing=0 cellPadding=1 width=160 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/index.html" 
+                        xmlns:dw="http://www.ibm.com/developerworks/" 
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">本系列的第 
+                        1 部分</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www.ibm.com/developerworks/opensource/library/os-ecov" 
+                        xmlns:dw="http://www.ibm.com/developerworks/" 
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Getting 
+                        started with the Eclipse Platform</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/java/os-ecplug/index.html" 
+                        xmlns:dw="http://www.ibm.com/developerworks/" 
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">开发 
+                        Eclipse 插件</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/java/os-swing/index.html" 
+                        xmlns:dw="http://www.ibm.com/developerworks/" 
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">将基于 
+                        Swing 的开发工具插入 Eclipse 中</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=160 bgColor=#000000 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD align=middle 
+                background="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/bg-gold.gif" 
+                height=5><B>订阅:</B></TD></TR>
+              <TR>
+                <TD width=160 bgColor=#666666 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD>
+                  <TABLE cellSpacing=0 cellPadding=1 width=160 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/newsletter/">developerWorks 
+                        时事通讯</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                        width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=150 bgColor=#000000 colSpan=2 height=2><IMG height=2 
+                  alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD width=150 bgColor=#ffffff colSpan=2 height=2><IMG height=2 
+                  alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><SPAN 
+      class=atitle2>给一个简单的文件资源管理器应用程序添加图标</SPAN><BR>
+      <TABLE cellSpacing=0 cellPadding=0 border=0>
+        <TBODY>
+        <TR vAlign=top align=left>
+          <TD>
+            <P>级别: 中级</P></TD></TR></TBODY></TABLE>
+      <P><A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#author1"><NAME>Adrian 
+      Van Emmenis</NAME></A><BR>独立顾问<BR>2003 年 6 月 09 日</P>
+      <BLOCKQUOTE><IMG height=38 alt="Column icon" 
+        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/column_icon.gif" 
+        width=38 align=left border=0>在本文中，A. O. Van Emmenis 继续研究在第 1 
+        部分中着手构建的示例。他将完善内容提供程序和标签提供程序，并演示如何在 JFace 
+        查看器中使用排序和过滤。他将演示如何给窗口添加状态行，给两个查看器添加图标，并讨论如何通过使用 JFace 
+      图像注册表来节省系统资源。</BLOCKQUOTE>
+      <P><A name=N10050><SPAN class=atitle2>安装说明</SPAN></A><BR>在本系列的 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/index.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">第 1 
+      部分</A>中，我着手构建了一个示例，该示例将 JFace 
+      应用程序窗口子类化并且使用树查看器和表查看器来显示文件夹和文件。这次，我们将完成上个示例的收尾工作，然后给窗口添加一条状态行。我们要做的较大更改是给两个查看器添加图标，并了解 
+      JFace 图像注册表。最后，我们将对查看器进行排序和过滤，以获得一个更加真实的“文件资源管理器”样式。 </P>
+      <P><A name=N1005D><SPAN class=atitle3>安装说明</SPAN></A><BR>如果要下载本文中 <A 
+      href="ftp://www6.software.ibm.com/software/developer/library/os-ecgui2/examples.zip" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">示例的源代码</A>，请注意我的系统设置： 
+      </P>
+      <UL xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <LI>Windows 2000 
+        <LI>Eclipse，稳定构建版 M3（2002 年 11 月 15 日） 
+        <LI>Eclipse 安装在 C:\eclipse-2.1.0 中 </LI></UL>
+      <P></P>
+      <P>请您自行完成随后所有调整名称和文件分隔符的工作，以便程序能在您的系统上正确地运行。</P>
+      <P><A name=N1007C><SPAN class=atitle3>构建／运行指示信息</SPAN></A><BR>请确保以下 jar 
+      文件位于类路径上： <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><CODE><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.jface_2.1.0\jface.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.runtime_2.1.0\runtime.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.swt.win32_2.1.0\ws\win32\swt.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.ui.workbench_2.1.0\workbench.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.core.runtime_2.1.0\runtime.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></CODE></P>
+      <P>为确保 Java VM 能找到您在运行时所用 GUI 的正确共享库，请使用以下参数运行 Java VM：</P>
+      <P><CODE>-Djava.library.path=C:\eclipse-2.1.0\plugins\org.eclipse.swt.win32_2.1.0\os\win32\x86\ 
+      </CODE></P>
+      <P>最后，请从包含 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">icons</I>文件夹的文件夹中运行这些程序，以便示例能找到包含图标的 
+      gif 文件。 </P>
+      <P><A name=N100A7><SPAN class=atitle2>继续使用第 1 
+      部分的示例</SPAN></A><BR>上一篇文章结束时，我们的资源管理器应用程序如图 1 所示：</P>
+      <P><A name=N100B2><B>图 1. 资源管理器（V4）</B></A><BR><IMG height=387 
+      alt="图 1. 资源管理器（V4）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/explorer_4.gif" 
+      width=521 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>我们在最左边窗格中使用树查看器显示文件夹和文件。当在左边窗格中选中某个文件夹时，它所包含的文件就显示在最右边窗格的表查看器中。让我们通过设置窗口标题来着手完善这个示例。</P>
+      <P><A name=N100C4><SPAN class=atitle2>设置窗口标题</SPAN></A><BR>这是 JFace 
+      不试图向您隐藏 SWT 的又一个例子。必须获取底层 SWT Shell 窗口小部件并设置其标题。</P>
+      <P>我们使用 <CODE>getShell()</CODE> 向 JFace 窗口求取其 SWT shell，然后使用 
+      <CODE>setText()</CODE> 设置 shell 的标题，于是，在资源管理器 
+      <CODE>createContents()</CODE> 方法中，我们将使用如下语句： </P>
+      <P><CODE>getShell().setText("JFace File Explorer");</CODE> </P>
+      <P>我们在表视图中有了一列。让我们添加另一个以字节为单位显示文件大小的列。我们将使该列中的文本向右对齐。它的代码与第一列类似，所以我不在这里显示。</P>
+      <P>既然有了两列，那就把表查看器的选择样式设置为 <CODE>FULL</CODE> ，表示选中某行后，整行都将被突出显示。 </P>
+      <P><CODE>new TableViewer(sash_form, SWT.BORDER | 
+      SWT.FULL_SELECTION);</CODE> </P>
+      <P>
+      <TABLE cellSpacing=0 cellPadding=5 width="30%" align=right border=1>
+        <TBODY>
+        <TR>
+          <TD 
+          background="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/bg-gold.gif">
+            <P><A name=N100F6><B>状态行</B></A><BR>状态行实际上是由类 
+            <CODE>StatusLineManager</CODE> 照管的 SWT 组合控件，该类可以包含其它控件。 </P>
+            <P>通常这些控件都是显示状态信息的只读文本控件，但也可请求在那里显示临时进展监视器。</P>
+            <P>状态行知道要显示标准消息，并且有时要显示错误消息。 <CODE>ApplicationWindow</CODE> 方法 
+            <CODE>setMessage(String)</CODE> 实际上只是 
+            <CODE>getStatusLineManager().setMessage(String)</CODE> 的快捷方式。 
+        </P></TD></TR></TBODY></TABLE></P>
+      <P><A name=N10116><SPAN 
+      class=atitle2>给应用程序窗口添加状态行</SPAN></A><BR>状态行是应用程序窗口的另一个可选组件。必须通过使用 
+      <CODE>addStatusLine()</CODE> ，在窗口创建 SWT 窗口小部件之前要求窗口创建状态行。 </P>
+      <P>让我们用状态行显示在表视图中选中了多少项。每当表视图中的选择发生改变时，我们就更新状态行并显示有多少项被选中，如清单 1 所示：</P><A 
+      name=code1 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 1. 资源管理器 — 
+      设置状态行中的文本</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N1012F><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+tbv.addSelectionChangedListener(new ISelectionChangedListener()
+{
+      public void selectionChanged(SelectionChangedEvent event)
+  {
+        IStructuredSelection selection =
+          (IStructuredSelection) event.getSelection();
+
+        setStatus("Number of items selected is " + selection.size());
+  }
+});
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>缺省情况下，表查看器被设置为单选方式。可以通过在创建表查看器时将多选方式作为样式参数的另一位（以文字表示）添加，将表查看器更改为多选方式。</P>
+      <P><CODE>new TableViewer(sash_form, SWT.BORDER | SWT.FULL_SELECTION | 
+      SWT.MULTI);</CODE> </P>
+      <P>综合以上代码就得到清单 2：</P><A name=code2 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 2. 
+      资源管理器（V5）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N1014E><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.widgets.*;
+
+public class Explorer extends ApplicationWindow
+{
+  public Explorer()
+  {
+    super(null);
+    addStatusLine();
+  }
+
+  protected Control createContents(Composite parent)
+  {
+    getShell().setText("JFace File Explorer");
+    SashForm sash_form = new SashForm(parent, SWT.HORIZONTAL | SWT.NULL);
+
+    TreeViewer tv = new TreeViewer(sash_form);
+    tv.setContentProvider(new FileTreeContentProvider());
+    tv.setLabelProvider(new FileTreeLabelProvider());
+    tv.setInput(new File("C:\\"));
+
+    final TableViewer tbv =
+      new TableViewer(sash_form, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+    tbv.setContentProvider(new FileTableContentProvider());
+    tbv.setLabelProvider(new FileTableLabelProvider());
+
+    TableColumn column = new TableColumn(tbv.getTable(), SWT.LEFT);
+    column.setText("Name");
+    column.setWidth(200);
+
+    column = new TableColumn(tbv.getTable(), SWT.RIGHT);
+    column.setText("Size");
+    column.setWidth(100);
+
+    tbv.getTable().setHeaderVisible(true);
+
+    tv.addSelectionChangedListener(new ISelectionChangedListener()
+    {
+      public void selectionChanged(SelectionChangedEvent event)
+
+      {
+        IStructuredSelection selection =
+          (IStructuredSelection) event.getSelection();
+
+        Object selected_file = selection.getFirstElement();
+        tbv.setInput(selected_file);
+      }
+    });
+
+    tbv.addSelectionChangedListener(new ISelectionChangedListener()
+    {
+      public void selectionChanged(SelectionChangedEvent event)
+      {
+        IStructuredSelection selection =
+          (IStructuredSelection) event.getSelection();
+
+        setStatus("Number of items selected is " + selection.size());
+      }
+    });
+
+    return sash_form;
+  }
+
+  public static void main(String[] args)
+  {
+    Explorer w = new Explorer();
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>运行该程序的结果如图 2 所示：</P>
+      <P><A name=N1015C><B>图 2. 资源管理器（V5）</B></A><BR><IMG height=399 
+      alt="图 2. 资源管理器（V5）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/explorer_4a.gif" 
+      width=600 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>如您所见，size 列目前不正确 — 我们马上就修正它。</P>
+      <P><A name=N1016E><SPAN class=atitle2>图标和图像</SPAN></A><BR>在 SWT 
+      中，用来表示图标的对象是 <CODE>Image</CODE> （有关类 <CODE>Image</CODE> 的详细信息，请参阅本文后面的 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#resources" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">参考资料</A>）。当直接创建可显示图像的 
+      SWT 窗口小部件时，可使用 <CODE>setImage(Image)</CODE> 设置它。 </P>
+      <P>关于图像有一个问题：它们是受限资源。图像是比较重量级的对象，具有对外部 OS 资源的引用（图 
+      3）。在某些操作系统上，对任一时间内可拥有图像的数量有严格限制，因此使用它们时必须注意这一限制。</P>
+      <P><A name=N1018C><B>图 3. 操作系统中的图像描述符、图像和资源</B></A><BR><IMG height=133 
+      alt="图 3. 操作系统中的图像描述符、图像和资源" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/image_descriptors.gif" 
+      width=373 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>最终，当应用程序退出时，会释放 Image 所用的资源 — 
+      但即使那样，在某些操作系统上仍可能有问题：共享库造成资源被继续占用。出于各种原因，不能指望 Java 
+      垃圾收集器会替您清理它们。有关标准窗口小部件工具箱（Standard Widget Toolkit）的完整说明，请参阅 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#resources" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">参考资料</A>。 </P>
+      <P>有个好消息：图像 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">可以</I>在窗口小部件之间共享，而且 
+      SWT 为 Image 提供了 <CODE>dispose()</CODE> 方法，它可以释放图像所用的资源。 </P>
+      <P>因为窗口小部件可以共享图像，所以 SWT 做出了这样的设计决定：当窗口小部件不再存在时（也就是说，在关闭窗口时），SWT 
+      将不会自动清除这些图像。然而，JFace 会给予您一些帮助，它告诉您大型 UI 
+      对象（如窗口和查看器）何时可以清除它们的图像，然后由您负责清除已创建的任何图像。</P>
+      <P>实际上，绝大多数应用程序都从文件或数据库获取其图标，这些文件或数据库包含一些标准格式（如 gif 或 jpeg）的数据。为此，JFace 
+      提供了 <CODE>ImageDescriptor</CODE> （请参阅 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#resources" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">参考资料</A>），这是一个轻量级对象，它不存储图像本身，而是可以按需要创建特定的图像。这个类有许多可以从不同来源构造图像的子类。 
+      </P>
+      <P>在本例中，我们将图标存储在位于 <B xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">icons</B> 文件夹的 .gif 
+      文件中，因此我们将在 <CODE>ImageDescriptor</CODE> 中使用这一工厂（factory）方法： <BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><CODE>public static 
+      ImageDescriptor createFromURL(URL url)</CODE> </P>TableViewer 
+      获取元素图标的方式和它获取元素文本的方式大体相同。它请求标签提供程序。我们必须做的就是从 
+      <CODE>ITableLabelProvider</CODE> 实现该方法： <BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <P><CODE>public Image getColumnImage(Object element, int 
+      columnIndex)</CODE> </P>
+      <P>为了便于我们管理图像的共享和清除，我们将使用 <CODE>ImageRegistry</CODE> （请参阅 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#resources" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">参考资料</A>）。 </P>
+      <P><A name=N101E2><SPAN class=atitle2>JFace 
+      图像注册表</SPAN></A><BR>管理一组共享且昂贵的资源是经典的软件工程问题。JFace 
+      提供经典的解决方案：一个能高速缓存图像和图像描述符的中央共享注册表。</P>
+      <P>其思想是：您的代码获取它需要的图像描述符，然后将其添加到图像注册表，并使用键为每个图像描述符建立索引。当希望获得图像时，就用它的键从注册表中访存。</P>
+      <P>当清除顶级显示（Display）时，图像注册表将负责清除它的图像。如果需要更频繁地清除图像，则可能要创建数个图像注册表，并按需要直接清除图像。要获得更多的详细信息，请参阅 
+      Eclipse 网站上关于使用图像的文章（请参阅 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#resources" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">参考资料</A>）以获得链接。 </P>
+      <P>我们的小示例将只使用少数几个图标，因此我们将使用单个图像注册表。让我们先看看表查看器。</P>
+      <P><A name=N101F8><SPAN class=atitle3>给文件表查看器添加图标</SPAN></A><BR>要从名为 
+      icons\file.gif 的文件创建图像描述符，可使用以下语句：</P>
+      <P><CODE>image_descriptor = ImageDescriptor.createFromURL(new 
+      URL("icons/file.gif"));</CODE> </P>
+      <P>获得图像描述符之后，可将它存储在图像注册表中。在本例中，我们使用字符串“file”作为键：</P>
+      <P><CODE>image_registry.put("file", image_descriptor);</CODE> </P>
+      <P>然后，要再次获取该图像，可使用以下语句：</P>
+      <P><CODE>image = image_registry.get("file");</CODE> </P>
+      <P>URL 的构造函数抛出一个已检查异常（checked exception）。我们要使用的所有 URL 都将是硬编码的，因此我们将把 URL 
+      的创建包装在某个工具代码中，以将已检查异常转换为运行时异常。</P>
+      <P>另外，我们希望在代码中共享这些图像，因此需要集中创建图像注册表，并使它可被全局访问。</P>
+      <P>现在该创建一个实用程序类了，如清单 3 所示：</P><A name=code3 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 3. 
+      Util（V1）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N1022E><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.net.*;
+
+import org.eclipse.jface.resource.*;
+
+public class Util
+{
+  private static ImageRegistry image_registry;
+
+  public static URL newURL(String url_name)
+  {
+    try
+    {
+      return new URL(url_name);
+    }
+    catch (MalformedURLException e)
+    {
+      throw new RuntimeException("Malformed URL " + url_name, e);
+    }
+  }
+
+  public static ImageRegistry getImageRegistry()
+  {
+    if (image_registry == null)
+    {
+      image_registry = new ImageRegistry();
+      image_registry.put(
+        "folder",
+        ImageDescriptor.createFromURL(newURL("file:icons/folder.gif")));
+      image_registry.put(
+        "file",
+        ImageDescriptor.createFromURL(newURL("file:icons/file.gif")));
+    }
+    return image_registry;
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P><CODE>getImageRegistry()</CODE> 方法简单地创建了一个图像注册表并添加了两个图像描述符。我们现在需要更改 
+      <CODE>FileTableLabelProvider</CODE> 以根据元素是文件还是文件夹来返回正确的图像，如清单 4 所示： </P><A 
+      name=code4 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 4. 
+      FileTableLabelProvider（V2）</B> </A><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N1024B><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.graphics.*;
+
+public class FileTableLabelProvider implements ITableLabelProvider
+{
+  public String getColumnText(Object element, int column_index)
+  {
+    if (column_index == 0)
+    {
+    return ((File) element).getName();
+    }
+
+    if (column_index == 1)
+    {
+      return "" + ((File) element).length();
+    }
+
+    return "";
+  }
+
+  public void addListener(ILabelProviderListener ilabelproviderlistener)
+  {
+  }
+
+  public void dispose()
+  {
+  }
+
+  public boolean isLabelProperty(Object obj, String s)
+  {
+    return false;
+  }
+
+  public void removeListener(ILabelProviderListener ilabelproviderlistener)
+  {
+  }
+
+  public Image getColumnImage(Object element, int column_index)
+  {
+
+    if (column_index != 0)
+    {
+      return null;
+    }
+
+    if (((File) element).isDirectory())
+    {
+      return Util.getImageRegistry().get("folder");
+    }
+    else
+    {
+      return Util.getImageRegistry().get("file");
+    }
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>由于现在表有两列（我们在前面添加了大小（size）列），所以还必须调整 
+      <CODE>getColumnText(Object,int)</CODE> 以使程序正确工作。 </P>
+      <P>运行该程序的结果如图 4 所示：</P>
+      <P><A name=N10260><B>图 4. 资源管理器（V6）</B></A><BR><IMG height=409 
+      alt="图 4. 资源管理器（V6）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/explorer_5.gif" 
+      width=549 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>程序开始变得十分漂亮了 — 至少在表查看器中是这样。让我们升级 <CODE>FileTreeLabelProvider</CODE> 
+      以使用图像，如清单 5 所示： </P><A name=code5 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 5. 
+      FileTreeLabelProvider（V2）</B> </A><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N1027F><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+
+import org.eclipse.jface.viewers.*;
+
+import org.eclipse.swt.graphics.*;
+
+public class FileTreeLabelProvider extends LabelProvider
+{
+  public String getText(Object element)
+  {
+    return ((File) element).getName();
+  }
+
+  public Image getImage(Object element)
+  {
+    if (((File) element).isDirectory())
+    {
+      return Util.getImageRegistry().get("folder");
+    }
+    else
+    {
+      return Util.getImageRegistry().get("file");
+    }
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>运行该程序的结果如图 5 所示：</P>
+      <P><A name=N1028D><B>图 5. 资源管理器（V7）</B></A><BR><IMG height=362 
+      alt="图 5. 资源管理器（V7）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/explorer_6.gif" 
+      width=589 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>现在，可以很容易地看出文件和文件夹之间的区别，我们还可以看到：在表视图中，缺省排序算法按字母顺序给各项排序 — 
+      但将文件夹和文件混在一起。您可能还注意到：在树视图中，我们同时看到了文件夹 <I 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">和</I>文件。我们现在来修正这个问题。 
+      </P>
+      <P><A name=N102A2><SPAN 
+      class=atitle2>排序和过滤</SPAN></A><BR>要在查看器中对项进行排序，我们使用 
+      <CODE>ViewerSorter</CODE> 。 </P>
+      <P><CODE>ViewerSorter</CODE> （请参阅 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#resources" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">参考资料</A>）是旨在被子类化的类。查看器使用查看器排序程序以便采取两个步骤对它的元素排序。首先，它询问元素的 
+      <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">类别（category）</I>。这返回一个整数，然后它把元素按其 
+      <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">类别号</I>的升序归到各类别组： 
+      </P>
+      <P><CODE>public int category(Object element)</CODE> </P>
+      <P>接着，在每个类别中，它使用 <CODE>ViewerSorter</CODE> 的 <CODE>compare()</CODE> 
+      方法进行排序。该方法类似于标准 Java 类 <CODE>Comparator</CODE> 中的 <CODE>compare()</CODE> 
+      方法： </P>
+      <P><CODE>public int compare(Viewer viewer, Object element1, Object 
+      element2)</CODE> </P>
+      <P>缺省情况下，使用标签提供程序返回的字符串并忽略大小写进行排序。</P>
+      <P>我们在表查看器中只实现 category 方法，如清单 6 所示：</P><A name=code6 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 6. 
+      FileSorter（V1）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N102F0><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+
+import org.eclipse.jface.viewers.*;
+
+public class FileSorter extends ViewerSorter
+{
+  public int category(Object element)
+  {
+    return ((File) element).isDirectory() ? 0 : 1;
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>这将先对文件夹排序，再对文件排序。</P>
+      <P>在树查看器中，我们希望只显示文件夹。我们通过使用 <CODE>ViewerFilter</CODE> （请参阅 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/#resources" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">参考资料</A>）做到这一点。和排序程序一样，过滤器也旨在被子类化。我们需要实现 
+      <CODE>select()</CODE> 方法，它检查元素，如果将要显示该元素，则返回 
+      true。在本例中，我们希望只允许文件夹通过过滤器，所以有清单 7 中的 <CODE>AllowOnlyFoldersFilter()</CODE> 
+      方法： </P><A name=code7 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 7. 
+      AllowOnlyFoldersFilter（V1）</B> </A><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N10318><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+
+import org.eclipse.jface.viewers.*;
+
+public class AllowOnlyFoldersFilter extends ViewerFilter
+{
+  public boolean select(Viewer viewer, Object parent, Object element)
+  {
+    return ((File) element).isDirectory();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>注：我们过滤的元素是第 3 个参数。现在给出了查看器和父元素 — 以便在需要时访问它们。</P>
+      <P>现在，我们只需将这些类的实例附加到查看器，如清单 8 所示：</P><A name=code8 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 8. 
+      资源管理器（V8）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N10330><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+  import java.io.*;
+
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.widgets.*;
+
+public class Explorer extends ApplicationWindow
+{
+  ...
+  protected Control createContents(Composite parent)
+  {
+    getShell().setText("JFace File Explorer");
+    SashForm sash_form = new SashForm(parent, SWT.HORIZONTAL | SWT.NULL);
+
+    TreeViewer tv = new TreeViewer(sash_form);
+    tv.setContentProvider(new FileTreeContentProvider());
+    tv.setLabelProvider(new FileTreeLabelProvider());
+    tv.setInput(new File("C:\\"));
+    tv.addFilter(new AllowOnlyFoldersFilter());
+
+    final TableViewer tbv =
+      new TableViewer(sash_form, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+    tbv.setContentProvider(new FileTableContentProvider());
+    tbv.setLabelProvider(new FileTableLabelProvider());
+    tbv.setSorter(new FileSorter());
+     ...
+  }
+  </CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>注：正如这些方法的名称所表明的那样，一个查看器可以同时有多个过滤器，但只能有一个排序程序。</P>
+      <P>现在运行资源管理器所得的结果如图 6 所示：</P>
+      <P><A name=N10341><B>图 6. 资源管理器（V8）</B></A><BR><IMG height=367 
+      alt="图 6. 资源管理器（V8）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/explorer_7.gif" 
+      width=589 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P><A name=N10350><SPAN 
+      class=atitle2>结束语</SPAN></A><BR>好了，这些图标无疑使程序更漂亮了一些。我们有了窗口标题，它告诉我们看到的是什么，还有一个新的漂亮的状态行，它告诉我们选中了多少项，再通过过滤和排序将文件和文件夹整齐地分隔开，这个程序开始象一个真正的文件资源管理器了。</P>
+      <P>它可能看起来漂亮了一点，但现在还做不了什么。在本系列（由 3 
+      部分组成）的最后一篇文章中，我们将通过添加菜单和操作来弥补这一缺陷。我们将了解如何创建菜单栏、工具栏和弹出菜单。我们还将开发一些示例，这些示例中的菜单会使用一些巧妙的 
+      JFace 实用程序来启动程序并访问系统剪贴板，而且我们还将演示如何使用侦听器使菜单项对上下文敏感。</P>
+      <P><A name=resources><SPAN class=atitle2>参考资料 </SPAN></A>
+      <UL>
+        <LI>您可以参阅本文在 developerWorks 全球站点上的 <A 
+        href="http://www.ibm.com/developerworks/library/os-ecgui2/index.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">英文原文</A>. <BR><BR>
+        <LI>请参阅本系列的 <A 
+        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/index.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">第 1 部分</A>。 
+        <BR><BR>
+        <LI>下载本文中 <A 
+        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/examples.zip" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">示例的源代码</A>。 
+        <BR><BR>
+        <LI>请访问主 <A href="http://www.eclipse.org/" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Eclipse 
+        网站</A>以下载、获取文档、邮件归档和文章。在那里，您可以了解有关 <CODE><A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/graphics/Image.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Image</A> </CODE>、 
+        <CODE><A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/resource/ImageDescriptor.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ImageDescriptor</A> 
+        </CODE>、 <CODE><A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/resource/ImageRegistry.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ImageRegistry</A> 
+        </CODE>、 <CODE><A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/viewers/ViewerSorter.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ViewerSorter</A> 
+        </CODE>和 <CODE><A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/viewers/ViewerFilter.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ViewerFilter</A> 
+        </CODE>的更多信息。 <BR><BR>
+        <LI>在 Eclipse 网站上了解有关本文中介绍的 <A 
+        href="http://www.eclipse.org/articles/swt-design-2/swt-design-2.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">SWT, the Standard 
+        Widget Toolkit</A>的更多信息。 <BR><BR>
+        <LI>有关在 Eclipse Workbench 使用树查看器的描述，请参阅 Eclipse 文章“ <A 
+        href="http://www.eclipse.org/articles/treeviewer-cg/TreeViewerArticle.htm" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">How to use the 
+        JFace Tree Viewer</A>”。 <BR><BR>
+        <LI>Eclipse 文章“ <A 
+        href="http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Using Images in 
+        the Eclipse UI（针对 2.0 作了修订）</A>”中讨论了图像处理。 <BR><BR>
+        <LI>要获得项目开发计划、FAQ 和有用的 SWT 代码片段列表，请查阅 <A 
+        href="http://dev.eclipse.org/viewcvs/index.cgi/~checkout~/platform-swt-home/dev.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">SWT component 
+        development resources</A>。 <BR><BR>
+        <LI>在以下 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">developerWorks</I>文章中了解有关 
+        Eclipse 的更多信息： <BR><BR>
+        <LI>在 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">developerWorks</I>开放源码项目专区找到 
+        <A href="http://www-124.ibm.com/developerworks/opensource/" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">更多开放源码参考资料</A>。 
+        <BR></LI></UL>
+      <P></P>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD><A name=author1></A><SPAN class=atitle2>关于作者</SPAN><BR><IMG 
+            height=80 alt=作者照片 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/p-vanemmenis.jpg" 
+            width=64 align=left border=0 
+            xmlns:dw="http://www.ibm.com/developerworks/" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">A. O. Van 
+            Emmenis 是一位独立顾问，专门从事 Java/J2EE 培训和咨询工作，他在英国的剑桥工作。Van 已经在软件行业工作了约 20 
+            年左右。他最初与对象打交道是在 CAD 行业使用 Smalltalk 的时候，他现在在工作中主要使用 
+            Java。他对敏捷（Agile）方法和 GUI 设计特别感兴趣。您可以通过 <A 
+            href="mailto:van@vanemmenis.com" 
+            xmlns:dw="http://www.ibm.com/developerworks/" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">van@vanemmenis.com</A>与 
+            Van 联系。 </TD></TR></TBODY></TABLE><BR clear=all><IMG height=10 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=100 border=0><BR>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD align=right width="100%">
+            <TABLE cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR vAlign=top>
+                <TD align=right></TD>
+                <TD width=46>
+                  <FORM 
+                  action=https://www-130.ibm.com/developerworks/secure/email-it.jsp><INPUT 
+                  type=hidden 
+                  value="在本文中，A. O. Van Emmenis 继续研究在第 1 部分中着手构建的示例。他将完善内容提供程序和标签提供程序，并演示如何在 JFace 查看器中使用排序和过滤。他将演示如何给窗口添加状态行，给两个查看器添加图标，并讨论如何通过使用 JFace 图像注册表来节省系统资源。" 
+                  name=body><INPUT type=hidden 
+                  value="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分: 使用 JFace 图像注册表" 
+                  name=subject><INPUT type=hidden value=cn name=lang><INPUT 
+                  type=image 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/icon-email.gif" 
+                  border=0 name=email></FORM></TD></TR></TBODY></TABLE></TD>
+          <TD width=5><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=5 border=0></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#000000 colSpan=2><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=100 border=0></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#ffffff colSpan=2><IMG height=8 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=100 border=0></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0 
+      xmlns:fo="http://www.w3.org/1999/XSL/Format">
+        <TBODY>
+        <TR vAlign=top>
+          <TD>
+            <FORM 
+            action=https://www-130.ibm.com/developerworks/secure/cnratings.jsp 
+            method=get><INPUT type=hidden 
+            value="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分: 使用 JFace 图像注册表" 
+            name=ArticleTitle><INPUT type=hidden value=Linux name=Zone><INPUT 
+            type=hidden 
+            value=http://www.ibm.com/developerworks/cn/thankyou/index.html 
+            name=RedirectURL><INPUT type=hidden value=china name=localsite>
+            <SCRIPT language=javascript>document.write('<input type="HIDDEN" name="url" value="'+location.href+'">');</SCRIPT>
+            <A name=rating><SPAN class=atitle2>对本文的评价</SPAN></A>
+            <P>您对这篇文章的看法如何？</P>
+            <TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
+              <TBODY>
+              <TR>
+                <TD colSpan=5><IMG height=8 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=100 border=0></TD></TR>
+              <TR vAlign=top>
+                <TD width="21%"><INPUT type=radio value=1 name=Rating>太差！ 
+                (1)</TD>
+                <TD width="17%"><INPUT type=radio value=2 name=Rating>需提高 
+                (2)</TD>
+                <TD width="24%"><INPUT type=radio value=3 name=Rating>一般；尚可 
+                (3)</TD>
+                <TD width="17%"><INPUT type=radio value=4 name=Rating>好文章 
+                (4)</TD>
+                <TD width="21%"><INPUT type=radio value=5 
+              name=Rating>真棒！(5)</TD></TR></TBODY></TABLE><BR><B>建议？</B><BR><TEXTAREA name=Comments rows=5 wrap=virtual cols=60></TEXTAREA><BR><BR><INPUT type=submit value=提交反馈意见></FORM></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#ffffff><IMG height=8 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+            width=100 border=0></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD width="100%">
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR vAlign=top>
+                <TD width="100%"><IMG height=4 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=2 border=0><BR><A class=bctl 
+                  href="http://www-128.ibm.com/developerworks/cn/">developerWorks 
+                  中国</A><SPAN class=bct> &gt; </SPAN><A class=bctl 
+                  href="http://www-128.ibm.com/developerworks/cn/linux/">Linux</A> 
+                  <SPAN class=bct>&gt; </SPAN></TD>
+                <TD align=right width=136><A 
+                  href="http://www-128.ibm.com/developerworks/cn/"><IMG 
+                  height=24 alt=developerWorks 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/dwlogo-small.gif" 
+                  width=136 border=0></A></TD>
+                <TD width=5><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+                  width=5 border=0></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD>
+    <TD width=1><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/c.gif" 
+      width=1 border=0></TD></TR></TBODY></TABLE><!-- IBM FOOTER -->
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD class=bbg height=19>
+      <TABLE cellSpacing=0 cellPadding=0 border=0>
+        <TBODY>
+        <TR>
+          <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><A 
+            class=mainlink href="http://www.ibm.com/cn/ibm/index.shtml">关于 
+            IBM</A></TD>
+          <TD class=footer-divider width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+          <TD><A class=mainlink 
+            href="http://www.ibm.com/cn/ibm/privacy/index.shtml">隐私条约</A></TD>
+          <TD class=footer-divider width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+          <TD><A class=mainlink href="http://www.ibm.com/contact/">联系 
+          IBM</A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><!-- end footer -->
+<SCRIPT language=JavaScript1.2 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files/stats.js" 
+type=text/javascript></SCRIPT>
+<NOSCRIPT><IMG height=1 alt="" 
+src="C:\Documents and Settings\Jiawei_Zhang\Desktop\0803\在 Eclipse Workbench 之外使用 Eclipse GUI，第 2 部分 使用 JFace 图像注册表_files\c(1).gif" 
+width=1 border=0></NOSCRIPT></BODY></HTML>

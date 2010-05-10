@@ -1,0 +1,162 @@
+<!-- An ANT build file for the JFreeChart Premium Demo Collection -->
+
+<!-- Written by David Gilbert. -->
+
+<project name="jfreechart-demo-collection" default="all" basedir="..">
+
+    <!-- Initialisation. -->
+    <target name="initialise" description="Initialise required settings.">
+        <tstamp />
+        <property name="jfreechart.name" value="jfreechart" />
+        <property name="jfreechart.version" value="1.0.0" />
+        <property name="jcommon.name" value="jcommon" />
+        <property name="jcommon.version" value="1.0.0" />
+        <property name="demo.name" value="demo" />
+        <property name="builddir" value="${basedir}/build" />
+        <property name="jfreechart.jar" value="${basedir}/lib/${jfreechart.name}-${jfreechart.version}.jar" />
+        <property name="jcommon.jar" value="${basedir}/lib/${jcommon.name}-${jcommon.version}.jar"/>
+    	
+        <path id="build.classpath">
+            <pathelement location="${jfreechart.jar}"/>
+            <pathelement location="${jcommon.jar}"/>
+        </path>
+    </target>
+
+    <!-- Compile the demo classes -->
+    <target name="compile" depends="initialise"
+            description="Compile the demo code.">
+
+        <!-- create a temp build directory -->
+        <mkdir dir="${basedir}/build" />
+
+        <!-- compile the source -->
+        <javac srcdir="${basedir}/source" 
+               destdir="${basedir}/build">
+            <classpath refid="build.classpath" />
+            <include name="demo/*.java"/>
+            <exclude name="demo/ServletDemo*.java"/>
+            <exclude name="demo/applet/*.java"/>
+            <exclude name="demo/pdf/*.java"/>
+            <exclude name="demo/svg/*.java"/>
+        </javac>
+
+        <!-- copy across support files -->
+        <copy file="${basedir}/source/demo/wtageinf.txt" tofile="${basedir}/build/demo/wtageinf.txt" />
+
+        <copy todir="${basedir}/build/demo">
+            <fileset dir="${basedir}/source/demo">
+                <include name="*.html"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${basedir}/build/demo">
+            <fileset dir="${basedir}/source/demo">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+
+        <!-- make the jar -->
+        <jar jarfile="${basedir}/${jfreechart.name}-${jfreechart.version}-${demo.name}.jar"
+             basedir="${basedir}/build">
+            <manifest>
+                <attribute name="Main-Class" value="demo.SuperDemo" />
+                <attribute name="Class-Path" value="${jfreechart.name}-${jfreechart.version}-${demo.name}.jar lib/${jfreechart.name}-${jfreechart.version}.jar lib/${jcommon.name}-${jcommon.version}.jar"/>
+            </manifest> 
+        </jar>
+        <!-- delete the temp directory -->
+        <delete dir="${basedir}/build" />
+    </target>
+
+    <!-- Compile the demo applet class -->
+    <target name="compile-applet" depends="initialise"
+            description="Compile the demo applet code.">
+
+        <!-- create a temp build directory -->
+        <mkdir dir="${basedir}/build" />
+
+        <!-- compile the source -->
+        <javac srcdir="${basedir}/source" 
+               destdir="${basedir}/build">
+            <classpath refid="build.classpath" />
+            <include name="demo/applet/*.java"/>
+        </javac>
+
+        <!-- make the jar -->
+        <jar jarfile="${basedir}/${jfreechart.name}-${jfreechart.version}-applet-demo.jar"
+             basedir="${basedir}/build">
+        </jar>
+
+        <!-- delete the temp directory -->
+        <delete dir="${basedir}/build" />
+
+    </target>
+
+    <!-- Make .zip distribution for JFreeChart -->
+    <target name="zip" depends="initialise">
+
+        <!-- make a temporary distribution directory -->
+        <mkdir dir="${basedir}/distribution" />
+
+        <!-- copy across README -->
+        <copy file="${basedir}/README.txt" tofile="${basedir}/distribution/README.txt" />
+
+        <!-- copy across jars -->
+        <copy file="${basedir}/${jfreechart.name}-${jfreechart.version}-${demo.name}.jar" tofile="${basedir}/distribution/${jfreechart.name}-${jfreechart.version}-${demo.name}.jar" />
+        <copy file="${basedir}/lib/${jfreechart.name}-${jfreechart.version}.jar" tofile="${basedir}/distribution/lib/${jfreechart.name}-${jfreechart.version}.jar" />
+        <copy file="${basedir}/lib/${jcommon.name}-${jcommon.version}.jar" tofile="${basedir}/distribution/lib/${jcommon.name}-${jcommon.version}.jar" />
+        <copy file="${basedir}/${jfreechart.name}-${jfreechart.version}-applet-demo.jar" tofile="${basedir}/distribution/lib/${jfreechart.name}-${jfreechart.version}-applet-demo.jar" />
+
+        <!-- copy across LICENCE -->
+<!--        <copy file="${basedir}/licence-LGPL.txt" tofile="${basedir}/distribution/licence-LGPL.txt" /> -->
+    
+        <!-- copy across source files -->
+        <copy todir="${basedir}/distribution/source">
+            <fileset dir="${basedir}/source">
+                <include name="*.jar"/>
+                <include name="demo/*.java"/>
+                <include name="demo/*.txt"/>
+                <include name="demo/*.html"/>
+                <include name="demo/applet/*.java"/>
+                <include name="demo/pdf/*.java"/>
+                <include name="demo/svg/*.java"/>
+            </fileset>
+        </copy>
+
+        <!-- copy across servlet files -->
+        <copy todir="${basedir}/distribution/servlets">
+            <fileset dir="${basedir}/servlets">
+                <include name="*.html"/>
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+
+        <!-- copy across ant file -->
+        <copy todir="${basedir}/distribution/ant">
+            <fileset dir="${basedir}/ant">
+                <include name="**"/>
+            </fileset>
+        </copy>
+
+        <!-- convert end-of-line characters in text files -->
+        <fixcrlf srcdir="${basedir}/distribution/source"
+                 eol="crlf" eof="remove"
+                 excludes="**/*.jpg" />
+
+        <!-- make the zip file -->
+        <zip zipfile="${basedir}/${jfreechart.name}-${jfreechart.version}-${demo.name}.zip">
+             <zipfileset dir="${basedir}/distribution"
+                         prefix="${jfreechart.name}-${jfreechart.version}-${demo.name}" />
+        </zip>
+
+        <!-- delete the temporary distribution directory -->
+        <delete dir="${basedir}/distribution" />
+
+    </target>
+
+    <!-- ALL -->
+    <target name="all" 
+            depends="compile,compile-applet,zip"
+            description="Packages up the JFreeChart premium demos.">
+    </target>
+
+</project>

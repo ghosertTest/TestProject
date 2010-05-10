@@ -1,0 +1,1449 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0068)http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/ -->
+<HTML><HEAD><TITLE>在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分: 添加操作、菜单和工具栏</TITLE><!--XSLT stylesheet used to transform this file:  dw-document-html-4.1.xsl-->
+<META http-equiv=Content-Type content="text/html; charset=UTF-8">
+<META http-equiv=PICS-Label 
+content='(PICS-1.1&#10;    "http://www.icra.org/ratingsv02.html" l gen true r (cz 1 lz 1 nz 1 oz 1 vz 1)&#10;    "http://www.rsac.org/ratingsv01.html" l gen true r (n 0 s 0 v 0 l 0)&#10;    "http://www.classify.org/safesurf/" l gen true r (SS~~000 1))'>
+<META http-equiv=Expires content=0>
+<META 
+content="Eclipse, workbench, 工作台, gui, components, 组件, platform, 平台, JFace, SWT, A. O. Van Emmenis, developerworks open source zone, developerworks 开放源码专区" 
+name=KEYWORDS>
+<META 
+content="本文是本系列的第三篇也是最后一篇文章，在本文中，A. O. Van Emmenis 将通过添加操作、菜单栏、弹出菜单和工具栏完成在第 1 和第 2 部分中着手讨论的文件资源管理器示例。他将演示如何设置菜单项特性，如何重用菜单和工具栏中的操作，以及如何通过侦听来自查看器的事件使操作识别上下文。示例操作使用实用程序来启动程序和访问系统剪贴板。" 
+name=ABSTRACT>
+<META 
+content="本文是本系列的第三篇也是最后一篇文章，在本文中，A. O. Van Emmenis 将通过添加操作、菜单栏、弹出菜单和工具栏完成在第 1 和第 2 部分中着手讨论的文件资源管理器示例。他将演示如何设置菜单项特性，如何重用菜单和工具栏中的操作，以及如何通过侦听来自查看器的事件使操作识别上下文。示例操作使用实用程序来启动程序和访问系统剪贴板。" 
+name=DESCRIPTION>
+<META 
+content=https://www-130.ibm.com/developerworks/secure/feedback.jsp?domain=dwchina 
+name=OWNER>
+<META scheme=iso8601 content=2003-07-09 name=DC.Date>
+<META scheme=rfc1766 content=zh-cn name=DC.Language>
+<META content=cn name=IBM.Country>
+<META content="" name="Last update">
+<META content=Public name=SECURITY>
+<META content="Copyright (c) 2003 by IBM Corporation" name=DC.Rights>
+<META content=index,follow name=ROBOTS>
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/dwcss.js" 
+type=text/javascript><noscript><link type="text/css" href="/developerworks/cn/css/r1ss.css" rel="stylesheet"/></noscript><script src="/developerworks/js/spinbox.js" language="JavaScript" type="text/javascript"></SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>var title = "在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分: 添加操作、菜单和工具栏"; </SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>var forumURL = ""; </SCRIPT>
+
+<SCRIPT language=JavaScript 
+type=text/javascript>var contentAreaList = ""; </SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/forumwindow.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>var emailAbstract = "本文是本系列的第三篇也是最后一篇文章，在本文中，A. O. Van Emmenis 将通过添加操作、菜单栏、弹出菜单和工具栏完成在第 1 和第 2 部分中着手讨论的文件资源管理器示例。他将演示如何设置菜单项特性，如何重用菜单和工具栏中的操作，以及如何通过侦听来自查看器的事件使操作识别上下文。示例操作使用实用程序来启动程序和访问系统剪贴板。"; </SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/grabtitle.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/emailfriend2.js" 
+type=text/javascript></SCRIPT>
+
+<META content="MSHTML 6.00.2900.2180" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff leftMargin=2 topMargin=2 marginheight="2" marginwidth="2">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD class=bbg width=110><A href="http://www.ibm.com/cn/"><IMG height=52 
+      alt=IBM® 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/ibm-logo.gif" 
+      width=110 border=0></A></TD>
+    <TD class=bbg><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=1 border=0></TD>
+    <TD class=mbbg align=right width=650>
+      <TABLE cellSpacing=0 cellPadding=0 align=right border=0>
+        <TBODY>
+        <TR class=cty-tou>
+          <TD class=upper-masthead-corner width=17 rowSpan=2><A 
+            href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#main"><IMG 
+            height=1 alt="Skip to main content" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=1 border=0></A></TD>
+          <TD align=left>
+            <TABLE cellSpacing=0 cellPadding=0 align=left border=0>
+              <TBODY>
+              <TR>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><B 
+                  class=country>中国</B><SPAN class=spacer>&nbsp;[</SPAN> <A 
+                  class=ur-link 
+                  href="http://www.ibm.com/developerworks/cn/country/">选择</A><SPAN 
+                  class=spacer>]</SPAN></TD>
+                <TD class=upper-masthead-divider 
+                width=29>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD align=left><A class=ur-link 
+                  href="http://www.ibm.com/legal/cn/">使用条款</A></TD></TR></TBODY></TABLE></TD>
+          <TD width=40>&nbsp;</TD></TR>
+        <TR>
+          <TD class=cty-tou-border colSpan=2 height=1><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=1></TD></TR>
+        <TR>
+          <TD colSpan=3><IMG height=8 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=1></TD></TR>
+        <TR>
+          <TD>&nbsp;</TD>
+          <TD align=middle colSpan=2>
+            <FORM id=form1 name=form1 
+            action=http://www-128.ibm.com/developerworks/search/searchResults.jsp 
+            method=get><INPUT type=hidden value=1 name=searchType><INPUT 
+            type=hidden value=dWChina name=searchSite><INPUT type=hidden 
+            value=zh name=pageLang><INPUT type=hidden value=UTF8 
+            name=langEncoding>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD width=1><IMG height=1 alt="Select a scope:" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=1></TD>
+                <TD align=right><LABEL for=sq><SELECT class=input-scope id=sq 
+                  name=searchScope> <OPTION value=dW selected>dW 全部内容</OPTION> 
+                    <OPTION value=dW>-----------------</OPTION> <OPTION 
+                    value=dmdd>&nbsp;&nbsp;DB2</OPTION> <OPTION 
+                    value=lotusdd>&nbsp;&nbsp;Lotus</OPTION> <OPTION 
+                    value=tivolidd>&nbsp;&nbsp;Tivoli</OPTION> <OPTION 
+                    value=wsdd>&nbsp;&nbsp;WebSphere</OPTION> <OPTION 
+                    value=dW>-----------------</OPTION> <OPTION 
+                    value=javaZ>&nbsp;&nbsp;Java 技术</OPTION> <OPTION 
+                    value=linuxZ>&nbsp;&nbsp;Linux</OPTION> <OPTION 
+                    value=opensrcZ>&nbsp;&nbsp;Open source</OPTION> <OPTION 
+                    value=securityZ>&nbsp;&nbsp;Security</OPTION> <OPTION 
+                    value=webservZ>&nbsp;&nbsp;SOA &amp; Web services</OPTION> 
+                    <OPTION value=webarchZ>&nbsp;&nbsp;Web architecture</OPTION> 
+                    <OPTION value=wirelessZ>&nbsp;&nbsp;Wireless</OPTION> 
+                    <OPTION value=xmlZ>&nbsp;&nbsp;XML</OPTION> <OPTION 
+                    value=dW>-----------------</OPTION> <OPTION value=all>IBM 
+                    全部内容</OPTION></SELECT> </LABEL></TD>
+                <TD align=right width=1><IMG height=1 alt="Search for:" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=1>&nbsp;&nbsp;</TD>
+                <TD align=right><INPUT class=input id=q maxLength=100 size=15 
+                  name=query> </TD>
+                <TD width=7>&nbsp;</TD>
+                <TD><LABEL for=q><INPUT type=image alt=搜索 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/search.gif" 
+                  value=搜索 name=Search> </LABEL></TD>
+                <TD 
+      width=20>&nbsp;</TD></TR></TBODY></TABLE></FORM></TD></TR></TBODY></TABLE></TD></TR>
+  <TR>
+    <TD class=blbg colSpan=3>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> </TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/cn/">首页</A> </TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/products/cn/">产品</A> </TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/servicessolutions/cn/">服务与解决方案</A> 
+</TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/support/cn/">支持与下载</A> </TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/account/cn/">个性化服务</A> </TD>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> 
+              </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><!--
+<script src="//www.ibm.com/common/v14/pmh.js" language="JavaScript" type="text/javascript"></script>
+--><!-- end masthead dw liquid -->
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD width=5><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=5 border=0></TD>
+    <TD width="100%">
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD width="100%"><IMG height=4 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=2 border=0><BR><A class=bctl 
+            href="http://www-128.ibm.com/developerworks/cn/">developerWorks 
+            中国</A><SPAN class=bct> &gt; </SPAN><A class=bctl 
+            href="http://www-128.ibm.com/developerworks/cn/linux/">Linux</A> 
+            <SPAN class=bct>&gt; </SPAN></TD>
+          <TD align=right width=136><A 
+            href="http://www-128.ibm.com/developerworks/cn/"><IMG height=24 
+            alt=developerWorks 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/dwlogo-small.gif" 
+            width=136 border=0></A></TD>
+          <TD width=5><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=5 border=0></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><A 
+name=main></A><A name=top></A>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD colSpan=5><IMG height=15 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=5 border=0></TD></TR>
+  <TR vAlign=top>
+    <TD width=2><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=2 border=0></TD>
+    <TD><SPAN class=astitle>在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分: 
+      </SPAN><SPAN class=atitle>添加操作、菜单和工具栏</SPAN></TD>
+    <TD width=8><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=8 border=0></TD>
+    <TD align=right width=180><NOBR>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD align=right></TD>
+          <TD width=46>
+            <FORM 
+            action=https://www-130.ibm.com/developerworks/secure/email-it.jsp><INPUT 
+            type=hidden 
+            value="本文是本系列的第三篇也是最后一篇文章，在本文中，A. O. Van Emmenis 将通过添加操作、菜单栏、弹出菜单和工具栏完成在第 1 和第 2 部分中着手讨论的文件资源管理器示例。他将演示如何设置菜单项特性，如何重用菜单和工具栏中的操作，以及如何通过侦听来自查看器的事件使操作识别上下文。示例操作使用实用程序来启动程序和访问系统剪贴板。" 
+            name=body><INPUT type=hidden 
+            value="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分: 添加操作、菜单和工具栏" 
+            name=subject><INPUT type=hidden value=cn name=lang><INPUT type=image 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/icon-email.gif" 
+            border=0 name=email></FORM></TD></TR></TBODY></TABLE></NOBR></TD>
+    <TD width=6><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=6 border=0></TD></TR>
+  <TR vAlign=top>
+    <TD bgColor=#000000 colSpan=5><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=100 border=0></TD></TR>
+  <TR vAlign=top>
+    <TD bgColor=#ffffff colSpan=5><IMG height=8 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=100 border=0></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD width=5><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=5 border=0></TD>
+    <TD width="100%">
+      <TABLE cellSpacing=0 cellPadding=0 width=168 align=right border=0>
+        <TBODY>
+        <TR>
+          <TD width=8><IMG height=21 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=5></TD>
+          <TD width=160>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=160 bgColor=#000000 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD align=middle 
+                background="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/bg-gold.gif" 
+                height=5><B>内容：</B></TD></TR>
+              <TR>
+                <TD width=160 bgColor=#666666 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD>
+                  <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#N10050">简介</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#N100B2">继续使用第 
+                        2 部分的示例</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#N100D7">菜单</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#N103BD">结束语</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                        width=160></TD></TR><!--Standard links for every dw-article-->
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#resources">参考资料 
+                        </A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#author1">关于作者</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#rating">对本文的评价</A></TD></TR>
+                    <TR>
+                      <TD><IMG height=10 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                        width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=160 bgColor=#000000 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD align=middle 
+                background="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/bg-gold.gif" 
+                height=5><B>订阅:</B></TD></TR>
+              <TR>
+                <TD width=160 bgColor=#666666 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD>
+                  <TABLE cellSpacing=0 cellPadding=1 width=160 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/newsletter/">developerWorks 
+                        时事通讯</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                        width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=150 bgColor=#000000 colSpan=2 height=2><IMG height=2 
+                  alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD width=150 bgColor=#ffffff colSpan=2 height=2><IMG height=2 
+                  alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><SPAN 
+      class=atitle2>完成简单的文件资源管理器应用程序</SPAN><BR>
+      <TABLE cellSpacing=0 cellPadding=0 border=0>
+        <TBODY>
+        <TR vAlign=top align=left>
+          <TD>
+            <P>级别: 中级</P></TD></TR></TBODY></TABLE>
+      <P><A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#author1"><NAME>Adrian 
+      Van Emmenis</NAME></A><BR>独立顾问<BR>2003 年 7 月 09 日</P>
+      <BLOCKQUOTE><IMG height=38 alt="Column icon" 
+        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/column_icon.gif" 
+        width=38 align=left border=0>本文是本系列的第三篇也是最后一篇文章，在本文中，A. O. Van Emmenis 
+        将通过添加操作、菜单栏、弹出菜单和工具栏完成在第 1 和第 2 
+        部分中着手讨论的文件资源管理器示例。他将演示如何设置菜单项特性，如何重用菜单和工具栏中的操作，以及如何通过侦听来自查看器的事件使操作识别上下文。示例操作使用实用程序来启动程序和访问系统剪贴板。</BLOCKQUOTE>
+      <P><A name=N10050><SPAN class=atitle2>简介</SPAN></A><BR>本系列的 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/index.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">第 1 
+      部分</A>着手讨论一个示例，该示例将 JFace 应用程序窗口子类化并使用树查看器和表查看器来显示文件夹和文件。在 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/index.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">第 2 
+      部分</A>中，我们做了些完善工作并使用 JFace 图像注册表添加了一些图标。 </P>
+      <P>这次，我们将研究操作，您可以在菜单和工具栏中使用它们。我们将看到如何使用 <A 
+      href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/program/Program.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Program</A>类启动程序，及如何使用 
+      <A 
+      href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/dnd/Clipboard.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Clipboard</A>类访问系统剪贴板。我们已经使用了图标在查看器中显示文件和文件夹。我们将看到如何在菜单和工具栏中也使用它们。最后，我们将使操作侦听来自查看器的事件以使其对上下文敏感。 
+      </P>
+      <P><A name=N1006C><SPAN class=atitle3>安装说明</SPAN></A><BR>如果要下载本文中 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/examples.zip" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">示例的代码</A>，请注意我的系统设置： 
+      </P>
+      <UL xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <LI>Windows 2000 
+        <LI>Eclipse，稳定构建版 M3（2002 年 11 月 15 日） 
+        <LI>Eclipse 安装在 C:\eclipse-2.1.0 中 </LI></UL>
+      <P></P>
+      <P>请您自行完成随后所有调整名称和文件分隔符的工作，以便程序能在您的系统上正确地运行。</P>
+      <P><A name=N1008A><SPAN class=atitle3>构建／运行指示信息</SPAN></A><BR>请确保以下 jar 
+      文件位于类路径上： <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><CODE><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.jface_2.1.0\jface.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.runtime_2.1.0\runtime.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.swt.win32_2.1.0\ws\win32\swt.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.ui.workbench_2.1.0\workbench.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.core.runtime_2.1.0\runtime.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></CODE></P>
+      <P>为确保 Java VM 能找到您在运行时所用 GUI 的正确共享库，请使用以下参数运行 Java VM：</P>
+      <P><CODE>-Djava.library.path=C:\eclipse-2.1.0\plugins\org.eclipse.swt.win32_2.1.0\os\win32\x86\ 
+      </CODE></P>
+      <P>最后，请从包含 icons 文件夹的文件夹中运行这些程序，以便示例能找到包含图标的 gif 文件。</P>
+      <P><A name=N100B2><SPAN class=atitle2>继续使用第 2 部分的示例</SPAN></A><BR><A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/index.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">上一篇文章</A>结束时，我们的资源管理器应用程序如图 
+      1 所示。 </P>
+      <P><A name=Figure%201 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>图 1. 
+      资源管理器（V8）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><IMG height=367 
+      alt="图 1. 资源管理器（V8）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/explorer_7.gif" 
+      width=589 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>我们在左边窗格中使用树查看器显示文件夹和文件。当在左边窗格中选中某个文件夹时，它所包含的文件就显示在右边窗格的表查看器中。我们对右边窗格中的各项排序以便首先出现的是文件夹。我们在两个查看器中都使用图标来表示文件和文件夹。</P>
+      <P>让我们给窗口添加一个简单的菜单栏。</P>
+      <P><A name=N100D7><SPAN class=atitle2>菜单</SPAN></A><BR>JFace <A 
+      href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/action/MenuManager.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">MenuManager</A>简化了 
+      SWT 
+      菜单的创建和更新。菜单管理器可包含菜单项、其它菜单管理器（用于子菜单）和分隔符。一旦创建了菜单管理器，就可以用菜单栏、上下文菜单（也就是弹出菜单）或工具栏下拉菜单表示它。 
+      </P>
+      <P>同查看器一样，尽管通常不需要访问 SWT 
+      菜单本身，但菜单管理器是助手对象而不是包装器对象。在讨论菜单之前，首先看看菜单管理器能包含什么。</P>
+      <P><A name=N100E7><SPAN 
+      class=atitle3>操作</SPAN></A><BR>给菜单管理器添加操作。实际上，也可以给按钮和工具栏添加操作。其方法是：将 <A 
+      href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/action/Action.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Action</A> 
+      子类化，设置希望在菜单／工具栏／按钮中出现的文本，然后实现 <CODE>run()</CODE> 方法以使其做您想做的事情。 </P>
+      <P>让我们先看一下清单 1 中显示的示例 ExitAction：</P><A name=code20 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 1. 
+      ExitAction（V1）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N10104><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.window.*;
+
+public class ExitAction extends Action
+{
+  ApplicationWindow window;
+
+  public ExitAction(ApplicationWindow w)
+  {
+    window = w;
+    setText("E&amp;xit");
+  }
+
+  public void run()
+  {
+    window.close();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>一切都相当简单。Exit 中 <B xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">x</B>前的 <B 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">&amp;</B>字符表明 <B 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">x</B>是该菜单项的 <I 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">键盘导航键</I>（助记符）。注：这不同于 
+      <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">加速键</I>（热键）。很快就会看到这些…… 
+      </P>
+      <P>
+      <TABLE cellSpacing=0 cellPadding=5 width="30%" align=right border=1>
+        <TBODY>
+        <TR>
+          <TD 
+          background="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/bg-gold.gif">
+            <P><A name=N10121><B>子类化操作</B></A><BR>不要被 <A 
+            href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/action/Action.html" 
+            xmlns:dw="http://www.ibm.com/developerworks/" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Action</A> 
+            定义方法 <CODE>getText()</CODE> 这一事实所误导。这样做并不是要覆盖它。而是要使用 
+            <CODE>setText(String)</CODE> ，Action 将存储它并确保用新文本更新当前使用这一操作的所有 SWT 
+            控件。 </P>
+            <P>这适用于所有其它 Action 特性（如工具提示文本和它的启用状态等）- 
+      稍后将讨论这些。</P></TD></TR></TBODY></TABLE></P>
+      <P><A name=N1013A><SPAN 
+      class=atitle3>给应用程序窗口添加菜单栏</SPAN></A><BR>为了配置应用程序窗口使其有菜单栏，我们在 <A 
+      href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/window/ApplicationWindow.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ApplicationWindow</A>中使用下面的方法： 
+      </P>
+      <P><CODE>protected void addMenuBar()</CODE> </P>
+      <P>请记住：我们必须在创建 SWT shell <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">之前</I>这么做。而且，这将调用应用程序窗口方法 
+      <CODE>createMenuManager()</CODE> ，后者会返回它稍后用来创建 SWT 菜单栏的菜单管理器。我们的实现如清单 2 
+      所示： </P><A name=code21 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 2. 资源管理器 — 
+      createMenuManager</B> </A><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N10161><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+protected MenuManager createMenuManager()
+{
+  MenuManager bar_menu = new MenuManager("");
+
+  MenuManager file_menu = new MenuManager("&amp;File");
+  MenuManager edit_menu = new MenuManager("&amp;Edit");
+  MenuManager view_menu = new MenuManager("&amp;View");
+
+  bar_menu.add(file_menu);
+  bar_menu.add(edit_menu);
+  bar_menu.add(view_menu);
+
+  file_menu.add(new ExitAction(this));
+
+  return bar_menu;
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>资源管理器现在如图 2 所示：</P>
+      <P><A name=N1016F><B>图 2. 资源管理器（V9）</B></A><BR><IMG height=368 
+      alt="图 2. 资源管理器（V9）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/explorer_8.gif" 
+      width=563 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>注意空菜单是被禁用的。试着用导航键 <B xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ALT+Fx</B>关闭资源管理器应用程序。 
+      </P>
+      <P>让我们稍稍改进一下“退出”操作，如清单 3 所示：</P><A name=code2 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 3. 
+      ExitAction（V2）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N10190><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.resource.*;
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+
+public class ExitAction extends Action
+{
+  ApplicationWindow window;
+
+  public ExitAction(ApplicationWindow w)
+  {
+    window = w;
+
+    setText("E&amp;xit@Ctrl+W");
+    setToolTipText("Exit the application");
+    setImageDescriptor(
+      ImageDescriptor.createFromURL(Util.newURL("file:icons/close.gif")));
+  }
+
+  public void run()
+  {
+    window.close();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>我们添加了一个加速键（热键）、一条工具提示和一个图像（工具提示不会在菜单项上显示，但会在工具栏项上显示，稍后将看到这一点）。有一个可以直接设置加速键的方法，但在文本中 
+      <B xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">@</B>字符后指定它更方便，因为用这种方法，加速键被添加到菜单项的文本中，如图 
+      3 所示： </P>
+      <P><A name=N101A1><B>图 3. 资源管理器（V10）</B></A><BR><IMG height=368 
+      alt="图 3. 资源管理器（V10）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/explorer_9.gif" 
+      width=526 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>眼尖的读者或许已经注意到我们直接将一个图像描述符添加到操作中。我们真正想做的是从图像注册表获取图像描述符。问题是图像注册表只提供 <I 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Images</I>— 无法要求它提供 
+      <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ImageDescriptor</I>。这是 
+      Eclipse 错误数据库中的 <A 
+      href="http://bugs.eclipse.org/bugs/show_bug.cgi?id=23555" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">错误 23555</A>。 </P>
+      <P><A name=N101BD><SPAN 
+      class=atitle3>启动与文件关联的程序</SPAN></A><BR>运行与文件关联的程序非常有用。实际上使用 <A 
+      href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/program/Program.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Program</A>类来这样做也非常简单，如清单 
+      4 所示： </P><A name=code2 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 4. 
+      OpenAction（V1）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N101D3><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.resource.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.program.*;
+
+public class OpenAction extends Action
+{
+  Explorer window;
+
+  public OpenAction(Explorer w)
+  {
+    window = w;
+    setText("Run");
+    setToolTipText("Run the associated program on a file");
+    setImageDescriptor(
+      ImageDescriptor.createFromURL(Util.newURL("file:icons/run.gif")));
+  }
+
+  public void run()
+  {
+    IStructuredSelection selection = window.getTableSelection();
+    if (selection.size() != 1)
+      return;
+
+    File selected_file = (File) selection.getFirstElement();
+    if (selected_file.isFile())
+    {
+      Program.launch(selected_file.getAbsolutePath());
+    }
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>我们使用 <CODE>getTableSelection()</CODE> 
+      （稍后讨论该方法）从表获得选中的元素，然后检查是否恰好有一个元素被选中 — 请记住表现在是多选风格的表 — 
+      然后获取元素本身，确定它确实是文件而不是文件夹，然后启动它。 </P>
+      <P>Program 的 <CODE>launch()</CODE> 
+      方法负责根据文件扩展名查找关联的程序，然后运行适当的可执行文件（将绝对文件名作为参数提供）。 </P>
+      <P>在尝试这个操作之前，让我们先实现最后一个操作。</P>
+      <P><A name=N101ED><SPAN 
+      class=atitle3>使用系统剪贴板</SPAN></A><BR>这里简单地利用一下系统剪贴板。 
+      <CODE>CopyFileNamesToClipboardAction</CODE> 操作将所有选中文件的绝对文件名复制到剪贴板中。 </P>
+      <P>我们使用 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/%20http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/dnd/Clipboard.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Clipboard</A>对象将文本传送到系统剪贴板。 
+      </P>
+      <P>首先使 <CODE>Util</CODE> 类简单地创建一个剪贴板对象，如清单 5 所示： </P><A name=code2 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 5. 
+      Util（V2）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N10211><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.net.*;
+
+import org.eclipse.jface.resource.*;
+import org.eclipse.swt.dnd.*;
+import org.eclipse.swt.widgets.*;
+
+public class Util
+{
+  private static ImageRegistry image_registry;
+  private static Clipboard clipboard;
+
+  public static URL newURL(String url_name)
+  {
+    try
+    {
+      return new URL(url_name);
+    }
+    catch (MalformedURLException e)
+    {
+      throw new RuntimeException("Malformed URL " + url_name, e);
+    }
+  }
+
+  public static ImageRegistry getImageRegistry()
+  {
+    if (image_registry == null)
+    {
+      image_registry = new ImageRegistry();
+      image_registry.put(
+        "folder",
+        ImageDescriptor.createFromURL(newURL("file:icons/folder.gif")));
+      image_registry.put(
+        "file",
+        ImageDescriptor.createFromURL(newURL("file:icons/file.gif")));
+    }
+    return image_registry;
+  }
+
+  public static Clipboard getClipboard()
+  {
+    if (clipboard == null)
+    {
+      clipboard = new Clipboard(Display.getCurrent());
+    }
+
+    return clipboard;
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>要将文本放入剪贴板，可对 Clipboard 使用以下方法：</P>
+      <P><CODE>public void setContents(Object[] data, Transfer[] 
+      dataTypes)</CODE> </P>
+      <P>数据中的每个数组槽都与一个传送对象关联，传送对象告诉剪贴板数据是什么数据类型。在本例中，我们使用 <A 
+      href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/dnd/TextTransfer.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">TextTransfer</A>对象，它告诉剪贴板我们所传送的是纯文本（而不是 
+      RTF 或别的）。 </P>
+      <P><CODE>public void setContents(Object[] data, Transfer[] 
+      dataTypes)</CODE> 的参数是数组，因此可以一次传送几种格式的数据。例如，某个字处理应用程序可能要传送 RTF 和纯文本格式的文本。 
+      </P>
+      <P>在清单 6 中展开的代码中，我们做了以下事情：</P>
+      <UL xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <LI>获取选择 
+        <LI>确保它不为空 
+        <LI>循环检查选择，将绝对文件名添加到字符串缓冲区 
+        <LI>用 Text Transfer 对象将字符串传送到剪贴板 
+        <LI>将字符串放入状态行以提供一些反馈 </LI></UL>
+      <P></P><A name=code2 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 6. 
+      CopyFileNamesToClipboardAction（V1）</B> </A><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N10252><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+import java.util.*;
+
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.resource.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.dnd.*;
+
+public class CopyFileNamesToClipboardAction extends Action
+{
+  Explorer window;
+
+  public CopyFileNamesToClipboardAction(Explorer w)
+  {
+    window = w;
+    setToolTipText("Copy absolute file names of selected files to the clipboard");
+    setText("Copy File &amp;Names@Ctrl+Shift+C");
+    setImageDescriptor(
+      ImageDescriptor.createFromURL(Util.newURL("file:icons/copy.gif")));
+  }
+
+  public void run()
+  {
+    Clipboard clipboard = Util.getClipboard();
+    TextTransfer text_transfer = TextTransfer.getInstance();
+    
+    IStructuredSelection selection = window.getTableSelection();
+    if (selection.isEmpty())
+    {
+      return;
+    }
+
+    StringBuffer string_buffer = new StringBuffer();
+    for (Iterator i = selection.iterator(); i.hasNext();)
+    {
+      File file = (File) i.next();
+      string_buffer.append(" ");
+      string_buffer.append(file.getAbsolutePath());
+    }
+
+    clipboard.setContents(
+      new Object[] { string_buffer.toString()},
+      new Transfer[] { text_transfer });
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>最后，更改资源管理器，添加 <CODE>getTableSelection()</CODE> 
+      方法以及给菜单栏添加两个新操作的代码，如下所示（清单 7）： </P><A name=code2 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 7. 
+      资源管理器（V10）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N1026B><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.widgets.*;
+
+public class Explorer extends ApplicationWindow
+{
+  private TableViewer tbv;
+  ...
+  public static void main(String[] args)
+  {
+    Explorer w = new Explorer();
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+    Util.getClipboard().dispose();
+  }
+
+  protected MenuManager createMenuManager()
+  {
+    MenuManager bar_menu = new MenuManager("");
+
+    MenuManager file_menu = new MenuManager("&amp;File");
+    MenuManager edit_menu = new MenuManager("&amp;Edit");
+    MenuManager view_menu = new MenuManager("&amp;View");
+
+    bar_menu.add(file_menu);
+    bar_menu.add(edit_menu);
+    bar_menu.add(view_menu);
+
+    file_menu.add(new ExitAction(this));
+    edit_menu.add(new CopyFileNamesToClipboardAction(this));
+    edit_menu.add(new OpenAction(this));
+
+    return bar_menu;
+  }
+
+  public IStructuredSelection getTableSelection()
+  {
+    return (IStructuredSelection) (tbv.getSelection());
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P><A name=N10274><SPAN class=atitle3>资源管理器实例图</SPAN></A><BR>于是，我们有了 3 
+      个操作和另外 8 个类。让我们查阅资源管理器的实例图（图 4）（已实现的类以深灰色显示）。</P>
+      <P><A name=N1027F><B>图 4. 资源管理器（V10）及其相关对象</B></A><BR><IMG height=351 
+      alt="图 4. 资源管理器（V10）及其相关对象" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/explorer_instances.gif" 
+      width=587 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>让我们运行这一版本，看看这些操作（图 5）：</P>
+      <P><A name=N10293><B>图 5. 资源管理器（V10）</B></A><BR><IMG height=358 
+      alt="图 5. 资源管理器（V10）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/explorer_10.gif" 
+      width=600 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P><A name=N102A2><SPAN class=atitle3>避免 GUI 
+      实例层次结构的混乱</SPAN></A><BR>依我的经验，在设计 GUI 
+      对象时，往往最后构建了相当庞大的实例层次结构。不同层次结构中的低层对象要相互知道对方，因此人们往往会在它们之间创建专门的交叉引用，而这会导致代码十分混乱。</P>
+      <P>即使在我们这样小的示例中，也可以看到混乱的苗头。操作对象需要知道表查看器中当前选中的项。问题是：操作存储什么对象？是表查看器或 SWT 
+      表本身，还是窗口？</P>
+      <P><A name=N102B0><B>图 6. 窗口、窗口小部件和操作</B></A><BR><IMG height=309 
+      alt="图 6. 窗口、窗口小部件和操作" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/windows_and_actions.gif" 
+      width=408 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>一种解决方案是让所有对窗口小部件／选择对象的访问都经过窗口。让每个操作存储创建它的窗口，然后对该窗口使用取值方法获取它所需的对象。</P>
+      <P>如果希望在不同窗口间共享操作（在不同窗口中用不同的方法名称访问窗口小部件），可以把通过操作对窗口小部件的访问包装在一个方法中，然后在该操作的子类中重新实现该方法以访存正确的窗口小部件。</P>
+      <P>例如，要共享访问“选择”所需的操作，可将超类中的方法 <CODE>getSelection()</CODE> 在某个子类中实现为： </P>
+      <P><CODE>window.getTableSelection()</CODE> </P>
+      <P>而在另一个子类中（比方说）实现为</P>
+      <P><CODE>window.getThirdListViewerSelection()</CODE> 。 </P>
+      <P><A name=N102DD><SPAN 
+      class=atitle3>使操作对上下文敏感</SPAN></A><BR>可以对操作做的另一件事是使它们知道窗口其它地方所发生的事，并据此自动适应之。我们将使 
+      <CODE>OpenAction</CODE> 
+      侦听表查看器中当前选择的任何变化。当它注意到变化时，会查看新的选择并更改它的文本、工具提示和启用状态来反映这一变化。 </P>
+      <P><CODE>OpenAction</CODE> 
+      对当前选中文件启动“关联的”程序。如果当时什么也没有选中，与其让它运行并报错（或干脆令人费解地什么也不干），倒不如禁用该操作。 </P>
+      <P>尽管我们是在为用户着想，但如果我看到菜单项被禁用却不知道原因的话，通常我会觉得困惑。所以，有这样一个办法：能不能更改工具提示以便能让用户也知道 
+      <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">为什么</I>禁用该操作呢？ </P>
+      <P>我们还要确定当选择包括几个文件时要怎么做。对，我们也许可以逐一地运行所有文件，但是，由于我曾有过在 Windows 文件资源管理器中选中 
+      300 个文件后选择打开选项的痛苦经历，所以还是暂时先禁用打开操作吧。</P>
+      <P>最后，我们将检查选中的项是否为文件夹，如果是，那么也禁用打开操作。</P>
+      <P>我们要使 <CODE>OpenAction</CODE> 侦听来自表查看器的 SelectionChanged 事件，因此我们将使它实现 <A 
+      href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/viewers/ISelectionChangedListener.html" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ISelectionChangedListener</A>（清单 
+      8）。 </P>
+      <P>我们将在 <CODE>selectionChanged()</CODE> 中这么做： </P>
+      <P></P>
+      <UL xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <LI>将文本和工具提示文本设置为缺省值 
+        <LI>检查选择 
+        <LI>如果选中的不是恰好一项，则禁用该操作，调整工具提示以说明为什么禁用，然后返回。 
+        <LI>如果选择是文件（而不是文件夹），则调整文本和工具提示以反映该文件的名称并启用它。 </LI></UL>
+      <P></P><A name=code27 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 8. 
+      OpenAction（V2）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N1032B><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.resource.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.program.*;
+
+public class OpenAction
+  extends Action
+  implements ISelectionChangedListener
+{
+  Explorer window;
+
+  public OpenAction(Explorer w)
+  {
+    window = w;
+    setText("Run");
+    setToolTipText("Run the associated program on a file");
+    setImageDescriptor(
+      ImageDescriptor.createFromURL(Util.newURL("file:icons/run.gif")));
+  }
+
+  public void run()
+  {
+    IStructuredSelection selection = window.getTableSelection();
+    if (selection.size() != 1)
+    {
+      return;
+    }
+
+    File selected_file = (File) selection.getFirstElement();
+    if (selected_file.isFile())
+    {
+      Program.launch(selected_file.getAbsolutePath());
+    }
+  }
+
+  public void selectionChanged(SelectionChangedEvent event)
+  {
+    setText("Run");
+    setToolTipText("Run the associated program on a file");
+
+    IStructuredSelection selection = window.getTableSelection();
+    if (selection.size() != 1)
+    {
+      setEnabled(false);
+      setToolTipText(
+        getToolTipText() + " (Only enabled when exactly one item is selected)");
+      return;
+    }
+
+    File file = (File) selection.getFirstElement();
+    if (file.isFile())
+    {
+      setEnabled(true);
+      setText("Run the associated program on " + file.getName());
+      setToolTipText(
+        "Run the program associated with "
+          + file.getName()
+          + " with this file as the argument");
+    }
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>接下来，使打开操作侦听来自表查看器的 SelectionChanged 事件（清单 9）。</P><A name=code28 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 9. 
+      资源管理器（V11）；省略了某些未更改的代码</B> </A><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N10340><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+...
+public class Explorer extends ApplicationWindow
+{
+  private TableViewer tbv;
+  private OpenAction open_action;
+  ...
+  protected Control createContents(Composite parent)
+  {
+    ...
+    tbv.addSelectionChangedListener(open_action);
+
+    return sash_form;
+  }
+  ...
+  protected MenuManager createMenuManager()
+  {
+    MenuManager bar_menu = new MenuManager("");
+
+    MenuManager file_menu = new MenuManager("&amp;File");
+    MenuManager edit_menu = new MenuManager("&amp;Edit");
+    MenuManager view_menu = new MenuManager("&amp;View");
+
+    bar_menu.add(file_menu);
+    bar_menu.add(edit_menu);
+    bar_menu.add(view_menu);
+
+    file_menu.add(new ExitAction(this));
+    edit_menu.add(new CopyFileNamesToClipboardAction(this));
+    open_action = new OpenAction(this);
+    edit_menu.add(open_action);
+
+    return bar_menu;
+  }
+...
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P><A name=N1034B><B>图 7. 资源管理器（V11），显示选中一个文件时的 Edit 菜单</B></A><BR><IMG 
+      height=363 alt="图 7. 资源管理器（V11），显示选中一个文件时的 Edit 菜单" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/explorer_11.gif" 
+      width=600 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>现在让我们看看已选中文件的数目如何改变打开操作（图 8）：</P><A name=Figure%208 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>图 8. 
+      资源管理器（V11），显示没有选中文件时的 Edit 菜单</B> </A><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><IMG height=363 
+      alt="图 8. 资源管理器（V11），显示没有选中文件时的 Edit 菜单" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/explorer_12.gif" 
+      width=600 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+      <P><A name=N1036C><SPAN 
+      class=atitle3>工具栏和弹出菜单</SPAN></A><BR>最后，我们将添加工具栏和弹出（上下文）菜单。值得高兴的是，其实没有太多事情要做，因为在操作中已经完成了所有的艰巨工作。工具栏和弹出菜单只需共享这些操作。</P>
+      <P>与状态行和菜单栏一样，我们配置窗口使其有一个工具栏，并且实现 <CODE>createToolBarManager()</CODE> 
+      方法来创建它。 </P>
+      <P>对于弹出菜单则略有不同。我们用 <CODE>createContents()</CODE> 方法创建它，然后直接把它添加到表窗口小部件。 
+      </P>
+      <P>我们还重构了代码，将这三个操作作为字段（而不是局部变量），这样我们就可以用三种方法来访问它们。让我们看看资源管理器的最终版本（清单 
+      10）：</P><A name=code2 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 10. 
+      资源管理器（V12）</B> </A><BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><A 
+      name=N1038F><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.widgets.*;
+
+public class Explorer extends ApplicationWindow
+{
+  private TableViewer tbv;
+  private TreeViewer tv;
+  private OpenAction open_action;
+  private ExitAction exit_action;
+  private CopyFileNamesToClipboardAction copy_action;
+
+  public Explorer()
+  {
+    super(null);
+
+    exit_action = new ExitAction(this);
+    copy_action = new CopyFileNamesToClipboardAction(this);
+    open_action = new OpenAction(this);
+
+    addStatusLine();
+    addMenuBar();
+    addToolBar(SWT.FLAT | SWT.WRAP);
+  }
+
+  protected Control createContents(Composite parent)
+  {
+    getShell().setText("JFace File Explorer");
+    SashForm sash_form = new SashForm(parent, SWT.HORIZONTAL | SWT.NULL);
+
+    tv = new TreeViewer(sash_form);
+    tv.setContentProvider(new FileTreeContentProvider());
+    tv.setLabelProvider(new FileTreeLabelProvider());
+    tv.setInput(new File("C:\\"));
+    tv.addFilter(new AllowOnlyFoldersFilter());
+
+    tbv =
+      new TableViewer(sash_form, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+    tbv.setContentProvider(new FileTableContentProvider());
+    tbv.setLabelProvider(new FileTableLabelProvider());
+    tbv.setSorter(new FileSorter());
+
+    TableColumn column = new TableColumn(tbv.getTable(), SWT.LEFT);
+    column.setText("Name");
+    column.setWidth(200);
+
+    column = new TableColumn(tbv.getTable(), SWT.RIGHT);
+    column.setText("Size");
+    column.setWidth(100);
+
+    tbv.getTable().setHeaderVisible(true);
+
+    tv.addSelectionChangedListener(new ISelectionChangedListener()
+    {
+      public void selectionChanged(SelectionChangedEvent event)
+      {
+        IStructuredSelection selection =
+          (IStructuredSelection) event.getSelection();
+
+        Object selected_file = selection.getFirstElement();
+        tbv.setInput(selected_file);
+      }
+    });
+
+    tbv.addSelectionChangedListener(new ISelectionChangedListener()
+    {
+      public void selectionChanged(SelectionChangedEvent event)
+      {
+        IStructuredSelection selection =
+          (IStructuredSelection) event.getSelection();
+
+        setStatus("Number of items selected is " + selection.size());
+      }
+    });
+
+    tbv.addSelectionChangedListener(open_action);
+
+    MenuManager menu_manager = new MenuManager();
+    tbv.getTable().setMenu(menu_manager.createContextMenu(tbv.getTable()));
+
+    menu_manager.add(exit_action);
+    menu_manager.add(copy_action);
+    menu_manager.add(open_action);
+
+    return sash_form;
+  }
+
+  public static void main(String[] args)
+  {
+    Explorer w = new Explorer();
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+    Util.getClipboard().dispose();
+  }
+
+  protected MenuManager createMenuManager()
+  {
+    MenuManager bar_menu = new MenuManager("");
+
+    MenuManager file_menu = new MenuManager("&amp;File");
+    MenuManager edit_menu = new MenuManager("&amp;Edit");
+    MenuManager view_menu = new MenuManager("&amp;View");
+
+    bar_menu.add(file_menu);
+    bar_menu.add(edit_menu);
+    bar_menu.add(view_menu);
+
+    file_menu.add(exit_action);
+    edit_menu.add(copy_action);
+    edit_menu.add(open_action);
+
+    return bar_menu;
+  }
+
+  public IStructuredSelection getTableSelection()
+  {
+    return (IStructuredSelection) (tbv.getSelection());
+  }
+
+  public void openFolder(File folder)
+  {
+    tv.setExpandedState(folder, true);
+    tv.setSelection(new StructuredSelection(folder), false);
+  }
+  
+  protected ToolBarManager createToolBarManager(int style)
+  {
+
+    ToolBarManager tool_bar_manager = new ToolBarManager(style);
+
+    tool_bar_manager.add(exit_action);
+    tool_bar_manager.add(copy_action);
+    tool_bar_manager.add(open_action);
+
+    return tool_bar_manager;
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>现在，让我们最后一次启动资源管理器，看看操作中的工具栏和弹出菜单（图 9 和图 10）。</P>
+      <P><A name=N1039D><B>图 9. 资源管理器（V12），显示选中一个文件时的弹出菜单</B></A><BR><IMG 
+      height=391 alt="图 9. 资源管理器（V12），显示选中一个文件时的弹出菜单" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/explorer_13.gif" 
+      width=559 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P><A name=N103AE><B>图 10. 资源管理器（V12），显示选中两个文件时的工具提示</B></A><BR><IMG 
+      height=390 alt="图 10. 资源管理器（V12），显示选中两个文件时的工具提示" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/explorer_14.gif" 
+      width=592 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P><A name=N103BD><SPAN class=atitle2>结束语</SPAN></A><BR>我们已经在这三篇文章中学习了许多 
+      JFace 的知识。我们了解了如何使用相对较少的代码让可插入 JFace 窗口、查看器和菜单框架生成漂亮的用户界面。</P>
+      <P>希望您已经掌握：</P>
+      <UL xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <LI>如何将应用程序窗口子类化 
+        <LI>如何使用可插入查看器和内容提供程序 
+        <LI>如何使用图像及图像注册表添加图标 
+        <LI>如何使用系统剪贴板 
+        <LI>如何启动程序 
+        <LI>如何使用菜单和操作 
+        <LI>操作如何使用不同的菜单容器和侦听器来生成对上下文敏感的应用程序 </LI></UL>
+      <P></P>
+      <P>不过，当然还有更多。请查阅 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/#resources" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">参考资料</A>以获得更多信息。 
+</P>
+      <P><A name=resources><SPAN class=atitle2>参考资料 </SPAN></A>
+      <UL>
+        <LI>您可以参阅本文在 developerWorks 全球站点上的 <A 
+        href="http://www.ibm.com/developerworks/library/os-ecgui3/index.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">英文原文</A>. <BR><BR>
+        <LI>请阅读本系列的 <A 
+        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/index.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">本系列的第 1 部分</A> 和 
+        <A 
+        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui2/index.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">本系列的第 2 部分</A>。 
+        <BR><BR>
+        <LI>下载本文中 <A 
+        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui3/examples.zip" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">示例的代码</A>。 
+<BR><BR>
+        <LI>请访问主 <A href="http://www.eclipse.org/" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Eclipse 
+        网站</A>以获得下载、文档、邮件归档和文章。在那里，您可以了解关于以下类和接口的更多信息： <CODE><A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/program/Program.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Program</A>、 <A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/dnd/Clipboard.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Clipboard</A>、 <A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/action/MenuManager.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">MenuManager</A>、 
+        <A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/action/Action.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Action</A>、 <A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/window/ApplicationWindow.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ApplicationWindow</A>、 
+        <A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/dnd/TextTransfer.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">TextTransfer</A> 
+        </CODE>和 <CODE><A 
+        href="http://download.eclipse.org/downloads/documentation/2.0/html/plugins/org.eclipse.platform.doc.isv/reference/api/org/eclipse/jface/viewers/ISelectionChangedListener.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">ISelectionChangedListener</A> 
+        </CODE>。 <BR><BR>
+        <LI>有关在 Eclipse Workbench 中使用树查看器的描述，请参阅 Eclipse 文章“ <A 
+        href="http://www.eclipse.org/articles/treeviewer-cg/TreeViewerArticle.htm" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">How to use the 
+        JFace Tree Viewer</A>”。 <BR><BR>
+        <LI>Eclipse 文章“ <A 
+        href="http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Using Images in 
+        the Eclipse UI</A>”中讨论了图像处理。 <BR><BR>
+        <LI>要获得项目开发计划、FAQ 和有用的 SWT 代码片段列表，请查阅 <A 
+        href="http://dev.eclipse.org/viewcvs/index.cgi/~checkout~/platform-swt-home/dev.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">SWT component 
+        development resources</A>。 <BR><BR>
+        <LI>在以下 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">developerWorks</I>文章中了解有关 
+        Eclipse 的更多信息： <BR><BR>
+        <LI>在 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">developerWorks</I>开放源码项目专区找到 
+        <A href="http://www-124.ibm.com/developerworks/opensource/" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">更多开放源码参考资料</A>。 
+        <BR></LI></UL>
+      <P></P>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD><A name=author1></A><SPAN class=atitle2>关于作者</SPAN><BR><IMG 
+            height=80 alt=作者照片 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/p-vanemmenis.jpg" 
+            width=64 align=left border=0 
+            xmlns:dw="http://www.ibm.com/developerworks/" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">A. O. Van 
+            Emmenis 是一位独立顾问，专门从事 Java/J2EE 培训和咨询工作，他在英国的剑桥工作。Van 已经在软件行业工作了约 20 
+            年左右。他最初与对象打交道是在 CAD 行业使用 Smalltalk 的时候，他现在在工作中主要使用 
+            Java。他对敏捷（Agile）方法和 GUI 设计特别感兴趣。您可以通过 <A 
+            href="mailto:van@vanemmenis.com" 
+            xmlns:dw="http://www.ibm.com/developerworks/" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">van@vanemmenis.com</A>与 
+            Van 联系。 </TD></TR></TBODY></TABLE><BR clear=all><IMG height=10 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=100 border=0><BR>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD align=right width="100%">
+            <TABLE cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR vAlign=top>
+                <TD align=right></TD>
+                <TD width=46>
+                  <FORM 
+                  action=https://www-130.ibm.com/developerworks/secure/email-it.jsp><INPUT 
+                  type=hidden 
+                  value="本文是本系列的第三篇也是最后一篇文章，在本文中，A. O. Van Emmenis 将通过添加操作、菜单栏、弹出菜单和工具栏完成在第 1 和第 2 部分中着手讨论的文件资源管理器示例。他将演示如何设置菜单项特性，如何重用菜单和工具栏中的操作，以及如何通过侦听来自查看器的事件使操作识别上下文。示例操作使用实用程序来启动程序和访问系统剪贴板。" 
+                  name=body><INPUT type=hidden 
+                  value="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分: 添加操作、菜单和工具栏" 
+                  name=subject><INPUT type=hidden value=cn name=lang><INPUT 
+                  type=image 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/icon-email.gif" 
+                  border=0 name=email></FORM></TD></TR></TBODY></TABLE></TD>
+          <TD width=5><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=5 border=0></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#000000 colSpan=2><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=100 border=0></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#ffffff colSpan=2><IMG height=8 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=100 border=0></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0 
+      xmlns:fo="http://www.w3.org/1999/XSL/Format">
+        <TBODY>
+        <TR vAlign=top>
+          <TD>
+            <FORM 
+            action=https://www-130.ibm.com/developerworks/secure/cnratings.jsp 
+            method=get><INPUT type=hidden 
+            value="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分: 添加操作、菜单和工具栏" 
+            name=ArticleTitle><INPUT type=hidden value=Linux name=Zone><INPUT 
+            type=hidden 
+            value=http://www.ibm.com/developerworks/cn/thankyou/index.html 
+            name=RedirectURL><INPUT type=hidden value=china name=localsite>
+            <SCRIPT language=javascript>document.write('<input type="HIDDEN" name="url" value="'+location.href+'">');</SCRIPT>
+            <A name=rating><SPAN class=atitle2>对本文的评价</SPAN></A>
+            <P>您对这篇文章的看法如何？</P>
+            <TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
+              <TBODY>
+              <TR>
+                <TD colSpan=5><IMG height=8 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=100 border=0></TD></TR>
+              <TR vAlign=top>
+                <TD width="21%"><INPUT type=radio value=1 name=Rating>太差！ 
+                (1)</TD>
+                <TD width="17%"><INPUT type=radio value=2 name=Rating>需提高 
+                (2)</TD>
+                <TD width="24%"><INPUT type=radio value=3 name=Rating>一般；尚可 
+                (3)</TD>
+                <TD width="17%"><INPUT type=radio value=4 name=Rating>好文章 
+                (4)</TD>
+                <TD width="21%"><INPUT type=radio value=5 
+              name=Rating>真棒！(5)</TD></TR></TBODY></TABLE><BR><B>建议？</B><BR><TEXTAREA name=Comments rows=5 wrap=virtual cols=60></TEXTAREA><BR><BR><INPUT type=submit value=提交反馈意见></FORM></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#ffffff><IMG height=8 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+            width=100 border=0></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD width="100%">
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR vAlign=top>
+                <TD width="100%"><IMG height=4 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=2 border=0><BR><A class=bctl 
+                  href="http://www-128.ibm.com/developerworks/cn/">developerWorks 
+                  中国</A><SPAN class=bct> &gt; </SPAN><A class=bctl 
+                  href="http://www-128.ibm.com/developerworks/cn/linux/">Linux</A> 
+                  <SPAN class=bct>&gt; </SPAN></TD>
+                <TD align=right width=136><A 
+                  href="http://www-128.ibm.com/developerworks/cn/"><IMG 
+                  height=24 alt=developerWorks 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/dwlogo-small.gif" 
+                  width=136 border=0></A></TD>
+                <TD width=5><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+                  width=5 border=0></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD>
+    <TD width=1><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/c.gif" 
+      width=1 border=0></TD></TR></TBODY></TABLE><!-- IBM FOOTER -->
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD class=bbg height=19>
+      <TABLE cellSpacing=0 cellPadding=0 border=0>
+        <TBODY>
+        <TR>
+          <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><A 
+            class=mainlink href="http://www.ibm.com/cn/ibm/index.shtml">关于 
+            IBM</A></TD>
+          <TD class=footer-divider width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+          <TD><A class=mainlink 
+            href="http://www.ibm.com/cn/ibm/privacy/index.shtml">隐私条约</A></TD>
+          <TD class=footer-divider width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+          <TD><A class=mainlink href="http://www.ibm.com/contact/">联系 
+          IBM</A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><!-- end footer -->
+<SCRIPT language=JavaScript1.2 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files/stats.js" 
+type=text/javascript></SCRIPT>
+<NOSCRIPT><IMG height=1 alt="" 
+src="C:\Documents and Settings\Jiawei_Zhang\Desktop\0803\在 Eclipse Workbench 之外使用 Eclipse GUI，第 3 部分 添加操作、菜单和工具栏_files\c(1).gif" 
+width=1 border=0></NOSCRIPT></BODY></HTML>

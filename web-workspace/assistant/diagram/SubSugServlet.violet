@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.4.2_04" class="java.beans.XMLDecoder"> 
+ <object class="com.horstmann.violet.SequenceDiagramGraph"> 
+  <void method="addNode"> 
+   <object id="ImplicitParameterNode0" class="com.horstmann.violet.ImplicitParameterNode"> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>index.jsp</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>90.0</double> 
+    <double>0.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="ImplicitParameterNode1" class="com.horstmann.violet.ImplicitParameterNode"> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>SubSugServlet</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>290.0</double> 
+    <double>0.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="ImplicitParameterNode2" class="com.horstmann.violet.ImplicitParameterNode"> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>DataBase(table:suggestions)</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>590.0</double> 
+    <double>0.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode0" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode1" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode0"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void method="addChild"> 
+     <object id="CallNode2" class="com.horstmann.violet.CallNode"> 
+      <void method="addChild"> 
+       <object id="CallNode3" class="com.horstmann.violet.CallNode"> 
+        <void property="implicitParameter"> 
+         <object idref="ImplicitParameterNode2"/> 
+        </void> 
+       </object> 
+      </void> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode1"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode0"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>122.0</double> 
+    <double>100.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode3"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>672.0</double> 
+    <double>190.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode2"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>332.0</double> 
+    <double>170.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode1"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>130.0</double> 
+    <double>120.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode4" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode5" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object id="ImplicitParameterNode3" class="com.horstmann.violet.ImplicitParameterNode"> 
+        <void property="name"> 
+         <void property="text"> 
+          <string>ViewSugServlet</string> 
+         </void> 
+        </void> 
+       </object> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode1"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>332.0</double> 
+    <double>271.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="ImplicitParameterNode3"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>460.0</double> 
+    <double>0.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode5"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>502.0</double> 
+    <double>291.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode6" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode7" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode0"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode3"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>502.0</double> 
+    <double>359.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode7"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>122.0</double> 
+    <double>379.0</double> 
+   </object> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>check data integrity</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode0"/> 
+   <object idref="CallNode1"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>transfer sug. name email</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode0"/> 
+   <object idref="CallNode2"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>store info to db</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode2"/> 
+   <object idref="CallNode3"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>forward</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode4"/> 
+   <object idref="CallNode5"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>forward</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode6"/> 
+   <object idref="CallNode7"/> 
+  </void> 
+ </object> 
+</java> 

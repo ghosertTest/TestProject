@@ -1,0 +1,276 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;9.&nbsp;Mapping d'h&eacute;ritage de classe</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="components.html" title="Chapitre&nbsp;8.&nbsp;Mapping de composants"><link rel="next" href="objectstate.html" title="Chapitre&nbsp;10.&nbsp;Travailler avec des objets"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;9.&nbsp;Mapping d'h&eacute;ritage de classe</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="components.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="objectstate.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="inheritance"></a>Chapitre&nbsp;9.&nbsp;Mapping d'h&eacute;ritage de classe</h2></div></div><div></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="inheritance-strategies"></a>9.1.&nbsp;Les trois strat&eacute;gies</h2></div></div><div></div></div><p>
+            Hibernate supporte les trois strat&eacute;gies d'h&eacute;ritage de base :
+        </p><div class="itemizedlist"><ul type="disc"><li><p>
+            une table par hi&eacute;rarchie de classe (table per class hierarchy)
+        </p></li><li><p>
+            une table par classe fille (table per subclass)
+        </p></li><li><p>
+            une table par classe concr&egrave;te (table per concrete class)
+        </p></li></ul></div><p>
+            Hibernate supporte en plus une quatri&egrave;mestrat&eacute;gie, l&eacute;g&egrave;rement diff&eacute;rente, qui supporte le polymorphisme :
+        </p><div class="itemizedlist"><ul type="disc"><li><p>
+            le polymorphisme implicite
+        </p></li></ul></div><p>
+            Il est possible d'utiliser diff&eacute;rentes strat&eacute;gies de mapping pour diff&eacute;rentes branches d'une m&ecirc;me
+            hi&eacute;rarchie d'h&eacute;ritage, et alors d'employer le polymorphisme implicite pour r&eacute;aliser le
+            polymorphisme &agrave; travers toute la hi&eacute;rarchie. Pourtant, Hibernate ne supporte pas de m&eacute;langer
+            des mappings <tt class="literal">&lt;subclass&gt;</tt> et
+            <tt class="literal">&lt;joined-subclass&gt;</tt> et <tt class="literal">&lt;union-subclass&gt;</tt>
+            pour le m&ecirc;me &eacute;l&eacute;ment <tt class="literal">&lt;class&gt;</tt> racine.
+            Il est possible de m&eacute;langer ensemble les strat&eacute;gies d'une table par hi&eacute;rarchie et d'une
+            table par sous-classe, pour le m&ecirc;me &eacute;l&eacute;ment <tt class="literal">&lt;class&gt;</tt>, en combinant
+            les &eacute;l&eacute;ments <tt class="literal">&lt;subclass&gt;</tt> et <tt class="literal">&lt;join&gt;</tt> (voir dessous).
+        </p><p>
+            Il est possible de d&eacute;finir des mappings de <tt class="literal">subclass</tt>, <tt class="literal">union-subclass</tt>,
+            et <tt class="literal">joined-subclass</tt> dans des documents de mapping s&eacute;par&eacute;s, directement sous
+            <tt class="literal">hibernate-mapping</tt>. Ceci vous permet d'&eacute;tendre une hi&eacute;rarchie de classe juste en
+            ajoutant un nouveau fichier de mapping. Vous devez sp&eacute;cifier un attribut <tt class="literal">extends</tt>
+            dans le mapping de la sous-classe, en nommant une super-classe pr&eacute;c&eacute;demment mapp&eacute;e. Note :
+            pr&eacute;c&eacute;demment cette foncionnalit&eacute; rendait l'ordre des documents de mapping important. Depuis
+            Hibernate3, l'ordre des fichier de mapping n'importe plus lors de l'utilisation du mot-clef "extends".
+            L'ordre &agrave; l'int&eacute;rieur d'un simple fichier de mapping impose encore de d&eacute;finir les classes m&egrave;res
+            avant les classes filles.
+         </p><pre class="programlisting">
+ &lt;hibernate-mapping&gt;
+     &lt;subclass name="DomesticCat" extends="Cat" discriminator-value="D"&gt;
+          &lt;property name="name" type="string"/&gt;
+     &lt;/subclass&gt;
+ &lt;/hibernate-mapping&gt;</pre><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="inheritance-tableperclass"></a>9.1.1.&nbsp;Une table par hi&eacute;rarchie de classe</h3></div></div><div></div></div><p>
+            Supposons que nous ayons une interface <tt class="literal">Payment</tt>, impl&eacute;ment&eacute;e
+            par <tt class="literal">CreditCardPayment</tt>, <tt class="literal">CashPayment</tt>,
+            <tt class="literal">ChequePayment</tt>. La strat&eacute;gie une table par hi&eacute;rarchie serait :
+        </p><pre class="programlisting">&lt;class name="Payment" table="PAYMENT"&gt;
+    &lt;id name="id" type="long" column="PAYMENT_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;discriminator column="PAYMENT_TYPE" type="string"/&gt;
+    &lt;property name="amount" column="AMOUNT"/&gt;
+    ...
+    &lt;subclass name="CreditCardPayment" discriminator-value="CREDIT"&gt;
+        &lt;property name="creditCardType" column="CCTYPE"/&gt;
+        ...
+    &lt;/subclass&gt;
+    &lt;subclass name="CashPayment" discriminator-value="CASH"&gt;
+        ...
+    &lt;/subclass&gt;
+    &lt;subclass name="ChequePayment" discriminator-value="CHEQUE"&gt;
+        ...
+    &lt;/subclass&gt;
+&lt;/class&gt;</pre><p>
+            Une seule table est requise. Une grande limitation de cette
+            strat&eacute;gie est que les colonnes d&eacute;clar&eacute;es par les classes filles, telles que <tt class="literal">CCTYPE</tt>,
+            ne peuvent avoir de contrainte <tt class="literal">NOT NULL</tt>.
+        </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="inheritance-tablepersubclass"></a>9.1.2.&nbsp;Une table par classe fille</h3></div></div><div></div></div><p>
+            La strat&eacute;gie une table par classe fille serait :
+        </p><pre class="programlisting">&lt;class name="Payment" table="PAYMENT"&gt;
+    &lt;id name="id" type="long" column="PAYMENT_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;property name="amount" column="AMOUNT"/&gt;
+    ...
+    &lt;joined-subclass name="CreditCardPayment" table="CREDIT_PAYMENT"&gt;
+        &lt;key column="PAYMENT_ID"/&gt;
+        &lt;property name="creditCardType" column="CCTYPE"/&gt;
+        ...
+    &lt;/joined-subclass&gt;
+    &lt;joined-subclass name="CashPayment" table="CASH_PAYMENT"&gt;
+        &lt;key column="PAYMENT_ID"/&gt;
+        ...
+    &lt;/joined-subclass&gt;
+    &lt;joined-subclass name="ChequePayment" table="CHEQUE_PAYMENT"&gt;
+        &lt;key column="PAYMENT_ID"/&gt;
+        ...
+    &lt;/joined-subclass&gt;
+&lt;/class&gt;</pre><p>
+            Quatre tables sont requises. Les trois tables des classes filles ont
+            une cl&eacute; primaire associ&eacute;e &agrave; la table classe m&egrave;re (le mod&egrave;le relationnel
+            est une association un-vers-un).
+        </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="inheritance-tablepersubclass-discriminator"></a>9.1.3.&nbsp;Une table par classe fille, en utilisant un discriminant</h3></div></div><div></div></div><p>
+            Notez que l'impl&eacute;mentation Hibernate de la strat&eacute;gie un table par
+            classe fille ne n&eacute;cessite pas de colonne discriminante dans la table
+            classe m&egrave;re. D'autres impl&eacute;mentations de mappers Objet/Relationnel utilisent
+            une autre impl&eacute;mentation de la strat&eacute;gie une table par classe fille qui n&eacute;cessite
+            une colonne de type discriminant dans la table de la classe m&egrave;re. L'approche
+            prise par Hibernate est plus difficile &agrave; impl&eacute;menter mais plus correcte
+        d'une point de vue relationnel. Si vous aimeriez utiliser
+            une colonne discriminante avec la strat&eacute;gie d'une table par classe fille, vous pourriez combiner
+            l'utilisation de <tt class="literal">&lt;subclass&gt;</tt> et
+            <tt class="literal">&lt;join&gt;</tt>, comme suit :
+        </p><pre class="programlisting">&lt;class name="Payment" table="PAYMENT"&gt;
+    &lt;id name="id" type="long" column="PAYMENT_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;discriminator column="PAYMENT_TYPE" type="string"/&gt;
+    &lt;property name="amount" column="AMOUNT"/&gt;
+    ...
+    &lt;subclass name="CreditCardPayment" discriminator-value="CREDIT"&gt;
+        &lt;join table="CREDIT_PAYMENT"&gt;
+            &lt;key column="PAYMENT_ID"/&gt;
+            &lt;property name="creditCardType" column="CCTYPE"/&gt;
+            ...
+        &lt;/join&gt;
+    &lt;/subclass&gt;
+    &lt;subclass name="CashPayment" discriminator-value="CASH"&gt;
+        &lt;join table="CASH_PAYMENT"&gt;
+            &lt;key column="PAYMENT_ID"/&gt;
+            ...
+        &lt;/join&gt;
+    &lt;/subclass&gt;
+    &lt;subclass name="ChequePayment" discriminator-value="CHEQUE"&gt;
+        &lt;join table="CHEQUE_PAYMENT" fetch="select"&gt;
+            &lt;key column="PAYMENT_ID"/&gt;
+            ...
+        &lt;/join&gt;
+    &lt;/subclass&gt;
+&lt;/class&gt;</pre><p>
+            La d&eacute;claration optionnelle <tt class="literal">fetch="select"</tt> indique &agrave; Hibernate
+            de ne pas r&eacute;cup&eacute;rer les donn&eacute;es de la classe fille <tt class="literal">ChequePayment</tt> par une jointure externe lors des requ&ecirc;tes sur la classe m&egrave;re.
+        </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="inheritance-mixing-tableperclass-tablepersubclass"></a>9.1.4.&nbsp;M&eacute;lange d'une table par hi&eacute;rarchie de classe avec une table par classe fille</h3></div></div><div></div></div><p>
+            Vous pouvez m&ecirc;me m&eacute;langer les strat&eacute;gies d'une table par hi&eacute;rarchie de classe et d'une table par classe fille en utilisant cette approche :
+        </p><pre class="programlisting">&lt;class name="Payment" table="PAYMENT"&gt;
+    &lt;id name="id" type="long" column="PAYMENT_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;discriminator column="PAYMENT_TYPE" type="string"/&gt;
+    &lt;property name="amount" column="AMOUNT"/&gt;
+    ...
+    &lt;subclass name="CreditCardPayment" discriminator-value="CREDIT"&gt;
+        &lt;join table="CREDIT_PAYMENT"&gt;
+            &lt;property name="creditCardType" column="CCTYPE"/&gt;
+            ...
+        &lt;/join&gt;
+    &lt;/subclass&gt;
+    &lt;subclass name="CashPayment" discriminator-value="CASH"&gt;
+        ...
+    &lt;/subclass&gt;
+    &lt;subclass name="ChequePayment" discriminator-value="CHEQUE"&gt;
+        ...
+    &lt;/subclass&gt;
+&lt;/class&gt;</pre><p>
+            Pour importe laquelle de ces strat&eacute;gies, une association polymorphique vers la classe racine
+            <tt class="literal">Payment</tt> est mapp&eacute;e en utilisant <tt class="literal">&lt;many-to-one&gt;</tt>.
+        </p><pre class="programlisting">&lt;many-to-one name="payment" column="PAYMENT_ID" class="Payment"/&gt;</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="inheritance-tableperconcrete"></a>9.1.5.&nbsp;Une table par classe concr&egrave;te</h3></div></div><div></div></div><p>
+            Il y a deux mani&egrave;res d'utiliser la strat&eacute;gie d'une table par classe concr&egrave;te. La premi&egrave;re
+            est d'employer <tt class="literal">&lt;union-subclass&gt;</tt>.
+        </p><pre class="programlisting">&lt;class name="Payment"&gt;
+    &lt;id name="id" type="long" column="PAYMENT_ID"&gt;
+        &lt;generator class="sequence"/&gt;
+    &lt;/id&gt;
+    &lt;property name="amount" column="AMOUNT"/&gt;
+    ...
+    &lt;union-subclass name="CreditCardPayment" table="CREDIT_PAYMENT"&gt;
+        &lt;property name="creditCardType" column="CCTYPE"/&gt;
+        ...
+    &lt;/union-subclass&gt;
+    &lt;union-subclass name="CashPayment" table="CASH_PAYMENT"&gt;
+        ...
+    &lt;/union-subclass&gt;
+    &lt;union-subclass name="ChequePayment" table="CHEQUE_PAYMENT"&gt;
+        ...
+    &lt;/union-subclass&gt;
+&lt;/class&gt;</pre><p>
+            Trois tables sont n&eacute;cessaires pour les classes filles. Chaque table d&eacute;finit des colonnes
+            pour toutes les propri&eacute;t&eacute;s de la classe, incluant les propri&eacute;t&eacute;s h&eacute;rit&eacute;&eacute;s.
+        </p><p>
+            La limitation de cette approche est que si une propri&eacute;t&eacute; est mapp&eacute;e sur la classe m&egrave;re, le nom
+            de la colonne doit &ecirc;tre le m&ecirc;me pour toutes les classes filles. (Nous pourrions &ecirc;tre plus souple
+            dans une future version d'Hibernate).
+            La strat&eacute;gie du g&eacute;n&eacute;rateur d'identifiant n'est pas permise dans l'h&eacute;ritage de classes filles par
+            union, en effet la valeur (NdT : seed) de la clef primaire
+            doit &ecirc;tre partag&eacute;e par toutes les classes filles "union" d'une hi&eacute;rarchie.
+        </p><p>
+            Si votre classe m&egrave;re est abstraite, mappez la avec <tt class="literal">abstract="true"</tt>.
+            Bien s&ucirc;r, si elle n'est pas abstraite, une table suppl&eacute;mentaire (par d&eacute;faut,
+            <tt class="literal">PAYMENT</tt> dans l'exemple ci-dessus) est requise pour contenir des instances
+            de la classe m&egrave;re.
+        </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="inheritance-tableperconcreate-polymorphism"></a>9.1.6.&nbsp;Une table par classe concr&egrave;te, en utilisant le polymorphisme implicite</h3></div></div><div></div></div><p>
+            Une approche alternative est l'emploi du polymorphisme implicite :
+        </p><pre class="programlisting">&lt;class name="CreditCardPayment" table="CREDIT_PAYMENT"&gt;
+    &lt;id name="id" type="long" column="CREDIT_PAYMENT_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;property name="amount" column="CREDIT_AMOUNT"/&gt;
+    ...
+&lt;/class&gt;
+
+&lt;class name="CashPayment" table="CASH_PAYMENT"&gt;
+    &lt;id name="id" type="long" column="CASH_PAYMENT_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;property name="amount" column="CASH_AMOUNT"/&gt;
+    ...
+&lt;/class&gt;
+
+&lt;class name="ChequePayment" table="CHEQUE_PAYMENT"&gt;
+    &lt;id name="id" type="long" column="CHEQUE_PAYMENT_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;property name="amount" column="CHEQUE_AMOUNT"/&gt;
+    ...
+&lt;/class&gt;</pre><p>
+            Notez que nulle part nous ne mentionnons l'interface <tt class="literal">Payment</tt> explicitement.
+            Notez aussi que des propri&eacute;t&eacute;s de <tt class="literal">Payment</tt> sont mapp&eacute;es dans
+            chaque classe fille. Si vous voulez &eacute;viter des duplications, consid&eacute;rez l'utilisation des
+            entit&eacute;s XML (cf. <tt class="literal">[ &lt;!ENTITY allproperties SYSTEM "allproperties.xml"&gt; ]</tt>
+            dans la d&eacute;claration du <tt class="literal">DOCTYPE</tt> et <tt class="literal">&amp;allproperties;</tt> dans le mapping).
+        </p><p>
+            L'inconv&eacute;nient de cette approche est qu'Hibernate ne g&eacute;n&egrave;re pas d'<tt class="literal">UNION</tt>s SQL
+            lors de l'ex&eacute;cution des requ&ecirc;tes polymorphiques.
+        </p><p>
+            Pour cette strat&eacute;gie de mapping, une association polymorphique pour <tt class="literal">Payment</tt>
+            est habituellement mapp&eacute;e en utilisant <tt class="literal">&lt;any&gt;</tt>.
+        </p><pre class="programlisting">&lt;any name="payment" meta-type="string" id-type="long"&gt;
+    &lt;meta-value value="CREDIT" class="CreditCardPayment"/&gt;
+    &lt;meta-value value="CASH" class="CashPayment"/&gt;
+    &lt;meta-value value="CHEQUE" class="ChequePayment"/&gt;
+    &lt;column name="PAYMENT_CLASS"/&gt;
+    &lt;column name="PAYMENT_ID"/&gt;
+&lt;/any&gt;</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="inheritace-mixingpolymorphism"></a>9.1.7.&nbsp;M&eacute;lange du polymorphisme implicite avec d'autres mappings d'h&eacute;ritage</h3></div></div><div></div></div><p>
+            Il y a une chose suppl&eacute;mentaire &agrave; noter &agrave; propos de ce mapping. Puisque les classes filles sont
+            chacune mapp&eacute;es avec leur propre &eacute;l&eacute;ment <tt class="literal">&lt;class&gt;</tt> (et puisque
+            <tt class="literal">Payment</tt> est juste une interface), chaque classe fille pourrait
+            facilement faire partie d'une autre hi&eacute;rarchie
+            d'h&eacute;ritage ! (Et vous pouvez encore faire des requ&ecirc;tes polymorphiques pour l'interface <tt class="literal">Payment</tt>).
+       </p><pre class="programlisting">&lt;class name="CreditCardPayment" table="CREDIT_PAYMENT"&gt;
+    &lt;id name="id" type="long" column="CREDIT_PAYMENT_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;discriminator column="CREDIT_CARD" type="string"/&gt;
+    &lt;property name="amount" column="CREDIT_AMOUNT"/&gt;
+    ...
+    &lt;subclass name="MasterCardPayment" discriminator-value="MDC"/&gt;
+    &lt;subclass name="VisaPayment" discriminator-value="VISA"/&gt;
+&lt;/class&gt;
+
+&lt;class name="NonelectronicTransaction" table="NONELECTRONIC_TXN"&gt;
+    &lt;id name="id" type="long" column="TXN_ID"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    ...
+    &lt;joined-subclass name="CashPayment" table="CASH_PAYMENT"&gt;
+        &lt;key column="PAYMENT_ID"/&gt;
+        &lt;property name="amount" column="CASH_AMOUNT"/&gt;
+        ...
+    &lt;/joined-subclass&gt;
+    &lt;joined-subclass name="ChequePayment" table="CHEQUE_PAYMENT"&gt;
+        &lt;key column="PAYMENT_ID"/&gt;
+        &lt;property name="amount" column="CHEQUE_AMOUNT"/&gt;
+        ...
+    &lt;/joined-subclass&gt;
+&lt;/class&gt;</pre><p>
+            Encore une fois, nous ne mentionnons pas explicitement <tt class="literal">Payment</tt>.
+            Si nous ex&eacute;cutons une requ&ecirc;te sur l'interface <tt class="literal">Payment</tt> - par
+            exemple, <tt class="literal">from Payment</tt> - Hibernate retournera
+            automatiquement les instances de <tt class="literal">CreditCardPayment</tt>
+            (et ses classes filles puisqu'elles impl&eacute;mentent aussi <tt class="literal">Payment</tt>),
+            <tt class="literal">CashPayment</tt> et <tt class="literal">ChequePayment</tt> mais pas
+            les instances de <tt class="literal">NonelectronicTransaction</tt>.
+        </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="inheritance-limitations"></a>9.2.&nbsp;Limitations</h2></div></div><div></div></div><p>
+            Il y a certaines limitations &agrave; l'approche du "polymorphisme implicite"
+            pour la strat&eacute;gie de mapping d'une table par classe concr&egrave;te.
+            Il y a plut&ocirc;t moins de limitations restrictives aux mappings <tt class="literal">&lt;union-subclass&gt;</tt>.
+        </p><p>
+            La table suivante montre les limitations des mappings d'une table par classe concr&egrave;te, et du polymorphisme implicite, dans Hibernate.
+        </p><div class="table"><a name="d0e8670"></a><p class="title"><b>Tableau&nbsp;9.1.&nbsp;Caract&eacute;ristiques du mapping d'h&eacute;ritage</b></p><table summary="Caract&eacute;ristiques du mapping d'h&eacute;ritage" border="1"><colgroup><col align="left"><col align="left"><col align="left"><col align="left"><col align="left"><col align="left"><col align="left"><col align="left"></colgroup><thead><tr><th align="left">Strat&eacute;gie d'h&eacute;ritage</th><th align="left">many-to-one polymorphique</th><th align="left">one-to-one polymorphique</th><th align="left">one-to-many polymorphique</th><th align="left">many-to-many polymorphique</th><th align="left"><tt class="literal">load()/get()</tt> polymorphique</th><th align="left">Requ&ecirc;tes polymorphiques</th><th align="left">Jointures polymorphiques</th><th align="left">R&eacute;cup&eacute;ration par jointure externe</th></tr></thead><tbody><tr><td align="left">une table par hi&eacute;rarchie de classe</td><td align="left"><tt class="literal">&lt;many-to-one&gt;</tt></td><td align="left"><tt class="literal">&lt;one-to-one&gt;</tt></td><td align="left"><tt class="literal">&lt;one-to-many&gt;</tt></td><td align="left"><tt class="literal">&lt;many-to-many&gt;</tt></td><td align="left"><tt class="literal">s.get(Payment.class, id)</tt></td><td align="left"><tt class="literal">from Payment p</tt></td><td align="left"><tt class="literal">from Order o join o.payment p</tt></td><td align="left"><span class="emphasis"><em>support&eacute;e</em></span></td></tr><tr><td align="left">une table par classe fille</td><td align="left"><tt class="literal">&lt;many-to-one&gt;</tt></td><td align="left"><tt class="literal">&lt;one-to-one&gt;</tt></td><td align="left"><tt class="literal">&lt;one-to-many&gt;</tt></td><td align="left"><tt class="literal">&lt;many-to-many&gt;</tt></td><td align="left"><tt class="literal">s.get(Payment.class, id)</tt></td><td align="left"><tt class="literal">from Payment p</tt></td><td align="left"><tt class="literal">from Order o join o.payment p</tt></td><td align="left"><span class="emphasis"><em>support&eacute;e</em></span></td></tr><tr><td align="left">une table par classe concr&egrave;te (union-subclass)</td><td align="left"><tt class="literal">&lt;many-to-one&gt;</tt></td><td align="left"><tt class="literal">&lt;one-to-one&gt;</tt></td><td align="left"><tt class="literal">&lt;one-to-many&gt;</tt> (pour <tt class="literal">inverse="true"</tt> seulement)</td><td align="left"><tt class="literal">&lt;many-to-many&gt;</tt></td><td align="left"><tt class="literal">s.get(Payment.class, id)</tt></td><td align="left"><tt class="literal">from Payment p</tt></td><td align="left"><tt class="literal">from Order o join o.payment p</tt></td><td align="left"><span class="emphasis"><em>support&eacute;e</em></span></td></tr><tr><td align="left">une table par classe concr&egrave;te (polymorphisme implicite)</td><td align="left"><tt class="literal">&lt;any&gt;</tt></td><td align="left"><span class="emphasis"><em>non support&eacute;</em></span></td><td align="left"><span class="emphasis"><em>non support&eacute;</em></span></td><td align="left"><tt class="literal">&lt;many-to-any&gt;</tt></td><td align="left"><tt class="literal">s.createCriteria(Payment.class).add( Restrictions.idEq(id) ).uniqueResult()</tt></td><td align="left"><tt class="literal">from Payment p</tt></td><td align="left"><span class="emphasis"><em>non support&eacute;es</em></span></td><td align="left"><span class="emphasis"><em>non support&eacute;e</em></span></td></tr></tbody></table></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="components.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="objectstate.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;8.&nbsp;Mapping de composants&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;10.&nbsp;Travailler avec des objets</td></tr></table></div></body></html>

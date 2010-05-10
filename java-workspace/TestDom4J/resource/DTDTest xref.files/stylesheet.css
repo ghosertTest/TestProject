@@ -1,0 +1,81 @@
+BODY {
+	FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #fff
+}
+A:link {
+	COLOR: #00f
+}
+A:visited {
+	COLOR: #00a
+}
+A:active {
+	COLOR: #f30! important
+}
+A:hover {
+	COLOR: #f30! important
+}
+UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+TABLE TD {
+	BORDER-RIGHT: #000 1px solid; PADDING-RIGHT: 3px; BORDER-TOP: #000 1px solid; PADDING-LEFT: 3px; PADDING-BOTTOM: 3px; BORDER-LEFT: #000 1px solid; PADDING-TOP: 3px; BORDER-BOTTOM: #000 1px solid
+}
+TABLE {
+	BORDER-RIGHT: #000 1px solid; BORDER-TOP: #000 1px solid; BORDER-LEFT: #000 1px solid; WIDTH: 100%; BORDER-BOTTOM: #000 1px solid; BORDER-COLLAPSE: collapse
+}
+DIV.overview {
+	PADDING-RIGHT: 4px; PADDING-LEFT: 0px; PADDING-BOTTOM: 4px; PADDING-TOP: 4px; BACKGROUND-COLOR: #ddd
+}
+DIV.overview LI {
+	DISPLAY: inline
+}
+DIV.framenoframe LI {
+	DISPLAY: inline
+}
+DIV.framenoframe {
+	FONT-SIZE: x-small; TEXT-ALIGN: center
+}
+DIV.framenoframe LI {
+	MARGIN: 0px 3px
+}
+DIV.overview LI {
+	PADDING-RIGHT: 4px; PADDING-LEFT: 4px; PADDING-BOTTOM: 4px; MARGIN: 3px 3px 0px; PADDING-TOP: 4px
+}
+LI.selected {
+	FONT-WEIGHT: bold; COLOR: #fff; BACKGROUND-COLOR: #888
+}
+TABLE.summary {
+	MARGIN-BOTTOM: 20px
+}
+TABLE.summary TD {
+	PADDING-RIGHT: 3px; PADDING-LEFT: 3px; FONT-WEIGHT: bold; PADDING-BOTTOM: 3px; PADDING-TOP: 3px; TEXT-ALIGN: left
+}
+TABLE.summary TH {
+	PADDING-RIGHT: 3px; PADDING-LEFT: 3px; FONT-WEIGHT: bold; PADDING-BOTTOM: 3px; PADDING-TOP: 3px; TEXT-ALIGN: left
+}
+TABLE.summary TH {
+	COLOR: #fff; BACKGROUND-COLOR: #036
+}
+TABLE.summary TD {
+	BORDER-RIGHT: black 1px solid; BORDER-TOP: black 1px solid; BORDER-LEFT: black 1px solid; BORDER-BOTTOM: black 1px solid; BACKGROUND-COLOR: #eee
+}
+EM {
+	COLOR: #a00
+}
+EM.comment {
+	COLOR: #390
+}
+.string {
+	COLOR: #009
+}
+DIV#footer {
+	TEXT-ALIGN: center
+}
+#overview {
+	PADDING-RIGHT: 2px; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; PADDING-TOP: 2px
+}
+HR {
+	COLOR: #000; HEIGHT: 1px
+}

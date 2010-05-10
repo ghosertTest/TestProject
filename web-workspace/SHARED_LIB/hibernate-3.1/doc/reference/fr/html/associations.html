@@ -1,0 +1,429 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;7.&nbsp;Mapper les associations</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="collections.html" title="Chapitre&nbsp;6.&nbsp;Mapping des collections"><link rel="next" href="components.html" title="Chapitre&nbsp;8.&nbsp;Mapping de composants"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;7.&nbsp;Mapper les associations</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="collections.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="components.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="associations"></a>Chapitre&nbsp;7.&nbsp;Mapper les associations</h2></div></div><div></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="assoc-intro"></a>7.1.&nbsp;Introduction</h2></div></div><div></div></div><p>
+            Correctement mapper les associations est souvent la t&acirc;che la plus difficile.
+            Dans cette section nous traiterons les cas classiques les uns apr&egrave;s les autres.
+            Nous commencerons d'abbord par les mappings unidirectionnels, puis nous aborderons
+            la question des mappings bidirectionnels. Nous illustrerons tous nos exemples 
+            avec les classes <tt class="literal">Person</tt> et <tt class="literal">Address</tt>.
+        </p><p>
+        	Nous utiliserons deux crit&egrave;res pour classer les associations : le premier 
+        	sera de savoir si l'association est b&acirc;ti sur une table suppl&eacute;mentaire d'association
+        	et le deuxieme sera bas&eacute; sur la multiplicit&eacute; de cette association.
+        </p><p>
+        	Autoriser une cl&eacute; &eacute;trang&egrave;re nulle est consid&eacute;r&eacute; comme un mauvais choix dans 
+        	la construction d'un mod&egrave;le de donn&eacute;es. Nous supposerons donc que dans tous 
+        	les exemples qui vont suivre on aura interdit la valeur nulle pour les cl&eacute;s 
+        	&eacute;trang&egrave;res. Attention, ceci ne veut pas dire que Hibernate ne supporte pas 
+        	les cl&eacute;s &eacute;trang&egrave;res pouvant prendre des valeurs nulles, les exemples qui suivent 
+        	continueront de fonctionner si vous d&eacute;cidiez ne plus imposer la contrainte 
+        	de non-nullit&eacute; sur les cl&eacute;s &eacute;trang&egrave;res.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="assoc-unidirectional"></a>7.2.&nbsp;Association unidirectionnelle</h2></div></div><div></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-unidirectional-m21"></a>7.2.1.&nbsp;plusieurs &agrave; un</h3></div></div><div></div></div><p>
+            Une <span class="emphasis"><em>association plusieurs-&agrave;-un (many-to-one) unidirectionnelle </em></span> 
+            est le type que l'on rencontre le plus souvent dans les associations unidirectionnelles.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;many-to-one name="address" 
+        column="addressId"
+        not-null="true"/&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key, addressId bigint not null )
+create table Address ( addressId bigint not null primary key )
+        </pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-unidirectional-121"></a>7.2.2.&nbsp;un &agrave; un</h3></div></div><div></div></div><p>
+            une <span class="emphasis"><em>association un-&agrave;-un (one-to-one) sur une cl&eacute; &eacute;trang&egrave;re</em></span>
+            est presque identique. La seule diff&eacute;rence est sur la contrainte d'unicit&eacute; que
+            l'on impose &agrave; cette colonne.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;many-to-one name="address" 
+        column="addressId" 
+        unique="true"
+        not-null="true"/&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key, addressId bigint not null unique )
+create table Address ( addressId bigint not null primary key )
+        </pre><p>
+            Une <span class="emphasis"><em>association un-&agrave;-un (one-to-one) unidirectionnelle sur une cl&eacute; primaire</em></span>
+            utilise un g&eacute;n&eacute;rateur d'identifiant particulier. (Remarquez que nous avons invers&eacute; le sens de cette
+            association dans cet exemple.)
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="foreign"&gt;
+            &lt;param name="property"&gt;person&lt;/param&gt;
+        &lt;/generator&gt;
+    &lt;/id&gt;
+    &lt;one-to-one name="person" constrained="true"/&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table Address ( personId bigint not null primary key )
+        </pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-unidirectional-12m"></a>7.2.3.&nbsp;un &agrave; plusieurs</h3></div></div><div></div></div><p>
+            Une <span class="emphasis"><em>association un-&agrave;-plusieurs (one-to-many) unidirectionnelle sur une 
+            cl&eacute; &eacute;trang&egrave;re</em></span> est vraiment inhabituelle, et n'est pas vraiment recommand&eacute;e.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;set name="addresses"&gt;
+        &lt;key column="personId" 
+            not-null="true"/&gt;
+        &lt;one-to-many class="Address"/&gt;
+    &lt;/set&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table Address ( addressId bigint not null primary key, personId bigint not null )
+        </pre><p>
+            Nous pensons qu'il est pr&eacute;f&eacute;rable d'utiliser une table de jointure pour ce type d'association.
+        </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="assoc-unidirectional-join"></a>7.3.&nbsp;Associations unidirectionnelles avec tables de jointure</h2></div></div><div></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-unidirectional-join-12m"></a>7.3.1.&nbsp;un &agrave; plusieurs</h3></div></div><div></div></div><p>
+            Une <span class="emphasis"><em>association unidirectionnelle un-&agrave;-plusieurs (one-to-many) avec
+            une table de jointure</em></span> est un bien meilleur choix. 
+            Remarquez qu'en sp&eacute;cifiant <tt class="literal">unique="true"</tt>,
+            on a chang&eacute; la multiplicit&eacute; plusieurs-&agrave;-plusieurs (many-to-many) pour 
+            un-&agrave;-plusieurs (one-to-many).
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;set name="addresses" table="PersonAddress"&gt;
+        &lt;key column="personId"/&gt;
+        &lt;many-to-many column="addressId"
+            unique="true"
+            class="Address"/&gt;
+    &lt;/set&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table PersonAddress ( personId not null, addressId bigint not null primary key )
+create table Address ( addressId bigint not null primary key )
+        </pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-unidirectional-join-m21"></a>7.3.2.&nbsp;plusieurs &agrave; un</h3></div></div><div></div></div><p>
+            Une <span class="emphasis"><em>assiociation plusieurs-&agrave;-un (many-to-one) unidirectionnelle sur
+            une table de jointure</em></span> est tr&egrave;s fr&eacute;quente quand l'association est optionnelle.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;join table="PersonAddress" 
+        optional="true"&gt;
+        &lt;key column="personId" unique="true"/&gt;
+        &lt;many-to-one name="address"
+            column="addressId" 
+            not-null="true"/&gt;
+    &lt;/join&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table PersonAddress ( personId bigint not null primary key, addressId bigint not null )
+create table Address ( addressId bigint not null primary key )
+        </pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-unidirectional-join-121"></a>7.3.3.&nbsp;un &agrave; un</h3></div></div><div></div></div><p>
+            Une <span class="emphasis"><em>association unidirectionnelle un-&agrave;-un (one-to-one) sur une table
+            de jointure</em></span> est extr&egrave;mement rare mais envisageable.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;join table="PersonAddress" 
+        optional="true"&gt;
+        &lt;key column="personId" 
+            unique="true"/&gt;
+        &lt;many-to-one name="address"
+            column="addressId" 
+            not-null="true"
+            unique="true"/&gt;
+    &lt;/join&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table PersonAddress ( personId bigint not null primary key, addressId bigint not null unique )
+create table Address ( addressId bigint not null primary key )
+        </pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-unidirectional-join-m2m"></a>7.3.4.&nbsp;plusieurs &agrave; plusieurs</h3></div></div><div></div></div><p>
+            Finallement, nous avons <span class="emphasis"><em>l'association unidirectionnelle plusieurs-&agrave;-plusieurs (many-to-many)</em></span>.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;set name="addresses" table="PersonAddress"&gt;
+        &lt;key column="personId"/&gt;
+        &lt;many-to-many column="addressId"
+            class="Address"/&gt;
+    &lt;/set&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table PersonAddress ( personId bigint not null, addressId bigint not null, primary key (personId, addressId) )
+create table Address ( addressId bigint not null primary key )
+        </pre></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="assoc-bidirectional"></a>7.4.&nbsp;Associations bidirectionnelles</h2></div></div><div></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-bidirectional-m21"></a>7.4.1.&nbsp;un &agrave; plusieurs / plusieurs &agrave; un</h3></div></div><div></div></div><p>
+            Une <span class="emphasis"><em>association bidirectionnelle plusieurs &agrave; un (many-to-one)</em></span>  
+            est le type d'association que l'on rencontre le plus souvent. (c'est la fa&ccedil;on standard de cr&eacute;er
+            des relations parents/enfants.)
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;many-to-one name="address" 
+        column="addressId"
+        not-null="true"/&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;set name="people" inverse="true"&gt;
+        &lt;key column="addressId"/&gt;
+        &lt;one-to-many class="Person"/&gt;
+    &lt;/set&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key, addressId bigint not null )
+create table Address ( addressId bigint not null primary key )
+        </pre><p>
+            Si vous utilisez une <tt class="literal">List</tt> (ou toute autre collection index&eacute;e) vous devez
+            param&eacute;trer la colonne <tt class="literal">key</tt> de la cl&eacute; &eacute;trang&egrave;re &agrave; <tt class="literal">not null</tt>,
+            et laisser Hibernate g&eacute;rer l'association depuis l'extr&eacute;mit&eacute; collection pour maintenir l'index
+            de chaque &eacute;l&eacute;ment (rendant l'autre extr&eacute;mit&eacute; virtuellement inverse en param&eacute;trant
+            <tt class="literal">update="false"</tt> et <tt class="literal">insert="false"</tt>):
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+   &lt;id name="id"/&gt;
+   ...
+   &lt;many-to-one name="address"
+      column="addressId"
+      not-null="true"
+      insert="false"
+      update="false"/&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+   &lt;id name="id"/&gt;
+   ...
+   &lt;list name="people"&gt;
+      &lt;key column="addressId" not-null="true"/&gt;
+      &lt;list-index column="peopleIdx"/&gt;
+      &lt;one-to-many class="Person"/&gt;
+   &lt;/list&gt;
+&lt;/class&gt;</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-bidirectional-121"></a>7.4.2.&nbsp;Un &agrave; un</h3></div></div><div></div></div><p>
+            Une <span class="emphasis"><em>association bidirectionnelle un &agrave; un (one-to-one) sur une cl&eacute; &eacute;trang&egrave;re</em></span>
+            est aussi tr&egrave;s fr&eacute;quente.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;many-to-one name="address" 
+        column="addressId" 
+        unique="true"
+        not-null="true"/&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+   &lt;one-to-one name="person" 
+        property-ref="address"/&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key, addressId bigint not null unique )
+create table Address ( addressId bigint not null primary key )
+        </pre><p>
+            Une <span class="emphasis"><em>association bidirectionnelle un-&agrave;-un (one-to-one) sur une cl&eacute; primaire</em></span>
+            utilise un g&eacute;n&eacute;rateur particulier d'id.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;one-to-one name="address"/&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="foreign"&gt;
+            &lt;param name="property"&gt;person&lt;/param&gt;
+        &lt;/generator&gt;
+    &lt;/id&gt;
+    &lt;one-to-one name="person" 
+        constrained="true"/&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table Address ( personId bigint not null primary key )
+        </pre></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="assoc-bidirectional-join"></a>7.5.&nbsp;Associations bidirectionnelles avec table de jointure</h2></div></div><div></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-bidirectional-join-12m"></a>7.5.1.&nbsp;un &agrave; plusieurs / plusieurs &agrave; un</h3></div></div><div></div></div><p>
+            Une <span class="emphasis"><em>association bidirectionnelle un-&agrave;-plusieurs (one-to-many) sur une table de jointure </em></span>.
+            Remarquez que <tt class="literal">inverse="true"</tt> peut s'appliquer sur les deux extr&eacute;mit&eacute;s de l'
+            association, sur la collection, ou sur la jointure.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;set name="addresses" 
+        table="PersonAddress"&gt;
+        &lt;key column="personId"/&gt;
+        &lt;many-to-many column="addressId"
+            unique="true"
+            class="Address"/&gt;
+    &lt;/set&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;join table="PersonAddress" 
+        inverse="true" 
+        optional="true"&gt;
+        &lt;key column="addressId"/&gt;
+        &lt;many-to-one name="person"
+            column="personId"
+            not-null="true"/&gt;
+    &lt;/join&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table PersonAddress ( personId bigint not null, addressId bigint not null primary key )
+create table Address ( addressId bigint not null primary key )
+        </pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-bidirectional-join-121"></a>7.5.2.&nbsp;Un &agrave; un</h3></div></div><div></div></div><p>
+            Une <span class="emphasis"><em>association bidirectionnelle un-&agrave;-un (one-to-one) sur une table de jointure</em></span> 
+            est extr&egrave;mement rare mais envisageable.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;join table="PersonAddress" 
+        optional="true"&gt;
+        &lt;key column="personId" 
+            unique="true"/&gt;
+        &lt;many-to-one name="address"
+            column="addressId" 
+            not-null="true"
+            unique="true"/&gt;
+    &lt;/join&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;join table="PersonAddress" 
+        optional="true"
+        inverse="true"&gt;
+        &lt;key column="addressId" 
+            unique="true"/&gt;
+        &lt;many-to-one name="person"
+            column="personId" 
+            not-null="true"
+            unique="true"/&gt;
+    &lt;/join&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table PersonAddress ( personId bigint not null primary key, addressId bigint not null unique )
+create table Address ( addressId bigint not null primary key )
+        </pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="assoc-bidirectional-join-m2m"></a>7.5.3.&nbsp;plusieurs &agrave; plusieurs</h3></div></div><div></div></div><p>
+            Finallement nous avons <span class="emphasis"><em>l'association bidirectionnelle plusieurs &agrave; plusieurs</em></span>.
+        </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id" column="personId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;set name="addresses" table="PersonAddress"&gt;
+        &lt;key column="personId"/&gt;
+        &lt;many-to-many column="addressId"
+            class="Address"/&gt;
+    &lt;/set&gt;
+&lt;/class&gt;
+
+&lt;class name="Address"&gt;
+    &lt;id name="id" column="addressId"&gt;
+        &lt;generator class="native"/&gt;
+    &lt;/id&gt;
+    &lt;set name="people" inverse="true"  table="PersonAddress"&gt;
+        &lt;key column="addressId"/&gt;
+        &lt;many-to-many column="personId"
+            class="Person"/&gt;
+    &lt;/set&gt;
+&lt;/class&gt;</pre><pre class="programlisting">
+create table Person ( personId bigint not null primary key )
+create table PersonAddress ( personId bigint not null, addressId bigint not null, primary key (personId, addressId) )
+create table Address ( addressId bigint not null primary key )
+        </pre></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="assoc-complex"></a>7.6.&nbsp;Des mappings plus complexes</h2></div></div><div></div></div><p>
+            Des associations encore plus complexes sont <span class="emphasis"><em>extr&ecirc;mement</em></span> rares. 
+            Hibernate permet de g&eacute;rer des situations plus complexes en utilisant des
+            parties SQL dans les fichiers de mapping. Par exemple, si une table
+            avec l'historiques des informations d'un compte d&eacute;finit les colonnes
+            <tt class="literal">accountNumber</tt>, <tt class="literal">effectiveEndDate</tt> 
+            et <tt class="literal">effectiveStartDate</tt>, mapp&eacute;es de telle sorte:
+        </p><pre class="programlisting">&lt;properties name="currentAccountKey"&gt;
+    &lt;property name="accountNumber" type="string" not-null="true"/&gt;
+    &lt;property name="currentAccount" type="boolean"&gt;
+        &lt;formula&gt;case when effectiveEndDate is null then 1 else 0 end&lt;/formula&gt;
+    &lt;/property&gt;
+&lt;/properties&gt;
+&lt;property name="effectiveEndDate" type="date"/&gt;
+&lt;property name="effectiveStateDate" type="date" not-null="true"/&gt;</pre><p>
+            alors nous pouvons mapper une association &agrave; l'instance <span class="emphasis"><em>courante</em></span>  
+            (celle avec une <tt class="literal">effectiveEndDate</tt>) nulle en utilisant:
+        </p><pre class="programlisting">&lt;many-to-one name="currentAccountInfo" 
+        property-ref="currentAccountKey"
+        class="AccountInfo"&gt;
+    &lt;column name="accountNumber"/&gt;
+    &lt;formula&gt;'1'&lt;/formula&gt;
+&lt;/many-to-one&gt;</pre><p>
+            Dans un exemple plus complexe, imaginez qu'une association entre
+            <tt class="literal">Employee</tt> et <tt class="literal">Organization</tt> est g&eacute;r&eacute;e
+            dans une table <tt class="literal">Employment</tt> pleines de donn&eacute;es historiques.
+            Dans ce cas, une association vers l'employeur <span class="emphasis"><em>le plus r&eacute;cent</em></span>
+            (celui avec la <tt class="literal">startDate</tt> la plus r&eacute;cente) pourrait &ecirc;tre mapp&eacute;e comme cela:
+        </p><pre class="programlisting">&lt;join&gt;
+    &lt;key column="employeeId"/&gt;
+    &lt;subselect&gt;
+        select employeeId, orgId 
+        from Employments 
+        group by orgId 
+        having startDate = max(startDate)
+    &lt;/subselect&gt;
+    &lt;many-to-one name="mostRecentEmployer" 
+            class="Organization" 
+            column="orgId"/&gt;
+&lt;/join&gt;</pre><p>
+            Vous pouvez &ecirc;tre cr&eacute;atif grace &agrave; ces possibilit&eacute;s, mais il est g&eacute;n&eacute;ralement plus pratique
+            d'utiliser des requ&ecirc;tes HQL ou criteria dans ce genre de situation.
+        </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="collections.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="components.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;6.&nbsp;Mapping des collections&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;8.&nbsp;Mapping de composants</td></tr></table></div></body></html>

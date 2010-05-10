@@ -1,0 +1,1 @@
+C:\j2sdk1.4.2_08\bin\native2ascii.exe orig.messages_zh_CN.properties messages_zh_CN.properties

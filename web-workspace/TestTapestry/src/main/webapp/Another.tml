@@ -1,0 +1,14 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+    <head>
+        <title>Another Page</title>
+    </head>
+    <body>
+        <h1>Another Page</h1>
+        
+        <p>The user is ${myUser.firstName} ${myUser.lastName}</p>
+        
+        <p>Received a new message: ${passedMessage}</p>
+        
+        <p> <t:PageLink t:page="Start">Back to the Start page</t:PageLink> </p>
+    </body>
+</html>

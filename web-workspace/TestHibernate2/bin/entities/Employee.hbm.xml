@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entities.Employee" table="EMPLOYEE">
+        <id name="id" type="integer">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="80" />
+        </property>
+        <many-to-one name="company" class="entities.Company" column="COMPANY_ID" cascade="none">
+        </many-to-one>
+    </class>
+</hibernate-mapping>

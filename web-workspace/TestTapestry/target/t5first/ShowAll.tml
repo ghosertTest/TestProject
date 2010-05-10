@@ -1,0 +1,51 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+	<head>
+		<title>Celebrity Collector: All Celebrities</title>
+	</head>
+	<body>
+		<h1>All Celebrities in Collection</h1>
+		<table width="100%">
+		    
+		    <!-- 'allCelebrities' is a class which implement the iterable interface, celebrity is an object in allCelebrities
+		    And celebrity should be defined in the ShowAll class which means setter/getter should be there.
+		    -->
+			<tr t:type="loop" t:source="allCelebrities" t:value="celebrity">
+				<td>
+				    <!-- While PageLinks's main aim is to navigate to another page, the ActionLink's purpose is to
+				         run some code in an event handler in response to a click on the link.
+				         -->
+				    <!-- ActionLink should have a t:id attribute. This is how we are going to associate an event handler with it.
+				         Quite often, it also has a t:context attribute, which provides a parameter (or parameters) to the event handler.
+				         -->
+					<a href="#" t:type="ActionLink" t:context="celebrity.id" t:id="detailsLink">
+						${celebrity.lastName}
+						(ActionLink)
+					</a>
+				</td>
+				<td>
+				    <!-- Another use of PageLink, pass the id. "void onActivate(long id)" method should be added in Details page to get id.
+				         In this case for Details page, PageLink url could be bookmarked because it is using url,
+				         while ActionLink could not because it is using session.
+				         That is not to say PageLink is better.
+				         1. Using ActionLink when you want some complex logic to run as a result of a click on a link.
+				         2. Using PageLink just pass a piece of information to another page.
+				         -->
+					<a href="#" t:type="PageLink" t:page="Details" t:context="celebrity.id">
+						${celebrity.lastName}
+						(PageLink)
+					</a>
+				</td>
+				<td>${celebrity.firstName}</td>
+				<td>
+				    <!-- dateFormat is one of the getter method in ShowAll class, and using t:output could define the format for the t:value while the tag ${} can not. -->
+					<t:output t:format="dateFormat" t:value="celebrity.dateOfBirth" />
+				</td>
+				<td>${celebrity.occupation}</td>
+			</tr>
+		</table>
+		<br />
+		<a href="#" t:type="PageLink" t:page="Start2">
+			Back to the Start Page
+		</a>
+	</body>
+</html>

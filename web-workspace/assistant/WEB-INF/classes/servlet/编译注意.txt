@@ -1,0 +1,2 @@
+cd ..assistant\src
+javac servlet\LoginServlet.java

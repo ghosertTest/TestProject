@@ -1,0 +1,198 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;20.&nbsp;Guide des outils</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="performance.html" title="Chapitre&nbsp;19.&nbsp;Am&eacute;liorer les performances"><link rel="next" href="example-parentchild.html" title="Chapitre&nbsp;21.&nbsp;Exemple : P&egrave;re/Fils"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;20.&nbsp;Guide des outils</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="performance.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="example-parentchild.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="toolsetguide"></a>Chapitre&nbsp;20.&nbsp;Guide des outils</h2></div></div><div></div></div><p>
+        Des outils en ligne de commande, des plugins Eclipse ainsu que des t&acirc;ches Ant permettent de g&eacute;rer de cycles de d&eacute;veloppement complet
+    de projets utilisant Hibernate.
+    </p><p>
+        Les <span class="emphasis"><em>outils Hibernate</em></span> actuels incluent des plugins pour l'IDE Eclipse ainsi que des t&acirc;ches Ant pour l'ing&eacute;nierie 
+        inverse de bases de donn&eacute;es existantes :
+    </p><div class="itemizedlist"><ul type="disc"><li><p>
+            <span class="emphasis"><em>Mapping Editor :</em></span> un &eacute;diteur pour les fichiers de mapping XML Hibernate, supportant l'auto-compl&eacute;tion et la mise en valeur de la syntaxe.
+            Il supporte aussi l'auto-compl&eacute;tion automatique pour les noms de classes et les noms de propri&eacute;t&eacute;/champ,
+            le rendant beaucoup plus polyvalent qu'un &eacute;diteurXML normal.
+        </p></li><li><p>
+            <span class="emphasis"><em>Console :</em></span> la console est une nouvelle vue d'Eclipse. En plus de la vue d'ensemble
+            arborescente de vos configurations de console, vous obtenez aussi une vue interactive de vos classes persistantes et de leurs relations.
+            La console vous permet d'ex&eacute;cuter des requ&ecirc;te HQL dans votre base de donn&eacute;es et de parcourir les r&eacute;sultats directement dans Eclipse.
+        </p></li><li><p>
+            <span class="emphasis"><em>Development Wizards :</em></span> plusieurs assistants sont fournis avec les outils d'Hibernate
+            pour Eclipse ; vous pouvez utiliser un assistant pour g&eacute;n&eacute;rer rapidement les fichiers de configuration d'Hibernate (cfg.xml),
+            ou vous pouvez m&ecirc;me compl&egrave;tement g&eacute;n&eacute;rer les fichiers de mapping Hibernate et les sources des POJOs &agrave; partir d'un sch&eacute;ma de base de donn&eacute;es existant.
+            L'assistant d'ing&eacute;nierie inverse supporte les mod&egrave;les utilisateur.
+        </p></li><li><p>
+            <span class="emphasis"><em>T&acirc;ches Ant :</em></span>
+        </p></li></ul></div><p>
+        Veuillez-vous r&eacute;f&eacute;rer au paquet <span class="emphasis"><em>outils Hibernate</em></span> et sa documentation pour plus d'informations.
+    </p><p>
+        Pourtant, le paquet principal d'Hibernate arrive avec un lot d'outils int&eacute;gr&eacute;s (il peut m&ecirc;me &ecirc;tre utilis&eacute; de "l'int&eacute;rieur" d'Hibernate &agrave; la vol&eacute;e) :
+        <span class="emphasis"><em>SchemaExport</em></span> aussi connu comme
+        <tt class="literal">hbm2ddl</tt>.
+    </p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="toolsetguide-s1"></a>20.1.&nbsp;G&eacute;n&eacute;ration automatique du sch&eacute;ma</h2></div></div><div></div></div><p>
+            La DDL peut &ecirc;tre g&eacute;n&eacute;r&eacute;e &agrave; partir de vos fichiers de mapping par un utilitaire d'Hibernate. Le sch&eacute;ma g&eacute;n&eacute;r&eacute;
+            inclut les contraintes d'int&eacute;grit&eacute; r&eacute;f&eacute;rentielle (clefs primaires et &eacute;trang&egrave;res) pour les tables d'entit&eacute;s
+            et de collections. Les tables et les s&eacute;quences sont aussi cr&eacute;&eacute;es pour les g&eacute;n&eacute;rateurs d'identifiant mapp&eacute;s.
+        </p><p>
+            Vous <span class="emphasis"><em>devez</em></span> sp&eacute;cifier un <tt class="literal">Dialect</tt> SQL via la propri&eacute;t&eacute;
+            <tt class="literal">hibernate.dialect</tt> lors de l'utilisation de cet outils, puisque la DDL est
+            fortement d&eacute;pendante de la base de donn&eacute;es.
+        </p><p>
+            D'abord, personnalisez vos fichiers de mapping pour am&eacute;liorer le sch&eacute;ma g&eacute;n&eacute;r&eacute;.
+        </p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="toolsetguide-s1-2"></a>20.1.1.&nbsp;Personnaliser le sch&eacute;ma</h3></div></div><div></div></div><p>
+                Plusieurs &eacute;l&eacute;ments du mapping hibernate d&eacute;finissent des attributs optionnels
+                nomm&eacute;s <tt class="literal">length</tt>, <tt class="literal">precision</tt> et <tt class="literal">scale</tt>.
+                Vous pouvez param&eacute;trer la longueur, la pr&eacute;cision,...  d'une colonne avec ces attributs.
+            </p><pre class="programlisting">&lt;property name="zip" length="5"/&gt;</pre><pre class="programlisting">&lt;property name="balance" precision="12" scale="2"/&gt;</pre><p>
+                Certains &eacute;l&eacute;ments acceptent aussi un attribut <tt class="literal">not-null</tt>
+                (utilis&eacute; pour g&eacute;n&eacute;rer les contraintes de colonnes <tt class="literal">NOT NULL</tt>) et
+                un attribut <tt class="literal">unique</tt> (pour g&eacute;n&eacute;rer une contrainte de colonne
+                <tt class="literal">UNIQUE</tt>).
+            </p><pre class="programlisting">&lt;many-to-one name="bar" column="barId" not-null="true"/&gt;</pre><pre class="programlisting">&lt;element column="serialNumber" type="long" not-null="true" unique="true"/&gt;</pre><p>
+                Un attribut <tt class="literal">unique-key</tt> peut &ecirc;tre utilis&eacute; pour grouper les colonnes
+                en une seule contrainte d'unicit&eacute;. Actuellement, la valeur sp&eacute;cifi&eacute;e par
+                l'attribut <tt class="literal">unique-key</tt> n'est <span class="emphasis"><em>pas</em></span> utilis&eacute;e pour
+                nommer la contrainte dans le DDL g&eacute;n&eacute;r&eacute;, elle sert juste &agrave; grouper les colonnes
+                dans le fichier de mapping.
+            </p><pre class="programlisting">&lt;many-to-one name="org" column="orgId" unique-key="OrgEmployeeId"/&gt;
+            &lt;property name="employeeId" unique-key="OrgEmployee"/&gt;</pre><p>
+                Un attribut <tt class="literal">index</tt> indique le nom d'un index qui sera
+                cr&eacute;&eacute;  en utilisant la ou les colonnes mapp&eacute;es. Plusieurs colonnes
+                peuvent &ecirc;tre group&eacute;es dans un m&ecirc;me index, en sp&eacute;cifiant le m&ecirc;me
+                nom d'index. 
+            </p><pre class="programlisting">&lt;property name="lastName" index="CustName"/&gt;
+&lt;property name="firstName" index="CustName"/&gt;</pre><p>
+                Un attribut <tt class="literal">foreign-key</tt> peut &ecirc;tre utilis&eacute; pour surcharger le nom
+                des cl&eacute;s &eacute;trang&egrave;res g&eacute;n&eacute;r&eacute;es.
+            </p><pre class="programlisting">&lt;many-to-one name="bar" column="barId" foreign-key="FKFooBar"/&gt;</pre><p>
+                Plusieurs &eacute;l&eacute;ments de mapping acceptent aussi un &eacute;l&eacute;ment fils <tt class="literal">&lt;column&gt;</tt>. 
+                Ceci est utile pour les type multi-colonnes:
+            </p><pre class="programlisting">&lt;property name="name" type="my.customtypes.Name"/&gt;
+    &lt;column name="last" not-null="true" index="bar_idx" length="30"/&gt;
+    &lt;column name="first" not-null="true" index="bar_idx" length="20"/&gt;
+    &lt;column name="initial"/&gt;
+&lt;/property&gt;</pre><p>
+                L'attribut <tt class="literal">default</tt> vous laisse sp&eacute;cifier une valeur par d&eacute;faut pour
+                une colonnes (vous devriez assigner la m&ecirc;me valeur &agrave; la propri&eacute;t&eacute; mapp&eacute;e avant de sauvegarder une nouvelle instance
+                de la classe mapp&eacute;e).
+            </p><pre class="programlisting">&lt;property name="credits" type="integer" insert="false"&gt;
+    &lt;column name="credits" default="10"/&gt;
+&lt;/property&gt;</pre><pre class="programlisting">&lt;version name="version" type="integer" insert="false"&gt;
+    &lt;column name="version" default="0"/&gt;
+&lt;/property&gt;</pre><p>
+                L'attribut <tt class="literal">sql-type</tt> laisse l'utilisateur surcharger le mapping
+                par d&eacute;faut du type Hibernate vers un type SQL.
+            </p><pre class="programlisting">&lt;property name="balance" type="float"&gt;
+    &lt;column name="balance" sql-type="decimal(13,3)"/&gt;
+&lt;/property&gt;</pre><p>
+                L'attribut <tt class="literal">check</tt> permet de sp&eacute;cifier une contrainte de v&eacute;rification.
+            </p><pre class="programlisting">&lt;property name="foo" type="integer"&gt;
+    &lt;column name="foo" check="foo &gt; 10"/&gt;
+&lt;/property&gt;</pre><pre class="programlisting">&lt;class name="Foo" table="foos" check="bar &lt; 100.0"&gt;
+    ...
+    &lt;property name="bar" type="float"/&gt;
+&lt;/class&gt;</pre><div class="table"><a name="schemattributes-summary"></a><p class="title"><b>Tableau&nbsp;20.1.&nbsp;Summary</b></p><table summary="Summary" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>Attribut</th><th>Valeur</th><th>Interpr&eacute;tation</th></tr></thead><tbody><tr><td><tt class="literal">length</tt></td><td>num&eacute;rique</td><td>taille d'une colonne</td></tr><tr><td><tt class="literal">precision</tt></td><td>num&eacute;rique</td><td>pr&eacute;cision d&eacute;cimale de la colonne</td></tr><tr><td><tt class="literal">scale</tt></td><td>num&eacute;rique</td><td>scale d&eacute;cimale de la colonne</td></tr><tr><td><tt class="literal">not-null</tt></td><td><tt class="literal">true|false</tt></td><td>sp&eacute;cifie que la colonne doit &ecirc;tre non-nulle</td></tr><tr><td><tt class="literal">unique</tt></td><td><tt class="literal">true|false</tt></td><td>sp&eacute;cifie que la colonne doit avoir une contrainte d'unicit&eacute;</td></tr><tr><td><tt class="literal">index</tt></td><td><tt class="literal">index_name</tt></td><td>sp&eacute;cifie le nom d'un index (multi-colonnes)</td></tr><tr><td><tt class="literal">unique-key</tt></td><td><tt class="literal">unique_key_name</tt></td><td>sp&eacute;cifie le nom d'une contrainte d'unicit&eacute; multi-colonnes</td></tr><tr><td><tt class="literal">foreign-key</tt></td><td><tt class="literal">foreign_key_name</tt></td><td>
+                                sp&eacute;cifie le nom d'une contrainte de cl&eacute; &eacute;trang&egrave;re g&eacute;n&eacute;r&eacute;e pour
+                                une association, utilisez-la avec les &eacute;l&eacute;ments de mapping
+                                &lt;one-to-one&gt;, &lt;many-to-one&gt;, &lt;key&gt;, et &lt;many-to-many&gt;
+                                Notez que les extr&ecirc;mit&eacute;s <tt class="literal">inverse="true"</tt>
+                                se seront pas prises en compte par <tt class="literal">SchemaExport</tt>.
+                            </td></tr><tr><td><tt class="literal">sql-type</tt></td><td><tt class="literal">SQL column_type</tt></td><td>
+                                surcharge le type par d&eacute;faut (attribut de
+                                l'&eacute;l&eacute;ment <tt class="literal">&lt;column&gt;</tt> uniquement)
+                            </td></tr><tr><td><tt class="literal">default</tt></td><td>expression SQL</td><td>
+                                sp&eacute;cifie une valeur par d&eacute;faut pour la colonne
+                            </td></tr><tr><td><tt class="literal">check</tt></td><td>SQL expression</td><td>
+                                cr&eacute;e une contrainte de v&eacute;rification sur la table ou la colonne
+                            </td></tr></tbody></table></div><p>
+                L'&eacute;l&eacute;ment <tt class="literal">&lt;comment&gt;</tt> vous permet de sp&eacute;cifier un commentaire pour le sch&eacute;ma g&eacute;n&eacute;r&eacute;.
+            </p><pre class="programlisting">&lt;class name="Customer" table="CurCust"&gt;
+    &lt;comment&gt;Current customers only&lt;/comment&gt;
+    ...
+&lt;/class&gt;</pre><pre class="programlisting">&lt;property name="balance"&gt;
+    &lt;column name="bal"&gt;
+        &lt;comment&gt;Balance in USD&lt;/comment&gt;
+    &lt;/column&gt;
+&lt;/property&gt;</pre><p>
+                Ceci a pour r&eacute;sultat une expression
+                <tt class="literal">comment on table</tt> ou
+                <tt class="literal">comment on column</tt> dans la DDL g&eacute;n&eacute;r&eacute;e (o&ugrave; support&eacute;e).
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="toolsetguide-s1-3"></a>20.1.2.&nbsp;Ex&eacute;cuter l'outil</h3></div></div><div></div></div><p>
+                L'outil <tt class="literal">SchemaExport</tt> g&eacute;n&egrave;re un script DDL vers
+                la sortie standard et/ou ex&eacute;cute les ordres DDL.
+            </p><p>
+                <tt class="literal">java -cp </tt><span class="emphasis"><em>classpath_hibernate</em></span>
+                <tt class="literal">net.sf.hibernate.tool.hbm2ddl.SchemaExport</tt> <span class="emphasis"><em>options fichiers_de_mapping</em></span>
+            </p><div class="table"><a name="d0e14843"></a><p class="title"><b>Tableau&nbsp;20.2.&nbsp;<tt class="literal">SchemaExport</tt> Options de la ligne de commande</b></p><table summary="SchemaExport Options de la ligne de commande" border="1"><colgroup><col><col></colgroup><thead><tr><th>Option</th><th>Description</th></tr></thead><tbody><tr><td><tt class="literal">--quiet</tt></td><td>ne pas &eacute;crire le script vers la sortie standard</td></tr><tr><td><tt class="literal">--drop</tt></td><td>supprime seuleument les tables</td></tr><tr><td><tt class="literal">--create</tt></td><td>ne cr&eacute;&eacute; que les tables</td></tr><tr><td><tt class="literal">--text</tt></td><td>ne pas ex&eacute;cuter sur la base de donn&eacute;es</td></tr><tr><td><tt class="literal">--output=my_schema.ddl</tt></td><td>&eacute;crit le script ddl vers un fichier</td></tr><tr><td><tt class="literal">--naming=eg.MyNamingStrategy</tt></td><td>s&eacute;lectionne une <tt class="literal">NamingStrategy</tt></td></tr><tr><td><tt class="literal">--config=hibernate.cfg.xml</tt></td><td>lit la configuration Hibernate &agrave; partir d'un fichier XML</td></tr><tr><td><tt class="literal">--properties=hibernate.properties</tt></td><td>lit les propri&eacute;t&eacute;s de la base de donn&eacute;es &agrave; partir d'un fichier</td></tr><tr><td><tt class="literal">--format</tt></td><td>formatte proprement le SQL g&eacute;n&eacute;r&eacute; dans le script</td></tr><tr><td><tt class="literal">--delimiter=x</tt></td><td>param&egrave;tre un d&eacute;limiteur de fin de ligne pour le script</td></tr></tbody></table></div><p>
+                Vous pouvez m&ecirc;me int&eacute;grer <tt class="literal">SchemaExport</tt> dans votre application :
+            </p><pre class="programlisting">Configuration cfg = ....;
+new SchemaExport(cfg).create(false, true);</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="toolsetguide-s1-4"></a>20.1.3.&nbsp;Propri&eacute;t&eacute;s</h3></div></div><div></div></div><p>
+                Les propri&eacute;t&eacute;s de la base de donn&eacute;es peuvent &ecirc;tre sp&eacute;cifi&eacute;es
+            </p><div class="itemizedlist"><ul type="disc" compact><li><p>comme propri&eacute;t&eacute;s syst&egrave;me avec <tt class="literal">-D</tt><span class="emphasis"><em>&lt;property&gt;</em></span></p></li><li><p>dans <tt class="literal">hibernate.properties</tt></p></li><li><p>dans un fichier de propri&eacute;t&eacute;s d&eacute;clar&eacute; avec <tt class="literal">--properties</tt></p></li></ul></div><p>
+                Les propri&eacute;t&eacute;s n&eacute;cessaires sont :
+            </p><div class="table"><a name="d0e14952"></a><p class="title"><b>Tableau&nbsp;20.3.&nbsp;SchemaExport Connection Properties</b></p><table summary="SchemaExport Connection Properties" border="1"><colgroup><col><col></colgroup><thead><tr><th>Nom de la propri&eacute;t&eacute;</th><th>Description</th></tr></thead><tbody><tr><td><tt class="literal">hibernate.connection.driver_class</tt></td><td>classe du driver JDBC</td></tr><tr><td><tt class="literal">hibernate.connection.url</tt></td><td>URL JDBC</td></tr><tr><td><tt class="literal">hibernate.connection.username</tt></td><td>utilisateur de la base de donn&eacute;es</td></tr><tr><td><tt class="literal">hibernate.connection.password</tt></td><td>mot de passe de l'utilisateur</td></tr><tr><td><tt class="literal">hibernate.dialect</tt></td><td>dialecte</td></tr></tbody></table></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="toolsetguide-s1-5"></a>20.1.4.&nbsp;Utiliser Ant</h3></div></div><div></div></div><p>
+                Vous pouvez appeler <tt class="literal">SchemaExport</tt> depuis votre script
+                de construction Ant :
+            </p><pre class="programlisting">&lt;target name="schemaexport"&gt;
+    &lt;taskdef name="schemaexport"
+        classname="org.hibernate.tool.hbm2ddl.SchemaExportTask"
+        classpathref="class.path"/&gt;
+
+    &lt;schemaexport
+        properties="hibernate.properties"
+        quiet="no"
+        text="no"
+        drop="no"
+        delimiter=";"
+        output="schema-export.sql"&gt;
+        &lt;fileset dir="src"&gt;
+            &lt;include name="**/*.hbm.xml"/&gt;
+        &lt;/fileset&gt;
+    &lt;/schemaexport&gt;
+&lt;/target&gt;</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="toolsetguide-s1-6"></a>20.1.5.&nbsp;Mises &agrave; jour incr&eacute;mentales du sch&eacute;ma</h3></div></div><div></div></div><p>
+                L'outil <tt class="literal">SchemaUpdate</tt> mettra &agrave; jour un sch&eacute;ma existant
+                en effectuant les changement par "incr&eacute;ment".
+                Notez que <tt class="literal">SchemaUpdate</tt> d&eacute;pends beaucoup de l'API JDBC
+                metadata, il ne fonctionnera donc pas avec tous les drivers JDBC.
+            </p><p>
+                <tt class="literal">java -cp </tt><span class="emphasis"><em>classpath_hibernate</em></span>
+                <tt class="literal">net.sf.hibernate.tool.hbm2ddl.SchemaUpdate</tt> <span class="emphasis"><em>options fichiers_de_mapping</em></span>
+            </p><div class="table"><a name="d0e15029"></a><p class="title"><b>Tableau&nbsp;20.4.&nbsp;<tt class="literal">SchemaUpdate</tt> Options de ligne de commande</b></p><table summary="SchemaUpdate Options de ligne de commande" border="1"><colgroup><col><col></colgroup><thead><tr><th>Option</th><th>Description</th></tr></thead><tbody><tr><td><tt class="literal">--quiet</tt></td><td>ne pas &eacute;crire vers la sortie standard</td></tr><tr><td><tt class="literal">--text</tt></td><td>ne pas exporter vers la base de donn&eacute;es</td></tr><tr><td><tt class="literal">--naming=eg.MyNamingStrategy</tt></td><td>choisit une <tt class="literal">NamingStrategy</tt></td></tr><tr><td><tt class="literal">--properties=hibernate.properties</tt></td><td>lire les propri&eacute;t&eacute;s de la base de donn&eacute;es &agrave; partir d'un fichier</td></tr></tbody></table></div><p>
+                Vous pouvez int&eacute;grer <tt class="literal">SchemaUpdate</tt> dans votre application :
+            </p><pre class="programlisting">Configuration cfg = ....;
+new SchemaUpdate(cfg).execute(false);</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="toolsetguide-s1-7"></a>20.1.6.&nbsp;Utiliser Ant pour des mises &agrave; jour de sch&eacute;ma par incr&eacute;ment</h3></div></div><div></div></div><p>
+                Vous pouvez appeler <tt class="literal">SchemaUpdate</tt> depuis le script Ant :
+            </p><pre class="programlisting">&lt;target name="schemaupdate"&gt;
+    &lt;taskdef name="schemaupdate"
+        classname="org.hibernate.tool.hbm2ddl.SchemaUpdateTask"
+        classpathref="class.path"/&gt;
+
+    &lt;schemaupdate
+        properties="hibernate.properties"
+        quiet="no"&gt;
+        &lt;fileset dir="src"&gt;
+            &lt;include name="**/*.hbm.xml"/&gt;
+        &lt;/fileset&gt;
+    &lt;/schemaupdate&gt;
+&lt;/target&gt;</pre><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="toolsetguide-s1-8"></a>20.1.6.1.&nbsp;Validation du sch&eacute;ma</h3></div></div><div></div></div><p>
+                L'outil <tt class="literal">SchemaValidator</tt> validera que le sch&eacute;ma existant correspond &agrave; vos documents de mapping.
+                Notez que le <tt class="literal">SchemaValidator</tt> d&eacute;pends de l'API metadata de JDBC, il ne fonctionnera
+                donc pas avec tous les drivers JDBC. Cet outil est extr&ecirc;mement utile pour tester.
+            </p><p>
+                <tt class="literal">java -cp </tt><span class="emphasis"><em>hibernate_classpaths</em></span>
+                <tt class="literal">org.hibernate.tool.hbm2ddl.SchemaValidator</tt> <span class="emphasis"><em>options mapping_files</em></span>
+            </p><div class="table"><a name="d0e15111"></a><p class="title"><b>Tableau&nbsp;20.5.&nbsp;<tt class="literal">SchemaValidator</tt> Options de ligne de commande</b></p><table summary="SchemaValidator Options de ligne de commande" border="1"><colgroup><col><col></colgroup><thead><tr><th>Option</th><th>Description</th></tr></thead><tbody><tr><td><tt class="literal">--naming=eg.MyNamingStrategy</tt></td><td>Indique une <tt class="literal">NamingStrategy</tt></td></tr><tr><td><tt class="literal">--properties=hibernate.properties</tt></td><td>lit les propri&eacute;t&eacute;s dela base de donn&eacute;es depuis un fichier de propri&eacute;t&eacute;s</td></tr><tr><td><tt class="literal">--config=hibernate.cfg.xml</tt></td><td>indique un fichier <tt class="literal">.cfg.xml</tt></td></tr></tbody></table></div><p>
+                Vous pouvez inclure <tt class="literal">SchemaValidator</tt> dans votre application:
+            </p><pre class="programlisting">Configuration cfg = ....;
+new SchemaValidator(cfg).validate();</pre></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="toolsetguide-s1-9"></a>20.1.7.&nbsp;Utiliser Ant pour la validation du Sch&eacute;ma</h3></div></div><div></div></div><p>
+                Vous pouvez appeler <tt class="literal">SchemaValidator</tt> depuis le script Ant:
+            </p><pre class="programlisting">&lt;target name="schemavalidate"&gt;
+    &lt;taskdef name="schemavalidator"
+        classname="org.hibernate.tool.hbm2ddl.SchemaValidatorTask"
+        classpathref="class.path"/&gt;
+    
+    &lt;schemavalidator
+        properties="hibernate.properties"&gt;
+        &lt;fileset dir="src"&gt;
+            &lt;include name="**/*.hbm.xml"/&gt;
+        &lt;/fileset&gt;
+    &lt;/schemaupdate&gt;
+&lt;/target&gt;</pre></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="performance.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="example-parentchild.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;19.&nbsp;Am&eacute;liorer les performances&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;21.&nbsp;Exemple : P&egrave;re/Fils</td></tr></table></div></body></html>

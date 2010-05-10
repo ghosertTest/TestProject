@@ -1,0 +1,304 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;16.&nbsp;SQL natif</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="querycriteria.html" title="Chapitre&nbsp;15.&nbsp;Requ&ecirc;tes par crit&egrave;res"><link rel="next" href="filters.html" title="Chapitre&nbsp;17.&nbsp;Filtrer les donn&eacute;es"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;16.&nbsp;SQL natif</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="querycriteria.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="filters.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="querysql"></a>Chapitre&nbsp;16.&nbsp;SQL natif</h2></div></div><div></div></div><p>
+        Vous pouvez aussi &eacute;crire vos requ&ecirc;tes dans le dialecte SQL natif de votre base de donn&eacute;es.
+        Ceci est utile si vous souhaitez utiliser les fonctionnalit&eacute;s sp&eacute;cifiques de votre base de
+        donn&eacute;es comme le mot cl&eacute; <tt class="literal">CONNECT</tt> d'Oracle. Cette fonctionnalit&eacute; offre par ailleurs un moyen
+        de migration plus propre et doux d'une application bas&eacute;e sur SQL/JDBC vers
+        une application Hibernate.
+    </p><p>Hibernate3 vous permet de sp&eacute;cifier du SQL &eacute;crit &agrave; la main (incluant les proc&eacute;dures stock&eacute;es) 
+  pour toutes les op&eacute;rations de cr&eacute;ation, mise &agrave; jour, suppression et chargement.</p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querysql-creating"></a>16.1.&nbsp;Utiliser une <tt class="literal">SQLQuery</tt></h2></div></div><div></div></div><p>L'ex&eacute;cution des requ&ecirc;tes en SQL natif est contr&ocirc;l&eacute;e par l'interface <tt class="literal">SQLQuery</tt>,
+        laquelle est obtenue en appelant <tt class="literal">Session.createSQLQuery()</tt>.
+        Dans des cas extr&ecirc;mement simples, nous pouvons utiliser la forme suivante :
+    </p><pre class="programlisting">List cats = sess.createSQLQuery("select * from cats")
+    .addEntity(Cat.class)
+    .list();</pre><p>Cette requ&ecirc;te a sp&eacute;cifi&eacute; :</p><div class="itemizedlist"><ul type="disc"><li><p>la requ&ecirc;te SQL</p></li><li><p>l'entit&eacute; retourn&eacute;e par la requ&ecirc;te</p></li></ul></div><p>
+        Ici, les noms de colonne des r&eacute;sultats sont suppos&eacute;s &ecirc;tre les m&ecirc;mes que les noms de colonne sp&eacute;cifi&eacute;s dans le
+        document de mapping. Cela peut &ecirc;tre probl&eacute;matique pour des requ&ecirc;tes SQL qui joignent de multiple tables, puisque
+        les m&ecirc;mes noms de colonne peuvent appara&icirc;tre dans plus d'une table. La forme suivante n'est pas vuln&eacute;rable &agrave; la
+        duplication des noms de colonne :
+    </p><pre class="programlisting">List cats = sess.createSQLQuery("select {cat.*} from cats cat")
+    .addEntity("cat", Cat.class)
+    .list();</pre><p>Cette requ&ecirc;te a sp&eacute;cifi&eacute; :</p><div class="itemizedlist"><ul type="disc"><li><p>la requ&ecirc;te SQL, avec un param&egrave;tre fictif pour Hibernate pour injecter les alias de colonne</p></li><li><p>l'entit&eacute; retourn&eacute;e par la requ&ecirc;te, et son alias de table SQL</p></li></ul></div><p>
+        La m&eacute;thode <tt class="literal">addEntity()</tt> associe l'alias de la table SQL
+        avec la classe de l'entit&eacute; retourn&eacute;e, et d&eacute;termine la forme de l'ensemble des r&eacute;sultats de la requ&ecirc;te.
+    </p><p>
+        La m&eacute;thode <tt class="literal">addJoin()</tt> peut &ecirc;tre utilis&eacute;e pour charger des associations vers d'autres
+        entit&eacute;s et collections.
+    </p><pre class="programlisting">List cats = sess.createSQLQuery(
+        "select {cat.*}, {kitten.*} from cats cat, cats kitten where kitten.mother = cat.id"
+    )
+    .addEntity("cat", Cat.class)
+    .addJoin("kitten", "cat.kittens")
+    .list();</pre><p>
+        Une requ&ecirc;te SQL native pourrait retourner une simple valeur scalaire ou une combinaison de scalaires et d'entit&eacute;s.
+    </p><pre class="programlisting">Double max = (Double) sess.createSQLQuery("select max(cat.weight) as maxWeight from cats cat")
+        .addScalar("maxWeight", Hibernate.DOUBLE);
+        .uniqueResult();</pre><p>Vous pouvez alternativement d&eacute;crire les informations de mapping des r&eacute;sultats dans vos fichiers hbm 
+    et les utiliser pour vos requ&ecirc;tes.</p><pre class="programlisting">List cats = sess.createSQLQuery(
+        "select {cat.*}, {kitten.*} from cats cat, cats kitten where kitten.mother = cat.id"
+    )
+    .setResultSetMapping("catAndKitten")
+    .list();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querysql-aliasreferences"></a>16.2.&nbsp;Alias et r&eacute;f&eacute;rences de propri&eacute;t&eacute;</h2></div></div><div></div></div><p>
+        La notation <tt class="literal">{cat.*}</tt> utilis&eacute;e au-dessus est un raccourci pour "toutes les propri&eacute;t&eacute;s".
+        Alternativement, vous pouvez lister explicitement les colonnes, mais m&ecirc;me ce cas que nous laissons &agrave; Hibernate
+        injecte des alias de colonne SQL pour chaque propri&eacute;t&eacute;. Le rempla&ccedil;ant pour un alias de colonne 
+        est juste le nom de la propri&eacute;t&eacute; qualifi&eacute; par l'alias de la table.
+        Dans l'exemple suivant, nous r&eacute;cup&eacute;rons des <tt class="literal">Cat</tt>s &agrave; partir d'une table diff&eacute;rente
+        (<tt class="literal">cat_log</tt>) de celle d&eacute;clar&eacute;e dans les m&eacute;ta-donn&eacute;es de mapping.
+        Notez que nous pouvons m&ecirc;me utiliser les alias de propri&eacute;t&eacute; dans la clause "where" si nous le souhaitons.
+    </p><p>
+        La syntaxe <tt class="literal">{}</tt> <span class="emphasis"><em>n'est pas</em></span> requise pour le requ&ecirc;tes nomm&eacute;es. Voir
+        <a href="querysql.html#querysql-namedqueries" title="16.3.&nbsp;Requ&ecirc;tes SQL nomm&eacute;es">Section&nbsp;16.3, &laquo;&nbsp;Requ&ecirc;tes SQL nomm&eacute;es&nbsp;&raquo;</a>.
+    </p><pre class="programlisting">String sql = "select cat.originalId as {cat.id}, " +
+    "cat.mateid as {cat.mate}, cat.sex as {cat.sex}, " +
+    "cat.weight*10 as {cat.weight}, cat.name as {cat.name} " +
+    "from cat_log cat where {cat.mate} = :catId"
+
+List loggedCats = sess.createSQLQuery(sql)
+    .addEntity("cat", Cat.class)
+    .setLong("catId", catId)
+    .list();</pre><p>
+        <span class="emphasis"><em>&Agrave; noter :</em></span> si vous listez chaque propri&eacute;t&eacute; explicitement, vous devez inclure 
+        toutes les propri&eacute;t&eacute;s de la classe <span class="emphasis"><em>et ses sous-classes</em></span> !
+    </p><p>
+        La table suivante montre les diff&eacute;rentes possibilit&eacute;s d'utilisation de l'injection d'alias. &Agrave; noter : les noms
+        des alias dans le r&eacute;sultat sont des exemples, chaque alias aura un nom unique et probablement diff&eacute;rent lors de l'utilisation.
+    </p><div class="table"><a name="aliasinjection-summary"></a><p class="title"><b>Tableau&nbsp;16.1.&nbsp;Noms d'injection d'alias</b></p><table summary="Noms d'injection d'alias" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Description</th><th>Syntaxe</th><th>Exemple</th><td class="auto-generated">&nbsp;</td></tr></thead><tbody><tr><td>Une simple propri&eacute;t&eacute;</td><td><tt class="literal">{[aliasname].[propertyname]}</tt></td><td><tt class="literal">A_NAME as {item.name}</tt></td><td class="auto-generated">&nbsp;</td></tr><tr><td>Une propri&eacute;t&eacute; compos&eacute;e</td><td><tt class="literal">{[aliasname].[componentname].[propertyname]}</tt></td><td><tt class="literal">CURRENCY as {item.amount.currency}, VALUE as
+            {item.amount.value}</tt></td><td class="auto-generated">&nbsp;</td></tr><tr><td>Discriminant d'une entit&eacute;</td><td><tt class="literal">{[aliasname].class}</tt></td><td><tt class="literal">DISC as {item.class}</tt></td><td class="auto-generated">&nbsp;</td></tr><tr><td>Toutes les propri&eacute;t&eacute;s d'une entit&eacute;</td><td><tt class="literal">{[aliasname].*}</tt></td><td><tt class="literal">{item.*}</tt></td><td class="auto-generated">&nbsp;</td></tr><tr><td>Une clef de collection</td><td><tt class="literal">{[aliasname].key}</tt></td><td><tt class="literal">ORGID as {coll.key}</tt></td><td class="auto-generated">&nbsp;</td></tr><tr><td>L'identifiant d'une collection</td><td><tt class="literal">{[aliasname].id}</tt></td><td><tt class="literal">EMPID as {coll.id}</tt></td><td class="auto-generated">&nbsp;</td></tr><tr><td>L'&eacute;l&eacute;ment d'une collection</td><td><tt class="literal">{[aliasname].element}</tt></td><td><tt class="literal">XID as {coll.element}</tt></td><td>&nbsp;</td></tr><tr><td>Propri&eacute;t&eacute; de l'&eacute;l&eacute;ment dans la collection</td><td><tt class="literal">{[aliasname].element.[propertyname]}</tt></td><td><tt class="literal">NAME as {coll.element.name}</tt></td><td class="auto-generated">&nbsp;</td></tr><tr><td>Toutes les propri&eacute;t&eacute;s de l'&eacute;l&eacute;ment dans la collection</td><td><tt class="literal">{[aliasname].element.*}</tt></td><td><tt class="literal">{coll.element.*}</tt></td><td class="auto-generated">&nbsp;</td></tr><tr><td>Toutes les propri&eacute;t&eacute;s de la collection</td><td><tt class="literal">{[aliasname].*}</tt></td><td><tt class="literal">{coll.*}</tt></td><td class="auto-generated">&nbsp;</td></tr></tbody></table></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querysql-namedqueries"></a>16.3.&nbsp;Requ&ecirc;tes SQL nomm&eacute;es</h2></div></div><div></div></div><p>
+        Les requ&ecirc;tes SQL nomm&eacute;es peuvent &ecirc;tre d&eacute;finies dans le document de mapping
+        et appel&eacute;es exactement de la m&ecirc;me mani&egrave;re qu'un requ&ecirc;te HQL nomm&eacute;e. Dans ce
+        cas, nous <span class="emphasis"><em>n'avons pas besoin</em></span> d'appeler <tt class="literal">addEntity()</tt>.
+    </p><pre class="programlisting">&lt;sql-query name="persons"&gt;
+    &lt;return alias="person" class="eg.Person"/&gt;
+    SELECT person.NAME AS {person.name},
+           person.AGE AS {person.age},
+           person.SEX AS {person.sex}
+    FROM PERSON person
+    WHERE person.NAME LIKE :namePattern
+&lt;/sql-query&gt;</pre><pre class="programlisting">List people = sess.getNamedQuery("persons")
+    .setString("namePattern", namePattern)
+    .setMaxResults(50)
+    .list();</pre><p>
+        Les &eacute;l&eacute;ments <tt class="literal">&lt;return-join&gt;</tt> et
+        <tt class="literal">&lt;load-collection&gt;</tt> sont respectivement utilis&eacute;s pour lier
+        des associations et d&eacute;finir des requ&ecirc;tes qui initialisent des collections.
+    </p><pre class="programlisting">&lt;sql-query name="personsWith"&gt;
+    &lt;return alias="person" class="eg.Person"/&gt;
+    &lt;return-join alias="address" property="person.mailingAddress"/&gt;
+    SELECT person.NAME AS {person.name},
+           person.AGE AS {person.age},
+           person.SEX AS {person.sex},
+           adddress.STREET AS {address.street},
+           adddress.CITY AS {address.city},
+           adddress.STATE AS {address.state},
+           adddress.ZIP AS {address.zip}
+    FROM PERSON person
+    JOIN ADDRESS adddress
+        ON person.ID = address.PERSON_ID AND address.TYPE='MAILING'
+    WHERE person.NAME LIKE :namePattern
+&lt;/sql-query&gt;</pre><p>
+        Une requ&ecirc;te SQL nomm&eacute;e peut retourner une valeur scalaire. Vous devez
+        sp&eacute;cifier l'alias de colonne et le type Hibernate utilisant l'&eacute;l&eacute;ment
+        <tt class="literal">&lt;return-scalar&gt;</tt> :</p><pre class="programlisting">&lt;sql-query name="mySqlQuery"&gt;
+    &lt;return-scalar column="name" type="string"/&gt;
+    &lt;return-scalar column="age" type="long"/&gt;
+    SELECT p.NAME AS name,
+           p.AGE AS age,
+    FROM PERSON p WHERE p.NAME LIKE 'Hiber%'
+&lt;/sql-query&gt;</pre><p>
+        Vous pouvez externaliser les informations de mapping des r&eacute;sultats dans un
+        &eacute;l&eacute;ment <tt class="literal">&lt;resultset&gt;</tt> pour soit les r&eacute;utiliser
+        dans diff&eacute;rentes requ&ecirc;tes nomm&eacute;es, soit &agrave; travers l'API
+        <tt class="literal">setResultSetMapping()</tt>.
+    </p><pre class="programlisting">&lt;resultset name="personAddress"&gt;
+    &lt;return alias="person" class="eg.Person"/&gt;
+    &lt;return-join alias="address" property="person.mailingAddress"/&gt;
+&lt;/resultset&gt;
+
+&lt;sql-query name="personsWith" resultset-ref="personAddress"&gt;
+    SELECT person.NAME AS {person.name},
+           person.AGE AS {person.age},
+           person.SEX AS {person.sex},
+           adddress.STREET AS {address.street},
+           adddress.CITY AS {address.city},
+           adddress.STATE AS {address.state},
+           adddress.ZIP AS {address.zip}
+    FROM PERSON person
+    JOIN ADDRESS adddress
+        ON person.ID = address.PERSON_ID AND address.TYPE='MAILING'
+    WHERE person.NAME LIKE :namePattern
+&lt;/sql-query&gt;</pre><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="propertyresults"></a>16.3.1.&nbsp;Utilisation de return-property pour sp&eacute;cifier explicitement les noms des colonnes/alias</h3></div></div><div></div></div><p>
+          Avec <tt class="literal">&lt;return-property&gt;</tt> vous pouvez explicitement dire
+          &agrave; Hibernate quels alias de colonne utiliser, plutot que d'employer la syntaxe
+          <tt class="literal">{}</tt> pour laisser Hibernate injecter ses propres alias.
+      </p><pre class="programlisting">&lt;sql-query name="mySqlQuery"&gt;
+    &lt;return alias="person" class="eg.Person"&gt;
+        &lt;return-property name="name" column="myName"/&gt;
+        &lt;return-property name="age" column="myAge"/&gt;
+        &lt;return-property name="sex" column="mySex"/&gt;
+    &lt;/return&gt;
+    SELECT person.NAME AS myName,
+           person.AGE AS myAge,
+           person.SEX AS mySex,
+    FROM PERSON person WHERE person.NAME LIKE :name
+&lt;/sql-query&gt;
+</pre><p>
+          <tt class="literal">&lt;return-property&gt;</tt> fonctionne aussi avec de
+          multiple colonnes. Cela r&eacute;sout une limitation de la syntaxe <tt class="literal">{}</tt>
+          qui ne peut pas permettre une bonne granularit&eacute; des propri&eacute;t&eacute;s multi-colonnes.
+      </p><pre class="programlisting">&lt;sql-query name="organizationCurrentEmployments"&gt;
+    &lt;return alias="emp" class="Employment"&gt;
+        &lt;return-property name="salary"&gt;
+            &lt;return-column name="VALUE"/&gt;
+            &lt;return-column name="CURRENCY"/&gt;
+        &lt;/return-property&gt;
+        &lt;return-property name="endDate" column="myEndDate"/&gt;
+    &lt;/return&gt;
+        SELECT EMPLOYEE AS {emp.employee}, EMPLOYER AS {emp.employer},
+        STARTDATE AS {emp.startDate}, ENDDATE AS {emp.endDate},
+        REGIONCODE as {emp.regionCode}, EID AS {emp.id}, VALUE, CURRENCY
+        FROM EMPLOYMENT
+        WHERE EMPLOYER = :id AND ENDDATE IS NULL
+        ORDER BY STARTDATE ASC
+&lt;/sql-query&gt;</pre><p>
+          Notez que dans cet exemple nous avons utilis&eacute; <tt class="literal">&lt;return-property&gt;</tt>
+          en combinaison avec la syntaxe <tt class="literal">{}</tt> pour l'injection. Cela autorise les
+          utilisateurs &agrave; choisir comment ils veulent r&eacute;f&eacute;rencer les colonnes et les propri&eacute;t&eacute;s.
+      </p><p>
+          Si votre mapping a un discriminant vous devez utiliser
+          <tt class="literal">&lt;return-discriminator&gt;</tt> pour sp&eacute;cifier la colonne
+          discriminante.
+      </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="sp_query"></a>16.3.2.&nbsp;Utilisation de proc&eacute;dures stock&eacute;es pour les requ&ecirc;tes</h3></div></div><div></div></div><p>
+          Hibernate 3 introduit le support des requ&ecirc;tes via proc&eacute;dures stock&eacute;es et les fonctions. 
+          La documentation suivante est valable pour les deux.
+          Les proc&eacute;dures stock&eacute;es/fonctions doivent retourner l'ensemble de r&eacute;sultats en tant que
+          premier param&egrave;tre sortant (NdT: "out-parameter") pour &ecirc;tre capable de fonctionner
+          avec Hibernate. Un exemple d'une telle proc&eacute;dure stock&eacute;e en Oracle 9 et
+          version sup&eacute;rieure :
+      </p><pre class="programlisting">CREATE OR REPLACE FUNCTION selectAllEmployments
+    RETURN SYS_REFCURSOR
+AS
+    st_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN st_cursor FOR
+ SELECT EMPLOYEE, EMPLOYER,
+ STARTDATE, ENDDATE,
+ REGIONCODE, EID, VALUE, CURRENCY
+ FROM EMPLOYMENT;
+      RETURN  st_cursor;
+ END;</pre><p>Pour utiliser cette requ&ecirc;te dans Hibernate vous avez besoin de la mapper via une requ&ecirc;te nomm&eacute;e.</p><pre class="programlisting">&lt;sql-query name="selectAllEmployees_SP" callable="true"&gt;
+    &lt;return alias="emp" class="Employment"&gt;
+        &lt;return-property name="employee" column="EMPLOYEE"/&gt;
+        &lt;return-property name="employer" column="EMPLOYER"/&gt;
+        &lt;return-property name="startDate" column="STARTDATE"/&gt;
+        &lt;return-property name="endDate" column="ENDDATE"/&gt;
+        &lt;return-property name="regionCode" column="REGIONCODE"/&gt;
+        &lt;return-property name="id" column="EID"/&gt;
+        &lt;return-property name="salary"&gt;
+            &lt;return-column name="VALUE"/&gt;
+            &lt;return-column name="CURRENCY"/&gt;
+        &lt;/return-property&gt;
+    &lt;/return&gt;
+    { ? = call selectAllEmployments() }
+&lt;/sql-query&gt;</pre><p>
+          Notez que les proc&eacute;dures stock&eacute;es retournent, pour le moment, seulement des
+          scalaires et des entit&eacute;s. <tt class="literal">&lt;return-join&gt;</tt> et
+          <tt class="literal">&lt;load-collection&gt;</tt> ne sont pas support&eacute;s.
+      </p><div class="sect3" lang="fr"><div class="titlepage"><div><div><h4 class="title"><a name="querysql-limits-storedprocedures"></a>16.3.2.1.&nbsp;R&egrave;gles/limitations lors de l'utilisation des proc&eacute;dures stock&eacute;es</h4></div></div><div></div></div><p>
+            Pur utiliser des proc&eacute;dures stock&eacute;es avec Hibernate, les proc&eacute;dures doivent
+            suivre certaines r&egrave;gles. Si elles ne suivent pas ces r&egrave;gles, elles ne sont pas
+            utilisables avec Hibernate. Si vous voulez encore utiliser ces proc&eacute;dures vous
+            devez les ex&eacute;cuter via <tt class="literal">session.connection()</tt>. Les r&egrave;gles
+            sont diff&eacute;rentes pour chaque base de donn&eacute;es, puisque les vendeurs de base
+            de donn&eacute;es ont des s&eacute;mantiques/syntaxes diff&eacute;rentes pour les proc&eacute;dures stock&eacute;es.
+        </p><p>Les requ&ecirc;tes de proc&eacute;dures stock&eacute;es ne peuvent pas &ecirc;tre pagin&eacute;es avec
+            <tt class="literal">setFirstResult()/setMaxResults()</tt>.</p><p>Pour Oracle les r&egrave;gles suivantes s'appliquent :</p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                La proc&eacute;dure doit retourner un ensemble de r&eacute;sultats. Le
+                prmeier param&egrave;tre d'une proc&eacute;dure doit &ecirc;tre un <tt class="literal">OUT</tt> 
+                qui retourne un ensemble de r&eacute;sultats. Ceci est fait en
+                retournant un <tt class="literal">SYS_REFCURSOR</tt> dans Oracle 9 ou 10. Dans
+                Oracle vous avez besoin de d&eacute;finir un type <tt class="literal">REF CURSOR</tt>.</p></li></ul></div><p>Pour Sybase ou MS SQL server les r&egrave;gles suivantes s'appliquent :</p><div class="itemizedlist"><ul type="disc" compact><li><p>La proc&eacute;dure doit retourner un ensemble de r&eacute;sultats. Notez que comme
+            ces serveurs peuvent retourner de multiples ensembles de r&eacute;sultats et mettre &agrave; jour
+            des compteurs, Hibernate it&eacute;rera les r&eacute;sultats et prendra le premier r&eacute;sultat qui est
+            un ensemble de r&eacute;sultat comme valeur de retour. Tout le reste sera ignor&eacute;.</p></li><li><p>Si vous pouvez activer <tt class="literal">SET NOCOUNT ON</tt> dans votre proc&eacute;dure,
+                elle sera probablement plus efficace, mais ce n'est pas une obligation.</p></li></ul></div></div></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querysql-cud"></a>16.4.&nbsp;SQL personnalis&eacute; pour cr&eacute;er, mettre &agrave; jour et effacer</h2></div></div><div></div></div><p>
+        Hibernate3 peut utiliser des expression SQL personnalis&eacute;es pour des op&eacute;rations de cr&eacute;ation,
+        de mise &agrave; jour, et de suppression. Les objets persistants les classes et les collections
+        dans Hibernate contiennent d&eacute;j&agrave; un ensemble de cha&icirc;nes de caract&egrave;res g&eacute;n&eacute;r&eacute;es lors de la
+        configuration (insertsql, deletesql, updatesql, etc). Les tages de mapping
+    <tt class="literal">&lt;sql-insert&gt;</tt>,
+    <tt class="literal">&lt;sql-delete&gt;</tt>, et
+    <tt class="literal">&lt;sql-update&gt;</tt> surchargent ces cha&icirc;nes de caract&egrave;res :</p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id"&gt;
+        &lt;generator class="increment"/&gt;
+    &lt;/id&gt;
+    &lt;property name="name" not-null="true"/&gt;
+    &lt;sql-insert&gt;INSERT INTO PERSON (NAME, ID) VALUES ( UPPER(?), ? )&lt;/sql-insert&gt;
+    &lt;sql-update&gt;UPDATE PERSON SET NAME=UPPER(?) WHERE ID=?&lt;/sql-update&gt;
+    &lt;sql-delete&gt;DELETE FROM PERSON WHERE ID=?&lt;/sql-delete&gt;
+&lt;/class&gt;</pre><p>Le SQL est directement ex&eacute;cut&eacute; dans votre base de donn&eacute;es, donc vous &ecirc;tes libre d'utiliser
+        le dialecte que vous souhaitez. Cela r&eacute;duira bien s&ucirc;r la portabilit&eacute; de votre mapping si vous
+        utilisez du SQL sp&eacute;cifique &agrave; votre base de donn&eacute;es.</p><p>Les proc&eacute;dures stock&eacute;es sont support&eacute;es si l'attribut <tt class="literal">callable</tt> est param&eacute;tr&eacute; :</p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id"&gt;
+        &lt;generator class="increment"/&gt;
+    &lt;/id&gt;
+    &lt;property name="name" not-null="true"/&gt;
+    &lt;sql-insert callable="true"&gt;{call createPerson (?, ?)}&lt;/sql-insert&gt;
+    &lt;sql-delete callable="true"&gt;{? = call deletePerson (?)}&lt;/sql-delete&gt;
+    &lt;sql-update callable="true"&gt;{? = call updatePerson (?, ?)}&lt;/sql-update&gt;
+&lt;/class&gt;</pre><p>L'ordre des param&egrave;tres positionnels est actuellement vital, car ils doivent &ecirc;tre dans la
+        m&ecirc;me s&eacute;quence qu'Hibernate les attend.</p><p>
+        Vous pouvez voir l'ordre attendu en activant les journaux de debug pour le
+        niveau <tt class="literal">org.hibernate.persister.entity</tt> level. Avec ce niveau activ&eacute;,
+        Hibernate imprimera le SQL statique qui est utilis&eacute; pour cr&eacute;er, mettre &agrave; jour,
+        supprimer, etc. des entit&eacute;s. (Pour voir la s&eacute;quence attendue, rappelez-vous de ne pas
+        inclure votre SQL personnalis&eacute; dans les fichiers de mapping de mani&egrave;re &agrave; surcharger le
+        SQL statique g&eacute;n&eacute;r&eacute; par Hibernate.)</p><p>Les proc&eacute;dures stock&eacute;es sont dans la plupart des cas (lire : il vaut mieux le faire)
+    requises pour retourner le nombre de lignes ins&eacute;r&eacute;es/mises &agrave; jour/supprim&eacute;es, puisque
+    Hibernate fait quelques v&eacute;rifications de succ&egrave;s lors de l'ex&eacute;cution de l'expression.
+    Hibernate inscrit toujours la premi&egrave;re expression comme un param&egrave;tre de sortie num&eacute;rique pour les
+    op&eacute;rations CUD :</p><pre class="programlisting">CREATE OR REPLACE FUNCTION updatePerson (uid IN NUMBER, uname IN VARCHAR2)
+    RETURN NUMBER IS
+BEGIN
+
+    update PERSON
+    set
+        NAME = uname,
+    where
+        ID = uid;
+
+    return SQL%ROWCOUNT;
+
+END updatePerson;</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querysql-load"></a>16.5.&nbsp;SQL personnalis&eacute; pour le chargement</h2></div></div><div></div></div><p>Vous pouvez aussi d&eacute;clarer vos propres requ&ecirc;tes SQL (ou HQL) pour le chargement d'entit&eacute; :</p><pre class="programlisting">&lt;sql-query name="person"&gt;
+    &lt;return alias="pers" class="Person" lock-mode="upgrade"/&gt;
+    SELECT NAME AS {pers.name}, ID AS {pers.id}
+    FROM PERSON
+    WHERE ID=?
+    FOR UPDATE
+&lt;/sql-query&gt;</pre><p>Ceci est juste une d&eacute;claration de requ&ecirc;te nomm&eacute;e, comme vu plus t&ocirc;t. Vous pouvez r&eacute;f&eacute;rencer
+    cette requ&ecirc;te nomm&eacute;e dans un mapping de classe :</p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="id"&gt;
+        &lt;generator class="increment"/&gt;
+    &lt;/id&gt;
+    &lt;property name="name" not-null="true"/&gt;
+    &lt;loader query-ref="person"/&gt;
+&lt;/class&gt;</pre><p>Ceci fonctionne m&ecirc;me avec des proc&eacute;dures stock&eacute;es.</p><p>Vous pouvez m&ecirc;me d&eacute;finir une requ&ecirc;te pour le chargement d'une collection :</p><pre class="programlisting">&lt;set name="employments" inverse="true"&gt;
+    &lt;key/&gt;
+    &lt;one-to-many class="Employment"/&gt;
+    &lt;loader query-ref="employments"/&gt;
+&lt;/set&gt;</pre><pre class="programlisting">&lt;sql-query name="employments"&gt;
+    &lt;load-collection alias="emp" role="Person.employments"/&gt;
+    SELECT {emp.*}
+    FROM EMPLOYMENT emp
+    WHERE EMPLOYER = :id
+    ORDER BY STARTDATE ASC, EMPLOYEE ASC
+&lt;/sql-query&gt;</pre><p>Vous pourriez m&ecirc;me d&eacute;finir un chargeur d'entit&eacute; qui charge une collection par jointure :</p><pre class="programlisting">&lt;sql-query name="person"&gt;
+    &lt;return alias="pers" class="Person"/&gt;
+    &lt;return-join alias="emp" property="pers.employments"/&gt;
+    SELECT NAME AS {pers.*}, {emp.*}
+    FROM PERSON pers
+    LEFT OUTER JOIN EMPLOYMENT emp
+        ON pers.ID = emp.PERSON_ID
+    WHERE ID=?
+&lt;/sql-query&gt;</pre></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="querycriteria.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="filters.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;15.&nbsp;Requ&ecirc;tes par crit&egrave;res&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;17.&nbsp;Filtrer les donn&eacute;es</td></tr></table></div></body></html>

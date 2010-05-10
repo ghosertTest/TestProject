@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.4.2_04" class="java.beans.XMLDecoder"> 
+ <object class="com.horstmann.violet.ClassDiagramGraph"> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
+    <void property="attributes"> 
+     <void property="text"> 
+      <string>-totalRecorders:int
+-recordersPerPage:int
+-availablePages:int
+-currentPage:int
+-content:ArrayList</string> 
+     </void> 
+    </void> 
+    <void property="methods"> 
+     <void property="text"> 
+      <string>+ShowPages(initTotalRecorders:int, initRecordersPerPage:int, initAvailablePages:int, initCurrentPage:int, initContent:ArrayList)
++getTotalRecorders():int
++getRecordersPerPage():int
++getTotalPages():int
++getAvailablePages():int
++getMinAvailablePage():int
++getMaxAvailablePage();int
++getCurrentPage():int
++getNextPage():int
++getPrePage():int
++getContent():ArrayList</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>ShowPages(class)</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>220.0</double> 
+    <double>50.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.NoteNode"> 
+    <void property="text"> 
+     <void property="text"> 
+      <string>记录总数
+每页记录数
+页面总数
+每屏可供点击页数
+最小可点击页面
+最大可点击页面
+当前页面
+下一页面
+上一页面
+要显示的内容</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>80.0</double> 
+    <double>170.0</double> 
+   </object> 
+  </void> 
+ </object> 
+</java> 

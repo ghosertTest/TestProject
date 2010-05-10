@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+        Auto-generated mapping file from
+        the hibernate.org cfg2hbm engine
+-->
+    <class name="com.loadtrend.TGroup" table="t_group" catalog="test_hibernate">
+        <id name="id" type="integer">
+            <column name="id" />
+            <generator class="native" />
+        </id>
+        <property name="name" type="string">
+            <column name="name" length="50" />
+        </property>
+        <set name="users" table="T_User" cascade="all" order-by="name asc" inverse="true">
+            <key column="group_id">
+            </key>
+            <one-to-many class="com.loadtrend.TUser"/>
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,57 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+    <head>
+        <title>t5first Start Page</title>
+    </head>
+    <body>
+        <h1>My First Tapestry Application</h1>
+
+        <p> This is the start page for this application, a good place to start your modifications.
+            Just to prove this is live: </p>
+
+        <p> The current time is: ${currentTime}. </p>
+        
+        <p> The same date and time in milliseconds is: ${currentTime.time}. </p>
+        
+        <!--
+            <p> The hashCode of currentTime: ${currentTime.hashCode}. </p>
+            The clause above will raise an error, since hashCode is a non-getter method, use ${currentTime.hashCode() instead.}
+        -->
+        
+        <p> The hashCode(a non-getter method) of currentTime: ${currentTime.hashCode()}. </p>
+        
+        <p> Here is the value: ${someValue} </p>
+
+        <p>
+            <!--
+            [<t:pagelink t:page="Another">Go to Another page</t:pagelink>]
+            -->
+            <a href="#" t:type="PageLink" t:page="Another">Go to Another page</a>
+        </p>
+
+        <p>
+            <!-- Creating a sub-package of pages package -->
+            <a href="#" t:type="PageLink" t:page="secure/Payment"> Go to the secure Payment page </a>
+        </p>
+
+        <t:if t:test="userExists">
+            <p>The user is ${user.firstName} ${user.lastName}</p>
+        </t:if>
+        
+        <p>Submit a message:</p>
+        
+        <t:form t:id="userInputForm">
+            <!-- Use <input type="text" t:type="textfield" t:value="message"/>
+                 instead of <t:textfield t:value="message"/> for preview purpose. -->
+
+            <!-- When rendering the start page, it will invoke Start.getMessage() method -->
+            <!-- When submit the start page, it will invoke Start.setMessage(String message) method -->
+            <input type="text" t:type="textfield" t:value="message"/>
+            <input type="submit" value="Submit"/>
+        </t:form>
+        
+        <p>
+            <a href="#" t:type="PageLink" t:page="Start2">Go to Start2 Page to see more simple components.</a>
+        </p>
+        
+    </body>
+</html>

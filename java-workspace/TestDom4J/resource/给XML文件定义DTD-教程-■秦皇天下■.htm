@@ -1,0 +1,923 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0054)http://www.qhtx.net/edu/ShowArticle.asp?ArticleID=8961 -->
+<HTML><HEAD><TITLE>给XML文件定义DTD-教程-■秦皇天下■</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK 
+href="给XML文件定义DTD-教程-■秦皇天下■.files/Skin2.css" type=text/css rel=stylesheet>
+<SCRIPT language=JavaScript src="给XML文件定义DTD-教程-■秦皇天下■.files/menu.js" 
+type=text/JavaScript></SCRIPT>
+
+<SCRIPT language=JavaScript1.2 src="给XML文件定义DTD-教程-■秦皇天下■.files/stm31.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=javascript>
+var url="/edu";var key="给XML文件定义DTD";var id="8961";
+function h(obj,url){obj.style.behavior='url(#default#homepage)';obj.setHomePage(url);}
+</SCRIPT>
+
+<SCRIPT src="给XML文件定义DTD-教程-■秦皇天下■.files/PeanutManLocation.js"></SCRIPT>
+
+<META content="给XML文件定义DTD 给XML文件定义DTD 给XML文件定义DTD 给XML文件定义DTD 给XML文件定义DTD" 
+name=keywords>
+<META content="网络学院，技术教程 给XML文件定义DTD" name=description>
+<SCRIPT language=JavaScript type=text/JavaScript>
+//改变图片大小
+function resizepic(thispic)
+{
+if(thispic.width>700) thispic.width=700;
+}
+//无级缩放图片大小
+function bbimg(o)
+{
+  var zoom=parseInt(o.style.zoom, 10)||100;
+  zoom+=event.wheelDelta/12;
+  if (zoom>0) o.style.zoom=zoom+'%';
+  return false;
+}
+//双击鼠标滚动屏幕的代码
+var currentpos,timer;
+function initialize()
+{
+timer=setInterval ("scrollwindow ()",30);
+}
+function sc()
+{
+clearInterval(timer);
+}
+function scrollwindow()
+{
+currentpos=document.body.scrollTop;
+window.scroll(0,++currentpos);
+if (currentpos !=document.body.scrollTop)
+sc();
+}
+document.onmousedown=sc
+document.ondblclick=initialize
+
+//更改字体大小
+var status0='';
+var curfontsize=10;
+var curlineheight=18;
+function fontZoomA(){
+  if(curfontsize>8){
+    document.getElementById('fontzoom').style.fontSize=(--curfontsize)+'pt';
+	document.getElementById('fontzoom').style.lineHeight=(--curlineheight)+'pt';
+  }
+}
+function fontZoomB(){
+  if(curfontsize<64){
+    document.getElementById('fontzoom').style.fontSize=(++curfontsize)+'pt';
+	document.getElementById('fontzoom').style.lineHeight=(++curlineheight)+'pt';
+  }
+}
+</SCRIPT>
+
+<META content="MSHTML 6.00.2800.1555" name=GENERATOR></HEAD>
+<BODY onmousemove=HideMenu() leftMargin=0 topMargin=0>
+<DIV id=menuDiv 
+style="Z-INDEX: 1000; VISIBILITY: hidden; WIDTH: 1px; POSITION: absolute; HEIGHT: 1px; BACKGROUND-COLOR: #9cc5f8"></DIV>
+<TABLE cellSpacing=0 cellPadding=0 width=1000 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD width=252><A href="http://www.qhtx.net/"><IMG height=129 
+      src="给XML文件定义DTD-教程-■秦皇天下■.files/top_1.jpg" width=252 border=0></A></TD>
+    <TD vAlign=top width=748>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD height=64>
+            <TABLE cellSpacing=0 cellPadding=0 width=748 border=0>
+              <TBODY>
+              <TR>
+                <TD vAlign=top width=232 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/top_2.jpg height=64></TD>
+                <TD vAlign=top 
+                  background=给XML文件定义DTD-教程-■秦皇天下■.files/top_3.jpg><TABLE 
+                  cellSpacing=0 cellPadding=0 width="100%" border=0>
+                    <TBODY>
+                    <TR>
+                      <TD width=705 height=12></TD>
+                      <TD width=7 rowSpan=2></TD></TR>
+                    <TR>
+                      <TD align=right>
+                        <TABLE height=22 cellSpacing=0 cellPadding=0 width=488 
+                        border=0>
+                          <TBODY>
+                          <TR>
+                            <TD><IFRAME id=UserLogin 
+                              src="给XML文件定义DTD-教程-■秦皇天下■.files/UserLogin.htm" 
+                              frameBorder=0 width=488 scrolling=no 
+                              height=22></IFRAME></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR>
+        <TR>
+          <TD height=65>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD vAlign=top width=248 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/top_4.jpg height=65>
+                  <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+                    <TBODY>
+                    <TR>
+                      <TD>
+                        <DIV align=right><A title=天下论坛 
+                        href="http://www.qhtx.net/bbs" target=_blank><IMG 
+                        height=42 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/index_head_06.gif" 
+                        width=42 border=0></A> <A title=天下博客 
+                        href="http://www.qhtx.net/blog" target=_blank><IMG 
+                        height=42 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/index_head_08.gif" 
+                        width=42 border=0></A> <A title=留言反馈 
+                        href="http://www.qhtx.net/GuestBook" target=_blank><IMG 
+                        height=42 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/index_head_07.gif" 
+                        width=42 border=0></A> <A title=用户中心 
+                        href="http://www.qhtx.net/User/User_ControlPad.asp" 
+                        target=_blank><IMG height=42 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/index_head_09.gif" 
+                        width=42 border=0></A></DIV></TD>
+                      <TD width=23></TD></TR></TBODY></TABLE></TD>
+                <TD vAlign=top 
+                  background=给XML文件定义DTD-教程-■秦皇天下■.files/top_5.jpg><TABLE 
+                  cellSpacing=0 cellPadding=0 width="100%" border=0>
+                    <TBODY>
+                    <TR>
+                      <TD height=11></TD></TR>
+                    <TR>
+                      <TD height=46>
+                        <SCRIPT language=javascript 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/qhtx_head_480.js" 
+                        type=text/javascript></SCRIPT>
+                      </TD></TR>
+                    <TR>
+                      <TD height=8></TD></TR></TBODY></TABLE></TD>
+                <TD width=15 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/top_6.jpg></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width=1000 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top background=给XML文件定义DTD-教程-■秦皇天下■.files/top_7.jpg height=23>
+      <TABLE class=yinying cellSpacing=0 cellPadding=0 width=1000 align=center 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD width=10></TD>
+          <TD align=left>
+            <SCRIPT language=javascript 
+            src="给XML文件定义DTD-教程-■秦皇天下■.files/channel.js" 
+            type=text/javascript></SCRIPT>
+          </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width=1000 align=center bgColor=#ffffff 
+border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <SCRIPT language=javascript 
+      src="给XML文件定义DTD-教程-■秦皇天下■.files/qhtx_head_1000.js" 
+      type=text/javascript></SCRIPT>
+    </TD></TR></TBODY></TABLE>
+<TABLE class=BG-RepeatXB cellSpacing=0 cellPadding=0 width=1000 align=center 
+background=给XML文件定义DTD-教程-■秦皇天下■.files/BG_TableTop3.gif border=0>
+  <TBODY>
+  <TR>
+    <TD width=10><IMG height=24 
+      src="给XML文件定义DTD-教程-■秦皇天下■.files/BG_TableTop3.gif" width=10></TD>
+    <TD vAlign=center>
+      <SCRIPT language=JavaScript1.2 
+      src="给XML文件定义DTD-教程-■秦皇天下■.files/ShowClass_Menu.js" 
+      type=text/JavaScript></SCRIPT>
+    </TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=1 width=1000 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD width=998 bgColor=#595971>
+      <TABLE cellSpacing=0 cellPadding=0 width=998 align=center bgColor=#ffffff 
+      border=0>
+        <TBODY>
+        <TR>
+          <TD width=10 height=24>&nbsp;</TD>
+          <TD width=869>&nbsp;您现在的位置：&nbsp;<A class=LinkPath 
+            href="http://www.qhtx.net/">秦皇天下</A>&nbsp;&gt;&gt;&nbsp;<A 
+            class=LinkPath 
+            href="http://www.qhtx.net/edu/Index.html">学院</A>&nbsp;&gt;&gt;&nbsp;<A 
+            class=LinkPath 
+            href="http://www.qhtx.net/edu/web/Index.html">网络编程</A>&nbsp;&gt;&gt;&nbsp;<A 
+            class=LinkPath href="http://www.qhtx.net/edu/web/xml/Index.html">XML 
+            专区</A>&nbsp;&gt;&gt;&nbsp;<A class=LinkPath 
+            href="http://www.qhtx.net/edu/web/xml/xml/Index.html">XML</A>&nbsp;&gt;&gt;&nbsp;<A 
+            class=LinkPath 
+            href="http://www.qhtx.net/edu/web/xml/xml/xml1/Index.html">基础教程</A>&nbsp;&gt;&gt;&nbsp;教程正文</TD>
+          <TD align=middle width=54>&nbsp;</TD>
+          <TD><A title=收藏的网页将被永久地保存到新浪ViVi收藏夹http://vivi.sina.com.cn 
+            href="javascript:d=document;t=d.selection?(d.selection.type!='None'?d.selection.createRange().text:''):(d.getSelection?d.getSelection():'');void(vivi=window.open('http://vivi.sina.com.cn/collect/icollect.php?pid=www.im54.com&amp;title='+escape(d.title)+'&amp;url='+escape(d.location.href)+'&amp;desc='+escape(t),'vivi','scrollbars=no,width=480,height=480,left=75,top=20,status=no,resizable=yes'));vivi.focus();"><IMG 
+            src="给XML文件定义DTD-教程-■秦皇天下■.files/vivi_coop.gif" border=0></A></TD>
+          <TD width=13>&nbsp;</TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width=1000 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top width=200 background=给XML文件定义DTD-教程-■秦皇天下■.files/Left_BG.gif 
+    height=450>
+      <TABLE height="100%" cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD class=BG-RepeatNoB vAlign=top 
+          background=给XML文件定义DTD-教程-■秦皇天下■.files/Left_BG_Bottom.gif>
+            <TABLE id=LeftTB cellSpacing=0 cellPadding=0 width=190 border=0>
+              <TBODY>
+              <TR>
+                <TD class=LeftMenu_Title onmouseover=LeftMenuOver(Img1) 
+                style="CURSOR: hand" onclick=LeftMenuClick(Img1) 
+                onmouseout=LeftMenuOut(Img1) width=161 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_TitleBG_Open.gif 
+                height=27>本站推荐</TD>
+                <TD width=7 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_Right.gif><IMG 
+                  id=Img1 height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_Right_Over.gif" 
+                  width=7></TD></TR>
+              <TR vAlign=top>
+                <TD bgColor=#e5e5e5 colSpan=2>
+                  <TABLE cellSpacing=0 cellPadding=0 width=190 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD class=LeftMenu-PaddingL>
+                        <SCRIPT language=javascript 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/edu_bztj_175.js">
+            </SCRIPT>
+                      </TD>
+                      <TD width=7 
+                      background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_RightBG.gif><IMG 
+                        height=7 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_RightBG.gif" 
+                        width=7></TD></TR>
+                    <TR>
+                      <TD 
+                      background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_BottomBG.gif 
+                      height=5><IMG height=5 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_BottomBG.gif" 
+                        width=3></TD>
+                      <TD vAlign=top><IMG height=5 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_RightCorner.gif" 
+                        width=7></TD></TR></TBODY></TABLE></TD></TR>
+              <TR>
+                <TD colSpan=2 height=4></TD></TR>
+              <TR>
+                <TD class=LeftMenu_Title onmouseover=LeftMenuOver(Img2) 
+                style="CURSOR: hand" onclick=LeftMenuClick(Img2) 
+                onmouseout=LeftMenuOut(Img2) width=161 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_TitleBG_Open.gif 
+                height=27>精彩链接</TD>
+                <TD width=7 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_Right.gif><IMG 
+                  id=Img2 height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_Right_Over.gif" 
+                  width=7></TD></TR>
+              <TR vAlign=top>
+                <TD bgColor=#e5e5e5 colSpan=2>
+                  <TABLE cellSpacing=0 cellPadding=0 width=190 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD class=LeftMenu-PaddingL>
+                        <SCRIPT language=javascript 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/qhtx_jclj_175.js">
+            </SCRIPT>
+                      </TD>
+                      <TD width=7 
+                      background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_RightBG.gif><IMG 
+                        height=7 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_RightBG.gif" 
+                        width=7></TD></TR>
+                    <TR>
+                      <TD 
+                      background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_BottomBG.gif 
+                      height=5><IMG height=5 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_BottomBG.gif" 
+                        width=3></TD>
+                      <TD vAlign=top><IMG height=5 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_RightCorner.gif" 
+                        width=7></TD></TR></TBODY></TABLE></TD></TR>
+              <TR>
+                <TD colSpan=2 height=4></TD></TR>
+              <TR>
+                <TD class=LeftMenu_Title onmouseover=LeftMenuOver(Img5) 
+                style="CURSOR: hand" onclick=LeftMenuClick(Img5) 
+                onmouseout=LeftMenuOut(Img5) width=161 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_TitleBG_Sub.gif 
+                height=27>相关链接</TD>
+                <TD width=7 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_Right.gif><IMG 
+                  id=Img5 height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_Right_Over.gif" 
+                  width=7></TD></TR>
+              <TR vAlign=top>
+                <TD bgColor=#e5e5e5 colSpan=2>
+                  <TABLE cellSpacing=0 cellPadding=0 width=190 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD class=LeftMenu-PaddingL width=161>
+                        <SCRIPT language=javascript 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/edu_xglj_175.js"></SCRIPT>
+                      </TD>
+                      <TD width=7 
+                      background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_RightBG.gif><IMG 
+                        height=7 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_RightBG.gif" 
+                        width=7></TD></TR>
+                    <TR>
+                      <TD 
+                      background=给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_BottomBG.gif 
+                      height=5><IMG height=5 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_BottomBG.gif" 
+                        width=3></TD>
+                      <TD vAlign=top><IMG height=5 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/LeftMenu_RightCorner.gif" 
+                        width=7></TD></TR></TBODY></TABLE></TD></TR>
+              <TR>
+                <TD colSpan=2 height=8></TD></TR>
+              <TR>
+                <TD colSpan=2>
+                  <SCRIPT language=javascript 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/edu_ad_175.js"></SCRIPT>
+                </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD>
+    <TD class=BG-RepeatNO vAlign=top width=800 
+    background=给XML文件定义DTD-教程-■秦皇天下■.files/TopTitle_PeanutMail.gif 
+    bgColor=#ffffff>
+      <TABLE cellSpacing=0 cellPadding=0 width=800 border=0>
+        <TBODY>
+        <TR>
+          <TD vAlign=top>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD colSpan=3 height=22></TD></TR>
+              <TR>
+                <TD class=main_1 vAlign=top align=right width=177 
+                height=28>教程</TD>
+                <TD class=main_1 vAlign=top align=right width=12></TD>
+                <TD vAlign=bottom width=361>
+                  <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+                    <TBODY>
+                    <TR>
+                      <TD 
+              class=main_1>给XML文件定义DTD</TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD>
+          <TD vAlign=center align=middle width=215>
+            <SCRIPT language=javascript 
+            src="给XML文件定义DTD-教程-■秦皇天下■.files/edu_title_right_215.js"></SCRIPT>
+          </TD></TR>
+        <TR vAlign=bottom>
+          <TD noWrap align=middle colSpan=2 height=66>
+            <SCRIPT language=javascript 
+            src="给XML文件定义DTD-教程-■秦皇天下■.files/wangzhai.js"></SCRIPT>
+          </TD></TR>
+        <TR vAlign=bottom>
+          <TD colSpan=2 height=35>&nbsp;</TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width=760 align=center border=0>
+        <TBODY>
+        <TR>
+          <TD class=LH-150 id=fontzoom style="WORD-BREAK: break-all" vAlign=top 
+          colSpan=2>
+            <TABLE cellSpacing=0 cellPadding=10 align=right border=0>
+              <TBODY>
+              <TR>
+                <TD><BR>
+                  <SCRIPT type=text/javascript><!--
+google_ad_client = "pub-7437490146112963";
+google_alternate_ad_url = "http://www.qhtx.net/AD/gy/edu_250.htm";
+google_ad_width = 250;
+google_ad_height = 250;
+google_ad_format = "250x250_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "FFFFFF";
+google_color_bg = "FFFFFF";
+google_color_link = "000000";
+google_color_url = "940F04";
+google_color_text = "000000";
+//--></SCRIPT>
+
+                  <SCRIPT src="给XML文件定义DTD-教程-■秦皇天下■.files/show_ads.js" 
+                  type=text/javascript>
+</SCRIPT>
+                  <BR>
+                  <SCRIPT language=javascript 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/edu_content_250.js"></SCRIPT>
+                </TD></TR></TBODY></TABLE>
+            <SCRIPT type=text/javascript><!--
+google_ad_client = "pub-7437490146112963";
+google_alternate_ad_url = "http://www.qhtx.net/AD/gy/edu_760.htm";
+google_ad_width = 728;
+google_ad_height = 15;
+google_ad_format = "728x15_0ads_al_s";
+google_ad_channel ="";
+google_color_border = "FFFFFF";
+google_color_bg = "FFFFFF";
+google_color_link = "000000";
+google_color_url = "940F04";
+google_color_text = "000000";
+//--></SCRIPT>
+
+            <SCRIPT src="给XML文件定义DTD-教程-■秦皇天下■.files/show_ads.js" 
+            type=text/javascript>
+</SCRIPT>
+            &nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+            class=content>DTD实际上可以看作一个或多个XML文件的模板，这些XML文件中的元素、元素的属性、元素的排列方式/顺序、元素能够包含的内容等，都必须符合DTD中的定义。XML文件中的元素，即我们所创建的标记，是根据我们应用的实际情况来创建的。想要创建一份完整性高、适应性广的DTD是非常困难的，因为各行各业都有他们自己的行业特点，所以DTD通常是以某种应用领域为定义的范围，如：医学、建筑、工商、行政。DTD定义的元素含盖范围越广泛，那么就越复杂。<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;DTD可以是一个完全独立的文件，也可以在XML文件中直接设定。所以，DTD分为外部DTD（在XML文件中调用另外已经编辑好的DTD）和内部DTD（在XML文件中直接设定DTD）两种。比如，有几十家相互联系的、合作伙伴关系的公司、厂商，他们相互之间的交换电子文档都是用XML文档。那么我们可以将这些XML文档的DTD放在某个地方，让所有交换的XML文档都使用此DTD，这是最方便的做法，同时也适用于公司内部的XML文件使用。<BR><BR><STRONG>内部DTD<BR><BR></STRONG>内部DTD是在XML文件的文件序言区域中定义的。语法：<BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width=580 border=0>
+              <TBODY>
+              <TR>
+                <TD class=code bgColor=#e6e6e6><STRONG>〈!DOCTYPE 
+                  element-name[........<BR><BR>]〉</STRONG> 
+            </TD></TR></TBODY></TABLE><BR><BR>〈!DOCTYPE 
+            ：表示开始设定DTD，注意DOCUTYPE是大写。<BR><BR>Element-name 
+            ：指定此DTD的根元素的名称，一个XML文件只能有一个根元素。注意，如果 
+            XML文件使用了DTD，那么文件中的根元素就在这里指定。<BR><BR>[.........]〉 ：在[ 
+            ]标记里面定义XML文件使用元素，然后用〉结束DTD的定义。<BR><BR>下面，我们来看一下怎样给XML文件定义DTD，请见例1。<BR><BR>例1中的DTD定义区可以看作是一个DTD定义的大概框架，为其他XML文件定义DTD，结构和例1的DTD差不多，只是可能需要添加、删除或者更改一些东西而已。在DTD定义的中间是元素设定，这是一个DTD的最主要部分，其主要语法如下：<BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width=580 border=0>
+              <TBODY>
+              <TR>
+                <TD class=code bgColor=#e6e6e6><STRONG>〈!ELEMENT element-name 
+                  element-definition〉</STRONG> 
+            </TD></TR></TBODY></TABLE><BR><BR>〈!ELEMENT：表示开始元素设置，注意此处ELEMENT关键字是大写。<BR><BR>element-name：表示要设置的元素的名称。<BR><BR>element-definition：指明要对此元素进行怎样的定义，就是说〈元素〉...〈/元素〉之间能够包含什么内容，是其他元素还是一般性的文字。<BR><BR>在例1中，大家可以看到，〈!ELEMENT 
+            参考资料 (书籍)〉这个元素设定是声明了“参考资料”这个元素，并且它是作为“书籍”这个元素的父元素。〈!ELEMENT 书籍 
+            (名称,作者,价格)〉这个元素设定声明了“书籍”这个元素，并且它是作为“名称”、“作者”、“价格”这三个元素的父元素。而〈!ELEMENT 
+            名称 
+            (#PCDATA)〉这个元素设定声明了“名称”这个元素，但是此元素仅仅包含一般文字，是基本元素，这是由#PCDATA关键字定义的。<BR><BR>在元素设置中，如果元素包含多个子元素，如：〈!ELEMENT 
+            书籍 
+            (名称,作者,价格)〉这种含多个子元素的声明，那么“名称”、“作者”、“价格”这些标记在XML文件中必须以上面排列的顺序出现，每个标记必须而且只能够出现一次。如果在设定元素时，按照〈!ELEMENT 
+            书籍ANY〉，这样在元素下就可以包含任意被设定过的元素，出现的次数和顺序也不受限制，并且在该元素下，除了可以包含子元素以外，还能够包含一般的文字。有时候，在XML文件中，一个标记可能多次出现（或者不出现），那么我们除了在它们的父元素中用ANY关键字之外，还可以在元素的旁边加上特定的符号来控制标记出现的次数。这些符号见表1。<BR><BR>
+            <TABLE width=236 border=1>
+              <CAPTION class=12v align=left>表1 </CAPTION>
+              <TBODY>
+              <TR>
+                <TD align=middle width=63>
+                  <P class=12v>符号</P></TD>
+                <TD width=161>
+                  <P class=12v>代表标记出现的次数</P></TD></TR>
+              <TR>
+                <TD align=middle width=63>
+                  <P class=12v>？</P></TD>
+                <TD width=161>
+                  <P class=12v>不出现或只出现一次 </P></TD></TR>
+              <TR>
+                <TD align=middle width=63>
+                  <P class=12v>*</P></TD>
+                <TD width=161>
+                  <P class=12v>不出现或可出现多次</P></TD></TR>
+              <TR>
+                <TD align=middle width=63>
+                  <P class=12v>+</P></TD>
+                <TD width=161>
+                  <P class=12v>必须出现一次以上</P></TD></TR>
+              <TR>
+                <TD align=middle width=63>
+                  <P class=12v>无符号</P></TD>
+                <TD width=161>
+                  <P class=12v>只能出现一次</P></TD></TR></TBODY></TABLE><BR>例如：〈!ELEMENT 
+            参考资料(书籍,报纸+,杂志?,网站)〉这个元素设定，“书籍”标记在XML文件中可以不出现或者出现多次；“报纸”标记必须出现一次以上；“杂志”标记可以不出现或只出现一次；而“网站”标记必须出现而且只能出现一次。<BR><BR>在一些父元素的声明中，有可能它包含的子元素是在多个子元素中选择一个来使用，那么我们声明此父元素时，就可以把它声明成选择性元素，例如：〈!ELEMENT 
+            配偶 (妻子|丈夫)〉。可供选择的子元素用“|”分隔，这样，我们在XML文件中可以这样写：<BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width=580 border=0>
+              <TBODY>
+              <TR>
+                <TD class=code 
+                  bgColor=#e6e6e6><STRONG>〈配偶〉<BR><BR>〈丈夫〉张三〈/丈夫〉<BR><BR>〈/配偶〉 
+                  </STRONG></TD></TR></TBODY></TABLE><BR><BR>只从中选择一个子元素。<BR><BR>在我们的XML文件中，还可能包括很多“空元素”，即：元素是单独存在的，没有〈/元素〉这样的结束标记。那么在DTD中是用EMPTY关键字来声明的。如：〈!ELEMENT 
+            元素名 
+            EMPTY〉。在XML文件中，空元素不需要结束标记，但必须以〈/空元素名〉这样的写法。<BR><BR>在DTD中，还可以声明一些称为Entity的东西，让DTD和XML文件使用。我们可以把Entity看作是一个常量，它有一定的值。在DTD中，Entity的声明语法为：〈!ENTITY 
+            entity-name entity-definition〉。例如：我们在DTD中声明〈!ENTITY PC "(#PCDATA)"〉 
+            ，那么在后面的元素设定中，就可以使用这个Entity来代替“(#PCDATA)”这个字符串，如：〈!ELEMENT 作者 
+            (#PCDATA)〉可以写成〈!ELEMENT 作者 
+            &amp;&amp;PC;〉。引用Entity的时候，必须要在Entity名称前面加上“&amp;&amp;”符号，后面加上“；”符号。<BR><BR>在例1中，〈!ATTLIST 
+            价格 货币单位 CDATA #REQUIRED〉这一句是设定元素的属性，关于元素属性设置的语法为：〈!ATTLIST 
+            element-name attribute-name Type Default-value〉 
+            。其中，〈!ATTLIST是开始属性的设定（注意大小写）。element-name是指明此属性设定是针对什么元素的；attribute-name是设定的属性的名称；Type是该属性的属性值的类别，属性值有多种，可以是一般的文字，或从几种属性值中取一种等，属性值的种类见表2。Default-value是指该属性的内定值种类，有四种不同的属性内定值（见表3）。<BR><BR>下面我们举几个例子来看一下几个常用的元素属性的设定。例：<BR><BR>〈!ATTLIST 
+            姓名 性别 (男|女) "男"〉 
+            <BR><BR>此元素属性设定是为“姓名”这个元素设定一个名为“性别”的属性，此属性的属性值类别是Enumerated，取值范围为“男”或者“女”（用“|”分隔）。如果在XML文件中没有为此属性赋值，那么就取值为“男”，因为属性内定值是一个字符串“男”。<BR><BR>〈!ATTLIST 
+            姓名 号码 ID 
+            #REQUIRED〉<BR><BR>该属性设定是为“姓名”元素设定一个名为“号码”的属性，属性值类别是ID，意味着在XML文件中为此属性赋值的时候，值在此XML文件中是唯一的，如在同一份XML文件中出现下面的XML语句：<BR><BR>〈姓名 
+            号码="1234567"〉张三〈/姓名〉<BR><BR>〈姓名 
+            号码="1234567"〉李四〈/姓名〉<BR><BR>注意：“号码”属性的值重复了，这样，在解析过程中将会出现错误信息。此属性设定中的属性内定值为#REQUIRED，表示这个属性在XML文件的〈姓名〉标记中必须出现，否则解析会发生错误。<BR><BR>〈!ATTLIST 
+            电话号码 国家代码 CDATA #FIX "86"〉 
+            <BR><BR>该属性设定是为“电话号码”这个元素设定一个名为“国家代码”的属性，该属性的值是一般的文字。在〈电话号码〉标记中不能够设定该属性，因为这个属性被设为具有固定值的属性（#FIX关键字），解析器会自动地将该属性以及值“86”加到〈电话号码〉标记中。<BR><BR>
+            <TABLE width=409 border=1>
+              <CAPTION class=12v align=left>表2 </CAPTION>
+              <TBODY>
+              <TR>
+                <TD width=70>
+                  <P class=12v>属性值类别</P></TD>
+                <TD width=327>
+                  <P class=12v>描述 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>cdata</P></TD>
+                <TD width=327>
+                  <P class=12v>属性值仅仅是一般的文字。 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>enumerated</P></TD>
+                <TD width=327>
+                  <P class=12v>列出该属性的取值范围，一次只能有一个属性值能够赋予属性。 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>nmtoken</P></TD>
+                <TD width=327>
+                  <P class=12v>表示属性值只能由字母、数字、下划线、. 、：、-这些符号组成。 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>nmtokens</P></TD>
+                <TD width=327>
+                  <P class=12v>表示属性值能够由多个nmtoken组成，每个nmtoken之间用空格隔开。 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>id</P></TD>
+                <TD width=327>
+                  <P class=12v>该属性在xml文件中是唯一的，常用来表示人的<A class=Channel_KeyLink 
+                  href="http://www.qhtx.net/Cha/sfz.asp">身份证</A>号码。 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>idref</P></TD>
+                <TD width=327>
+                  <P class=12v>表示该属性值是参考了另一个id属性。 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>idrefs</P></TD>
+                <TD width=327>
+                  <P class=12v>表示该属性值是参考了多个id属性，这些id属性的值用空格隔开。 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>entity</P></TD>
+                <TD width=327>
+                  <P class=12v>表示该属性的设定值是一个外部的entity，如一个<A class=Channel_KeyLink 
+                  href="http://www.qhtx.net/pic/">图片</A>文件。 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>entities</P></TD>
+                <TD width=327>
+                  <P class=12v>该属性值包含了多个外部entity，不同的entity之间用空格隔开。 </P></TD></TR>
+              <TR>
+                <TD width=70>
+                  <P class=12v>notation</P></TD>
+                <TD width=327>
+                  <P class=12v>属性值是在dtd中声明过的notation（声明用什么应用<A 
+                  class=Channel_KeyLink 
+                  href="http://www.qhtx.net/edu/soft">软件</A>解读某些二进制文件，如<A 
+                  class=Channel_KeyLink 
+                  href="http://www.qhtx.net/pic/">图片</A>）。</P></TD></TR></TBODY></TABLE><BR>在XML的规范中，还规定了两个内定的属性，即：xml:space和xml:lang 
+            ，内定的属性名称以xml:开头，而你自己定义的属性名不能以xml:开头，否则在解析时会发生错误。<BR><BR>我们前面已经讲过，空白格在XML文件是有含义的，xml:space属性就是来设置解析器将XML文件中的空白格传给应用程序后的处理方法。xml:space是一个Enumerated类型的属性，只能够在default和preserver之间取值。xml:space="defaule"表示解析器将空白格传递给应用程序后，由应用程序内定的方法来处理这些空白格。如果没有设定xml:space属性，则解析器会默认用default来设定该属性。xml:space="preserver"是表示解析器将空白格传递给应用程序后，要求应用程序保留这些空白格。<BR><BR>xml:lang属性是用来设置标记中的文字信息是使用哪种语言，ISO-639规定了不同语言的代表缩写，如：xml:lang="en" 
+            表示英文；xml:lang="la"表示拉丁文；xml:lang="zh" 表示中文资料；xml:lang="zh-CN" 
+            表示中文（简体）；xml:lang="zh-TW" 
+            表示中文（繁体）。系统内定是xml:lang="en"，即标记中间的文字信息都是英文。<BR><BR><STRONG>外部DTD<BR><BR></STRONG>外部DTD是一个独立于XML文件的文件，实际上也是一个文本文件，只是使用.dtd为文件扩展名。因为外部DTD独立于XML文件，那么它可以供多个XML文件使用，就像用同一个模板可以写出多个不同内容的文件一样，这多个XML文件因为是引用同一个外部DTD，所以它们的结构大致相同。<BR><BR>外部DTD的创建方式、语法和内部DTD是一样的，把例1的内部DTD的例子用外部DTD来写，文件如下所示。文件存为后缀名为 
+            .dtd的文件。<BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width=580 border=0>
+              <TBODY>
+              <TR>
+                <TD class=code bgColor=#e6e6e6><STRONG>〈?xml version="1.0" 
+                  encoding="GB2312" ?〉<BR><BR>〈!ELEMENT 参考资料 
+                  (书籍*)〉<BR><BR>〈!ELEMENT 书籍 (名称,作者,价格)〉<BR><BR>〈!ELEMENT 名称 
+                  (#PCDATA)〉<BR><BR>〈!ELEMENT 作者 (#PCDATA)〉<BR><BR>〈!ELEMENT 价格 
+                  (#PCDATA)〉<BR><BR>〈!ATTLIST 价格 货币单位 CDATA #REQUIRED〉</STRONG> 
+                </TD></TR></TBODY></TABLE><BR><BR>除了没有内部DTD中的〈!DOCTYPE 参考资料 
+            [.....]〉语句外，其他都一样。而且有关元素数目、排列顺序、空元素设定、选择性元素、Entity声明、属性设定等都和内部DTD是一样的。<BR><BR>XML文件使用〈!DOCTYPE 
+            element-name SYSTEM DTD-URL〉或者〈!DOCTYPE element-name PUBLIC DTD-name 
+            DTD-URL〉来引用创建好的外部DTD文件。<BR><BR>
+            <TABLE width=408 border=1>
+              <CAPTION class=12v align=left>表3 </CAPTION>
+              <TBODY>
+              <TR>
+                <TD width=65>
+                  <P class=12v>属性内定值</P></TD>
+                <TD width=331>
+                  <P class=12v>描述</P></TD></TR>
+              <TR>
+                <TD width=65>
+                  <P class=12v>#required</P></TD>
+                <TD width=331>
+                  <P class=12v>表示在标记中必须出现此属性。 </P></TD></TR>
+              <TR>
+                <TD width=65>
+                  <P class=12v>#implied</P></TD>
+                <TD width=331>
+                  <P class=12v>标记中可以不出现此属性。 </P></TD></TR>
+              <TR>
+                <TD width=65>
+                  <P class=12v>#fix</P></TD>
+                <TD width=331>
+                  <P class=12v>属性的值是固定的某个值。 </P></TD></TR>
+              <TR>
+                <TD width=65>
+                  <P class=12v>字符串</P></TD>
+                <TD width=331>
+                  <P 
+            class=12v>标记中如没有指定属性的值，那么此字符串就是此属性的值。</P></TD></TR></TBODY></TABLE><BR>此语句必须位于XML文件的文件序言区，其中，〈!DOCTYPE表示开始声明应用外部DTD；element-name是指该DTD的根元素的名称；SYSTEM是指该外部DTD文件是私有的，即我们自己创建的，没有公开发行，只是个人或在公司内部或者几个合作单位之间使用；而PUBIC关键字是指该外部DTD是公用的，经过了公开讨论，用PUBLIC的DTD都有一个逻辑名称——DTD-name，我们必须在调用时指明这个逻辑名称。DTD-URL是用URL的方式指明外部DTD文件的位置。例如，我们这份DTD文件存放在URL为：http://www.xml.com/这个地方，文件名为ckzl.dtd。那么在XML文件中的声明如下：<BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width=580 border=0>
+              <TBODY>
+              <TR>
+                <TD class=code bgColor=#e6e6e6><STRONG>〈?xml version="1.0" 
+                  encoding="GB2312" ?〉<BR><BR>〈!DOCTYPE 参考资料 SYSTEM 
+                  "http://www.xml.com/ckzl.dtd"〉<BR><BR>...</STRONG> 
+              </TD></TR></TBODY></TABLE><BR><BR><STRONG>Schema简介<BR><BR></STRONG>DTD的语法相当复杂，并且它不符合XML文件的标准，自成一个体系。上面的介绍也仅仅是作了一个简介，目的是帮助大家能读懂DTD文件以及在必要时创建简单的DTD文件，因为现在很多的XML应用是建立在DTD之上的。<BR><BR>另外，一个代替DTD的就是W3C定义的Schema，Schema相对于DTD的明显好处是XML 
+            Schema文档本身也是XML文档，而不是像DTD一样使用自成一体的语法。这就方便了用户和开发者，因为可以使用相同的工具来处理XML 
+            Schema和其他XML信息，而不必专门为Schema使用特殊工具。Schema简单易懂，懂得XML语法、规则的人都可以立刻理解它。Schema的概念提出已久，但W3C的标准最近才出来，相应的应用支持尚未完善，但采用Schema已成为XML发展的一个趋势。<BR><BR><BR><BR><STRONG>例1<BR><BR></STRONG>DTD定义区:<BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width=580 border=0>
+              <TBODY>
+              <TR>
+                <TD class=code bgColor=#e6e6e6><STRONG>〈?xml version="1.0" 
+                  encoding="GB2312" ?〉<BR><BR>〈!DOCTYPE 参考资料 [<BR><BR>〈!ELEMENT 
+                  参考资料 (书籍)〉<BR><BR>〈!ELEMENT 书籍 (名称,作者,价格)〉<BR><BR>〈!ELEMENT 
+                  名称 (#PCDATA)〉<BR><BR>〈!ELEMENT 作者 (#PCDATA)〉<BR><BR>〈!ELEMENT 
+                  价格 (#PCDATA)〉<BR><BR>〈!ATTLIST 价格 货币单位 CDATA 
+                  #REQUIRED〉<BR><BR>]〉<BR><BR>〈参考资料〉<BR><BR>〈书籍〉<BR><BR>〈名称〉XML入门精解〈/名称〉<BR><BR>〈作者〉张三〈/作者〉<BR><BR>〈价格 
+                  货币单位="人民币"〉20.00〈/价格〉<BR><BR>〈/书籍〉<BR><BR>〈书籍〉<BR><BR>〈名称〉XML语法〈/名称〉<BR><BR>〈!-- 
+                  即将出版 --〉<BR><BR>〈作者〉李四〈/作者〉<BR><BR>〈价格 
+                  货币单位="人民币"〉18.00〈/价格〉<BR><BR>〈/书籍〉<BR><BR>〈/参考资料〉</STRONG></TD></TR></TBODY></TABLE></FONT><BR></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+        <TBODY>
+        <TR>
+          <TD align=middle height=30>
+            <SCRIPT language=javascript 
+            src="给XML文件定义DTD-教程-■秦皇天下■.files/edu_content_bottom_800.js"></SCRIPT>
+          </TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width=760 align=center border=0>
+        <TBODY>
+        <TR bgColor=#f0f0f0 height=112>
+          <TD width=10></TD>
+          <TD width=580>
+            <LI>上一篇教程： <A class=LinkPrevArticle 
+            title="教程标题：XML初级应用ABC&#13;&#10;作&nbsp;&nbsp;&nbsp;&nbsp;者：佚名&#13;&#10;更新时间：2006-1-15 3:02:32" 
+            href="http://www.qhtx.net/edu/web/xml/xml/xml1/200601/8960.html">XML初级应用ABC</A><BR>
+            <LI>下一篇教程： <A class=LinkNextArticle 
+            title="教程标题：XML文件的显示——CSS和XSL&#13;&#10;作&nbsp;&nbsp;&nbsp;&nbsp;者：佚名&#13;&#10;更新时间：2006-1-15 3:02:44" 
+            href="http://www.qhtx.net/edu/web/xml/xml/xml1/200601/8962.html">XML文件的显示——CSS和XSL</A><BR><BR>如您发现本文有错误的显示、链接、归类、下载等，欢迎<A 
+            href="http://www.qhtx.net/GuestBook/Guest_Write.asp?KindID=1&amp;KindName=有奖纠错" 
+            target=_blank><FONT 
+            color=#cc0000>有奖纠错</FONT></A>，谢谢！<BR>本站部分信息来自于网络，如侵犯您的权益，请<A 
+            href="mailto:poetbi@163.com"><FONT 
+            color=#cc0000>来信</FONT></A>，我们第一时间处理！<BR></LI></TD>
+          <TD width=170>作者：佚名<BR>来源：不详<BR>阅读：
+            <SCRIPT language=javascript 
+            src="给XML文件定义DTD-教程-■秦皇天下■.files/GetHits.htm"></SCRIPT>
+            <BR>编辑：admin<BR>更新：2006-1-15</TD></TR>
+        <TR>
+          <TD colSpan=3 height=12></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width=760 align=center border=0>
+        <TBODY>
+        <TR>
+          <TD align=left>
+            <TABLE cellSpacing=0 cellPadding=0 width="96%" border=0>
+              <TBODY>
+              <TR>
+                <TD>
+                  <TABLE class=BG-RepeatXB cellSpacing=0 cellPadding=0 
+                  width="100%" 
+                  background=给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG.gif 
+                  border=0>
+                    <TBODY>
+                    <TR>
+                      <TD width=10><IMG height=23 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG_L.gif" 
+                        width=10></TD>
+                      <TD class=TableTitle><B>相关教程</B></TD>
+                      <TD align=right width=10><IMG height=23 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG_R.gif" 
+                        width=10></TD></TR></TBODY></TABLE></TD></TR>
+              <TR>
+                <TD vAlign=top>
+                  <TABLE cellSpacing=1 cellPadding=3 width="100%" 
+                  bgColor=#b6b6bd border=0>
+                    <TBODY>
+                    <TR bgColor=#ffffff>
+                      <TD class=td_1>
+                        <LI><A class=LinkArticleCorrelative 
+                        title="教程标题：XSL基础教程-XML文件和XSL文件&#13;&#10;作&nbsp;&nbsp;&nbsp;&nbsp;者：佚名&#13;&#10;更新时间：2006-5-1 16:23:13" 
+                        href="http://www.qhtx.net/edu/web/xml/xsl/200605/80567.html">XSL基础教程-XML文件和XSL</A><BR>
+                        <LI><A class=LinkArticleCorrelative 
+                        title="教程标题：MIDI文件结构分析及生成方法&#13;&#10;作&nbsp;&nbsp;&nbsp;&nbsp;者：未知&#13;&#10;更新时间：2006-4-28 23:50:39" 
+                        href="http://www.qhtx.net/edu/web/media/sms/200604/80542.html">MIDI文件结构分析及生成方</A><BR>
+                        <LI><A class=LinkArticleCorrelative 
+                        title="教程标题：MIDI文件结构分析及生成方法&#13;&#10;作&nbsp;&nbsp;&nbsp;&nbsp;者：佚名&#13;&#10;更新时间：2006-4-28 23:45:01" 
+                        href="http://www.qhtx.net/edu/web/media/mms/200604/80500.html">MIDI文件结构分析及生成方</A><BR>
+                        <LI><A class=LinkArticleCorrelative 
+                        title="教程标题：WML开发详细指南&#13;&#10;作&nbsp;&nbsp;&nbsp;&nbsp;者：mingjava&#13;&#10;更新时间：2006-4-25 19:11:05" 
+                        href="http://www.qhtx.net/edu/web/media/wml/wz/200604/80483.html">WML开发详细指南</A><BR>
+                        <LI><A class=LinkArticleCorrelative 
+                        title="教程标题：用ASP和WML来实现数据库查询&#13;&#10;作&nbsp;&nbsp;&nbsp;&nbsp;者：不详&#13;&#10;更新时间：2006-4-25 19:11:04" 
+                        href="http://www.qhtx.net/edu/web/media/wml/wz/200604/80475.html">用ASP和WML来实现数据库查</A><BR></LI></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD>
+          <TD align=middle>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD>
+                  <TABLE class=BG-RepeatXB cellSpacing=0 cellPadding=0 
+                  width="100%" 
+                  background=给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG.gif 
+                  border=0>
+                    <TBODY>
+                    <TR>
+                      <TD width=10><IMG height=23 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG_L.gif" 
+                        width=10></TD>
+                      <TD class=TableTitle><B>热门教程</B></TD>
+                      <TD align=right width=10><IMG height=23 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG_R.gif" 
+                        width=10></TD></TR></TBODY></TABLE></TD></TR>
+              <TR>
+                <TD vAlign=top>
+                  <TABLE cellSpacing=1 cellPadding=3 width="100%" 
+                  bgColor=#b6b6bd border=0>
+                    <TBODY>
+                    <TR bgColor=#ffffff>
+                      <TD class=td_1>
+                        <SCRIPT language=javascript 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/Article_Hot3.js"></SCRIPT>
+                      </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD>
+          <TD align=right>
+            <TABLE cellSpacing=0 cellPadding=0 width="96%" border=0>
+              <TBODY>
+              <TR>
+                <TD>
+                  <TABLE class=BG-RepeatXB cellSpacing=0 cellPadding=0 
+                  width="100%" 
+                  background=给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG.gif 
+                  border=0>
+                    <TBODY>
+                    <TR>
+                      <TD width=10><IMG height=23 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG_L.gif" 
+                        width=10></TD>
+                      <TD class=TableTitle><B>推荐教程</B></TD>
+                      <TD align=right width=10><IMG height=23 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG_R.gif" 
+                        width=10></TD></TR></TBODY></TABLE></TD></TR>
+              <TR>
+                <TD vAlign=top>
+                  <TABLE cellSpacing=1 cellPadding=3 width="100%" 
+                  bgColor=#b6b6bd border=0>
+                    <TBODY>
+                    <TR bgColor=#ffffff>
+                      <TD class=td_1>
+                        <SCRIPT language=javascript 
+                        src="给XML文件定义DTD-教程-■秦皇天下■.files/Article_Elite3.js"></SCRIPT>
+                      </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width=760 align=center border=0>
+        <TBODY>
+        <TR>
+          <TD height=50>
+            <TABLE cellSpacing=0 cellPadding=0 
+            background=给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_BG.gif border=0>
+              <TBODY>
+              <TR>
+                <TD width=50><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Left.gif" 
+                width=49></TD>
+                <TD align=middle width=40><A onclick=window.close() 
+                  href="http://www.qhtx.net/edu/">关闭</A></TD>
+                <TD align=right width=12><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Right.gif" 
+                width=7></TD></TR></TBODY></TABLE></TD>
+          <TD align=middle>
+            <TABLE cellSpacing=0 cellPadding=0 
+            background=给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_BG.gif border=0>
+              <TBODY>
+              <TR>
+                <TD width=50><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Left.gif" 
+                width=49></TD>
+                <TD align=middle width=40><A onclick=window.history.go(-1) 
+                  href="http://www.qhtx.net/edu/">返回</A></TD>
+                <TD align=right width=12><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Right.gif" 
+                width=7></TD></TR></TBODY></TABLE></TD>
+          <TD align=middle>
+            <TABLE cellSpacing=0 cellPadding=0 
+            background=给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_BG.gif border=0>
+              <TBODY>
+              <TR>
+                <TD width=50><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Left.gif" 
+                width=49></TD>
+                <TD align=middle width=40><A onclick=window.print(); 
+                  href="http://www.qhtx.net/edu/ShowArticle.asp?ArticleID=8961#">打印</A></TD>
+                <TD align=right width=12><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Right.gif" 
+                width=7></TD></TR></TBODY></TABLE></TD>
+          <TD align=middle>
+            <TABLE cellSpacing=0 cellPadding=0 
+            background=给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_BG.gif border=0>
+              <TBODY>
+              <TR>
+                <TD width=50><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Left.gif" 
+                width=49></TD>
+                <TD align=middle width=40><A 
+                  href="http://www.qhtx.net/User/User_ControlPad.asp?Action=ArticleManage" 
+                  target=_blank>发表</A></TD>
+                <TD align=right width=12><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Right.gif" 
+                width=7></TD></TR></TBODY></TABLE></TD>
+          <TD align=middle height=50>
+            <TABLE cellSpacing=0 cellPadding=0 
+            background=给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_BG.gif border=0>
+              <TBODY>
+              <TR>
+                <TD width=50><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Left.gif" 
+                width=49></TD>
+                <TD align=middle width=40><A 
+                  href="http://www.qhtx.net/edu/Comment.asp?ArticleID=8961" 
+                  target=_blank>评论</A></TD>
+                <TD align=right width=12><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Right.gif" 
+                width=7></TD></TR></TBODY></TABLE></TD>
+          <TD align=right height=50>
+            <TABLE cellSpacing=0 cellPadding=0 
+            background=给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_BG.gif border=0>
+              <TBODY>
+              <TR>
+                <TD width=50><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Left.gif" 
+                width=49></TD>
+                <TD align=middle width=40><A 
+                  href="http://www.qhtx.net/edu/Sendmail.asp?ArticleID=8961" 
+                  target=_blank>推荐</A></TD>
+                <TD align=right width=12><IMG height=27 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/DownTable_Right.gif" 
+                width=7></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width=760 align=center border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE class=BG-RepeatXB cellSpacing=0 cellPadding=0 width="100%" 
+            background=给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG.gif border=0>
+              <TBODY>
+              <TR>
+                <TD width=10><IMG height=23 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG_L.gif" 
+                width=10></TD>
+                <TD class=TableTitle width=693><B>评论内容只代表网友观点，与本站立场无关！</B></TD>
+                <TD class=TableTitle width=47><A 
+                  href="http://www.qhtx.net/edu/Comment.asp?ArticleID=8961&amp;Action=ShowAll" 
+                  target=_blank><IMG height=12 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/Btn_More.gif" width=33 
+                  border=0></A></TD>
+                <TD align=right width=10><IMG height=23 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/Table_TopBG_R.gif" 
+                width=10></TD></TR></TBODY></TABLE></TD></TR>
+        <TR>
+          <TD vAlign=top>
+            <TABLE cellSpacing=1 cellPadding=3 width="100%" bgColor=#b6b6bd 
+            border=0>
+              <TBODY>
+              <TR bgColor=#ffffff>
+                <TD class=td_1>
+                  <SCRIPT language=javascript 
+                  src="给XML文件定义DTD-教程-■秦皇天下■.files/Comment.htm"></SCRIPT>
+                </TD></TR>
+              <TR>
+                <TD class=BG-RepeatXB 
+                background=给XML文件定义DTD-教程-■秦皇天下■.files/Table_BottomBG.gif 
+                bgColor=#ffffff 
+      height=15></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width=1000 align=center bgColor=#ffffff 
+border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <SCRIPT language=javascript 
+      src="给XML文件定义DTD-教程-■秦皇天下■.files/qhtx_bottom_1000.js" 
+      type=text/javascript></SCRIPT>
+    </TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width=1000 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD background=给XML文件定义DTD-教程-■秦皇天下■.files/BG_Red.gif height=18></TD></TR>
+  <TR>
+    <TD height=8></TD></TR>
+  <TR>
+    <TD vAlign=top align=middle height=20><FONT color=#ffffff><A 
+      href="http://www.qhtx.net/about.html"><FONT color=#ffffff>关于本站</FONT></A> 
+      - <A href="http://www.qhtx.net/map.html"><FONT 
+      color=#ffffff>网站地图</FONT></A> - <A href="http://www.wefine.com/"><FONT 
+      color=#ffffff>合作伙伴</FONT></A> - 招聘信息 - <A 
+      href="http://www.qhtx.net/GuestBook"><FONT color=#ffffff>留言反馈</FONT></A> - 
+      <A href="http://www.qhtx.net/FriendSite" target=_blank><FONT 
+      color=#ffffff>友情链接</FONT></A> - <A href="http://wefine.com/link" 
+      target=_blank><FONT color=#ffffff>自助链接</FONT></A> - <A 
+      href="javascript:window.external.addFavorite('http://www.qhtx.net','【秦皇天下】-教程%20下载%20娱乐%20美女');"><FONT 
+      color=#ffffff>加入收藏</FONT></A> - <A 
+      onclick="javascript:h(this,'http://www.qhtx.net')" 
+      href="http://www.qhtx.net/news.asp?class=11"><FONT 
+      color=#ffffff>设为首页</FONT></A></FONT></TD></TR>
+  <TR>
+    <TD vAlign=top align=middle><FONT color=#ffffff>CopyRight &copy; 2006 &nbsp; 
+      <B>秦皇天下</B> <FONT face=Verdana, Arial, Helvetica, sans-serif><B>qhtx<FONT 
+      color=#cc0000>.Net</FONT></B></FONT> &nbsp; 版权所有. All Rights 
+      Reserved.</FONT> </TD></TR>
+  <TR>
+    <TD vAlign=top align=middle><FONT color=#ffffff>Email：poetbi（at）163.com 
+      &nbsp;QQ群：24524989</FONT></TD></TR>
+  <TR>
+    <TD style="FONT-SIZE: 10px; COLOR: #cfcfcf" vAlign=top 
+      align=middle>最佳浏览效果：浏览器IE5.5+ 分辨率1024*768</TD></TR>
+  <TR>
+    <TD style="FONT-SIZE: 9px" vAlign=top align=middle>
+      <SCRIPT language=javascript 
+      src="给XML文件定义DTD-教程-■秦皇天下■.files/qhtx_count.js" 
+      type=text/javascript></SCRIPT>
+    </TD></TR></TBODY></TABLE><!-- Powered by: PowerEasy 2005 --></BODY></HTML>

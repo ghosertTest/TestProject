@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0044)http://www.qhtx.net/UserLogin.asp?ShowType=2 -->
+<HTML><HEAD><TITLE>用户登录</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312">
+<STYLE type=text/css>INPUT {
+	BORDER-RIGHT: #666666 1px solid; BORDER-TOP: #666666 1px solid; FONT-SIZE: 9pt; BORDER-LEFT: #666666 1px solid; COLOR: #666666; BORDER-BOTTOM: #666666 1px solid; HEIGHT: 18px; BACKGROUND-COLOR: #ffffff
+}
+TD {
+	FONT-SIZE: 9pt; LINE-HEIGHT: 130%; FONT-FAMILY: 宋体
+}
+A {
+	TEXT-DECORATION: none
+}
+A:link {
+	COLOR: #000000
+}
+A:visited {
+	COLOR: #333333
+}
+A:hover {
+	COLOR: #ae0927
+}
+A:active {
+	COLOR: #0000ff
+}
+</STYLE>
+
+<META content="MSHTML 6.00.2800.1555" name=GENERATOR></HEAD>
+<BODY bgColor=#eaeaea leftMargin=0 topMargin=0>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  <FORM name=UserLogin onsubmit="return CheckLoginForm();" 
+  action=/User/User_ChkLogin.asp method=post>
+  <TBODY>
+  <TR>
+    <TD height=25>用户名：<INPUT id=UserName maxLength=20 size=10 name=UserName> 
+      密码：<INPUT id=UserPassword type=password maxLength=20 size=10 
+      name=UserPassword><INPUT type=hidden value=3 name=CookieDate></TD>
+    <TD height=25><INPUT 
+      style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px" 
+      type=image alt="登 陆" src="UserLogin.files/btn_login.gif" name=s1></TD>
+    <TD align=middle width=75 height=25><A 
+      href="http://www.qhtx.net/Reg/User_Reg.asp" target=_blank><IMG height=19 
+      alt=申请注册 src="UserLogin.files/Btn_LostPassword.gif" width=72 
+    border=0></A></TD>
+    <TD align=middle width=75 height=25><A 
+      href="http://www.qhtx.net/User/User_GetPassword.asp" target=_blank><IMG 
+      height=19 alt=找回密码 src="UserLogin.files/Btn_Register.gif" width=72 
+      border=0></A></TD>
+    <TD height=25></TD></TD>
+    <TD height=25></TD>
+    <TD height=25>&nbsp;&nbsp;</TD></TR></FORM></TBODY></TABLE>
+<SCRIPT language=javascript>
+   function CheckLoginForm(){
+       if(document.UserLogin.UserName.value==''){
+           alert('请输入用户名！');
+           document.UserLogin.UserName.focus();
+           return false;
+       }
+       if(document.UserLogin.Password.value == ''){
+           alert('请输入密码！');
+           document.UserLogin.Password.focus();
+           return false;
+       }
+   }
+</SCRIPT>
+</BODY></HTML>

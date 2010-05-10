@@ -1,0 +1,1 @@
+document.write('<div valign="middle" align="center"><font color="#FFFFFF"><b>本站启用新域名：www.qhtx<FONT color=#dd0000>.Net</FONT> </b><font color="#F0F0F0">（秦皇天下拼音首个字母）<br>欢迎使用新域名访问，搜索本站文章、查询IP、手机号、身份证、邮编区号等请<a href="http://www.qhtx.net"><font color="#FF3300">点击这里</font></a></font></font></div>');

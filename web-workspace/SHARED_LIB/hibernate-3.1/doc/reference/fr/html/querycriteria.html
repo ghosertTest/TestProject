@@ -1,0 +1,272 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;15.&nbsp;Requ&ecirc;tes par crit&egrave;res</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="queryhql.html" title="Chapitre&nbsp;14.&nbsp;HQL: Langage de requ&ecirc;tage d'Hibernate"><link rel="next" href="querysql.html" title="Chapitre&nbsp;16.&nbsp;SQL natif"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;15.&nbsp;Requ&ecirc;tes par crit&egrave;res</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="queryhql.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="querysql.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="querycriteria"></a>Chapitre&nbsp;15.&nbsp;Requ&ecirc;tes par crit&egrave;res</h2></div></div><div></div></div><p>
+        Hibernate offre une API d'interrogation par crit&egrave;res intuitive et extensible.
+    </p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querycriteria-creating"></a>15.1.&nbsp;Cr&eacute;er une instance de <tt class="literal">Criteria</tt></h2></div></div><div></div></div><p>
+            L'interface <tt class="literal">net.sf.hibernate.Criteria</tt> repr&eacute;sente une requ&ecirc;te sur une
+            classe persistente donn&eacute;e. La <tt class="literal">Session</tt> fournit les instances de
+            <tt class="literal">Criteria</tt>.
+        </p><pre class="programlisting">Criteria crit = sess.createCriteria(Cat.class);
+crit.setMaxResults(50);
+List cats = crit.list();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querycriteria-narrowing"></a>15.2.&nbsp;Restriction du r&eacute;sultat</h2></div></div><div></div></div><p>
+            Un criterion (crit&egrave;re de recherche) est une instance de l'interface
+            <tt class="literal">org.hibernate.criterion.Criterion</tt>. La classe
+            <tt class="literal">org.hibernate.criterion.Restrictions</tt> d&eacute;finit
+            des m&eacute;thodes pour obtenir des types de <tt class="literal">Criterion</tt>
+            pr&eacute;-d&eacute;finis.
+        </p><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .add( Restrictions.like("name", "Fritz%") )
+    .add( Restrictions.between("weight", minWeight, maxWeight) )
+    .list();</pre><p>
+            Les restrictions peuvent &ecirc;tre goup&eacute;es de mani&egrave;re logique.
+        </p><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .add( Restrictions.like("name", "Fritz%") )
+    .add( Restrictions.or(
+        Restrictions.eq( "age", new Integer(0) ),
+        Restrictions.isNull("age")
+    ) )
+    .list();</pre><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .add( Restrictions.in( "name", new String[] { "Fritz", "Izi", "Pk" } ) )
+    .add( Restrictions.disjunction()
+        .add( Restrictions.isNull("age") )
+        .add( Restrictions.eq("age", new Integer(0) ) )
+        .add( Restrictions.eq("age", new Integer(1) ) )
+        .add( Restrictions.eq("age", new Integer(2) ) )
+    ) )
+    .list();</pre><p>
+            Il y a plusieurs types de criterion pr&eacute;-d&eacute;finis (sous classes de <tt class="literal">Restriction</tt>),
+            mais l'une d'entre elle particuli&egrave;rement utile vous permet de sp&eacute;cifier directement
+        du SQL.
+        </p><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .add( Restrictions.sql("lower({alias}.name) like lower(?)", "Fritz%", Hibernate.STRING) )
+    .list();</pre><p>
+            La zone <tt class="literal">{alias}</tt> sera remplac&eacute;e par l'alias de colonne de l'entit&eacute;
+        que l'on souhaite int&eacute;rroger.
+        </p><p>
+            Une autre approche pour obtenir un criterion est de le r&eacute;cup&eacute;rer d'une instance de <tt class="literal">Property</tt>. 
+            Vous pouvez cr&eacute;er une <tt class="literal">Property</tt> en appelant <tt class="literal">Property.forName()</tt>.
+        </p><pre class="programlisting">
+Property age = Property.forName("age");
+List cats = sess.createCriteria(Cat.class)
+    .add( Restrictions.disjunction()
+        .add( age.isNull() )
+        .add( age.eq( new Integer(0) ) )
+        .add( age.eq( new Integer(1) ) )
+        .add( age.eq( new Integer(2) ) )
+    ) )
+    .add( Property.forName("name").in( new String[] { "Fritz", "Izi", "Pk" } ) )
+    .list();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querycriteria-ordering"></a>15.3.&nbsp;Trier les r&eacute;sultats</h2></div></div><div></div></div><p>
+            Vous pouvez trier les r&eacute;sultats en utilisant <tt class="literal">org.hibernate.criterion.Order</tt>.
+        </p><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .add( Restrictions.like("name", "F%")
+    .addOrder( Order.asc("name") )
+    .addOrder( Order.desc("age") )
+    .setMaxResults(50)
+    .list();</pre><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .add( Property.forName("name").like("F%") )
+    .addOrder( Property.forName("name").asc() )
+    .addOrder( Property.forName("age").desc() )
+    .setMaxResults(50)
+    .list();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querycriteria-associations"></a>15.4.&nbsp;Associations</h2></div></div><div></div></div><p>
+            Vous pouvez facilement sp&eacute;cifier des contraintes sur des entit&eacute;s li&eacute;es,
+        par des associations en utilisant <tt class="literal">createCriteria()</tt>.
+        </p><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .add( Restrictions.like("name", "F%")
+    .createCriteria("kittens")
+        .add( Restrictions.like("name", "F%")
+    .list();</pre><p>
+            Notez que la seconde <tt class="literal">createCriteria()</tt> retourne une nouvelle
+            instance de <tt class="literal">Criteria</tt>, qui se rapporte aux &eacute;l&eacute;ments de la
+        collection <tt class="literal">kittens</tt>.
+        </p><p>
+            La forme alternative suivante est utile dans certains cas.
+        </p><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .createAlias("kittens", "kt")
+    .createAlias("mate", "mt")
+    .add( Restrictions.eqProperty("kt.name", "mt.name") )
+    .list();</pre><p>
+            (<tt class="literal">createAlias()</tt> ne cr&eacute;e pas de nouvelle instance de
+            <tt class="literal">Criteria</tt>.)
+        </p><p>
+            Notez que les collections kittens contenues dans les instances de <tt class="literal">Cat</tt>
+            retourn&eacute;es par les deux pr&eacute;c&eacute;dentes requ&ecirc;tes ne sont <span class="emphasis"><em>pas</em></span> pr&eacute;-filtr&eacute;es
+            par les crit&egrave;res ! Si vous souhaitez r&eacute;cup&eacute;rer uniquement les kittens qui correspondent &agrave; la
+            criteria, vous devez utiliser <tt class="literal">ResultTransformer</tt>.
+        </p><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .createCriteria("kittens", "kt")
+        .add( Restrictions.eq("name", "F%") )
+    .setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP)
+    .list();
+Iterator iter = cats.iterator();
+while ( iter.hasNext() ) {
+    Map map = (Map) iter.next();
+    Cat cat = (Cat) map.get(Criteria.ROOT_ALIAS);
+    Cat kitten = (Cat) map.get("kt");
+}</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querycriteria-dynamicfetching"></a>15.5.&nbsp;Peuplement d'associations de mani&egrave;re dynamique</h2></div></div><div></div></div><p>
+            Vous pouvez sp&eacute;ficier au moment de l'ex&eacute;cution le peuplement d'une association en utilisant
+            <tt class="literal">setFetchMode()</tt> (c'est-&agrave;-dire le chargement de celle-ci).
+            Cela permet de surcharger les valeurs
+            "lazy" et "outer-join" du mapping.
+        </p><pre class="programlisting">List cats = sess.createCriteria(Cat.class)
+    .add( Restrictions.like("name", "Fritz%") )
+    .setFetchMode("mate", FetchMode.EAGER)
+    .setFetchMode("kittens", FetchMode.EAGER)
+    .list();</pre><p>
+            Cette requ&ecirc;te recherchera <tt class="literal">mate</tt> et <tt class="literal">kittens</tt>
+            via les jointures externes. Voir <a href="performance.html#performance-fetching" title="19.1.&nbsp;Strat&eacute;gies de chargement">Section&nbsp;19.1, &laquo;&nbsp;Strat&eacute;gies de chargement&nbsp;&raquo;</a> pour plus d'informations.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querycriteria-examples"></a>15.6.&nbsp;Requ&ecirc;tes par l'exemple</h2></div></div><div></div></div><p>
+            La classe <tt class="literal">org.hibernate.criterion.Example</tt> vous permet de
+            construire un crit&egrave;re suivant une instance d'objet donn&eacute;e.
+        </p><pre class="programlisting">Cat cat = new Cat();
+cat.setSex('F');
+cat.setColor(Color.BLACK);
+List results = session.createCriteria(Cat.class)
+    .add( Example.create(cat) )
+    .list();</pre><p>
+            Les propri&eacute;t&eacute;s de type version, identifiant et association sont ignor&eacute;es.
+       Par d&eacute;faut, les valeurs null sont exclues.
+        </p><p>
+            Vous pouvez ajuster la strat&eacute;gie d'utilisation de valeurs de
+           l'<tt class="literal">Exemple</tt>.
+        </p><pre class="programlisting">Example example = Example.create(cat)
+    .excludeZeroes()           //exclude zero valued properties
+    .excludeProperty("color")  //exclude the property named "color"
+    .ignoreCase()              //perform case insensitive string comparisons
+    .enableLike();             //use like for string comparisons
+List results = session.createCriteria(Cat.class)
+    .add(example)
+    .list();</pre><p>
+            Vous pouvez utiliser les "exemples" pour des crit&egrave;res sur les objets associ&eacute;s.
+        </p><pre class="programlisting">List results = session.createCriteria(Cat.class)
+    .add( Example.create(cat) )
+    .createCriteria("mate")
+        .add( Example.create( cat.getMate() ) )
+    .list();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querycriteria-projection"></a>15.7.&nbsp;Projections, agr&eacute;gation et regroupement</h2></div></div><div></div></div><p>
+            La classe <tt class="literal">org.hibernate.criterion.Projections</tt> est une
+            fabrique d'instances de <tt class="literal">Projection</tt>. Nous appliquons une
+            projection sur une requ&ecirc;te en appelant <tt class="literal">setProjection()</tt>.
+        </p><pre class="programlisting">List results = session.createCriteria(Cat.class)
+    .setProjection( Projections.rowCount() )
+    .add( Restrictions.eq("color", Color.BLACK) )
+    .list();</pre><pre class="programlisting">List results = session.createCriteria(Cat.class)
+    .setProjection( Projections.projectionList()
+        .add( Projections.rowCount() )
+        .add( Projections.avg("weight") )
+        .add( Projections.max("weight") )
+        .add( Projections.groupProperty("color") )
+    )
+    .list();</pre><p>
+            Il n'y a pas besoin de "group by" explicite dans une requ&ecirc;te par crit&egrave;re.
+            Certains types de projection sont d&eacute;finis pour &ecirc;tre des <span class="emphasis"><em>projections
+            de regroupement</em></span>, lesquels apparaissent aussi dans la clause
+            <tt class="literal">group by</tt> SQL.
+        </p><p>
+            Un alias peut optionnellement &ecirc;tre assign&eacute; &agrave; une projection, ainsi la valeur
+            projet&eacute;e peut &ecirc;tre r&eacute;f&eacute;renc&eacute;e dans des restrictions ou des tris. Voici deux fa&ccedil;ons
+            diff&eacute;rentes de faire &ccedil;a :
+        </p><pre class="programlisting">List results = session.createCriteria(Cat.class)
+    .setProjection( Projections.alias( Projections.groupProperty("color"), "colr" ) )
+    .addOrder( Order.asc("colr") )
+    .list();</pre><pre class="programlisting">List results = session.createCriteria(Cat.class)
+    .setProjection( Projections.groupProperty("color").as("colr") )
+    .addOrder( Order.asc("colr") )
+    .list();</pre><p>
+            Les m&eacute;thodes <tt class="literal">alias()</tt> et <tt class="literal">as()</tt> enveloppe simplement
+            une instance de projection dans une autre instance (alias&eacute;e) de <tt class="literal">Projection</tt>.
+            Comme un raccourci, vous pouvez assignez un alias lorsque vous ajoutez la projection &agrave; la
+            liste de projections :
+        </p><pre class="programlisting">List results = session.createCriteria(Cat.class)
+    .setProjection( Projections.projectionList()
+        .add( Projections.rowCount(), "catCountByColor" )
+        .add( Projections.avg("weight"), "avgWeight" )
+        .add( Projections.max("weight"), "maxWeight" )
+        .add( Projections.groupProperty("color"), "color" )
+    )
+    .addOrder( Order.desc("catCountByColor") )
+    .addOrder( Order.desc("avgWeight") )
+    .list();</pre><pre class="programlisting">List results = session.createCriteria(Domestic.class, "cat")
+    .createAlias("kittens", "kit")
+    .setProjection( Projections.projectionList()
+        .add( Projections.property("cat.name"), "catName" )
+        .add( Projections.property("kit.name"), "kitName" )
+    )
+    .addOrder( Order.asc("catName") )
+    .addOrder( Order.asc("kitName") )
+    .list();</pre><p>
+            Vous pouvez aussi utiliser <tt class="literal">Property.forName()</tt> pour formuler des projections :
+        </p><pre class="programlisting">List results = session.createCriteria(Cat.class)
+    .setProjection( Property.forName("name") )
+    .add( Property.forName("color").eq(Color.BLACK) )
+    .list();</pre><pre class="programlisting">List results = session.createCriteria(Cat.class)
+    .setProjection( Projections.projectionList()
+        .add( Projections.rowCount().as("catCountByColor") )
+        .add( Property.forName("weight").avg().as("avgWeight") )
+        .add( Property.forName("weight").max().as("maxWeight") )
+        .add( Property.forName("color").group().as("color" )
+    )
+    .addOrder( Order.desc("catCountByColor") )
+    .addOrder( Order.desc("avgWeight") )
+    .list();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="querycriteria-detachedqueries"></a>15.8.&nbsp;Requ&ecirc;tes et sous-requ&ecirc;tes d&eacute;tach&eacute;es</h2></div></div><div></div></div><p>
+            La classe <tt class="literal">DetachedCriteria</tt> vous laisse cr&eacute;er une requ&ecirc;te en dehors de la
+            port&eacute;e de la session, et puis l'ex&eacute;cuter plus tard en utilisant n'importe quelle <tt class="literal">Session</tt>
+            arbitraire.
+        </p><pre class="programlisting">DetachedCriteria query = DetachedCriteria.forClass(Cat.class)
+    .add( Property.forName("sex").eq('F') );
+
+Session session = ....;
+Transaction txn = session.beginTransaction();
+List results = query.getExecutableCriteria(session).setMaxResults(100).list();
+txn.commit();
+session.close();</pre><p>
+            Une <tt class="literal">DetachedCriteria</tt> peut aussi &ecirc;tre utilis&eacute;e pour exprimer une
+            sous-requ&ecirc;te. Des instances de criterion impliquant des sous-requ&ecirc;tes peuvent &ecirc;tre
+            obtenues via <tt class="literal">Subqueries</tt> ou <tt class="literal">Property</tt>.
+        </p><pre class="programlisting">DetachedCriteria avgWeight = DetachedCriteria.forClass(Cat.class)
+    .setProjection( Property.forName("weight").avg() );
+session.createCriteria(Cat.class)
+    .add( Property.forName("weight).gt(avgWeight) )
+    .list();</pre><pre class="programlisting">DetachedCriteria weights = DetachedCriteria.forClass(Cat.class)
+    .setProjection( Property.forName("weight") );
+session.createCriteria(Cat.class)
+    .add( Subqueries.geAll("weight", weights) )
+    .list();</pre><p>
+            M&ecirc;me des requ&ecirc;tes corr&eacute;l&eacute;es sont possibles :
+        </p><pre class="programlisting">DetachedCriteria avgWeightForSex = DetachedCriteria.forClass(Cat.class, "cat2")
+    .setProjection( Property.forName("weight").avg() )
+    .add( Property.forName("cat2.sex").eqProperty("cat.sex") );
+session.createCriteria(Cat.class, "cat")
+    .add( Property.forName("weight).gt(avgWeightForSex) )
+    .list();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="query-criteria-naturalid"></a>15.9.&nbsp;Requ&ecirc;tes par identifiant naturel</h2></div></div><div></div></div><p>
+            Pour la plupart des requ&ecirc;tes, incluant les requ&ecirc;tes par crit&egrave;re, le cache de requ&ecirc;tes
+            n'est pas tr&egrave;s efficace, parce que l'invalidation du cache de requ&ecirc;tes arrive trop
+            souvent. Cependant, il y a une sorte sp&eacute;ciale de requ&ecirc;te o&ugrave; nous pouvons optimiser
+            l'algorithme d'invalidation du cache : les recherches sur une clef naturelle constante.
+            Dans certaines applications, cette sorte de requ&ecirc;te se produit fr&eacute;quemment. L'API de
+            crit&egrave;re fournit une provision sp&eacute;ciale pour ce cas d'utilisation.
+        </p><p>
+            D'abord vous devriez mapper la clef naturelle de votre entit&eacute; en utilisant
+            <tt class="literal">&lt;natural-id&gt;</tt>, et activer l'utilisation du cache de second niveau.
+        </p><pre class="programlisting">&lt;class name="User"&gt;
+    &lt;cache usage="read-write"/&gt;
+    &lt;id name="id"&gt;
+        &lt;generator class="increment"/&gt;
+    &lt;/id&gt;
+    &lt;natural-id&gt;
+        &lt;property name="name"/&gt;
+        &lt;property name="org"/&gt;
+    &lt;/natural-id&gt;
+    &lt;property name="password"/&gt;
+&lt;/class&gt;</pre><p>
+            Notez que cette fonctionnalit&eacute; n'est pas pr&eacute;vue pour l'utilisation avec des
+            entit&eacute;s avec des clefs naturelles <span class="emphasis"><em>mutables</em></span>.
+        </p><p>
+            Ensuite, activez le cache de requ&ecirc;te d'Hibernate.
+        </p><p>
+            Maintenant <tt class="literal">Restrictions.naturalId()</tt> nous permet de rendre
+            l'utilisation de l'algorithme de cache plus efficace.
+        </p><pre class="programlisting">session.createCriteria(User.class)
+    .add( Restrictions.naturalId()
+        .set("name", "gavin")
+        .set("org", "hb")
+    ).setCacheable(true)
+    .uniqueResult();</pre></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="queryhql.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="querysql.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;14.&nbsp;HQL: Langage de requ&ecirc;tage d'Hibernate&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;16.&nbsp;SQL natif</td></tr></table></div></body></html>

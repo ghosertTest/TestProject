@@ -1,0 +1,168 @@
+BODY {
+	FONT-SIZE: 12px; BACKGROUND-IMAGE: url(images/bg.gif); MARGIN: 0px; COLOR: #303030; WORD-BREAK: break-all; LINE-HEIGHT: 150%; FONT-STYLE: normal
+}
+TD {
+	FONT-SIZE: 12px; COLOR: #303030; WORD-BREAK: break-all; LINE-HEIGHT: 150%; FONT-FAMILY: Verdana,Helvetica,Arial
+}
+.postcontent {
+	MARGIN-TOP: 10px; FONT-SIZE: 12px; BACKGROUND-IMAGE: url(/skins/green/images/bg_content.gif); COLOR: #303030; BACKGROUND-REPEAT: no-repeat
+}
+.mytd {
+	FONT-SIZE: 12px; MARGIN: 0px; COLOR: red; LINE-HEIGHT: 22px; FONT-STYLE: normal; FONT-FAMILY: Verdana,Helvetica,Arial
+}
+.footer {
+	BORDER-RIGHT: #420100 1px dashed; PADDING-RIGHT: 10px; BORDER-TOP: #420100 1px dashed; PADDING-LEFT: 10px; PADDING-BOTTOM: 10px; BORDER-LEFT: #420100 1px dashed; PADDING-TOP: 10px; BORDER-BOTTOM: #420100 1px dashed
+}
+A:visited {
+	COLOR: #366900; TEXT-DECORATION: none
+}
+A:active {
+	COLOR: #366900; TEXT-DECORATION: none
+}
+A:link {
+	COLOR: #366900; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #8d8c8c; TEXT-DECORATION: underline
+}
+H1 {
+	PADDING-RIGHT: 3px; PADDING-LEFT: 3px; FONT-SIZE: 12px; PADDING-BOTTOM: 3px; MARGIN: 10px 0px; COLOR: #444444; PADDING-TOP: 3px; BORDER-BOTTOM: #cccccc 1px dashed; TEXT-ALIGN: left
+}
+H2 {
+	MARGIN-TOP: 10px; FONT-SIZE: 13px; MARGIN-BOTTOM: 3px
+}
+H3 {
+	FONT-SIZE: 14px
+}
+TD.banner {
+	BORDER-RIGHT: white 5px solid; BORDER-TOP: white 5px solid; BACKGROUND-POSITION-X: right; BORDER-LEFT: white 5px solid; BORDER-BOTTOM: white 5px solid; BACKGROUND-REPEAT: no-repeat; BACKGROUND-COLOR: white
+}
+TABLE.index {
+	MARGIN-TOP: 0px
+}
+.sub {
+	MARGIN-TOP: 10px; FONT-SIZE: 14px; COLOR: white
+}
+#menu H1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; MARGIN: 0px; COLOR: red; FONT-FAMILY: "trebuchet ms", "lucida grande", verdana, arial, sans-serif
+}
+#menu UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 12px; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 15px 5px; LINE-HEIGHT: 160%; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+A.listitem:visited {
+	COLOR: #366900; TEXT-DECORATION: none
+}
+A.listitem:active {
+	COLOR: #366900; TEXT-DECORATION: none
+}
+A.listitem:link {
+	COLOR: #366900; TEXT-DECORATION: none
+}
+A.listitem:hover {
+	COLOR: brown; TEXT-DECORATION: underline
+}
+#Category {
+	FONT-SIZE: 11px; MARGIN: 0px; COLOR: #8d8c8c; LINE-HEIGHT: 22px; FONT-STYLE: normal
+}
+.Catedesc {
+	BACKGROUND-POSITION: left top; PADDING-LEFT: 20px; FONT-SIZE: 12px; BACKGROUND-IMAGE: url(images/main_background.gif); PADDING-BOTTOM: 20px; TEXT-TRANSFORM: uppercase; COLOR: #808080; BACKGROUND-REPEAT: repeat-y; FONT-FAMILY: verdana, arial, sans-serif; TEXT-ALIGN: justify
+}
+H1.block_title {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; FONT-SIZE: 14px; MARGIN-BOTTOM: 30px; PADDING-BOTTOM: 0px; PADDING-TOP: 10px; FONT-FAMILY: verdana, arial, sans-serif; HEIGHT: 40px
+}
+H1.block_title IMG {
+	VERTICAL-ALIGN: middle; COLOR: red
+}
+H1.block_title A:visited {
+	COLOR: gray
+}
+H1.block_title A:active {
+	COLOR: gray
+}
+H1.block_title A:link {
+	COLOR: gray
+}
+#header A {
+	FONT-WEIGHT: bold; FONT-SIZE: 16px; COLOR: white; FONT-FAMILY: verdana, arial, sans-serif
+}
+DIV.block {
+	BACKGROUND-POSITION: left top; FONT-SIZE: 8pt; BACKGROUND-IMAGE: url(images/main_background.gif); BACKGROUND-REPEAT: repeat-y; TEXT-ALIGN: justify
+}
+DIV.block_footer {
+	HEIGHT: 10px
+}
+DIV.post {
+	PADDING-LEFT: 20px
+}
+DIV.posttitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #355ea0; FONT-FAMILY: verdana, arial, sans-serif
+}
+.posttitle A:visited {
+	FONT-SIZE: 14px; COLOR: #366900; TEXT-DECORATION: none
+}
+.posttitle A:active {
+	FONT-SIZE: 14px; COLOR: #366900; TEXT-DECORATION: none
+}
+.posttitle A:link {
+	FONT-SIZE: 14px; COLOR: #366900; TEXT-DECORATION: none
+}
+.posttitle A:hover {
+	FONT-SIZE: 14px; COLOR: brown; TEXT-DECORATION: underline
+}
+DIV.itemdesc {
+	FONT-SIZE: 11px; TEXT-TRANSFORM: uppercase; COLOR: #808080; PADDING-TOP: 10px; FONT-FAMILY: verdana, arial, sans-serif; TEXT-ALIGN: right
+}
+DIV.seperator {
+	MARGIN: 0px 0px 10px
+}
+DIV.entrylistitem {
+	PADDING-LEFT: 20px; PADDING-BOTTOM: 10px
+}
+A.entrylisttitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #5d5d5d; FONT-FAMILY: "trebuchet ms", "lucida grande", verdana, arial, sans-serif
+}
+A.entrylisttitle:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #5d5d5d; FONT-FAMILY: "trebuchet ms", "lucida grande", verdana, arial, sans-serif
+}
+A.entrylisttitle:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #5d5d5d; FONT-FAMILY: "trebuchet ms", "lucida grande", verdana, arial, sans-serif
+}
+A.entrylisttitle:active {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #5d5d5d; FONT-FAMILY: "trebuchet ms", "lucida grande", verdana, arial, sans-serif
+}
+DIV.moreinfo {
+	FONT-SIZE: 8pt; TEXT-ALIGN: justify
+}
+DIV.moreinfotitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: gray; FONT-FAMILY: "trebuchet ms", "lucida grande", verdana, arial, sans-serif
+}
+commentform {
+	FONT-SIZE: 12px
+}
+DIV.comment_footer {
+	COLOR: #8d8c8c; TEXT-ALIGN: right
+}
+DIV.comments {
+	FONT-SIZE: 12px
+}
+DIV.comment {
+	BORDER-RIGHT: #dddddd 1px dashed; PADDING-RIGHT: 10px; BORDER-TOP: #dddddd 1px dashed; PADDING-LEFT: 10px; PADDING-BOTTOM: 10px; MARGIN: 10px 0px; BORDER-LEFT: #dddddd 1px dashed; PADDING-TOP: 10px; BORDER-BOTTOM: #dddddd 1px dashed; BACKGROUND-COLOR: #fbfbfb
+}
+DIV.comment_author {
+	MARGIN: 5px 0px
+}
+DIV.comment_content {
+	MARGIN: 5px 0px
+}
+#postcomment {
+	BORDER-RIGHT: #dddddd 1px solid; PADDING-RIGHT: 10px; BORDER-TOP: #dddddd 1px solid; MARGIN-TOP: 15px; PADDING-LEFT: 10px; FONT-SIZE: 12px; PADDING-BOTTOM: 10px; BORDER-LEFT: #dddddd 1px solid; WIDTH: 435px; PADDING-TOP: 10px; BORDER-BOTTOM: #dddddd 1px solid; BACKGROUND-COLOR: #fbfbfb; TEXT-ALIGN: justify
+}
+#postcomment DIV {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; MARGIN: 5px 0px; COLOR: #808080
+}
+#postcomment INPUT.text {
+	FONT-SIZE: 14px; LINE-HEIGHT: 130%; FONT-FAMILY: verdana
+}
+TEXTAREA {
+	FONT-SIZE: 14px; LINE-HEIGHT: 130%; FONT-FAMILY: verdana
+}

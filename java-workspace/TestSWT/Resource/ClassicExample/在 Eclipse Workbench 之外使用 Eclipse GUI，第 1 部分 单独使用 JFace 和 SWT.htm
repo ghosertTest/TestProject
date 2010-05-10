@@ -1,0 +1,1264 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0068)http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/ -->
+<HTML><HEAD><TITLE>在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分: 单独使用 JFace 和 SWT</TITLE><!--XSLT stylesheet used to transform this file:  dw-document-html-4.1.xsl-->
+<META http-equiv=Content-Type content="text/html; charset=UTF-8">
+<META http-equiv=PICS-Label 
+content='(PICS-1.1&#10;    "http://www.icra.org/ratingsv02.html" l gen true r (cz 1 lz 1 nz 1 oz 1 vz 1)&#10;    "http://www.rsac.org/ratingsv01.html" l gen true r (n 0 s 0 v 0 l 0)&#10;    "http://www.classify.org/safesurf/" l gen true r (SS~~000 1))'>
+<META http-equiv=Expires content=0>
+<META 
+content="Eclipse, workbench, gui, components, platform, JFace, SWT, A. O. Van Emmenis, developerworks, open source zone, 开放源码平台" 
+name=KEYWORDS>
+<META 
+content="尽管人们通常在 Eclipse Workbench 内部使用 Eclipse GUI 组件（JFace 和 SWT），但它们本身被设计为自包含的框架。即使在 Eclipse Workbench 之外，JFace 的可插入式设计仍允许您用极少的代码开发复杂的 GUI。在由三篇文章组成的这一系列中，A. O. Van Emmenis 将演示如何构建这样的独立应用程序。在第 1 部分中，他从“Hello, World”示例开始，然后逐步将其构建成一个（非常）简单的文件资源管理器。他介绍了一些主要的 JFace 类（和几个 SWT 窗口构件），同时还介绍了一些技巧、窍门和设计问题。" 
+name=ABSTRACT>
+<META 
+content="尽管人们通常在 Eclipse Workbench 内部使用 Eclipse GUI 组件（JFace 和 SWT），但它们本身被设计为自包含的框架。即使在 Eclipse Workbench 之外，JFace 的可插入式设计仍允许您用极少的代码开发复杂的 GUI。在由三篇文章组成的这一系列中，A. O. Van Emmenis 将演示如何构建这样的独立应用程序。在第 1 部分中，他从“Hello, World”示例开始，然后逐步将其构建成一个（非常）简单的文件资源管理器。他介绍了一些主要的 JFace 类（和几个 SWT 窗口构件），同时还介绍了一些技巧、窍门和设计问题。" 
+name=DESCRIPTION>
+<META 
+content=https://www-130.ibm.com/developerworks/secure/feedback.jsp?domain=dwchina 
+name=OWNER>
+<META scheme=iso8601 content=2003-04-09 name=DC.Date>
+<META scheme=rfc1766 content=zh-cn name=DC.Language>
+<META content=cn name=IBM.Country>
+<META content="" name="Last update">
+<META content=Public name=SECURITY>
+<META content="Copyright (c) 2003 by IBM Corporation" name=DC.Rights>
+<META content=index,follow name=ROBOTS>
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/dwcss.js" 
+type=text/javascript><noscript><link type="text/css" href="/developerworks/cn/css/r1ss.css" rel="stylesheet"/></noscript><script src="/developerworks/js/spinbox.js" language="JavaScript" type="text/javascript"></SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>var title = "在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分: 单独使用 JFace 和 SWT"; </SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>var forumURL = ""; </SCRIPT>
+
+<SCRIPT language=JavaScript 
+type=text/javascript>var contentAreaList = ""; </SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/forumwindow.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript type=text/javascript>var emailAbstract = "尽管人们通常在 Eclipse Workbench 内部使用 Eclipse GUI 组件（JFace 和 SWT），但它们本身被设计为自包含的框架。即使在 Eclipse Workbench 之外，JFace 的可插入式设计仍允许您用极少的代码开发复杂的 GUI。在由三篇文章组成的这一系列中，A. O. Van Emmenis 将演示如何构建这样的独立应用程序。在第 1 部分中，他从“Hello, World”示例开始，然后逐步将其构建成一个（非常）简单的文件资源管理器。他介绍了一些主要的 JFace 类（和几个 SWT 窗口构件），同时还介绍了一些技巧、窍门和设计问题。"; </SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/grabtitle.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/emailfriend2.js" 
+type=text/javascript></SCRIPT>
+
+<META content="MSHTML 6.00.2900.2180" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff leftMargin=2 topMargin=2 marginheight="2" marginwidth="2">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD class=bbg width=110><A href="http://www.ibm.com/cn/"><IMG height=52 
+      alt=IBM® 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/ibm-logo.gif" 
+      width=110 border=0></A></TD>
+    <TD class=bbg><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=1 border=0></TD>
+    <TD class=mbbg align=right width=650>
+      <TABLE cellSpacing=0 cellPadding=0 align=right border=0>
+        <TBODY>
+        <TR class=cty-tou>
+          <TD class=upper-masthead-corner width=17 rowSpan=2><A 
+            href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#main"><IMG 
+            height=1 alt="Skip to main content" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=1 border=0></A></TD>
+          <TD align=left>
+            <TABLE cellSpacing=0 cellPadding=0 align=left border=0>
+              <TBODY>
+              <TR>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><B 
+                  class=country>中国</B><SPAN class=spacer>&nbsp;[</SPAN> <A 
+                  class=ur-link 
+                  href="http://www.ibm.com/developerworks/cn/country/">选择</A><SPAN 
+                  class=spacer>]</SPAN></TD>
+                <TD class=upper-masthead-divider 
+                width=29>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD align=left><A class=ur-link 
+                  href="http://www.ibm.com/legal/cn/">使用条款</A></TD></TR></TBODY></TABLE></TD>
+          <TD width=40>&nbsp;</TD></TR>
+        <TR>
+          <TD class=cty-tou-border colSpan=2 height=1><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=1></TD></TR>
+        <TR>
+          <TD colSpan=3><IMG height=8 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=1></TD></TR>
+        <TR>
+          <TD>&nbsp;</TD>
+          <TD align=middle colSpan=2>
+            <FORM id=form1 name=form1 
+            action=http://www-128.ibm.com/developerworks/search/searchResults.jsp 
+            method=get><INPUT type=hidden value=1 name=searchType><INPUT 
+            type=hidden value=dWChina name=searchSite><INPUT type=hidden 
+            value=zh name=pageLang><INPUT type=hidden value=UTF8 
+            name=langEncoding>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD width=1><IMG height=1 alt="Select a scope:" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=1></TD>
+                <TD align=right><LABEL for=sq><SELECT class=input-scope id=sq 
+                  name=searchScope> <OPTION value=dW selected>dW 全部内容</OPTION> 
+                    <OPTION value=dW>-----------------</OPTION> <OPTION 
+                    value=dmdd>&nbsp;&nbsp;DB2</OPTION> <OPTION 
+                    value=lotusdd>&nbsp;&nbsp;Lotus</OPTION> <OPTION 
+                    value=tivolidd>&nbsp;&nbsp;Tivoli</OPTION> <OPTION 
+                    value=wsdd>&nbsp;&nbsp;WebSphere</OPTION> <OPTION 
+                    value=dW>-----------------</OPTION> <OPTION 
+                    value=javaZ>&nbsp;&nbsp;Java 技术</OPTION> <OPTION 
+                    value=linuxZ>&nbsp;&nbsp;Linux</OPTION> <OPTION 
+                    value=opensrcZ>&nbsp;&nbsp;Open source</OPTION> <OPTION 
+                    value=securityZ>&nbsp;&nbsp;Security</OPTION> <OPTION 
+                    value=webservZ>&nbsp;&nbsp;SOA &amp; Web services</OPTION> 
+                    <OPTION value=webarchZ>&nbsp;&nbsp;Web architecture</OPTION> 
+                    <OPTION value=wirelessZ>&nbsp;&nbsp;Wireless</OPTION> 
+                    <OPTION value=xmlZ>&nbsp;&nbsp;XML</OPTION> <OPTION 
+                    value=dW>-----------------</OPTION> <OPTION value=all>IBM 
+                    全部内容</OPTION></SELECT> </LABEL></TD>
+                <TD align=right width=1><IMG height=1 alt="Search for:" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=1>&nbsp;&nbsp;</TD>
+                <TD align=right><INPUT class=input id=q maxLength=100 size=15 
+                  name=query> </TD>
+                <TD width=7>&nbsp;</TD>
+                <TD><LABEL for=q><INPUT type=image alt=搜索 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/search.gif" 
+                  value=搜索 name=Search> </LABEL></TD>
+                <TD 
+      width=20>&nbsp;</TD></TR></TBODY></TABLE></FORM></TD></TR></TBODY></TABLE></TD></TR>
+  <TR>
+    <TD class=blbg colSpan=3>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> </TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/cn/">首页</A> </TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/products/cn/">产品</A> </TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/servicessolutions/cn/">服务与解决方案</A> 
+</TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/support/cn/">支持与下载</A> </TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/account/cn/">个性化服务</A> </TD>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> 
+              </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><!--
+<script src="//www.ibm.com/common/v14/pmh.js" language="JavaScript" type="text/javascript"></script>
+--><!-- end masthead dw liquid -->
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD width=5><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=5 border=0></TD>
+    <TD width="100%">
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD width="100%"><IMG height=4 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=2 border=0><BR><A class=bctl 
+            href="http://www-128.ibm.com/developerworks/cn/">developerWorks 
+            中国</A><SPAN class=bct> &gt; </SPAN><A class=bctl 
+            href="http://www-128.ibm.com/developerworks/cn/linux/">Linux</A> 
+            <SPAN class=bct>&gt; </SPAN></TD>
+          <TD align=right width=136><A 
+            href="http://www-128.ibm.com/developerworks/cn/"><IMG height=24 
+            alt=developerWorks 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/dwlogo-small.gif" 
+            width=136 border=0></A></TD>
+          <TD width=5><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=5 border=0></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><A 
+name=main></A><A name=top></A>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD colSpan=5><IMG height=15 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=5 border=0></TD></TR>
+  <TR vAlign=top>
+    <TD width=2><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=2 border=0></TD>
+    <TD><SPAN class=astitle>在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分: 
+      </SPAN><SPAN class=atitle>单独使用 JFace 和 SWT</SPAN></TD>
+    <TD width=8><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=8 border=0></TD>
+    <TD align=right width=180><NOBR>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD align=right></TD>
+          <TD width=46>
+            <FORM 
+            action=https://www-130.ibm.com/developerworks/secure/email-it.jsp><INPUT 
+            type=hidden 
+            value="尽管人们通常在 Eclipse Workbench 内部使用 Eclipse GUI 组件（JFace 和 SWT），但它们本身被设计为自包含的框架。即使在 Eclipse Workbench 之外，JFace 的可插入式设计仍允许您用极少的代码开发复杂的 GUI。在由三篇文章组成的这一系列中，A. O. Van Emmenis 将演示如何构建这样的独立应用程序。在第 1 部分中，他从“Hello, World”示例开始，然后逐步将其构建成一个（非常）简单的文件资源管理器。他介绍了一些主要的 JFace 类（和几个 SWT 窗口构件），同时还介绍了一些技巧、窍门和设计问题。" 
+            name=body><INPUT type=hidden 
+            value="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分: 单独使用 JFace 和 SWT" 
+            name=subject><INPUT type=hidden value=cn name=lang><INPUT type=image 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/icon-email.gif" 
+            border=0 name=email></FORM></TD></TR></TBODY></TABLE></NOBR></TD>
+    <TD width=6><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=6 border=0></TD></TR>
+  <TR vAlign=top>
+    <TD bgColor=#000000 colSpan=5><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=100 border=0></TD></TR>
+  <TR vAlign=top>
+    <TD bgColor=#ffffff colSpan=5><IMG height=8 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=100 border=0></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD width=5><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=5 border=0></TD>
+    <TD width="100%">
+      <TABLE cellSpacing=0 cellPadding=0 width=168 align=right border=0>
+        <TBODY>
+        <TR>
+          <TD width=8><IMG height=21 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=5></TD>
+          <TD width=160>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=160 bgColor=#000000 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD align=middle 
+                background="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/bg-gold.gif" 
+                height=5><B>内容：</B></TD></TR>
+              <TR>
+                <TD width=160 bgColor=#666666 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD>
+                  <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N10050">简介</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N100DB">Hello, 
+                        World</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N1011D">JFace 
+                        应用程序窗口</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N101CC">使用 
+                        TreeViewer</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N1021E">实现 
+                        TreeContentProvider</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N1027F">实现顶级 
+                        Explorer 类</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N102CF">实现标签提供程序</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N1034D">使用表查看器</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N10379">实现文件表查看器内容提供程序</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N103BA">侦听事件</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N10410">实现文件表标签提供程序</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#N1045D">结束语</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR><!--Standard links for every dw-article-->
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#resources">参考资料 
+                        </A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#author1">关于作者</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#rating">对本文的评价</A></TD></TR>
+                    <TR>
+                      <TD><IMG height=10 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=160 bgColor=#000000 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD align=middle 
+                background="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/bg-gold.gif" 
+                height=5><B>订阅:</B></TD></TR>
+              <TR>
+                <TD width=160 bgColor=#666666 height=1><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD>
+                  <TABLE cellSpacing=0 cellPadding=1 width=160 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD><A 
+                        href="http://www-128.ibm.com/developerworks/cn/newsletter/">developerWorks 
+                        时事通讯</A></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR>
+                    <TR>
+                      <TD height=1><IMG height=5 alt="" 
+                        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                        width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width=160 border=0>
+              <TBODY>
+              <TR>
+                <TD width=150 bgColor=#000000 colSpan=2 height=2><IMG height=2 
+                  alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=160></TD></TR>
+              <TR>
+                <TD width=150 bgColor=#ffffff colSpan=2 height=2><IMG height=2 
+                  alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=160></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><SPAN 
+      class=atitle2>构建一个简单的文件资源管理器应用程序</SPAN><BR>
+      <TABLE cellSpacing=0 cellPadding=0 border=0>
+        <TBODY>
+        <TR vAlign=top align=left>
+          <TD>
+            <P>级别: 中级</P></TD></TR></TBODY></TABLE>
+      <P><A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#author1"><NAME>Adrian 
+      Van Emmenis</NAME></A><BR>独立顾问<BR>2003 年 4 月 09 日</P>
+      <BLOCKQUOTE><IMG height=38 alt="Column icon" 
+        src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/column_icon.gif" 
+        width=38 align=left border=0>尽管人们通常在 Eclipse Workbench 内部使用 Eclipse GUI 
+        组件（JFace 和 SWT），但它们本身被设计为自包含的框架。即使在 Eclipse Workbench 之外，JFace 
+        的可插入式设计仍允许您用极少的代码开发复杂的 GUI。在由三篇文章组成的这一系列中，A. O. Van Emmenis 
+        将演示如何构建这样的独立应用程序。在第 1 部分中，他从“Hello, 
+        World”示例开始，然后逐步将其构建成一个（非常）简单的文件资源管理器。他介绍了一些主要的 JFace 类（和几个 SWT 
+        窗口构件），同时还介绍了一些技巧、窍门和设计问题。</BLOCKQUOTE>
+      <P><A name=N10050><SPAN class=atitle2>简介</SPAN></A><BR>开放源码 Eclipse 项目是 
+      Java 领域中最有趣的新近开发项目之一。Eclipse 把自己描述成“一种通用的工具平台 — 开放的可扩展 
+      IDE，可用于任何用途且没有特殊之处”。关于 Eclipse 的介绍，请参阅 <I 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">developerWorks</I>文章“ 
+      <A href="http://www.ibm.com/developerworks/java/library/os-ecov/" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Getting started with 
+      the Eclipse Platform</A>”。 </P>
+      <P>它的两个主要组件是名为 SWT 的图形库和与其匹配的名为 JFace 的实用程序框架。在本文中，我将集中讨论这些组件。Eclipse 
+      网站（请参阅本文后面的 <A 
+      href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/#resources" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">参考资料</A>）中的 Eclipse 
+      技术概述（Eclipse Technical Overview）对这两个组件的描述如下： </P>
+      <UL xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <LI><B>SWT</B>是一个窗口构件集和图形库，它集成于本机窗口系统但有独立于 OS 的 API。 
+        <LI><B>JFace</B>是用 SWT 实现的 UI 工具箱，它简化了常见的 UI 编程任务。JFace 在其 API 
+        和实现方面都是独立于窗口系统的，它旨在使用 SWT 而不隐藏它。 </LI></UL>
+      <P>图 1 演示了 Eclipse、JFace 和 SWT 之间的关系。</P>
+      <P><A name=N1007B><B>图 1. Eclipse Workbench、JFace 和 SWT</B></A><BR><IMG 
+      height=141 alt="图 1. Eclipse Workbench、JFace 和 SWT" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/jface_and_swt.gif" 
+      width=319 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>已发表的关于 JFace 和 SWT 的大多数文章（到目前为止）就如何在较大型 Eclipse 
+      框架的环境中使用它们进行了讨论。在本文中，我打算采取另一种方法。我将向您演示如何在独立的 Java 程序中使用 JFace 和 SWT。</P>
+      <P>我选择的示例是文件资源管理器。我们实际上不会实现很多真正的功能，但我们将使用足够多的 GUI，以使您了解如何构建一个功能完整的程序。</P>
+      <P><A name=N10090><SPAN class=atitle3>安装说明</SPAN></A><BR>您可以下载本文中 <A 
+      href="ftp://www6.software.ibm.com/software/developer/library/os-ecgui1/examples.zip" 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">示例的源代码</A>，但要把我的系统设置考虑在内： 
+      </P>
+      <UL xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <LI>Windows 2000 
+        <LI>Eclipse，稳定构建 M3（2002 年 11 月 15 日） 
+        <LI>Eclipse 安装在 C:\eclipse-2.1.0 中 </LI></UL><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <P>随后的所有调整名称和文件分隔符的工作留给您完成，以便程序能在您的系统上正确地运行。</P>
+      <P><A name=N100B0><SPAN class=atitle3>构建／运行指导</SPAN></A><BR>您需要将以下 jar 
+      文件置于类路径（class path）上： <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><CODE><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.jface_2.1.0\jface.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.runtime_2.1.0\runtime.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.swt.win32_2.1.0\ws\win32\swt.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.ui.workbench_2.1.0\workbench.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">C:\eclipse-2.1.0\plugins\org.eclipse.core.runtime_2.1.0\runtime.jar 
+      <BR xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></CODE></P>
+      <P>为确保 Java VM 获得您在运行时使用的 GUI 的正确共享库，请结合以下参数运行它：</P>
+      <P><CODE>-Djava.library.path=C:\eclipse-2.1.0\plugins\org.eclipse.swt.win32_2.1.0\os\win32\x86\</CODE> 
+      </P>
+      <P>最后，请在包含 <B xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">icons</B>文件夹的文件夹中运行程序，这样示例就可以找到包含图标的 
+      gif 文件。 </P>
+      <P><A name=N100DB><SPAN class=atitle2>Hello, 
+      World</SPAN></A><BR>让我们从我能想到的最简单的 JFace 程序开始，逐步扩充它，将其构建为最常见的“Hello, 
+      World”程序。</P><A name=listing_1 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 1. Hello（版本 
+      1）</B> </A><A name=N100EB><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.widgets.*;
+public class Hello
+{
+  public static void main(String[] args)
+  {
+    ApplicationWindow w = new ApplicationWindow(null);
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>这里我们创建了一个名为 <CODE>Hello</CODE> 的类，其中 main 方法仅仅创建了一个 
+      ApplicationWindow，然后打开它。 <CODE>setBlockOnOpen()</CODE> 使 
+      <CODE>open()</CODE> 阻塞，直到窗口关闭为止。 </P>
+      <P>在窗口已关闭之后，我们获取当前的 Display 
+      并除去它。这会释放在操作系统中用到的资源（以后我将讨论为什么这样做总是良好的习惯做法）。</P>
+      <P>当您运行该程序时，您会看到类似图 2 的窗口：</P>
+      <P><A name=N1010B><B>图 2. Hello（版本 2）</B></A><BR><IMG height=97 
+      alt="图 2. Hello（版本 2）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/hello_in_action_1.gif" 
+      width=112 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>就是如此。它甚至没有说“Hello, World”。在修正它之前，让我们把话题转到 JFace 窗口。</P>
+      <P><A name=N1011D><SPAN class=atitle2>JFace 
+      应用程序窗口</SPAN></A><BR>窗口是顶级窗口（换句话说，由 OS 窗口管理器管理的窗口）的 <CODE>JFace</CODE> 
+      类。JFace 窗口实际上不是顶级窗口的 GUI 对象（SWT 已经提供了一个，名为 <I 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Shell</I>）。相反，JFace 
+      窗口是助手对象，它知道对应的 SWT Shell 对象，并提供代码来帮助创建／编辑它，以及侦听它的事件等。图 3 演示了您的代码、JFace 和 
+      SWT 之间的关系。 </P>
+      <P><A name="Figure 3" xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>图 3. 您的代码、JFace 
+      Window 和 SWT Shell 之间的关系</B> </A><BR 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><IMG height=163 
+      alt="您的代码、JFace Window 和 SWT Shell 之间的关系" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/jface_and_swt_shell.gif" 
+      width=382 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>事实上，这一模型是理解 JFace 如何工作的关键。它并不真的是 SWT 之上的层，而且它没有试图向您隐藏 SWT。相反，JFace 
+      意识到有几种使用 SWT 的常用模式，而且它提供了一些实用程序代码，以帮助您更方便地对这些模式编程。</P>
+      <P>为了做到这一点，JFace 提供可使用的对象，或提供可将其子类化的类（有时它两者都提供）。</P>
+      <P>尽管我们仅仅直接使用了一个 <CODE>ApplicationWindow</CODE> 
+      ，但实际上它们被设计为可以子类化也可以加入特定行为。它们有现成的菜单栏、工具栏、供您插入特定于应用程序的内容的区域和状态栏 — 全都是可选的。图 4 
+      用 JFace File Explorer 示例本身演示了这些区域。 </P>
+      <P><A name=N1014E><B>图 4. 应用程序窗口的各个部分</B></A><BR><IMG height=330 
+      alt="图 4. 应用程序窗口的各个部分" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/parts_of_app_window.gif" 
+      width=600 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>让我们改进 Hello，使它成为 <CODE>ApplicationWindow</CODE> 的子类。更改的行在清单 2 中突出显示。 
+      </P><A name=code2 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 2. Hello（版本 
+      2）</B> </A><A name=N1016B><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.widgets.*;
+public class Hello extends ApplicationWindow
+{
+  public Hello()
+  {
+    super(null);
+  }
+  public static void main(String[] args)
+  {
+    Hello w = new Hello();
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>您编写的构造函数必须调用超类构造函数（如往常一样）。让我们暂时不考虑该构造函数的参数。</P>
+      <P>运行该程序的结果与前一个程序没有任何不同。缺省情况下，程序不会为我们显示任何装饰性的东西。</P>
+      <P>我们的程序要创建一个带有文本“Hello, World”的按钮。这个按钮要显示在内容（Contents）区域。要做到这一点，我们必须实现 
+      <CODE>Control createContents(Composite parent)</CODE> 方法。 </P>
+      <P><CODE>ApplicationWindow</CODE> 将在所有其它窗口构件已经创建之后但窗口在屏幕上显示之前调用该方法。 </P>
+      <P>参数 parent 是代表内容区域的复合窗口构件。</P>
+      <P>这里的想法是您创建一个复合窗口构件，将其添加到 parent，然后添加您的窗口构件，并返回您创建的复合窗口构件。图 5 
+      演示了实例层次结构。</P>
+      <P><A name=N10190><B>图 5. Application Window 的实例层次结构</B></A><BR><IMG 
+      height=281 alt="图 5. Application Window 的实例层次结构" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/instance_hierarchy_of_app_w.gif" 
+      width=478 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>我们的内容目前非常简单：parent 下的单一按钮，如清单 3 所示。</P><A name=code3 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 3. Hello（版本 
+      3）</B> </A><A name=N101A9><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.widgets.*;
+public class Hello extends ApplicationWindow
+{
+  public Hello()
+  {
+    super(null);
+  }
+  protected Control createContents(Composite parent)
+  {
+    Button b = new Button(parent, SWT.PUSH);
+    b.setText("Hello World");
+    return b;
+  }
+  public static void main(String[] args)
+  {
+    Hello w = new Hello();
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>结果是图 6。</P>
+      <P><A name=N101B7><B>图 6. Hello（版本 3）</B></A><BR><IMG height=53 
+      alt="图 6. Hello（版本 3）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/hello_in_action_3.gif" 
+      width=112 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>这就是我们要实现的。我们使用 JFace 创建的第一个“Hello, World”程序：包含单一按钮的窗口。</P>
+      <P>现在让我们继续讨论文件资源管理器这一话题。首先，我们将创建显示文件夹层次结构的树查看器。</P>
+      <P><A name=N101CC><SPAN class=atitle2>使用 TreeViewer</SPAN></A><BR>和 
+      <CODE>ApplicationWindow</CODE> 一样， <CODE>TreeViewer</CODE> 不是真正的 SWT 
+      窗口构件，它也没有打算向您隐藏 SWT 窗口构件。它使用 SWT 树窗口构件来显示各项，并且还使用许多其它对象来协助它。 </P>
+      <P>不象 <CODE>ApplicationWindow</CODE> ，JFace <CODE>TreeViewer</CODE> 
+      并不旨在被子类化。 </P>
+      <P>这里的想法是 <CODE>TreeViewer</CODE> 知道要显示的树的根元素。当然，您必须告诉它那个对象是什么： 
+      <CODE>TreeViewer: void setInput(Object rootElement)</CODE> </P>
+      <P>为了开始显示，树查看器向根元素请求子元素并显示它们。然后，当用户展开其中的一个子元素时，树查看器向该节点请求子元素，以此类推。实际上，并不完全是那样。 
+      <CODE>TreeViewer</CODE> 并不直接使用域对象 — 而是使用另一个名为 <CODE>ContentProvider</CODE> 
+      的对象，这个对象才使用域对象，如图 7 所示。 </P>
+      <P><A name=N10200><B>图 7. TreeViewer、ContentProvider 和域对象</B></A><BR><IMG 
+      height=355 alt="图 7. TreeViewer、ContentProvider 和域对象" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/tree_and_domain.gif" 
+      width=587 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>当然，您必须实现 <CODE>ContentProvider</CODE> 。对于 <CODE>TreeViewer</CODE> 
+      ，您的类必须实现 <CODE>ITreeContentProvider</CODE> 接口。 </P>
+      <P><A name=N1021E><SPAN class=atitle2>实现 
+      TreeContentProvider</SPAN></A><BR>有六个方法需要实现。实际上我们不用做全部的工作，只需实现其中的三个就行，因此，本着“即时满意（instant 
+      gratification）”的精神，让我们暂时只考虑那几个方法吧。</P>
+      <P>下面的代码演示了树查看器如何向内容提供程序请求正好位于根元素下的顶级元素：</P>
+      <P><CODE>ITreeContentProvider: public Object[] getElements(Object 
+      element)</CODE> </P>
+      <P>随后，每当它需要特定元素的子元素时，它就使用以下方法：</P>
+      <P><CODE>ITreeContentProvider: public Object[] getChildren(Object 
+      element)</CODE> </P>
+      <P>为了知道某个节点是否有子元素（有的话会将小加号放到它旁边），树查看器只需请求该节点的子元素，然后会询问有多少子元素。万一您的代码需要更快捷的方法来做到这一点，则您必须实现另一个方法：</P>
+      <P><CODE>public boolean hasChildren(Object element)</CODE> </P>
+      <P>正如您所见，内容提供程序不持有对任何域对象的引用。持有对这些域对象的引用的是树查看器本身，它把这些域对象作为参数传递给内容提供程序中的各个方法。</P>
+      <P>在我们的例子中，节点是 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">File</I> 
+      对象。为获取子元素，我们使用 <CODE>listFiles()</CODE> 。我们必须记得要检查 
+      <CODE>listFiles()</CODE> 是否返回 null，然后使其变成空数组。 </P>
+      <P>为了获取顶级元素（正好位于根元素之下），我们只需重用 <CODE>getChildren()</CODE> 方法。 </P>
+      <P><CODE>getParent()</CODE> 方法被用来实现 <CODE>reveal(Object element)</CODE> 
+      方法，后者使树查看器滚动其 SWT 树窗口构件，以便显示树中特定的节点。问题是：如果此刻实际上并没有显示那个节点，那么应该在哪里显示它？JFace 
+      会寻找其父元素，以及父元素的父元素等等，直到它达到已显示的节点，然后它再次回头寻找，直到目标节点已显示。 </P>
+      <P><CODE>hasChildren()</CODE> 方法只是做了显而易见（未优化）的事情，最后我们有了清单 4 中所示的代码。 </P><A 
+      name=code4 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 4. 
+      FileTreeContentProvider（版本 1）</B> </A><A name=N10276><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+import java.util.*;
+import org.eclipse.jface.viewers.*;
+public class FileTreeContentProvider implements ITreeContentProvider
+{
+  public Object[] getChildren(Object element)
+  {
+    Object[] kids = ((File) element).listFiles();
+    return kids == null ? new Object[0] : kids;
+  }
+  public Object[] getElements(Object element)
+  {
+    return getChildren(element);
+  }
+  public boolean hasChildren(Object element)
+  {
+    return getChildren(element).length &gt; 0;
+  }
+  public Object getParent(Object element)
+  {
+    return ((File)element).getParent();
+  }
+  public void dispose()
+  {
+  }
+  public void inputChanged(Viewer viewer, Object old_input, Object new_input)
+  {
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P><A name=N1027F><SPAN class=atitle2>实现顶级 Explorer 类</SPAN></A><BR>我们将采用 
+      Hello, World 程序，更改其名称，然后用 <CODE>createContents()</CODE> 方法创建 
+      <CODE>TreeViewer</CODE> 
+      （而不是创建一个按钮），将其内容提供程序设置为我们的文件树内容提供程序，然后将输入设置到某个文件夹。在这个例子中，我选择的文件夹是 C: 
+      驱动器中的顶级文件夹。 </P>
+      <P>注：需要从 <CODE>createContents()</CODE> 返回 SWT 窗口构件。正如前面提到的，JFace Tree 
+      Viewer 不是 SWT 窗口构件，因此我们不能将它返回。我们需要从树查看器获取真正的窗口构件。我们通过使用 
+      <CODE>getTree()</CODE> 做到这一点。 </P>
+      <P>我们的主窗口类现在看起来与下面相似：</P><A name=code_explorer_1 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 5. Explorer（版本 
+      1）</B> </A><A name=N102A5><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.widgets.*;
+public class Explorer extends ApplicationWindow
+{
+  public Explorer()
+  {
+    super(null);
+  }
+  protected Control createContents(Composite parent)
+  {
+    TreeViewer tv = new TreeViewer(parent);
+    tv.setContentProvider(new FileTreeContentProvider());
+    tv.setInput(new File("C:\\"));
+    return tv.getTree();
+  }
+  public static void main(String[] args)
+  {
+    Explorer w = new Explorer();
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>运行该程序，您将看到与图 8 相似的结果。</P>
+      <P><A name=N102B3><B>图 8. Explorer（版本 1）</B></A><BR><IMG height=373 
+      alt="图 8. Explorer（版本 1）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/explorer_1.gif" 
+      width=328 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>除了样板文件代码，我们只需向 Hello, World 程序添加 9 行代码就可做到这一点。</P>
+      <P>正如您可能猜想的那样，程序用 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">File</I> 的 
+      <CODE>toString()</CODE> 方法来显示这些文件，这不是我们真正想要的。要改变这一点，我们需要提供一个标签提供程序。 </P>
+      <P><A name=N102CF><SPAN 
+      class=atitle2>实现标签提供程序</SPAN></A><BR>正如有一个内容提供程序对象可用来获取树节点的子元素一样，当需要实际显示这些节点时，树查看器有另一个助手对象：标签提供程序。和前面一样，我们需要设置它：</P>
+      <P><CODE>public void setLabelProvider(IBaseLabelProvider 
+      labelProvider)</CODE> </P>
+      <P>而且需要实现下面的方法以返回要为每个元素显示的文本：</P>
+      <P><CODE>public String getText(Object element)</CODE> </P>
+      <P>如果我们将标签提供程序添加到树查看器图中，就会得到图 9。</P>
+      <P><A name=N102EE><B>图 9. 显示内容提供程序和标签提供程序的树查看器</B></A><BR><IMG height=266 
+      alt="图 9. 显示内容提供程序和标签提供程序的树查看器" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/tree_viewer_showing_label.gif" 
+      width=586 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>我们可以实现接口 <CODE>ILabelProvider</CODE> ，但将缺省实现 <CODE>LabelProvider</CODE> 
+      子类化更容易（如果没有显式地设置标签提供程序，则使用的就是这个类）。 </P>
+      <P>我们希望利用 <CODE>getText()</CODE> 做的事是返回文件名最后的部分 — 相对文件名而非 
+      <CODE>toString()</CODE> 缺省使用的绝对文件名。图 6 演示了代码。 </P><A name=code6 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>图 6. 
+      FileTreeLabelProvider（版本 1）</B> </A><A name=N1031A><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+import org.eclipse.jface.viewers.*;
+public class FileTreeLabelProvider extends LabelProvider
+{
+  public String getText(Object element)
+  {
+    return ((File) element).getName();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>而且我们必须记得使树查看器使用这个标签提供程序，如清单 7 所示。</P><A name=code2 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 7. Explorer（版本 
+      2）</B> </A><A name=N1032D><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.widgets.*;
+public class Explorer extends ApplicationWindow
+{
+  public Explorer()
+  {
+    super(null);
+  }
+  protected Control createContents(Composite parent)
+  {
+    TreeViewer tv = new TreeViewer(parent);
+    tv.setContentProvider(new FileTreeContentProvider());
+    tv.setLabelProvider(new FileTreeLabelProvider());
+    tv.setInput(new File("C:\\"));
+    return tv.getTree();
+  }
+  public static void main(String[] args)
+  {
+    Explorer w = new Explorer();
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>这一次运行该程序时，我们会获得更清楚的视觉效果，如图 10 所示。</P>
+      <P><A name=N1033B><B>图 10. Explorer（版本 2）</B></A><BR><IMG height=373 
+      alt="图 10. Explorer（版本 2）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/explorer_2.gif" 
+      width=298 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>我们现在要做的是将树查看器移到左边，将一个表查看器放在右边，以显示在树查看器中已选中的文件夹中的文件列表。</P>
+      <P><A name=N1034D><SPAN class=atitle2>使用表查看器</SPAN></A><BR>为了处理表，JFace 有一个 
+      <CODE>TableViewer</CODE> 。和 <CODE>TreeViewer</CODE> 
+      一样，它有输入（根对象）、内容提供程序和标签提供程序。它比树查看器简单，因为它不需要处理树。图 11 演示了内容提供程序和标签提供程序。 </P>
+      <P><A name=N10360><B>图 11. 显示内容提供程序和标签提供程序的表查看器</B></A><BR><IMG height=266 
+      alt="图 11. 显示内容提供程序和标签提供程序的表查看器" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/table_viewer_showing_label.gif" 
+      width=586 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>设置输入对象的方法与前面相同：</P>
+      <P><CODE>TableViewer: void setInput(Object rootElement)</CODE> </P>
+      <P><A name=N10379><SPAN 
+      class=atitle2>实现文件表查看器内容提供程序</SPAN></A><BR>让我们考虑内容提供程序。这一次，根元素比树查看器根元素简单。表查看器仅仅期望根对象有许多子元素，因此要实现的唯一有趣方法是获取子元素的方法：</P>
+      <P><CODE>public Object[] getElements(Object rootElement)</CODE> </P>
+      <P>要实现的接口是 <CODE>IStructuredContentProvider</CODE> 。 </P>
+      <P>根对象是一个文件夹；其子元素是该文件夹包含的文件／文件夹。因此我们的文件表内容提供程序类与清单 8 类似。</P><A name=code8 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 8. 
+      FileTableContentProvider（版本 1）</B> </A><A name=N1039A><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+import org.eclipse.jface.viewers.*;
+public class FileTableContentProvider implements IStructuredContentProvider
+{
+  public Object[] getElements(Object element)
+  {
+    Object[] kids = null;
+    kids = ((File) element).listFiles();
+    return kids == null ? new Object[0] : kids;
+  }
+  public void dispose()
+  {
+  }
+  public void inputChanged(Viewer viewer, Object old_object, Object new_object)
+  {
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>因此我们现在有两个查看器：树查看器和表查看器。为了将它们相邻地安置在一起，我们创建了 SWT SashForm 
+      窗口构件。该窗口构件用一个用户可以调节的边框分隔其子元素。然后，我们将树和表添加到框格表单（sash form）（图 12）。</P>
+      <P><A name=N103A8><B>图 12. 包含树查看器和表查看器的框格表单</B></A><BR><IMG height=141 
+      alt="图 12. 包含树查看器和表查看器的框格表" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/sash_form.gif" 
+      width=159 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>接下来要做的是使表查看器查看用户在树查看器中选中的每个文件夹。要做到这一点，我们必须侦听事件。</P>
+      <P><A name=N103BA><SPAN 
+      class=atitle2>侦听事件</SPAN></A><BR>当用户在树查看器中选中一项时，树查看器发出 
+      <CODE>SelectionChangedEvent</CODE> 
+      事件。我们需要侦听该事件，当发出该事件时，需要将表的输入设置为树查看器中当前选中的文件。 </P>
+      <P>为了侦听来自树查看器的选择更改事件，我们使用下面的方法：</P>
+      <P><CODE>public void addSelectionChangedListener(ISelectionChangedListener 
+      listener)</CODE> </P>
+      <P>当用户选中／取消选中树查看器中的节点时，用下面的方法调用选择更改侦听器：</P>
+      <P><CODE>public void selectionChanged(SelectionChangedEvent event)</CODE> 
+      </P>
+      <P>为了实现该侦听器类，我们将在主资源管理器窗口中编码一个匿名类。在 <CODE>selectionChanged()</CODE> 
+      方法中，我们将需要获得刚选中的对象，并使其成为表查看器的输入。将所有的工作组合在一起，就得到了清单 9。 </P><A name=code9 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 9. Explorer（版本 
+      3）</B> </A><A name=N103E9><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.widgets.*;
+public class Explorer extends ApplicationWindow
+{
+  public Explorer()
+  {
+    super(null);
+  }
+  protected Control createContents(Composite parent)
+  {
+    SashForm sash_form = new SashForm(parent, SWT.HORIZONTAL | SWT.NULL);
+    TreeViewer tv = new TreeViewer(sash_form);
+    tv.setContentProvider(new FileTreeContentProvider());
+    tv.setLabelProvider(new FileTreeLabelProvider());
+    tv.setInput(new File("C:\\"));
+    final TableViewer tbv = new TableViewer(sash_form, SWT.BORDER);
+    tbv.setContentProvider(new FileTableContentProvider());
+    tv.addSelectionChangedListener(new ISelectionChangedListener()
+    {
+      public void selectionChanged(SelectionChangedEvent event)
+      {
+        IStructuredSelection selection =
+          (IStructuredSelection) event.getSelection();
+        Object selected_file = selection.getFirstElement();
+        tbv.setInput(selected_file);
+      }
+    });
+    return sash_form;
+  }
+  public static void main(String[] args)
+  {
+    Explorer w = new Explorer();
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>如果运行该程序，就会得到类似图 13 的结果。</P>
+      <P><A name=N103F7><B>图 13. Explorer（版本 3）</B></A><BR><IMG height=346 
+      alt="图 13. Explorer（版本 3）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/explorer_3.gif" 
+      width=460 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P>和树查看器一样，如果不显式地给表查看器设置标签提供程序，它就会使用缺省的标签提供程序。这就是这里发生的情况 — 
+      如果您还记得的话，缺省行为是显示由元素的 <CODE>toString()</CODE> 方法返回的字符串，它正好是绝对文件名。 </P>
+      <P>让我们实现自己的表标签提供程序。</P>
+      <P><A name=N10410><SPAN 
+      class=atitle2>实现文件表标签提供程序</SPAN></A><BR>现在只需考虑一个方法：</P>
+      <P><CODE>public String getColumnText(Object element, int column)</CODE> 
+      </P>
+      <P>这里有两个参数：要获取其标签的元素和列索引（从 0 开始）。</P>
+      <P>该方法的实现相当简单 — 如果我们不考虑列索引参数的话，如清单 10 所示。</P><A name=code10 
+      xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 10. 
+      FileTableLabelProvider（版本 1）</B> </A><A name=N1042D><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.graphics.*;
+public class FileTableLabelProvider implements ITableLabelProvider
+{
+  public String getColumnText(Object obj, int i)
+  {
+    return ((File) obj).getName();
+  }
+  public void addListener(ILabelProviderListener ilabelproviderlistener)
+  {
+  }
+  public void dispose()
+  {
+  }
+  public boolean isLabelProperty(Object obj, String s)
+  {
+    return false;
+  }
+  public void removeListener(ILabelProviderListener ilabelproviderlistener)
+  {
+  }
+  public Image getColumnImage(Object arg0, int arg1)
+  {
+    return null;
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>要配置表使其包含一列且列首标签为“Name”，必须从表查看器抽取表窗口构件，将表的列这一窗口构件作为表的子元素来创建，并给它设置一些属性，如清单 
+      11 中所示。</P><A name=code11 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><B>清单 11. 
+      Explorer（版本 4）</B> </A><A name=N10440><B></B></A><BR>
+      <TABLE cellSpacing=0 cellPadding=5 width="100%" bgColor=#cccccc 
+        border=1><TBODY>
+        <TR>
+          <TD><PRE><CODE>
+import java.io.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.window.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.widgets.*;
+public class Explorer extends ApplicationWindow
+{
+  public Explorer()
+  {
+    super(null);
+  }
+  protected Control createContents(Composite parent)
+  {
+    SashForm sash_form = new SashForm(parent, SWT.HORIZONTAL | SWT.NULL);
+    TreeViewer tv = new TreeViewer(sash_form);
+    tv.setContentProvider(new FileTreeContentProvider());
+    tv.setLabelProvider(new FileTreeLabelProvider());
+    tv.setInput(new File("C:\\"));
+    final TableViewer tbv = new TableViewer(sash_form, SWT.BORDER);
+    tbv.setContentProvider(new FileTableContentProvider());
+    tbv.setLabelProvider(new FileTableLabelProvider());
+    TableColumn column = new TableColumn(tbv.getTable(), SWT.LEFT);
+    column.setText("Name");
+    column.setWidth(200);
+    tbv.getTable().setHeaderVisible(true);
+    tv.addSelectionChangedListener(new ISelectionChangedListener()
+    {
+      public void selectionChanged(SelectionChangedEvent event)
+      {
+        IStructuredSelection selection =
+          (IStructuredSelection) event.getSelection();
+        Object selected_file = selection.getFirstElement();
+        tbv.setInput(selected_file);
+      }
+    });
+    return sash_form;
+  }
+  public static void main(String[] args)
+  {
+    Explorer w = new Explorer();
+    w.setBlockOnOpen(true);
+    w.open();
+    Display.getCurrent().dispose();
+  }
+}
+</CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>运行该程序，我们应得到类似图 14 的结果。</P>
+      <P><A name=N1044E><B>图 14. Explorer（版本 4）</B></A><BR><IMG height=387 
+      alt="图 14. Explorer（版本 4）" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/explorer_4.gif" 
+      width=521 xmlns:dw="http://www.ibm.com/developerworks/" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> </P>
+      <P><A name=N1045D><SPAN class=atitle2>结束语</SPAN></A><BR>我们在很短的时间里完成了非常多的 
+      JFace 编码工作。我们已经使用了一个应用程序窗口和两个查看器（树和表），并实现了它们的内容和标签提供程序。我们已经使用的 SWT 
+      窗口构件有：Button、SashForm、Table 和 TableColumn，而且实现了一个事件侦听器。</P>
+      <P>但本文也有一些不完善的地方。我们没有考虑内容／标签提供程序中的一些方法，树查看器既显示文件又显示文件夹，没有显示图标，而且没有涉及菜单栏、工具栏、状态栏或任何弹出菜单。</P>
+      <P>在下一篇文章中，我们将整理内容／标签提供程序，并对查看器进行排序和过滤。我们将给窗口添加状态栏，给两个查看器都添加图标，并了解 JFace 
+      图像注册表（image registry）。</P>
+      <P><A name=resources><SPAN class=atitle2>参考资料 </SPAN></A>
+      <UL>
+        <LI>您可以参阅本文在 developerWorks 全球站点上的 <A 
+        href="http://www.ibm.com/developerworks/library/os-ecgui1/index.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">英文原文</A>. <BR><BR>
+        <LI>下载本文中 <A 
+        href="http://www-128.ibm.com/developerworks/cn/linux/opensource/os-ecgui1/examples.zip" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">示例的源代码</A>。 
+        <BR><BR>
+        <LI>请参阅主要的 <A href="http://www.eclipse.org/" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Eclipse 
+        网站</A>以获得下载文件、文档、邮件压缩文档和各种文章。 <BR><BR>
+        <LI>有关在 Eclipse Workbench 内使用树查看器的描述，请参阅 Eclipse 网站上的 <A 
+        href="http://www.eclipse.org/articles/treeviewer-cg/TreeViewerArticle.htm" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">How to use the 
+        JFace Tree Viewer</A>。 <BR><BR>
+        <LI>有关项目开发计划、FAQ 和便利的 SWT 代码片段列表，请查阅 <A 
+        href="http://dev.eclipse.org/viewcvs/index.cgi/~checkout~/platform-swt-home/dev.html" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">SWT 组件开发资源</A>。 
+        <BR><BR>
+        <LI>在以下 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">developerWorks</I>文章中了解有关 
+        Eclipse 的更多信息： <BR><BR>
+        <LI>
+        <UL xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <LI><A 
+          href="http://www.ibm.com/developerworks/opensource/library/os-ecov">Getting 
+          started with the Eclipse Platform</A>（2002 年 11 月） 
+          <LI><A 
+          href="http://www.ibm.com/developerworks/opensource/library/os-ecplug">Developing 
+          Eclipse plug-ins</A>（2002 年 12 月） 
+          <LI><A 
+          href="http://www.ibm.com/developerworks/opensource/library/os-swing">Plug 
+          a Swing-based development tool into Eclipse</A>（2002 年 10 月） 
+          <LI><A 
+          href="http://www.ibm.com/developerworks/java/library/j-nativegui/index.html">Create 
+          native, cross-platform GUI applications</A>（2002 年 4 月） 
+          <LI><A 
+          href="http://www.ibm.com/developerworks/opensource/library/os-i18n">Internationalizing 
+          your Eclipse plug-in</A>（2002 年 6 月） 
+          <LI><A 
+          href="http://www.ibm.com/developerworks/opensource/library/os-i18n2/">Testing 
+          your internationalized Eclipse plug-in</A>（2002 年 7 月） 
+          <LI></LI></UL><BR>
+        <LI>在 <I xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">developerWorks</I>开放源码项目专区查找 
+        <A href="http://www-128.ibm.com/developerworks/cn/linux/" 
+        xmlns:dw="http://www.ibm.com/developerworks/" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">更多的开放源码资源</A>。 
+        <BR></LI></UL>
+      <P></P>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD><A name=author1></A><SPAN class=atitle2>关于作者</SPAN><BR><IMG 
+            height=80 alt=作者照片 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/p-vanemmenis.jpg" 
+            width=64 align=left border=0 
+            xmlns:dw="http://www.ibm.com/developerworks/" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">A. O. Van 
+            Emmenis 是一位独立顾问，专门从事 Java/J2EE 培训和咨询工作，他在英国的剑桥工作。Van 已经在软件行业工作了约 20 
+            年左右。他最初与对象打交道是在 CAD 行业使用 Smalltalk 的时候，他现在在工作中主要使用 
+            Java。他对敏捷（Agile）方法和 GUI 设计特别感兴趣。您可以通过 <A 
+            href="mailto:van@vanemmenis.com" 
+            xmlns:dw="http://www.ibm.com/developerworks/" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">van@vanemmenis.com</A>与 
+            Van 联系。 </TD></TR></TBODY></TABLE><BR clear=all><IMG height=10 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=100 border=0><BR>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD align=right width="100%">
+            <TABLE cellSpacing=0 cellPadding=0>
+              <TBODY>
+              <TR vAlign=top>
+                <TD align=right></TD>
+                <TD width=46>
+                  <FORM 
+                  action=https://www-130.ibm.com/developerworks/secure/email-it.jsp><INPUT 
+                  type=hidden 
+                  value="尽管人们通常在 Eclipse Workbench 内部使用 Eclipse GUI 组件（JFace 和 SWT），但它们本身被设计为自包含的框架。即使在 Eclipse Workbench 之外，JFace 的可插入式设计仍允许您用极少的代码开发复杂的 GUI。在由三篇文章组成的这一系列中，A. O. Van Emmenis 将演示如何构建这样的独立应用程序。在第 1 部分中，他从“Hello, World”示例开始，然后逐步将其构建成一个（非常）简单的文件资源管理器。他介绍了一些主要的 JFace 类（和几个 SWT 窗口构件），同时还介绍了一些技巧、窍门和设计问题。" 
+                  name=body><INPUT type=hidden 
+                  value="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分: 单独使用 JFace 和 SWT" 
+                  name=subject><INPUT type=hidden value=cn name=lang><INPUT 
+                  type=image 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/icon-email.gif" 
+                  border=0 name=email></FORM></TD></TR></TBODY></TABLE></TD>
+          <TD width=5><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=5 border=0></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#000000 colSpan=2><IMG height=1 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=100 border=0></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#ffffff colSpan=2><IMG height=8 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=100 border=0></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0 
+      xmlns:fo="http://www.w3.org/1999/XSL/Format">
+        <TBODY>
+        <TR vAlign=top>
+          <TD>
+            <FORM 
+            action=https://www-130.ibm.com/developerworks/secure/cnratings.jsp 
+            method=get><INPUT type=hidden 
+            value="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分: 单独使用 JFace 和 SWT" 
+            name=ArticleTitle><INPUT type=hidden value=Linux name=Zone><INPUT 
+            type=hidden 
+            value=http://www.ibm.com/developerworks/cn/thankyou/index.html 
+            name=RedirectURL><INPUT type=hidden value=china name=localsite>
+            <SCRIPT language=javascript>document.write('<input type="HIDDEN" name="url" value="'+location.href+'">');</SCRIPT>
+            <A name=rating><SPAN class=atitle2>对本文的评价</SPAN></A>
+            <P>您对这篇文章的看法如何？</P>
+            <TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
+              <TBODY>
+              <TR>
+                <TD colSpan=5><IMG height=8 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=100 border=0></TD></TR>
+              <TR vAlign=top>
+                <TD width="21%"><INPUT type=radio value=1 name=Rating>太差！ 
+                (1)</TD>
+                <TD width="17%"><INPUT type=radio value=2 name=Rating>需提高 
+                (2)</TD>
+                <TD width="24%"><INPUT type=radio value=3 name=Rating>一般；尚可 
+                (3)</TD>
+                <TD width="17%"><INPUT type=radio value=4 name=Rating>好文章 
+                (4)</TD>
+                <TD width="21%"><INPUT type=radio value=5 
+              name=Rating>真棒！(5)</TD></TR></TBODY></TABLE><BR><B>建议？</B><BR><TEXTAREA name=Comments rows=5 wrap=virtual cols=60></TEXTAREA><BR><BR><INPUT type=submit value=提交反馈意见></FORM></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#ffffff><IMG height=8 alt="" 
+            src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+            width=100 border=0></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD width="100%">
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR vAlign=top>
+                <TD width="100%"><IMG height=4 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=2 border=0><BR><A class=bctl 
+                  href="http://www-128.ibm.com/developerworks/cn/">developerWorks 
+                  中国</A><SPAN class=bct> &gt; </SPAN><A class=bctl 
+                  href="http://www-128.ibm.com/developerworks/cn/linux/">Linux</A> 
+                  <SPAN class=bct>&gt; </SPAN></TD>
+                <TD align=right width=136><A 
+                  href="http://www-128.ibm.com/developerworks/cn/"><IMG 
+                  height=24 alt=developerWorks 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/dwlogo-small.gif" 
+                  width=136 border=0></A></TD>
+                <TD width=5><IMG height=1 alt="" 
+                  src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+                  width=5 border=0></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD>
+    <TD width=1><IMG height=1 alt="" 
+      src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/c.gif" 
+      width=1 border=0></TD></TR></TBODY></TABLE><!-- IBM FOOTER -->
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD class=bbg height=19>
+      <TABLE cellSpacing=0 cellPadding=0 border=0>
+        <TBODY>
+        <TR>
+          <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><A 
+            class=mainlink href="http://www.ibm.com/cn/ibm/index.shtml">关于 
+            IBM</A></TD>
+          <TD class=footer-divider width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+          <TD><A class=mainlink 
+            href="http://www.ibm.com/cn/ibm/privacy/index.shtml">隐私条约</A></TD>
+          <TD class=footer-divider width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+          <TD><A class=mainlink href="http://www.ibm.com/contact/">联系 
+          IBM</A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><!-- end footer -->
+<SCRIPT language=JavaScript1.2 
+src="在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files/stats.js" 
+type=text/javascript></SCRIPT>
+<NOSCRIPT><IMG height=1 alt="" 
+src="C:\Documents and Settings\Jiawei_Zhang\Desktop\0803\在 Eclipse Workbench 之外使用 Eclipse GUI，第 1 部分 单独使用 JFace 和 SWT_files\c(1).gif" 
+width=1 border=0></NOSCRIPT></BODY></HTML>

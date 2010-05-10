@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+        Auto-generated mapping file from
+        the hibernate.org cfg2hbm engine
+-->
+    <class name="com.loadtrend.TUser" table="t_user" catalog="test_hibernate" optimistic-lock="version">
+        <id name="id" type="integer">
+            <column name="id" />
+            <generator class="native" />
+        </id>
+        
+        <version column="version" name="version" type="integer"/>
+        
+        <property name="name" type="string">
+            <column name="name" length="50" />
+        </property>
+        <property name="age" type="integer">
+            <column name="age" />
+        </property>
+        <one-to-one name="passport" class="com.loadtrend.TPassport" cascade="all" outer-join="true">
+        </one-to-one>
+        <many-to-one name="group" class="com.loadtrend.TGroup" column="group_id" cascade="none">
+        </many-to-one>
+        <set name="addresses" table="T_Address" cascade="all" order-by="zipcode asc" inverse="true" lazy="true">
+            <cache usage="read-only"/>
+            <key column="user_id">
+            </key>
+            <one-to-many class="com.loadtrend.TAddress"/>
+        </set>
+    </class>
+    
+    <query name="queryByName">
+        <![CDATA[
+            from TUser user where user.name=?
+        ]]>
+    </query>
+    
+</hibernate-mapping>

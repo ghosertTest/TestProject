@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	
+	<listener>
+		<listener-class>
+			listener.OnlineCounterListener
+		</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>servlet.LoginServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/LoginServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>RegistServlet</servlet-name>
+		<servlet-class>servlet.RegistServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RegistServlet</servlet-name>
+		<url-pattern>/RegistServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>servlet.LogoutServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/LogoutServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>SubSugServlet</servlet-name>
+		<servlet-class>servlet.SubSugServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>SubSugServlet</servlet-name>
+		<url-pattern>/SubSugServlet</url-pattern>
+	</servlet-mapping>
+	
+	<!--start this servlet to set JavaBean "ShowPages" to show Suggestion-->
+	<servlet>
+		<servlet-name>ViewSugServlet</servlet-name>
+		<servlet-class>servlet.ViewSugServlet</servlet-class>
+		<init-param>
+			<param-name>initRecordersPerPage</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<init-param>
+			<param-name>initAvailablePages</param-name>
+			<param-value>10</param-value>
+		</init-param>	
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ViewSugServlet</servlet-name>
+		<url-pattern>/ViewSugServlet</url-pattern>
+	</servlet-mapping>
+
+	<error-page>
+		<error-code>
+			600
+		</error-code>
+		<location>
+			/errors/wrongname.jsp
+		</location>
+	</error-page>
+
+	<error-page>
+		<error-code>
+			601
+		</error-code>
+		<location>
+			/errors/existname.jsp
+		</location>
+	</error-page>
+
+	<resource-ref>
+      	<description>DB Connection</description>
+      	<res-ref-name>jdbc/Assistant</res-ref-name>
+      	<res-type>javax.sql.DataSource</res-type>
+      	<res-auth>Container</res-auth>
+  	</resource-ref>
+
+</web-app>

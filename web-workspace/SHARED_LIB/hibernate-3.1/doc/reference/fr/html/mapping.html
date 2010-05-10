@@ -1,0 +1,1923 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;5.&nbsp;Mapping O/R basique</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="persistent-classes.html" title="Chapitre&nbsp;4.&nbsp;Classes persistantes"><link rel="next" href="collections.html" title="Chapitre&nbsp;6.&nbsp;Mapping des collections"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;5.&nbsp;Mapping O/R basique</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="persistent-classes.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="collections.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="mapping"></a>Chapitre&nbsp;5.&nbsp;Mapping O/R basique</h2></div></div><div></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mapping-declaration"></a>5.1.&nbsp;D&eacute;claration de Mapping</h2></div></div><div></div></div><p>
+            Les mappings Objet/relationnel sont g&eacute;n&eacute;ralement d&eacute;finis dans un document XML. 
+            Le document de mapping est con&ccedil;u pour &ecirc;tre lisible et &eacute;ditable &agrave; la main. 
+            Le langage de mapping est Java-centrique, c'est &agrave; dire que les mappings sont construits 
+            &agrave; partir des d&eacute;clarations des classes persistantes et non des d&eacute;clarations des tables.
+        </p><p>
+            Remarquez que m&ecirc;me si beaucoup d'utilisateurs de Hibernate pr&eacute;f&egrave;rent &eacute;crire les 
+            fichiers de mappings &agrave; la main, plusieurs outils existent pour g&eacute;n&eacute;rer ce document, 
+            notamment XDoclet, Middlegen et AndroMDA.
+        </p><p>D&eacute;marrons avec un exemple de mapping :</p><a name="mapping-declaration-ex1"></a><pre class="programlisting">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+      "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;
+
+&lt;hibernate-mapping package="eg"&gt;
+
+        &lt;class name="Cat" 
+            table="cats"
+            discriminator-value="C"&gt;
+                
+                &lt;id name="id"&gt;
+                        &lt;generator class="native"/&gt;
+                &lt;/id&gt;
+
+                &lt;discriminator column="subclass" 
+                     type="character"/&gt;
+
+                &lt;property name="weight"/&gt;
+
+                &lt;property name="birthdate"
+                    type="date" 
+                    not-null="true" 
+                    update="false"/&gt;
+
+                &lt;property name="color"
+                    type="eg.types.ColorUserType"
+                    not-null="true"
+                    update="false"/&gt;
+
+                &lt;property name="sex"
+                    not-null="true" 
+                    update="false"/&gt;
+
+                &lt;property name="litterId"
+                    column="litterId"
+                    update="false"/&gt;
+
+                &lt;many-to-one name="mother"
+                    column="mother_id"
+                    update="false"/&gt;
+
+                &lt;set name="kittens"
+                    inverse="true"
+                    order-by="litter_id"&gt;
+                        &lt;key column="mother_id"/&gt;
+                        &lt;one-to-many class="Cat"/&gt;
+                &lt;/set&gt;
+
+                &lt;subclass name="DomesticCat"
+                    discriminator-value="D"&gt;
+
+                        &lt;property name="name" 
+                            type="string"/&gt;
+
+                &lt;/subclass&gt;
+
+        &lt;/class&gt;
+
+        &lt;class name="Dog"&gt;
+                &lt;!-- mapping for Dog could go here --&gt;
+        &lt;/class&gt;
+
+&lt;/hibernate-mapping&gt;</pre><p>
+             Etudions le contenu du document de mapping. Nous d&eacute;crirons uniquement 
+             les &eacute;l&eacute;ments et attributs du document utilis&eacute;s par Hibernate &agrave; l'ex&eacute;cution. 
+             Le document de mapping contient aussi des attributs et &eacute;l&eacute;ments optionnels 
+             qui agissent sur le sch&eacute;ma de base de donn&eacute;es export&eacute; par l'outil de 
+             g&eacute;n&eacute;ration de sch&eacute;ma. (Par exemple l'attribut <tt class="literal">not-null</tt>.)
+        </p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-doctype"></a>5.1.1.&nbsp;Doctype</h3></div></div><div></div></div><p>
+                Tous les mappings XML devraient utiliser le doctype indiqu&eacute;. 
+                Ce fichier est pr&eacute;sent &agrave; l'URL ci-dessus, dans le r&eacute;pertoire 
+                <tt class="literal">hibernate-x.x.x/src/org/hibernate</tt> ou dans <tt class="literal">hibernate3.jar</tt>. 
+                Hibernate va toujours chercher la DTD dans son classpath en premier lieu. Si vous constatez 
+                des recherches de la DTD sur Internet, v&eacute;rifiez votre d&eacute;claration de DTD par rapport 
+                au contenu de votre classpath.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-mapping"></a>5.1.2.&nbsp;hibernate-mapping</h3></div></div><div></div></div><p>
+                Cet &eacute;l&eacute;ment a plusieurs attributs optionnels. Les attributs <tt class="literal">schema</tt> et <tt class="literal">catalog</tt> 
+                indiquent que les tables r&eacute;f&eacute;renc&eacute;es par ce mapping appartiennent au sch&eacute;ma nomm&eacute; et/ou au catalogue. 
+                S'ils sont sp&eacute;cifi&eacute;s, les noms de tables seront qualifi&eacute;s par les noms de sch&eacute;ma et catalogue. 
+                L'attribut <tt class="literal">default-cascade</tt> indique quel type de cascade sera utlis&eacute; par d&eacute;faut 
+                pour les propri&eacute;t&eacute;s et collections qui ne pr&eacute;cisent pas l'attribut <tt class="literal">cascade</tt>. 
+                L'attribut <tt class="literal">auto-import</tt> nous permet d'utiliser par d&eacute;faut des noms de classes 
+                non qualifi&eacute;s dans le langage de requ&ecirc;te.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;hibernate-mapping
+         schema="schemaName"                          <span class="co">(1)</span>
+         catalog="catalogName"                        <span class="co">(2)</span>
+         default-cascade="cascade_style"              <span class="co">(3)</span>
+         default-access="field|property|ClassName"    <span class="co">(4)</span>
+         default-lazy="true|false"                    <span class="co">(5)</span>
+         auto-import="true|false"                     <span class="co">(6)</span>
+         package="package.name"                       <span class="co">(7)</span>
+ /&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">schema</tt> (optionnel) : Le nom d'un sch&eacute;ma de base de donn&eacute;es.
+                         </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">catalog</tt> (optionnel) : Le nom d'un catalogue de base de donn&eacute;es.
+                         </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">default-cascade</tt> (optionnel - par d&eacute;faut vaut :  <tt class="literal">none</tt>) : 
+                             Un type de cascade par d&eacute;faut.
+                         </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">default-access</tt> (optionnel - par d&eacute;faut vaut : <tt class="literal">property</tt>) :
+                            Comment hibernate acc&egrave;dera aux propri&eacute;t&eacute;s. On peut aussi 
+                            red&eacute;finir sa propre impl&eacute;mentation de <tt class="literal">PropertyAccessor</tt>.
+                         </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">default-lazy</tt> (optionnel - par d&eacute;faut vaut : <tt class="literal">true</tt>) :
+                             Valeur par d&eacute;faut pour un attribut <tt class="literal">lazy</tt> 
+                             non sp&eacute;cifi&eacute; : celui des mappings de classes et de collection.
+                         </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">auto-import</tt> (optionnel - par d&eacute;faut vaut : <tt class="literal">true</tt>) :
+                             Sp&eacute;cifie si l'on peut utiliser des noms de classes 
+                             non qualifi&eacute;s (des classes de ce mapping) dans le langage de requ&ecirc;te.
+                         </p></td></tr><tr><td width="5%" valign="top" align="left">(7)</td><td valign="top" align="left"><p>
+                            <tt class="literal">package</tt> (optionnel) : Pr&eacute;fixe de package par d&eacute;faut pour 
+                            les noms de classe non qualifi&eacute;s du document de mapping.
+                             
+                         </p></td></tr></table></div></div><p>
+                 Si deux classes poss&egrave;dent le m&ecirc;me nom de classe (non qualifi&eacute;), vous devez indiquer 
+                 <tt class="literal">auto-import="false"</tt>. Hibernate lancera une exception 
+                 si vous essayez d'assigner &agrave; deux classes le m&ecirc;me nom import&eacute;.
+             </p><p>
+                 Notez que l'&eacute;l&eacute;ment <tt class="literal">hibernate-mapping</tt> vous permet d'imbriquer plusieurs mappings de
+                 <tt class="literal">&lt;class&gt;</tt> persistantes, comme dans l'exemple ci-dessus.
+                 Cependant la bonne pratique (ce qui est attendu par certains outils) est 
+                 de mapper une seule classe (ou une seule hi&eacute;rarchie de classes)
+                 par fichier de mapping et de nommer ce fichier d'apr&egrave;s le nom de la superclasse, par exemple
+                 <tt class="literal">Cat.hbm.xml</tt>, <tt class="literal">Dog.hbm.xml</tt>, ou en cas d'h&eacute;ritage,
+                 <tt class="literal">Animal.hbm.xml</tt>.
+             </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-class"></a>5.1.3.&nbsp;class</h3></div></div><div></div></div><p>
+                D&eacute;clarez une classe persistante avec l'&eacute;l&eacute;ment <tt class="literal">class</tt> :
+            </p><div class="programlistingco"><pre class="programlisting">&lt;class
+        name="ClassName"                              <span class="co">(1)</span>
+        table="tableName"                             <span class="co">(2)</span>
+        discriminator-value="discriminator_value"     <span class="co">(3)</span>
+        mutable="true|false"                          <span class="co">(4)</span>
+        schema="owner"                                <span class="co">(5)</span>
+        catalog="catalog"                             <span class="co">(6)</span>
+        proxy="ProxyInterface"                        <span class="co">(7)</span>
+        dynamic-update="true|false"                   <span class="co">(8)</span>
+        dynamic-insert="true|false"                   <span class="co">(9)</span>
+        select-before-update="true|false"             <span class="co">(10)</span>
+        polymorphism="implicit|explicit"              <span class="co">(11)</span>
+        where="arbitrary sql where condition"         <span class="co">(12)</span>
+        persister="PersisterClass"                    <span class="co">(13)</span>
+        batch-size="N"                                <span class="co">(14)</span>
+        optimistic-lock="none|version|dirty|all"      <span class="co">(15)</span>
+        lazy="true|false"                             <span class="co">(16)</span>
+        entity-name="EntityName"                      <span class="co">(17)</span>
+        catalog="catalog"                             <span class="co">(18)</span>
+        check="arbitrary sql check condition"         <span class="co">(19)</span>
+        rowid="rowid"                                 <span class="co">(20)</span>
+        subselect="SQL expression"                    <span class="co">(21)</span>
+        abstract="true|false"
+        entity-name="EntityName"
+/&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> (optionnel) : Le nom Java complet de la classe (ou interface) persistante.
+                             Si cet attribut est absent, il est suppos&eacute; que ce mapping ne se rapporte pas &agrave; une entit&eacute; POJO.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">table</tt> (optionnel - par d&eacute;faut le nom (non-qualifi&eacute;) de la classe) :  Le 
+                            nom de sa table en base de donn&eacute;es.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">discriminator-value</tt> (optionnel - par d&eacute;faut le nom de la classe) : 
+                            Une valeur permettant de distinguer les sous-classes dans le cas de l'utilisation du polymorphisme. 
+                            Les valeurs <tt class="literal">null</tt> et <tt class="literal">not null</tt> sont autoris&eacute;es.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">mutable</tt> (optionnel, vaut <tt class="literal">true</tt> par d&eacute;faut) : Sp&eacute;cifie 
+                            que des instances de la classe sont (ou non) immuables.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">schema</tt> (optionnel) : Surcharge le nom de sch&eacute;ma sp&eacute;cifi&eacute; par 
+                            l'&eacute;l&eacute;ment racine <tt class="literal">&lt;hibernate-mapping&gt;</tt>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">catalog</tt> (optionnel) : Surcharge le nom du catalogue sp&eacute;cifi&eacute; par
+                            l'&eacute;l&eacute;ment racine <tt class="literal">&lt;hibernate-mapping&gt;</tt>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(7)</td><td valign="top" align="left"><p>
+                            <tt class="literal">proxy</tt> (optionnel) : Sp&eacute;cifie une interface &agrave; utiliser pour l'initialisation diff&eacute;r&eacute;e (lazy loading)
+                            des proxies. Vous pouvez indiquer le nom de la classe elle-m&ecirc;me.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(8)</td><td valign="top" align="left"><p>
+                            <tt class="literal">dynamic-update</tt> (optionnel, par d&eacute;faut &agrave; <tt class="literal">false</tt>) : 
+                            Sp&eacute;cifie que les  <tt class="literal">UPDATE</tt> SQL doivent &ecirc;tre g&eacute;n&eacute;r&eacute;s &agrave; l'ex&eacute;cution et contenir 
+                            uniquement les colonnes dont les valeurs ont &eacute;t&eacute; modifi&eacute;es.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(9)</td><td valign="top" align="left"><p>
+                            <tt class="literal">dynamic-insert</tt> (optionnel, par d&eacute;faut &agrave; <tt class="literal">false</tt>): 
+                            Sp&eacute;cifie que les <tt class="literal">INSERT</tt> SQL doivent &ecirc;tre g&eacute;n&eacute;r&eacute;s &agrave; l'ex&eacute;cution et ne contenir 
+                            que les colonnes dont les valeurs sont non nulles.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(10)</td><td valign="top" align="left"><p>
+                            <tt class="literal">select-before-update</tt> (optionnel, par d&eacute;faut &agrave; <tt class="literal">false</tt>): 
+                            Sp&eacute;cifie que Hibernate ne doit <span class="emphasis"><em>jamais</em></span> ex&eacute;cuter un <tt class="literal">UPDATE</tt> SQL 
+                            sans &ecirc;tre certain qu'un objet a &eacute;t&eacute; r&eacute;ellement modifi&eacute;. Dans certains cas, (en r&eacute;alit&eacute;, seulement 
+                            quand un objet transient a &eacute;t&eacute; associ&eacute; &agrave; une nouvelle session par <tt class="literal">update()</tt>), 
+                            cela signifie que Hibernate ex&eacute;cutera un <tt class="literal">SELECT</tt> SQL pour s'assurer qu'un 
+                            <tt class="literal">UPDATE</tt> SQL est v&eacute;ritablement n&eacute;cessaire.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(11)</td><td valign="top" align="left"><p>
+                            <tt class="literal">polymorphism</tt> (optionnel, vaut <tt class="literal">implicit</tt> par d&eacute;faut) : 
+                            D&eacute;termine si, pour cette classe, une requ&ecirc;te polymorphique implicite ou explicite est utilis&eacute;e.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(12)</td><td valign="top" align="left"><p>
+                            <tt class="literal">where</tt> (optionnel) sp&eacute;cifie une clause SQL <tt class="literal">WHERE</tt> 
+                            &agrave; utiliser lorsque l'on r&eacute;cup&egrave;re des objets de cette classe.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(13)</td><td valign="top" align="left"><p>
+                            <tt class="literal">persister</tt> (optionnel) : Sp&eacute;cifie un <tt class="literal">ClassPersister</tt> particulier.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(14)</td><td valign="top" align="left"><p>
+                            <tt class="literal">batch-size</tt> (optionnel, par d&eacute;faut = <tt class="literal">1</tt>) : sp&eacute;cifie une taille de batch 
+                            pour remplir les instances de cette classe par identifiant en une seule requ&ecirc;te.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(15)</td><td valign="top" align="left"><p>
+                            <tt class="literal">optimistic-lock</tt> (optionnel, par d&eacute;faut = <tt class="literal">version</tt>) : 
+                            D&eacute;termine la strat&eacute;gie de verrou optimiste.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(16)</td><td valign="top" align="left"><p>
+                            <tt class="literal">lazy</tt> (optionnel) : D&eacute;clarer <tt class="literal">lazy="true"</tt> est un raccourci
+                            pour sp&eacute;cifier le nom de la classe comme &eacute;tant l'interface <tt class="literal">proxy</tt>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(17)</td><td valign="top" align="left"><p>
+                            <tt class="literal">entity-name</tt> (optionnel) : Hibernate3 permet &agrave; une classe d'&ecirc;tre
+                            mapp&eacute;e plusieurs fois (potentiellement &agrave; plusieurs tables), et permet aux mappings d'entit&eacute; d'&ecirc;tre
+                            repr&eacute;sent&eacute;s par des Maps ou du XML au niveau Java. Dans ces cas, vous devez indiquer un nom explicite arbitraire pour
+                            les entit&eacute;s. Voir <a href="persistent-classes.html#persistent-classes-dynamicmodels" title="4.4.&nbsp;Mod&egrave;les dynamiques">Section&nbsp;4.4, &laquo;&nbsp;Mod&egrave;les dynamiques&nbsp;&raquo;</a> et <a href="xml.html" title="Chapitre&nbsp;18.&nbsp;Mapping XML">Chapitre&nbsp;18, <i>Mapping XML</i></a>
+                            pour plus d'informations.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(18)</td><td valign="top" align="left"><p>
+                            <tt class="literal">catalog</tt> (optionnel) : The name of a database catalog used for this
+                            class and its table.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(19)</td><td valign="top" align="left"><p>
+                            <tt class="literal">check</tt> (optionnel) : expression SQL utilis&eacute;e pour g&eacute;n&eacute;rer une contrainte 
+                            de v&eacute;rification multi-lignes pour la g&eacute;n&eacute;ration automatique de sch&eacute;ma.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(20)</td><td valign="top" align="left"><p>
+                            <tt class="literal">rowid</tt> (optionnel) : Hibernate peut utiliser des ROWID sur les bases de
+                            donn&eacute;es qui utilisent ce m&eacute;canisme. Par exemple avec Oracle, Hibernate peut utiliser la colonne additionnelle 
+                            <tt class="literal">rowid</tt> pour des mises &agrave; jour rapides si cette option vaut  <tt class="literal">rowid</tt>. Un ROWID repr&eacute;sente
+                            la localisation physique d'un tuple enregistr&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(21)</td><td valign="top" align="left"><p>
+                            <tt class="literal">subselect</tt> (optionnel) : Permet de mapper une entit&eacute; immuable en lecture-seule 
+                            sur un sous-select de base de donn&eacute;es. Utile pour avoir une vue au lieu d'une table en base, mais &agrave; &eacute;viter. Voir plus bas 
+                            pour plus d'information.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">???</td><td valign="top" align="left"><p>
+                            <tt class="literal">abstract</tt> (optionnel) : Utilis&eacute; pour marquer des superclasses abstraites dans 
+                            des hi&eacute;rarchies de <tt class="literal">&lt;union-subclass&gt;</tt>.
+                        </p></td></tr></table></div></div><p>
+                Il est tout &agrave; fait possible d'utiliser une interface comme nom 
+                de classe persistante. Vous devez alors d&eacute;clarer les classes impl&eacute;mentant
+                cette interface en utilisant l'&eacute;l&eacute;ment <tt class="literal">&lt;subclass&gt;</tt>. 
+                Vous pouvez faire persister toute classe interne <span class="emphasis"><em>static</em></span>. 
+                Vous devez alors sp&eacute;cifier le nom de la classe par la notation habituelle 
+                des classes internes c'est &agrave; dire <tt class="literal">eg.Foo$Bar</tt>.
+            </p><p>
+                Les classes immuables, <tt class="literal">mutable="false"</tt>, ne peuvent 
+                pas &ecirc;tre modifi&eacute;es ou supprim&eacute;es par l'application. Cela permet 
+                &agrave; Hibernate de faire quelques optimisations mineures sur les performances.
+            </p><p>
+                L'attribut optionnnel <tt class="literal">proxy</tt> permet les intialisations 
+                diff&eacute;r&eacute;es des instances persistantes de la classe. Hibernate retournera 
+                initialement des proxies CGLIB qui impl&eacute;mentent l'interface nomm&eacute;e. 
+                Le v&eacute;ritable objet persistant ne sera charg&eacute; que lorsque une m&eacute;thode du proxy 
+                sera appel&eacute;e. Voir plus bas le paragraphe abordant les proxies et le chargement diff&eacute;r&eacute; (lazy initialization).
+            </p><p>
+                Le polymorphisme <span class="emphasis"><em>implicite</em></span> 
+                signifie que les instances de la classe seront retourn&eacute;es par une 
+                requ&ecirc;te qui utilise les noms de la classe ou de chacune de ses 
+                superclasses ou encore des interfaces impl&eacute;ment&eacute;es par cette classe 
+                ou ses superclasses. Les instances des classes filles seront retourn&eacute;es 
+                par une requ&ecirc;te qui utilise le nom de la classe elle m&ecirc;me. Le polymorphisme 
+                <span class="emphasis"><em>explicite</em></span>   signifie que les instances de la classe 
+                ne seront retourn&eacute;es que par une requ&ecirc;te qui utilise explicitement 
+                son nom et que seules les instances des classes filles d&eacute;clar&eacute;es dans les &eacute;l&eacute;ments 
+                <tt class="literal">&lt;subclass&gt;</tt> ou <tt class="literal">&lt;joined-subclass&gt;</tt> 
+                seront retourn&eacute;es. Dans la majorit&eacute;s des cas la valeur par d&eacute;faut, 
+                <tt class="literal">polymorphism="implicit"</tt>,
+                est appropri&eacute;e. Le polymorphisme explicite est utile lorsque deux 
+                classes diff&eacute;rentes sont mapp&eacute;es &agrave; la m&ecirc;me table (ceci permet d'&eacute;crire 
+                une classe "l&eacute;g&egrave;re" qui ne contient qu'une partie des colonnes de 
+                la table - voir la partie design pattern du site communautaire). 
+            </p><p>
+                L'attribut <tt class="literal">persister</tt> vous permet de customiser 
+                la strat&eacute;gie utilis&eacute;e pour la classe. Vous pouvez, par exemple, sp&eacute;cifier 
+                votre propre sous-classe de <tt class="literal">org.hibernate.persister.EntityPersister</tt> ou 
+                vous pourriez aussi cr&eacute;er une nouvelle impl&eacute;mentation de l'interface <tt class="literal">org.hibernate.persister.ClassPersister</tt> 
+                qui proposerait une persistance via, par exemple, des appels de proc&eacute;dures 
+                stock&eacute;es, de la s&eacute;rialisation vers des fichiers plats ou un annuaire LDAP. 
+                Voir <tt class="literal">org.hibernate.test.CustomPersister</tt> pour un exemple simple (d'une "persistance" 
+                vers une <tt class="literal">Hashtable</tt>).
+            </p><p>
+                Notez que les param&egrave;tres <tt class="literal">dynamic-update</tt> et <tt class="literal">dynamic-insert</tt> 
+                ne sont pas h&eacute;rit&eacute;s par les sous-classes et peuvent donc &ecirc;tre sp&eacute;cifi&eacute;s 
+                pour les &eacute;l&eacute;ments <tt class="literal">&lt;subclass&gt;</tt> ou <tt class="literal">&lt;joined-subclass&gt;</tt>
+                Ces param&egrave;tres peuvent am&eacute;liorer les performances dans certains cas, 
+                mais peuvent aussi les amoindrir. A utiliser en connaissance de causes.
+            </p><p>
+                L'utilisation de <tt class="literal">select-before-update</tt> va g&eacute;n&eacute;ralement 
+                faire baisser les performances. Ce param&egrave;tre est pratique  
+                pour pr&eacute;venir l'appel inutile d'un trigger sur modification quand on 
+                r&eacute;attache un graphe d'instances &agrave; une <tt class="literal">Session</tt>.
+            </p><p>
+                Si vous utilisez le <tt class="literal">dynamic-update</tt>, les diff&eacute;rentes 
+                strat&eacute;gies de verrouillage optimiste (optimistic locking) sont les suivantes:
+            </p><div class="itemizedlist"><ul type="disc"><li><p>
+                        <tt class="literal">version</tt> v&eacute;rifie les colonnes version/timestamp
+                    </p></li><li><p>
+                        <tt class="literal">all</tt> v&eacute;rifie toutes les colonnes
+                    </p></li><li><p>
+                        <tt class="literal">dirty</tt> v&eacute;rifie les colonnes modifi&eacute;es, permettant des updates concurrents
+                    </p></li><li><p>
+                        <tt class="literal">none</tt> pas de verrouillage optimiste
+                    </p></li></ul></div><p>
+                Nous encourageons <span class="emphasis"><em>tr&egrave;s</em></span> fortement l'utilisation 
+                de colonnes de version/timestamp pour le verrouillage optimiste 
+                avec Hibernate. C'est la meilleure strat&eacute;gie en regard des performances 
+                et la seule qui g&egrave;re correctement les modifications sur les objets d&eacute;tach&eacute;s 
+                (c'est &agrave; dire lorsqu'on utilise <tt class="literal">Session.merge()</tt>).
+            </p><p>
+                Il n'y a pas de diff&eacute;rence entre table et vue pour le mapping Hibernate, 
+                tant que c'est transparent au niveau base de donn&eacute;es (remarquez 
+                que certaines BDD ne supportent pas les vues correctement, notamment 
+                pour les updates). Vous rencontrerez peut-&ecirc;tre des cas o&ugrave; vous 
+                souhaitez utiliser une vue mais ne pouvez pas en cr&eacute;er sur votre BDD 
+                (par exemple &agrave; cause de sch&eacute;mas anciens et fig&eacute;s). Dans ces cas, 
+                vous pouvez mapper une entit&eacute; immuable en lecture seule sur un sous-select SQL donn&eacute;:
+            </p><pre class="programlisting">&lt;class name="Summary"&gt;
+    &lt;subselect&gt;
+        select item.name, max(bid.amount), count(*)
+        from item
+        join bid on bid.item_id = item.id
+        group by item.name
+    &lt;/subselect&gt;
+    &lt;synchronize table="item"/&gt;
+    &lt;synchronize table="bid"/&gt;
+    &lt;id name="name"/&gt;
+    ...
+&lt;/class&gt;</pre><p>
+                D&eacute;clarez les tables &agrave; synchroniser avec cette entit&eacute; pour assurer 
+                que le flush automatique se produise correctement,
+                et pour que les requ&ecirc;tes sur l'entit&eacute; d&eacute;riv&eacute;e ne renvoient pas des donn&eacute;es p&eacute;rim&eacute;es.    
+                Le lit&eacute;ral <tt class="literal">&lt;subselect&gt;</tt> est disponible 
+                comme attribut ou comme &eacute;l&eacute;ment de mapping.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-id"></a>5.1.4.&nbsp;id</h3></div></div><div></div></div><p>
+                Les classes mapp&eacute;es <span class="emphasis"><em>doivent</em></span> d&eacute;clarer la 
+                clef primaire de la table en base de donn&eacute;es.
+                La plupart des classes auront aussi une propri&eacute;t&eacute; de type 
+                javabean pr&eacute;sentant l'identifiant unique d'une instance.
+                L'&eacute;l&eacute;ment <tt class="literal">&lt;id&gt;</tt> sert &agrave; d&eacute;finir le 
+                mapping entre cette propri&eacute;t&eacute; et la clef primaire en base.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;id
+        name="propertyName"                                     <span class="co">(1)</span>
+        type="typename"                                         <span class="co">(2)</span>
+        column="column_name"                                    <span class="co">(3)</span>
+        unsaved-value="null|any|none|undefined|id_value"        <span class="co">(4)</span>
+        access="field|property|ClassName"&gt;                      <span class="co">(5)</span>
+
+        &lt;generator class="generatorClass"/&gt;
+&lt;/id&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> (optionnel) : Nom de la propri&eacute;t&eacute; qui sert d'identifiant.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">type</tt> (optionnel) : Nom indiquant le type Hibernate.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">column</tt> (optionnel - le nom de la propri&eacute;t&eacute; est pris par d&eacute;faut) : Nom de la clef primaire.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">unsaved-value</tt> (optionnel - par d&eacute;faut une valeur "bien choisie") : 
+                            Une valeur de la propri&eacute;t&eacute; d'identifiant qui indique que l'instance est nouvellement
+                            instanci&eacute;e (non sauvegard&eacute;e), et qui la distingue des instances <tt class="literal">transient</tt>s qui ont
+                            &eacute;t&eacute; sauvegard&eacute;es ou charg&eacute;es dans une session pr&eacute;c&eacute;dente.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">access</tt> (optionnel - par d&eacute;faut <tt class="literal">property</tt>) : La strat&eacute;gie que doit utiliser Hibernate 
+                            pour acc&eacute;der aux valeurs des propri&eacute;t&eacute;s.
+                        </p></td></tr></table></div></div><p>
+                Si l'attribut <tt class="literal">name</tt> est absent, Hibernate consid&egrave;re que la classe ne poss&egrave;de pas de propri&eacute;t&eacute; identifiant.
+            </p><p>
+                L'attribut <tt class="literal">unsaved-value</tt> est important ! Si 
+                l'identifiant de votre classe n'a pas une valeur par d&eacute;faut compatible avec 
+                le comportement standard de Java (z&eacute;ro ou null), vous devez alors pr&eacute;ciser la valeur par d&eacute;faut.
+            </p><p>
+                La d&eacute;claration alternative <tt class="literal">&lt;composite-id&gt;</tt> 
+                permet l'accc&egrave;s aux donn&eacute;es d'anciens syst&egrave;mes qui utilisent des
+                clefs compos&eacute;es. Son utilisation est fortement d&eacute;conseill&eacute;e pour d'autres cas.
+            </p><div class="sect3" lang="fr"><div class="titlepage"><div><div><h4 class="title"><a name="mapping-declaration-id-generator"></a>5.1.4.1.&nbsp;Generator</h4></div></div><div></div></div><p>
+                        L'&eacute;l&eacute;ment fils <tt class="literal">&lt;generator&gt;</tt> nomme une classe Java utilis&eacute;e pour g&eacute;n&eacute;rer 
+                        les identifiants uniques pour les instances des classes persistantes. Si des param&egrave;tres sont requis 
+                        pour configurer ou initialiser l'instance du g&eacute;n&eacute;rateur, ils sont pass&eacute;s en utilisant l'&eacute;l&eacute;ment <tt class="literal">&lt;param&gt;</tt>.
+                </p><pre class="programlisting">&lt;id name="id" type="long" column="cat_id"&gt;
+        &lt;generator class="org.hibernate.id.TableHiLoGenerator"&gt;
+                &lt;param name="table"&gt;uid_table&lt;/param&gt;
+                &lt;param name="column"&gt;next_hi_value_column&lt;/param&gt;
+        &lt;/generator&gt;
+&lt;/id&gt;</pre><p>
+                        Tous les g&eacute;n&eacute;rateurs doivent impl&eacute;menter l'interface <tt class="literal">org.hibernate.id.IdentifierGenerator</tt>.
+                        C'est une interface tr&egrave;s simple ; certaines applications peuvent proposer leur propre impl&eacute;mentations sp&eacute;cialis&eacute;es. 
+                        Cependant, Hibernate propose une s&eacute;rie d'impl&eacute;mentations int&eacute;gr&eacute;es. Il existe des noms raccourcis pour les g&eacute;n&eacute;rateurs int&eacute;gr&eacute;s :
+                    </p><div class="variablelist"><dl><dt><span class="term">
+                                <tt class="literal">increment</tt>
+                            </span></dt><dd><p>
+                                    G&eacute;n&egrave;re des identifiants de type <tt class="literal">long</tt>, <tt class="literal">short</tt> ou
+                                    <tt class="literal">int</tt> qui ne sont uniques que si aucun autre processus n'ins&egrave;re de donn&eacute;es dans la m&ecirc;me table.
+                                    <span class="emphasis"><em>Ne pas utiliser en environnement clusteris&eacute;.</em></span>
+                                </p></dd><dt><span class="term">
+                                <tt class="literal">identity</tt>
+                            </span></dt><dd><p>
+                                    Utilisation de la colonne identity de DB2, MySQL, MS SQL Server, Sybase et
+                                    HypersonicSQL. L'identifiant renvoy&eacute; est de type <tt class="literal">long</tt>,
+                                    <tt class="literal">short</tt> ou <tt class="literal">int</tt>.
+                            </p></dd><dt><span class="term">
+                                <tt class="literal">sequence</tt>
+                            </span></dt><dd><p>
+                                    Utilisation des s&eacute;quences dans  DB2, PostgreSQL, Oracle, SAP DB, McKoi ou d'un g&eacute;n&eacute;rateur dans Interbase.
+                                    L'identifiant renvoy&eacute; est de type <tt class="literal">long</tt>,
+                                    <tt class="literal">short</tt> ou <tt class="literal">int</tt>
+                                </p></dd><dt><span class="term">
+                                <tt class="literal">hilo</tt>
+                            </span></dt><dd><p><a name="mapping-declaration-id-hilodescription"></a>
+                                    Utilise un algorithme hi/lo pour g&eacute;n&eacute;rer de fa&ccedil;on efficace des identifiants de type
+                                    <tt class="literal">long</tt>, <tt class="literal">short</tt> ou <tt class="literal">int</tt>,
+                                    en prenant comme source de valeur "hi" une table et une colonne (par d&eacute;faut 
+                                    <tt class="literal">hibernate_unique_key</tt> et
+                                    <tt class="literal">next_hi</tt> respectivement). L'algorithme hi/lo g&eacute;n&egrave;re des identifiants uniques 
+                                    pour une base de donn&eacute;es particuli&egrave;re seulement.
+                            </p></dd><dt><span class="term">
+                                <tt class="literal">seqhilo</tt>
+                            </span></dt><dd><p>
+                                    Utilise un algorithme hi/lo pour g&eacute;n&eacute;rer efficacement des identifiants de type                                      <tt class="literal">long</tt>, <tt class="literal">short</tt> ou <tt class="literal">int</tt>,
+                                    &eacute;tant donn&eacute; un nom de s&eacute;quence en base.
+                            </p></dd><dt><span class="term">
+                                <tt class="literal">uuid</tt>
+                            </span></dt><dd><p>
+                                    Utilise un algorithme de type UUID 128 bits pour g&eacute;n&eacute;rer des identifiants de 
+                                    type string, unique au sein d'un r&eacute;seau (l'adresse IP est utilis&eacute;e). 
+                                    Le UUID en cod&eacute; en une cha&icirc;ne de nombre h&eacute;xad&eacute;cimaux de longueur 32.
+                            </p></dd><dt><span class="term">
+                                <tt class="literal">guid</tt>
+                            </span></dt><dd><p>
+                                    Utilise une cha&icirc;ne GUID g&eacute;n&eacute;r&eacute;e par la base pour MS SQL Server et MySQL.
+                            </p></dd><dt><span class="term">
+                                <tt class="literal">native</tt>
+                            </span></dt><dd><p>
+                                    Choisit <tt class="literal">identity</tt>, <tt class="literal">sequence</tt> ou
+                                    <tt class="literal">hilo</tt> selon les possibilit&eacute;s offertes par la base de donn&eacute;es sous-jacente.
+                            </p></dd><dt><span class="term">
+                                <tt class="literal">assigned</tt>
+                            </span></dt><dd><p>
+                                    Laisse l'application affecter un identifiant &agrave; l'objet avant que la m&eacute;tode 
+                                    <tt class="literal">save()</tt> soit appel&eacute;e. Il s'agit de la strat&eacute;gie par d&eacute;faut 
+                                    si aucun <tt class="literal">&lt;generator&gt;</tt> n'est sp&eacute;cifi&eacute;.
+                            </p></dd><dt><span class="term">
+                                <tt class="literal">select</tt>
+                            </span></dt><dd><p>
+                                    R&eacute;cup&egrave;re une clef primaire assign&eacute;e par un trigger en s&eacute;lectionnant 
+                                    la ligne par une clef unique quelconque.
+                            </p></dd><dt><span class="term">
+                                <tt class="literal">foreign</tt>
+                            </span></dt><dd><p>
+                                    Utilise l'identifiant d'un objet associ&eacute;. Habituellement utilis&eacute; en conjonction
+                                    avec une association <tt class="literal">&lt;one-to-one&gt;</tt> sur la clef primaire.
+                            </p></dd></dl></div><p>
+                </p></div><div class="sect3" lang="fr"><div class="titlepage"><div><div><h4 class="title"><a name="mapping-declaration-id-hilo"></a>5.1.4.2.&nbsp;algorithme Hi/lo</h4></div></div><div></div></div><p>
+                    Les g&eacute;n&eacute;rateurs <tt class="literal">hilo</tt> et <tt class="literal">seqhilo</tt> proposent deux impl&eacute;mentations
+                    alternatives de l'algorithme hi/lo, une approche largement utilis&eacute;e pour g&eacute;n&eacute;rer des identifiants. La 
+                    premi&egrave;re impl&eacute;mentation n&eacute;cessite une table "sp&eacute;ciale" en base pour h&eacute;berger la prochaine valeur "hi" disponible.
+                    La seconde utilise une s&eacute;quence de type Oracle (quand la base sous-jacente le propose).
+                </p><pre class="programlisting">&lt;id name="id" type="long" column="cat_id"&gt;
+        &lt;generator class="hilo"&gt;
+                &lt;param name="table"&gt;hi_value&lt;/param&gt;
+                &lt;param name="column"&gt;next_value&lt;/param&gt;
+                &lt;param name="max_lo"&gt;100&lt;/param&gt;
+        &lt;/generator&gt;
+&lt;/id&gt;</pre><pre class="programlisting">&lt;id name="id" type="long" column="cat_id"&gt;
+        &lt;generator class="seqhilo"&gt;
+                &lt;param name="sequence"&gt;hi_value&lt;/param&gt;
+                &lt;param name="max_lo"&gt;100&lt;/param&gt;
+        &lt;/generator&gt;
+&lt;/id&gt;</pre><p>
+                    Malheureusement, vous ne pouvez pas utilisez <tt class="literal">hilo</tt> quand vous apportez 
+                    votre propre <tt class="literal">Connection</tt> &agrave; Hibernate. Quand Hibernate utilise une datasource du serveur 
+                    d'application pour obtenir des connexions inscrites avec JTA, vous devez correctement configurer 
+                    <tt class="literal">hibernate.transaction.manager_lookup_class</tt>.
+                </p></div><div class="sect3" lang="fr"><div class="titlepage"><div><div><h4 class="title"><a name="mapping-declaration-id-uuid"></a>5.1.4.3.&nbsp;UUID algorithm</h4></div></div><div></div></div><p>
+                    Le contenu du UUID est : adresse IP, date de d&eacute;marrage de la JVM (pr&eacute;cis au quart de seconde), 
+                    l'heure syst&egrave;me et un compteur (unique au sein de la JVM). Il n'est pas possible d'obtenir l'adresse 
+                    MAC ou une adresse m&eacute;moire &agrave; partir de Java, c'est donc le mieux que l'on puisse faire sans utiliser JNI.
+                </p></div><div class="sect3" lang="fr"><div class="titlepage"><div><div><h4 class="title"><a name="mapping-declaration-id-sequences"></a>5.1.4.4.&nbsp;Colonnes identifiantes et s&eacute;quences</h4></div></div><div></div></div><p>
+                    Pour les bases qui impl&eacute;mentent les colonnes "identit&eacute;" (DB2, MySQL, Sybase, MS SQL), 
+                    vous pouvez utiliser la g&eacute;n&eacute;ration de clef par <tt class="literal">identity</tt>. 
+                    Pour les bases qui impl&eacute;mentent les s&eacute;quences (DB2, Oracle, PostgreSQL, Interbase, McKoi, SAP DB) 
+                    vous pouvez utiliser la g&eacute;n&eacute;ration de clef par <tt class="literal">sequence</tt>. Ces deux m&eacute;thodes n&eacute;cessitent
+                    deux requ&ecirc;tes SQL pour ins&eacute;rer un objet.
+                </p><pre class="programlisting">&lt;id name="id" type="long" column="person_id"&gt;
+        &lt;generator class="sequence"&gt;
+                &lt;param name="sequence"&gt;person_id_sequence&lt;/param&gt;
+        &lt;/generator&gt;
+&lt;/id&gt;</pre><pre class="programlisting">&lt;id name="id" type="long" column="person_id" unsaved-value="0"&gt;
+        &lt;generator class="identity"/&gt;
+&lt;/id&gt;</pre><p>Pour le d&eacute;veloppement multi-plateformes, la strat&eacute;gie <tt class="literal">native</tt> choisira
+                    entre les m&eacute;thodes <tt class="literal">identity</tt>, <tt class="literal">sequence</tt> et
+                    <tt class="literal">hilo</tt>, selon les possibilit&eacute;s offertes par la base sous-jacente.
+                </p></div><div class="sect3" lang="fr"><div class="titlepage"><div><div><h4 class="title"><a name="mapping-declaration-id-assigned"></a>5.1.4.5.&nbsp;Identifiants assign&eacute;s</h4></div></div><div></div></div><p>
+                    Si vous souhaitez que l'application assigne des identifiants (par opposition 
+                    &agrave; la g&eacute;n&eacute;ration par Hibernate), vous pouvez utiliser le g&eacute;n&eacute;rateur  <tt class="literal">assigned</tt>.
+                    Ce g&eacute;n&eacute;rateur sp&eacute;cial utilisera une valeur d'identifiant d&eacute;j&agrave; utilis&eacute; par la propri&eacute;t&eacute; identifiant l'objet.
+                    Ce g&eacute;n&eacute;rateur est utilis&eacute; quand la clef primaire est une clef naturelle plut&ocirc;t qu'une clef secondaire.
+                    C'est le comportement par d&eacute;faut si vous ne pr&eacute;cisez pas d'&eacute;l&eacute;ment <tt class="literal">&lt;generator&gt;</tt>.
+                </p><p>
+                    Choisir le g&eacute;n&eacute;rateur <tt class="literal">assigned</tt> fait utiliser
+                    <tt class="literal">unsaved-value="undefined"</tt> par Hibernate, le for&ccedil;ant &agrave; interroger
+                    la base pour d&eacute;terminer si l'instance est transiente ou d&eacute;tach&eacute;e, &agrave; moins d'utiliser 
+                    une propri&eacute;t&eacute; version ou timestamp, ou alors de d&eacute;finir 
+                    <tt class="literal">Interceptor.isUnsaved()</tt>.
+                </p></div><div class="sect3" lang="fr"><div class="titlepage"><div><div><h4 class="title"><a name="mapping-declaration-id-select"></a>5.1.4.6.&nbsp;Clefs primaires assign&eacute;es par trigger</h4></div></div><div></div></div><p>
+                    Pour les sch&eacute;mas de base h&eacute;rit&eacute;s d'anciens syst&egrave;mes uniquement (Hibernate ne g&eacute;n&egrave;re pas de DDL avec des triggers)  
+                </p><pre class="programlisting">&lt;id name="id" type="long" column="person_id"&gt;
+        &lt;generator class="select"&gt;
+                &lt;param name="key"&gt;socialSecurityNumber&lt;/param&gt;
+        &lt;/generator&gt;
+&lt;/id&gt;</pre><p>
+                    Dans l'exemple ci-dessus, <tt class="literal">socialSecurityNumber</tt> a une 
+                    valeur unique d&eacute;finie par la classe en tant que clef naturelle et <tt class="literal">person_id</tt> 
+                    est une clef secondaire dont la valeur est g&eacute;n&eacute;r&eacute;e par trigger.
+                </p></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-compositeid"></a>5.1.5.&nbsp;composite-id</h3></div></div><div></div></div><pre class="programlisting">&lt;composite-id
+        name="propertyName"
+        class="ClassName"
+        mapped="true|false"
+        access="field|property|ClassName"&gt;
+        node="element-name|."
+
+        &lt;key-property name="propertyName" type="typename" column="column_name"/&gt;
+        &lt;key-many-to-one name="propertyName class="ClassName" column="column_name"/&gt;
+        ......
+&lt;/composite-id&gt;</pre><p>
+               Pour une table avec clef compos&eacute;e, vous pouvez mapper plusieurs attributs de la classe 
+               comme propri&eacute;t&eacute;s identifiantes. L'&eacute;lement <tt class="literal">&lt;composite-id&gt;</tt> accepte 
+               les mappings de propri&eacute;t&eacute;s <tt class="literal">&lt;key-property&gt;</tt> et les mappings 
+               <tt class="literal">&lt;key-many-to-one&gt;</tt> comme fils.
+            </p><pre class="programlisting">&lt;composite-id&gt;
+        &lt;key-property name="medicareNumber"/&gt;
+        &lt;key-property name="dependent"/&gt;
+&lt;/composite-id&gt;</pre><p>
+                Vos classes persistantes <span class="emphasis"><em>doivent</em></span> surcharger les m&eacute;thodes <tt class="literal">equals()</tt> 
+                et <tt class="literal">hashCode()</tt> pour impl&eacute;menter l'&eacute;galit&eacute; d'identifiant compos&eacute;. Elles doivent aussi 
+                implenter l'interface <tt class="literal">Serializable</tt>.
+            </p><p>
+                Malheureusement cette approche sur les identifiants compos&eacute;s signifie qu'un objet persistant
+                est son propre identifiant. Il n'y a pas d'autre moyen pratique de manipuler l'objet que par l'objet lui-m&ecirc;me.
+                Vous devez instancier une instance de la classe persistante elle-m&ecirc;me et peupler ses attributs identifiants 
+                avant de pouvoir appeler la m&eacute;thode <tt class="literal">load()</tt> pour charger son &eacute;tat persistant associ&eacute; 
+                &agrave; une clef compos&eacute;e. Nous appelons cette approche "identifiant compos&eacute; <span class="emphasis"><em>embarqu&eacute;</em></span>"
+                et ne la recommandons pas pour des applications complexes.
+            </p><p>
+                Une seconde approche, appel&eacute;e identifiant compos&eacute; <span class="emphasis"><em>mapp&eacute;</em></span>,
+                consiste &agrave; encapsuler les propri&eacute;t&eacute;s identifiantes (celles contenues dans <tt class="literal">&lt;composite-id&gt;</tt>)
+                dans une classe particuli&egrave;re.
+            </p><pre class="programlisting">&lt;composite-id class="MedicareId" mapped="true"&gt;
+        &lt;key-property name="medicareNumber"/&gt;
+        &lt;key-property name="dependent"/&gt;
+&lt;/composite-id&gt;</pre><p>
+                Dans cet exemple, la classe d'identifiant compos&eacute;e,<tt class="literal">MedicareId</tt> et la classe mapp&eacute;e elle-m&ecirc;me,
+                poss&egrave;dent les propri&eacute;t&eacute;s <tt class="literal">medicareNumber</tt>
+                et <tt class="literal">dependent</tt>. La classe identifiante doit red&eacute;finir
+                <tt class="literal">equals()</tt> et <tt class="literal">hashCode()</tt> et impl&eacute;menter 
+                <tt class="literal">Serializable</tt>. Le d&eacute;savantage de cette approche est la
+                duplication du code.
+            </p><p>
+                Les attributs suivants servent &agrave; configurer un identifiant compos&eacute; mapp&eacute; :
+            </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                        <tt class="literal">mapped</tt> (optionnel, d&eacute;faut &agrave; <tt class="literal">false</tt>) :
+                        indique qu'un identifiant compos&eacute; mapp&eacute; est utilis&eacute;, et que les propri&eacute;t&eacute;s
+                        contenues font r&eacute;f&eacute;rence aux deux classes (celle mapp&eacute;e et la classe identifiante).
+                    </p></li><li><p>
+                        <tt class="literal">class</tt> (optionnel, mais requis pour un identifiant compos&eacute; mapp&eacute;) : 
+                        La classe composant utilis&eacute;e comme identifiant compos&eacute;.
+                    </p></li></ul></div><p>
+                Nous d&eacute;crirons une troisi&egrave;me approche beaucoup plus efficace ou l'identifiant compos&eacute;
+                est impl&eacute;ment&eacute; comme une classe composant dans <a href="components.html#components-compositeid" title="8.4.&nbsp;Utiliser un composant comme identifiant">Section&nbsp;8.4, &laquo;&nbsp;Utiliser un composant comme identifiant&nbsp;&raquo;</a>. 
+                Les attributs d&eacute;crits ci dessous, ne s'appliquent que pour cette derni&egrave;re approche :
+            </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                        <tt class="literal">name</tt> (optionnel, requis pour cette approche) : une propri&eacute;t&eacute; de type
+                        composant qui contient l'identifiant compos&eacute; (voir chapitre 9).
+                    </p></li><li><p>
+                        <tt class="literal">access</tt> (optionnel - d&eacute;faut &agrave; <tt class="literal">property</tt>) :
+                        La strat&eacute;gie qu'Hibernate utilisera pour acc&eacute;der &agrave; la valeur de la propri&eacute;t&eacute;.
+                    </p></li><li><p>
+                        <tt class="literal">class</tt> (optionnel - d&eacute;faut au type de la propri&eacute;t&eacute; d&eacute;termin&eacute; par r&eacute;flexion) : 
+                        La classe composant utilis&eacute;e comme identifiant (voir prochaine section).
+                    </p></li></ul></div><p>
+                Cette derni&egrave;re approche est celle que nous recommandons pour toutes vos applications.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-discriminator"></a>5.1.6.&nbsp;discriminator</h3></div></div><div></div></div><p>
+                   L'&eacute;l&eacute;ment <tt class="literal">&lt;discriminator&gt;</tt> est n&eacute;cessaire pour la persistance polymorphique 
+                   qui utilise la strat&eacute;gie de mapping de table par hi&eacute;rarchie de classe. La colonne discriminante contient 
+                   une valeur marqueur qui permet &agrave; la couche de persistance de savoir quelle 
+                   sous-classe instancier pour une ligne particuli&egrave;re de table en base. Un nombre restreint de types 
+                   peuvent &ecirc;tre utilis&eacute;s :
+                <tt class="literal">string</tt>, <tt class="literal">character</tt>, <tt class="literal">integer</tt>, 
+                <tt class="literal">byte</tt>, <tt class="literal">short</tt>, <tt class="literal">boolean</tt>, 
+                <tt class="literal">yes_no</tt>, <tt class="literal">true_false</tt>.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;discriminator
+        column="discriminator_column"                      <span class="co">(1)</span>
+        type="discriminator_type"                          <span class="co">(2)</span>
+        force="true|false"                                 <span class="co">(3)</span>
+        insert="true|false"                                <span class="co">(4)</span>
+        formula="arbitrary sql expression"                 <span class="co">(5)</span>
+/&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">column</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">class</tt>) le 
+                            nom de la colonne discriminante.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">type</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">string</tt>) un nom 
+                            indiquant le type Hibernate.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">force</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">false</tt>) 
+                                   "oblige" Hibernate &agrave; sp&eacute;cifier une valeur discriminante autoris&eacute;e m&ecirc;me quand on r&eacute;cup&egrave;re 
+                                   toutes les instances de la classe de base.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">insert</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">true</tt>)
+                                   &agrave; passer &agrave;  <tt class="literal">false</tt> si la colonne discriminante fait aussi partie 
+                                   d'un identifiant compos&eacute; mapp&eacute; (Indique &agrave; Hibernate de ne pas inclure la colonne 
+                                   dans les <tt class="literal">INSERT</tt> SQL).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">formula</tt> (optionnel) une expression SQL arbitraire qui est ex&eacute;cut&eacute;e 
+                            quand un type doit &ecirc;tre &eacute;valu&eacute;. Permet la discrimination bas&eacute;e sur le contenu.
+                        </p></td></tr></table></div></div><p>
+                   Les v&eacute;ritables valeurs de la colonne discriminante sont sp&eacute;cifi&eacute;es par l'attribut 
+                <tt class="literal">discriminator-value</tt> des &eacute;l&eacute;ments <tt class="literal">&lt;class&gt;</tt> et 
+                <tt class="literal">&lt;subclass&gt;</tt>.
+            </p><p>
+                L'attribut <tt class="literal">force</tt> n'est utile que si la table contient des lignes avec des 
+                valeurs "extra" discriminantes qui ne sont pas mapp&eacute;es &agrave; une classe persistante. Ce ne sera g&eacute;n&eacute;ralement pas le cas.
+            </p><p>
+                En utilisant l'attribut <tt class="literal">formula</tt> vous pouvez d&eacute;clarer une expression SQL arbitraire 
+                qui sera utilis&eacute;e pour &eacute;valuer le type d'une ligne :
+            </p><pre class="programlisting">&lt;discriminator
+    formula="case when CLASS_TYPE in ('a', 'b', 'c') then 0 else 1 end"
+    type="integer"/&gt;</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-version"></a>5.1.7.&nbsp;version (optionnel)</h3></div></div><div></div></div><p>
+                   L'&eacute;l&eacute;ment <tt class="literal">&lt;version&gt;</tt> est optionnel et indique que la table contient 
+                   des donn&eacute;es versionn&eacute;es. C'est particuli&egrave;rement utile si vous avez l'intention d'utiliser 
+                   des <span class="emphasis"><em>transactions longues</em></span> (voir plus-bas).   
+            </p><div class="programlistingco"><pre class="programlisting">&lt;version
+        column="version_column"                            <span class="co">(1)</span>
+        name="propertyName"                                <span class="co">(2)</span>
+        type="typename"                                    <span class="co">(3)</span>
+        access="field|property|ClassName"                  <span class="co">(4)</span>
+        unsaved-value="null|negative|undefined"            <span class="co">(5)</span>
+        generated="never|always"                                     <span class="co">(6)</span>
+        insert="true|false"                                          <span class="co">(7)</span>
+        node="element-name|@attribute-name|element/@attribute|."
+/&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">column</tt> (optionnel - par d&eacute;faut &eacute;gal au nom de la propri&eacute;t&eacute;) : Le nom de la colonne 
+                            contenant le num&eacute;ro de version.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : Le nom d'un attribut de la classe persistante.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">type</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">integer</tt>) : 
+                            Le type du num&eacute;ro de version.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">access</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">property</tt>) : La strat&eacute;gie 
+                            &agrave; utiliser par Hibernate pour acc&eacute;der &agrave; la valeur de la propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">unsaved-value</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">undefined</tt>) : 
+                            Une valeur de la propri&eacute;t&eacute; d'identifiant qui indique que l'instance est nouvellement 
+                            instanci&eacute;e (non sauvegard&eacute;e), et qui la distingue des instances d&eacute;tach&eacute;es qui ont 
+                            &eacute;t&eacute; sauvegard&eacute;es ou charg&eacute;es dans une session pr&eacute;c&eacute;dente (<tt class="literal">undefined</tt> indique 
+                            que la valeur de l'atribut identifiant devrait &ecirc;tre utilis&eacute;).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">generated</tt> (optional - d&eacute;faut &agrave; <tt class="literal">never</tt>) :
+                            Indique que la valeur de la propri&eacute;t&eacute; version est g&eacute;n&eacute;r&eacute;e par la base de donn&eacute;es
+                            cf. <a href="mapping.html#mapping-generated" title="5.6.&nbsp;Propri&eacute;t&eacute;s g&eacute;n&eacute;r&eacute;es">Section&nbsp;5.6, &laquo;&nbsp;Propri&eacute;t&eacute;s g&eacute;n&eacute;r&eacute;es&nbsp;&raquo;</a>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(7)</td><td valign="top" align="left"><p>
+                            <tt class="literal">insert</tt> (optionnel - d&eacute;faut &agrave; <tt class="literal">true</tt>) :
+                            Indique si la colonne de version doit &ecirc;tre incluse dans les ordres insert.
+                            Peut &ecirc;tre &agrave; <tt class="literal">false</tt> si et seulement si la colonne de la
+                            base de donn&eacute;es est d&eacute;finie avec une valeur par d&eacute;faut &agrave; <tt class="literal">0</tt>.
+                        </p></td></tr></table></div></div><p>
+                Les num&eacute;ros de version doivent avoir les types Hibernate <tt class="literal">long</tt>, <tt class="literal">integer</tt>,
+                <tt class="literal">short</tt>, <tt class="literal">timestamp</tt> ou <tt class="literal">calendar</tt>.
+            </p><p>
+                   Une propri&eacute;t&eacute; de version ou un timestamp ne doit jamais &ecirc;tre null pour une instance 
+                   d&eacute;tach&eacute;e, ainsi Hibernate pourra d&eacute;tecter toute instance ayant une version ou un timestamp null 
+                   comme transient, quelles que soient les strat&eacute;gies <tt class="literal">unsaved-value</tt> sp&eacute;cifi&eacute;es.
+                   <span class="emphasis"><em>D&eacute;clarer un num&eacute;ro de version ou un timestamp "nullable" est un moyen pratique d'&eacute;viter 
+                   tout probl&egrave;me avec les r&eacute;attachements transitifs dans Hibernate, particuli&egrave;rement utile pour ceux qui 
+                   utilisent des identifiants assign&eacute;s ou des clefs compos&eacute;es !</em></span>
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-timestamp"></a>5.1.8.&nbsp;timestamp (optionnel)</h3></div></div><div></div></div><p>
+                   L'&eacute;l&eacute;ment optionnel <tt class="literal">&lt;timestamp&gt;</tt> indique que la table contient des donn&eacute;es 
+                   horodat&eacute;es (timestamp). Cela sert d'alternative &agrave; l'utilisation de num&eacute;ros de version. Les timestamps (ou horodatage) 
+                   sont par nature une impl&eacute;mentation moins fiable pour l'optimistic locking. Cependant, l'application 
+                   peut parfois utiliser l'horodatage &agrave; d'autres fins.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;timestamp
+        column="timestamp_column"           <span class="co">(1)</span>
+        name="propertyName"                 <span class="co">(2)</span>
+        access="field|property|ClassName"   <span class="co">(3)</span>
+        unsaved-value="null|undefined"      <span class="co">(4)</span>
+        source="vm|db"                                               <span class="co">(5)</span>
+        generated="never|always"                                     <span class="co">(6)</span>
+        node="element-name|@attribute-name|element/@attribute|."
+/&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">column</tt> (optionnel - par d&eacute;faut &agrave; le nom de la propri&eacute;t&eacute;) : Le nom d'une colonne 
+                            contenant le timestamp.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : Le nom d'une propri&eacute;t&eacute; au sens JavaBean de type 
+                            <tt class="literal">Date</tt> ou <tt class="literal">Timestamp</tt> de la classe persistante.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">access</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">property</tt>) : La strat&eacute;gie 
+                            &agrave; utiliser par Hibernate pour acc&eacute;der &agrave; la valeur de la propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">unsaved-value</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">null</tt>) : 
+                              Propri&eacute;t&eacute; dont la valeur est un num&eacute;ro de version qui indique que l'instance est nouvellement 
+                              instanci&eacute;e (non sauvegard&eacute;e), et qui la distingue des instances d&eacute;tach&eacute;es qui ont 
+                              &eacute;t&eacute; sauvegard&eacute;es ou charg&eacute;es dans une session pr&eacute;c&eacute;dente (<tt class="literal">undefined</tt> indique 
+                              que la valeur de l'attribut identifiant devrait &ecirc;tre utilis&eacute;e).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">source</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">vm</tt>) :
+                            D'o&ugrave; Hibernate doit-il r&eacute;cup&eacute;rer la valeur du timestamp? Depuis la base de donn&eacute;es
+                            ou depuis la JVM d'ex&eacute;cution? Les valeurs de timestamp de la base de donn&eacute;es provoquent
+                            une surcharge puisque Hibernate doit interroger la base pour d&eacute;terminer la prochaine valeur
+                            mais cela est plus s&ucirc;r lorsque vous fonctionnez dans un cluster. Remarquez aussi que
+                            certains des dialectes ne supportent pas cette fonction, et que d'autres l'impl&eacute;mentent
+                            mal, provoquant des erreurs de pr&eacute;cision (Oracle 8 par exemple).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">generated</tt> (optional - d&eacute;faut &agrave; <tt class="literal">never</tt>) :
+                            Indique que la valeur de ce timestamp est g&eacute;n&eacute;r&eacute;e par la base de donn&eacute;es
+                            cf. <a href="mapping.html#mapping-generated" title="5.6.&nbsp;Propri&eacute;t&eacute;s g&eacute;n&eacute;r&eacute;es">Section&nbsp;5.6, &laquo;&nbsp;Propri&eacute;t&eacute;s g&eacute;n&eacute;r&eacute;es&nbsp;&raquo;</a>.
+                        </p></td></tr></table></div></div><p>
+                Notez que <tt class="literal">&lt;timestamp&gt;</tt> est &eacute;quivalent &agrave; 
+                <tt class="literal">&lt;version type="timestamp"&gt;</tt>.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-property"></a>5.1.9.&nbsp;property</h3></div></div><div></div></div><p>
+                L'&eacute;l&eacute;ment <tt class="literal">&lt;property&gt;</tt> d&eacute;clare une propri&eacute;t&eacute; de la classe au sens JavaBean.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;property
+        name="propertyName"                 <span class="co">(1)</span>
+        column="column_name"                <span class="co">(2)</span>
+        type="typename"                     <span class="co">(3)</span>
+        update="true|false"                 <span class="co">(4)</span>
+        insert="true|false"                 <span class="co">(4)</span>
+        formula="arbitrary SQL expression"  <span class="co">(5)</span>
+        access="field|property|ClassName"   <span class="co">(6)</span>
+        lazy="true|false"                   <span class="co">(7)</span>
+        unique="true|false"                 <span class="co">(8)</span>
+        not-null="true|false"               <span class="co">(9)</span>
+        optimistic-lock="true|false"        <span class="co">(10)</span>
+        generated="never|insert|always"                              <span class="co">(11)</span>
+        node="element-name|@attribute-name|element/@attribute|."
+        index="index_name"
+        unique_key="unique_key_id"
+        length="L"
+        precision="P"
+        scale="S"
+/&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : nom de la propri&eacute;t&eacute;, avec une lettre initiale en minuscule.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">column</tt> (optionnel - par d&eacute;faut au nom de la propri&eacute;t&eacute;) : le nom 
+                                   de la colonne mapp&eacute;e. Cela peut aussi &ecirc;tre indiqu&eacute; dans le(s) sous-&eacute;l&eacute;ment(s) 
+                            <tt class="literal">&lt;column&gt;</tt>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">type</tt> (optionnel) : nom indiquant le type Hibernate.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">update, insert</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">true</tt>) :
+                           indique que les colonnes mapp&eacute;es devraient &ecirc;tre incluses dans des <tt class="literal">UPDATE</tt> SQL 
+                           et/ou des <tt class="literal">INSERT</tt>. Mettre les deux &agrave; <tt class="literal">false</tt> 
+                           emp&ecirc;che la propagation en base de donn&eacute;es (utile si vous savez qu'un trigger affectera la valeur &agrave; la  colonne). 
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">formula</tt> (optionnel) : une expression SQL qui d&eacute;finit la valeur pour une propri&eacute;t&eacute; 
+                            <span class="emphasis"><em>calcul&eacute;e</em></span>. Les propri&eacute;t&eacute;s calcul&eacute;es ne poss&egrave;de pas leur propre mapping.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">access</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">property</tt>): Strat&eacute;gie que Hibernate
+                             doit utiliser pour acc&eacute;der &agrave; cette valeur.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(7)</td><td valign="top" align="left"><p>
+                            <tt class="literal">lazy</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">false</tt>): Indique 
+                            que cette propri&eacute;t&eacute; devrait &ecirc;tre charg&eacute;e en diff&eacute;r&eacute; (lazy loading) quand on acc&egrave;de &agrave; la variable 
+                            d'instance pour la premi&egrave;re fois.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(8)</td><td valign="top" align="left"><p>
+                            <tt class="literal">unique</tt> (optionnel): G&eacute;n&egrave;re le DDL d'une contrainte d'unicit&eacute; pour les colonnes. 
+                            Permet aussi d'en faire la cible d'un <tt class="literal">property-ref</tt>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(9)</td><td valign="top" align="left"><p>
+                            <tt class="literal">not-null</tt> (optionnel): G&eacute;n&egrave;re le DDL d'une contrainte de non nullit&eacute; pour les colonnes.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(10)</td><td valign="top" align="left"><p>
+                            <tt class="literal">optimistic-lock</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">true</tt>): 
+                            Indique que les mises &agrave; jour de cette propri&eacute;t&eacute; peuvent ou non n&eacute;cessiter l'acquisition 
+                            d'un verrou optimiste. En d'autres termes, cela d&eacute;termine s'il est n&eacute;cessaire d'incr&eacute;menter 
+                            un num&eacute;ro de version quand cette propri&eacute;t&eacute; est marqu&eacute;e obsol&egrave;te (dirty).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(11)</td><td valign="top" align="left"><p>
+                            <tt class="literal">generated</tt> (optional - d&eacute;faut &agrave;<tt class="literal">never</tt>):
+                            Indique que la valeur de ce timestamp est g&eacute;n&eacute;r&eacute;e par la base de donn&eacute;es
+                            cf. <a href="mapping.html#mapping-generated" title="5.6.&nbsp;Propri&eacute;t&eacute;s g&eacute;n&eacute;r&eacute;es">Section&nbsp;5.6, &laquo;&nbsp;Propri&eacute;t&eacute;s g&eacute;n&eacute;r&eacute;es&nbsp;&raquo;</a>.
+                        </p></td></tr></table></div></div><p>
+                <span class="emphasis"><em>typename</em></span> peut &ecirc;tre:
+            </p><div class="orderedlist"><ol type="1" compact><li><p>
+                        Nom d'un type basique Hibernate (ex: <tt class="literal">integer, string, character,
+                        date, timestamp, float, binary, serializable, object, blob</tt>).
+                    </p></li><li><p>
+                        Nom d'une classe Java avec un type basique par d&eacute;faut (ex: <tt class="literal">int, float,
+                        char, java.lang.String, java.util.Date, java.lang.Integer, java.sql.Clob</tt>).
+                    </p></li><li><p>
+                        Nom d'une classe Java s&eacute;rialisable.
+                    </p></li><li><p>
+                       Nom d'une classe ayant un type sp&eacute;cifique (ex: <tt class="literal">com.illflow.type.MyCustomType</tt>).
+                    </p></li></ol></div><p>
+                   Si vous n'indiquez pas un type, Hibernate utlisera la r&eacute;flexion sur le nom de la propri&eacute;t&eacute; 
+                   pour tenter de trouver le type Hibernate correct. Hibernate essayera d'interpr&ecirc;ter 
+                   le nom de la classe retourn&eacute;e par le getter de la propri&eacute;t&eacute; en utilisant les r&eacute;gles 2, 3, 
+                   4 dans cet ordre. Cependant, ce n'est pas toujours suffisant. Dans certains cas vous aurez 
+                   encore besoin de l'attribut <tt class="literal">type</tt> (Par exemple, pour distinguer 
+                   <tt class="literal">Hibernate.DATE</tt> et <tt class="literal">Hibernate.TIMESTAMP</tt>, ou pour pr&eacute;ciser 
+                   un type sp&eacute;cifique).
+            </p><p>
+                   L'attribut <tt class="literal">access</tt> permet de contr&ocirc;ler comment Hibernate acc&egrave;dera 
+                   &agrave; la propri&eacute;t&eacute; &agrave; l'ex&eacute;cution. Par d&eacute;faut, Hibernate utilisera les m&eacute;thodes set/get. 
+                   Si vous indiquez <tt class="literal">access="field"</tt>, Hibernate ignorera les getter/setter 
+                   et acc&egrave;dera &agrave; la propri&eacute;t&eacute; directement en utilisant la r&eacute;flexion. Vous pouvez sp&eacute;cifier 
+                   votre propre strat&eacute;gie d'acc&egrave;s aux propri&eacute;t&eacute; en donnant une classe qui impl&eacute;mente l'interface 
+                <tt class="literal">org.hibernate.property.PropertyAccessor</tt>.
+            </p><p>
+                   Une fonctionnalit&eacute; particuli&egrave;rement int&eacute;ressante est les propri&eacute;t&eacute;s d&eacute;riv&eacute;es.
+                   Ces propri&eacute;t&eacute;s sont par d&eacute;finition en lecture seule, la valeur de la propri&eacute;t&eacute; est calcul&eacute;e au chargement. 
+                   Le calcul est d&eacute;clar&eacute; comme une expression SQL, qui se traduit par une sous-requ&ecirc;te <tt class="literal">SELECT</tt> 
+                   dans la requ&ecirc;te SQL qui charge une instance :
+            </p><pre class="programlisting">
+&lt;property name="totalPrice"
+    formula="( SELECT SUM (li.quantity*p.price) FROM LineItem li, Product p
+                WHERE li.productId = p.productId
+                AND li.customerId = customerId
+                AND li.orderNumber = orderNumber )"/&gt;</pre><p>
+                   Remarquez que vous pouvez r&eacute;f&eacute;rencer la propre table des entit&eacute;s en ne d&eacute;clarant pas un 
+                   alias sur une colonne particuli&egrave;re (<tt class="literal">customerId</tt> dans l'exemple donn&eacute;). 
+                   Notez aussi que vous pouvez utiliser le sous-&eacute;l&eacute;ment de mapping <tt class="literal">&lt;formula&gt;</tt> 
+                   plut&ocirc;t que d'utiliser l'attribut si vous le souhaitez.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-manytoone"></a>5.1.10.&nbsp;many-to-one</h3></div></div><div></div></div><p> Une association ordinaire vers une autre classe persistante est d&eacute;clar&eacute;e en utilisant 
+                   un &eacute;l&eacute;ment <tt class="literal">many-to-one</tt>. Le mod&egrave;le relationnel est une association 
+                   de type many-to-one : une clef &eacute;trang&egrave;re dans une table r&eacute;f&eacute;rence la ou les clef(s) primaire(s) dans la table cible.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;many-to-one
+        name="propertyName"                                <span class="co">(1)</span>
+        column="column_name"                               <span class="co">(2)</span>
+        class="ClassName"                                  <span class="co">(3)</span>
+        cascade="cascade_style"                            <span class="co">(4)</span>
+        fetch="join|select"                                <span class="co">(5)</span>
+        update="true|false"                                <span class="co">(6)</span>
+        insert="true|false"                                <span class="co">(6)</span>
+        property-ref="propertyNameFromAssociatedClass"     <span class="co">(7)</span>
+        access="field|property|ClassName"                  <span class="co">(8)</span>
+        unique="true|false"                                <span class="co">(9)</span>
+        not-null="true|false"                              <span class="co">(10)</span>
+        optimistic-lock="true|false"                       <span class="co">(11)</span>
+        lazy="proxy|no-proxy|false"                        <span class="co">(12)</span>
+        not-found="ignore|exception"                       <span class="co">(13)</span>          <span class="co">(14)</span>
+        entity-name="EntityName"                                     <span class="co">(15)</span>
+        formula="arbitrary SQL expression"                           <span class="co">(16)</span>
+        node="element-name|@attribute-name|element/@attribute|."
+        embed-xml="true|false"
+        index="index_name"
+        unique_key="unique_key_id"
+        foreign-key="foreign_key_name"
+/&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : Nom de la propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">column</tt> (optionnel) : Le nom de la clef &eacute;trang&egrave;re. Cela peut &ecirc;tre 
+                            aussi indiqu&eacute; avec le sous-&eacute;l&eacute;ment <tt class="literal">&lt;column&gt;</tt>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">class</tt> (optionnel - par d&eacute;faut le type de la propri&eacute;t&eacute; d&eacute;termin&eacute; 
+                            par r&eacute;flexion) : Le nom de la classe associ&eacute;e.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">cascade</tt> (optionnel) : Indique quelles op&eacute;rations doivent 
+                            &ecirc;tre propag&eacute;es de l'objet p&egrave;re vers les objets associ&eacute;s.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">fetch</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">select</tt>) : 
+                            Choisit entre le chargement de type outer-join ou le chargement par select successifs.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">update, insert</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">true</tt>) :
+                           indique que les colonnes mapp&eacute;es devraient &ecirc;tre incluses dans des <tt class="literal">UPDATE</tt> SQL 
+                           et/ou des <tt class="literal">INSERT</tt>. Mettre les deux &agrave; <tt class="literal">false</tt> 
+                           emp&ecirc;che la propagation en base de donn&eacute;es (utile si vous savez qu'un trigger affectera la valeur &agrave; la  colonne).                         
+                         </p></td></tr><tr><td width="5%" valign="top" align="left">(7)</td><td valign="top" align="left"><p>
+                            <tt class="literal">property-ref</tt> : (optionnel) Le nom d'une propri&eacute;t&eacute; de la classe 
+                            associ&eacute;e qui est li&eacute;e &agrave; cette clef &eacute;trang&egrave;re. Si ce n'est pas sp&eacute;cifi&eacute;, la clef primaire de la 
+                            classe associ&eacute;e est utilis&eacute;e.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(8)</td><td valign="top" align="left"><p>
+                            <tt class="literal">access</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">property</tt>) : La 
+                            strat&eacute;gie &agrave; utiliser par Hibernate pour acc&eacute;der &agrave; la valeur de cette propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(9)</td><td valign="top" align="left"><p>
+                            <tt class="literal">unique</tt> (optionnel) : G&eacute;n&egrave;re le DDL d'une contrainte d'unicit&eacute; pour la clef &eacute;trang&egrave;re. 
+                            Permet aussi d'en faire la cible d'un <tt class="literal">property-ref</tt>. Cela permet de cr&eacute;er une v&eacute;ritable 
+                            association one-to-one.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(10)</td><td valign="top" align="left"><p>
+                            <tt class="literal">not-null</tt> (optionnel) : G&eacute;n&egrave;re le DDL pour une contrainte de non nullit&eacute; pour la clef &eacute;trang&egrave;re.
+                       </p></td></tr><tr><td width="5%" valign="top" align="left">(11)</td><td valign="top" align="left"><p>
+                            <tt class="literal">optimistic-lock</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">true</tt>) : 
+                            Indique que les mises &agrave; jour de cette propri&eacute;t&eacute; requi&egrave;rent ou non l'acquisition 
+                            d'un verrou optimiste. En d'autres termes, d&eacute;termine si un incr&eacute;ment de version doit 
+                            avoir lieu quand la propri&eacute;t&eacute; est marqu&eacute;e obsol&egrave;te (dirty).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(12)</td><td valign="top" align="left"><p>
+                            <tt class="literal">lazy</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">false</tt>) : Indique 
+                            que cette propri&eacute;t&eacute; doit &ecirc;tre charg&eacute;e en diff&eacute;r&eacute; (lazy loading) au premier acc&egrave;s 
+                            &agrave; la variable d'instance (n&eacute;cessite une instrumentation du bytecode lors de la phase 
+                            de construction). Remarquez que cela n'influence pas le comportement du proxy 
+                            Hibernate - comme l'attribut <tt class="literal">lazy</tt> sur des classes ou des mappings 
+                            de collections, mais utilise l'interception pour le chargement diff&eacute;r&eacute;.
+                            <tt class="literal">lazy="false"</tt> indique que l'association sera toujours charg&eacute;e.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(13)</td><td valign="top" align="left"><p>
+                            <tt class="literal">not-found</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">exception</tt>) : 
+                            Indique comment les clefs &eacute;trang&egrave;res qui r&eacute;f&eacute;rencent des lignes manquantes doivent &ecirc;tre manipul&eacute;es :
+                            <tt class="literal">ignore</tt> traitera une ligne manquante comme une association nulle.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(15)</td><td valign="top" align="left"><p>
+                            <tt class="literal">entity-name</tt> (optionnel) : Le nom de l'entit&eacute; de la classe associ&eacute;e.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(16)</td><td valign="top" align="left"><p>
+                            <tt class="literal">formula</tt> (optionnel) : une expression SQL qui d&eacute;finit la valeur
+                            pour une cl&eacute; &eacute;trang&egrave;re calcul&eacute;e.
+                        </p></td></tr></table></div></div><p>
+                Donner une valeur significative &agrave; l'attribut <tt class="literal">cascade</tt> autre que 
+                <tt class="literal">none</tt>  propagera certaines op&eacute;rations &agrave; l'objet associ&eacute;. Les valeurs 
+                significatives sont les noms des op&eacute;rations Hibernate basiques,     
+                <tt class="literal">persist, merge, delete, save-update, evict, replicate, lock,
+                refresh</tt>, ainsi que les valeurs sp&eacute;ciales <tt class="literal">delete-orphan</tt> 
+                et <tt class="literal">all</tt> et des combinaisons de noms d'op&eacute;rations s&eacute;par&eacute;es par des virgules,
+                comme par exemple <tt class="literal">cascade="persist,merge,evict"</tt> ou
+                <tt class="literal">cascade="all,delete-orphan"</tt>. Voir <a href="objectstate.html#objectstate-transitive" title="10.11.&nbsp;Persistance transitive">Section&nbsp;10.11, &laquo;&nbsp;Persistance transitive&nbsp;&raquo;</a>
+                pour une explication compl&egrave;te.
+                Notez que les assocations many-to-one et one-to-one ne supportent pas orphan delete.
+            </p><p>
+                Une d&eacute;claration <tt class="literal">many-to-one</tt> typique est aussi simple que :
+            </p><pre class="programlisting">&lt;many-to-one name="product" class="Product" column="PRODUCT_ID"/&gt;</pre><p>
+                L'attribut <tt class="literal">property-ref</tt> devrait &ecirc;tre utilis&eacute; pour mapper seulement des donn&eacute;es 
+                provenant d'un ancien syst&egrave;me o&ugrave; les clefs &eacute;trang&egrave;res font r&eacute;f&eacute;rence &agrave; une clef unique de la table associ&eacute;e 
+                et qui n'est pas la clef primaire. C'est un cas de mauvaise conception relationnelle.
+                Par exemple, supposez que la classe <tt class="literal">Product</tt> a un num&eacute;ro de s&eacute;rie unique qui n'est pas
+                la clef primaire. (L'attribut <tt class="literal">unique</tt> contr&ocirc;le la g&eacute;n&eacute;ration DDL par Hibernate avec 
+                l'outil SchemaExport.)
+            </p><pre class="programlisting">&lt;property name="serialNumber" unique="true" type="string" column="SERIAL_NUMBER"/&gt;</pre><p>
+                Ainsi le mapping pour <tt class="literal">OrderItem</tt> peut utiliser :
+            </p><pre class="programlisting">&lt;many-to-one name="product" property-ref="serialNumber" column="PRODUCT_SERIAL_NUMBER"/&gt;</pre><p>
+                bien que ce ne soit certainement pas encourag&eacute;.
+            </p><p>
+                Si la clef unique r&eacute;f&eacute;renc&eacute;e comprend des propri&eacute;t&eacute;s multiples de l'entit&eacute; associ&eacute;e, vous devez mapper
+                ces propri&eacute;t&eacute;s &agrave; l'int&eacute;rieur d'un &eacute;l&eacute;ment <tt class="literal">&lt;properties&gt;</tt>.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-onetoone"></a>5.1.11.&nbsp;one-to-one</h3></div></div><div></div></div><p>
+                Une association one-to-one vers une autre classe persistante est d&eacute;clar&eacute;e avec l'&eacute;l&eacute;ment
+                <tt class="literal">one-to-one</tt>.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;one-to-one
+        name="propertyName"                                <span class="co">(1)</span>
+        class="ClassName"                                  <span class="co">(2)</span>
+        cascade="cascade_style"                            <span class="co">(3)</span>
+        constrained="true|false"                           <span class="co">(4)</span>
+        fetch="join|select"                                <span class="co">(5)</span>
+        property-ref="propertyNameFromAssociatedClass"     <span class="co">(6)</span>
+        access="field|property|ClassName"                  <span class="co">(7)</span>
+        formula="any SQL expression"                       <span class="co">(8)</span>
+        entity-name="EntityName"                                     <span class="co">(9)</span>
+/&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : Le nom de la propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">class</tt> (optionnel - par d&eacute;faut du type de la propri&eacute;t&eacute; 
+                            d&eacute;termin&eacute; par r&eacute;flexion) : Le nom de la classe associ&eacute;e.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">cascade</tt> (optionnel) :  Indique quelles op&eacute;rations doivent 
+                            &ecirc;tre cascad&eacute;es de l'objet p&egrave;re vers l'objet associ&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">constrained</tt> (optionnel) : Indique qu'une contrainte de clef &eacute;trang&egrave;re 
+                            sur la clef primaire de la table mapp&eacute;e r&eacute;f&eacute;rence la table de la classe associ&eacute;e.
+                            Cette option affecte l'ordre dans lequel chaque <tt class="literal">save()</tt> et chaque
+                            <tt class="literal">delete()</tt> sont cascad&eacute;s et d&eacute;termine si l'association peut utiliser un proxy 
+                            (aussi utilis&eacute; par l'outil d'export de sch&eacute;ma).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">fetch</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">select</tt>) : 
+                            Choisit entre r&eacute;cup&eacute;ration par jointure externe ou select s&eacute;quentiel.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">property-ref</tt> (optionnel) : Le nom de la propri&eacute;t&eacute; de la classe associ&eacute;e qui est jointe &agrave; la clef
+                            primaire de cette classe. Si ce n'est pas sp&eacute;cifi&eacute;, la clef primaire de la classe associ&eacute;e est utilis&eacute;e.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(7)</td><td valign="top" align="left"><p>
+                            <tt class="literal">access</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">property</tt>) : 
+                            La strat&eacute;gie &agrave; utiliser par Hibernate pour acc&eacute;der &agrave; la valeur de la propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(8)</td><td valign="top" align="left"><p>
+                            <tt class="literal">formula</tt> (optionnel) : Presque toutes les associations one-to-one pointent sur la clef primaire 
+                            de l'entit&eacute; propri&eacute;taire. Dans les rares cas diff&eacute;rents, vous devez donner une ou plusieurs 
+                            autres colonnes ou expression &agrave; joindre par une formule SQL (voir <tt class="literal">org.hibernate.test.onetooneformula</tt> pour un exemple).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(9)</td><td valign="top" align="left"><p>
+                            <tt class="literal">lazy</tt> (optionnel - par d&eacute;faut <tt class="literal">proxy</tt>) : 
+                            Par d&eacute;faut, les associations simples sont soumise &agrave; proxy. <tt class="literal">lazy="no-proxy"</tt>
+                            sp&eacute;cifie que la propri&eacute;t&eacute; doit &ecirc;tre charg&eacute;e &agrave; la demande au premier acc&egrave;s &agrave; l'instance.
+                            (n&eacute;cessite l'intrumentation du bytecode &agrave; la construction). 
+                            <tt class="literal">lazy="false"</tt> indique que l'association sera toujours charg&eacute;e
+                            agressivement. <span class="emphasis"><em>Notez que si <tt class="literal">constrained="false"</tt>,
+                            l'utilisation de proxy est impossible et Hibernate chargera automatiquement l'association !</em></span>
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(10)</td><td valign="top" align="left"><p>
+                            <tt class="literal">entity-name</tt> (optional) : The entity name of the associated class.
+                        </p></td></tr></table></div></div><p>
+                Il existe deux types d'associations one-to-one :
+            </p><div class="itemizedlist"><ul type="disc"><li><p>
+                associations par clef primaire
+            </p></li><li><p>
+                association par clef &eacute;trang&egrave;re unique
+            </p></li></ul></div><p>
+                Les associations par clef primaire ne n&eacute;cessitent pas une colonne suppl&eacute;mentaire en table ; si deux lignes sont 
+                li&eacute;s par l'association alors les deux lignes de la table partagent la m&ecirc;me valeur de clef primaire. Donc si vous 
+                voulez que deux objets soient li&eacute;s par une association par clef primaire, vous devez faire en sorte qu'on leur 
+                assigne la m&ecirc;me valeur d'identifiant !
+            </p><p>
+                Pour une association par clef primaire, ajoutez les mappings suivants &agrave; <tt class="literal">Employee</tt> et 
+                <tt class="literal">Person</tt>, respectivement.
+            </p><pre class="programlisting">&lt;one-to-one name="person" class="Person"/&gt;</pre><pre class="programlisting">&lt;one-to-one name="employee" class="Employee" constrained="true"/&gt;</pre><p>
+                Maintenant, vous devez faire en sorte que les clefs primaires des lignes li&eacute;es dans les tables PERSON et EMPLOYEE 
+                sont &eacute;gales. On utilise une strat&eacute;gie Hibernate sp&eacute;ciale de g&eacute;n&eacute;ration d'identifiants appel&eacute;e 
+                <tt class="literal">foreign</tt> :
+            </p><pre class="programlisting">&lt;class name="person" table="PERSON"&gt;
+    &lt;id name="id" column="PERSON_ID"&gt;
+        &lt;generator class="foreign"&gt;
+            &lt;param name="property"&gt;employee&lt;/param&gt;
+        &lt;/generator&gt;
+    &lt;/id&gt;
+    ...
+    &lt;one-to-one name="employee"
+        class="Employee"
+        constrained="true"/&gt;
+&lt;/class&gt;</pre><p>
+                Une instance fra&icirc;chement enregistr&eacute;e de <tt class="literal">Person</tt> se voit alors assign&eacute;e la m&ecirc;me valeur 
+                de clef primaire que l'instance de <tt class="literal">Employee</tt> r&eacute;f&eacute;renc&eacute;e par la propri&eacute;t&eacute; <tt class="literal">employee</tt> 
+                de cette <tt class="literal">Person</tt>.
+            </p><p>
+                Alternativement, une clef &eacute;trang&egrave;re avec contrainte d'unicit&eacute; de <tt class="literal">Employee</tt> vers 
+                <tt class="literal">Person</tt> peut &ecirc;tre indiqu&eacute;e ainsi :
+            </p><pre class="programlisting">&lt;many-to-one name="person" class="Person" column="PERSON_ID" unique="true"/&gt;</pre><p>
+                Et cette association peut &ecirc;tre rendue bidirectionnelle en ajoutant ceci au mapping de <tt class="literal">Person</tt> :
+            </p><pre class="programlisting">&lt;one-to-one name"employee" class="Employee" property-ref="person"/&gt;</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-naturalid"></a>5.1.12.&nbsp;natural-id</h3></div></div><div></div></div><pre class="programlisting">&lt;natural-id mutable="true|false"/&gt;
+        &lt;property ... /&gt;
+        &lt;many-to-one ... /&gt;
+        ......
+&lt;/natural-id&gt;</pre><p>
+                Bien que nous recommandions l'utilisation de cl&eacute; primaire g&eacute;n&eacute;r&eacute;e, vous devriez toujours
+                essayer d'identifier des cl&eacute; m&eacute;tier (naturelles) pour toutes vos entit&eacute;s. Une cl&eacute; naturelle
+                est une propri&eacute;t&eacute; ou une combinaison de propri&eacute;t&eacute;s uniques et non nulles. Si elle est aussi
+                immuable, c'est encore mieux. Mappez les propri&eacute;t&eacute;s de la cl&eacute; naturelle dans l'&eacute;l&eacute;ment
+                <tt class="literal">&lt;natural-id&gt;</tt>. Hibernate g&eacute;n&eacute;rera la cl&eacute; unique n&eacute;cessaire et les contraintes
+                de non-nullit&eacute;, et votre mapping s'auto-documentera.
+            </p><p>
+                Nous vous recommandons fortement d'impl&eacute;menter <tt class="literal">equals()</tt> et 
+                <tt class="literal">hashCode()</tt> pour comparer les cl&eacute;s naturelles de l'entit&eacute;.
+            </p><p>
+                Ce mapping n'est pas destin&eacute; &agrave; &ecirc;tre utilis&eacute; avec des entit&eacute;s qui ont des cl&eacute;s naturelles.
+            </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                        <tt class="literal">mutable</tt> (optionel, par d&eacute;faut &agrave; <tt class="literal">false</tt>) : 
+                        Par d&eacute;faut, les identifiants naturels sont suppos&eacute;s &ecirc;tre immuable (constants).
+                    </p></li></ul></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-component"></a>5.1.13.&nbsp;component, dynamic-component</h3></div></div><div></div></div><p>
+                L'&eacute;l&eacute;ment <tt class="literal">&lt;component&gt;</tt> mappe les propri&eacute;t&eacute;s d'un objet fils 
+                aux colonnes d'une classe parente. Les composants peuvent en retour d&eacute;clarer leurs propres 
+                propri&eacute;t&eacute;s, composants ou collections. Voir "Components" plus bas.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;component 
+        name="propertyName"                 <span class="co">(1)</span>
+        class="className"                   <span class="co">(2)</span>
+        insert="true|false"                 <span class="co">(3)</span>
+        update="true|false"                 <span class="co">(4)</span>
+        access="field|property|ClassName"   <span class="co">(5)</span>
+        lazy="true|false"                   <span class="co">(6)</span>
+        optimistic-lock="true|false"        <span class="co">(7)</span>
+        unique="true|false"                 <span class="co">(8)</span>
+&gt;
+        
+        &lt;property ...../&gt;
+        &lt;many-to-one .... /&gt;
+        ........
+&lt;/component&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : Nom de la propri&eacute;t&eacute;
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">class</tt> (optionnel - par d&eacute;faut au type de la propri&eacute;t&eacute; d&eacute;termin&eacute; par r&eacute;flexion) : 
+                            le nom de la classe (fille) du composant.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">insert</tt> : Est ce que les colonnes mapp&eacute;es apparaissent dans les 
+                            <tt class="literal">INSERT</tt>s ?
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">update</tt>: Est ce que les colonnes mapp&eacute;es apparaissent dans les 
+                            <tt class="literal">UPDATE</tt>s ?
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">access</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">property</tt>) : 
+                            La strat&eacute;gie que Hibernate doit utiliser pour acc&eacute;der &agrave; la valeur de cette propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">lazy</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">false</tt>) : 
+                            Indique que ce composant doit &ecirc;tre charg&eacute; au premier acc&egrave;s 
+                            &agrave; la variable d'instance (n&eacute;cessite une instrumentation du bytecode au moment du build).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(7)</td><td valign="top" align="left"><p>
+                            <tt class="literal">optimistic-lock</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">true</tt>) :
+                                Indique que les mises &agrave; jour sur ce composant n&eacute;cessitent ou non l'acquisition d'un 
+                                verrou optimiste. En d'autres termes, cela d&eacute;termine si une incr&eacute;mentation de version 
+                                doit avoir lieu quand la propri&eacute;t&eacute; est marqu&eacute;e obsol&egrave;te (dirty).
+                            </p></td></tr><tr><td width="5%" valign="top" align="left">(8)</td><td valign="top" align="left"><p>
+                            <tt class="literal">unique</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">false</tt>) :
+                                Indique qu'une contrainte d'unicit&eacute; existe sur toutes les colonnes mapp&eacute;es de ce composant.
+                            </p></td></tr></table></div></div><p>
+                Les tags fils <tt class="literal">&lt;property&gt;</tt> mappent les propri&eacute;t&eacute;s 
+                de la classe fille sur les colonnes de la table.
+            </p><p>
+                L'&eacute;l&eacute;ment <tt class="literal">&lt;component&gt;</tt> permet de d&eacute;clarer sous-&eacute;l&eacute;ment <tt class="literal">&lt;parent&gt;</tt> qui associe une propri&eacute;t&eacute;
+                de la classe composant comme une r&eacute;f&eacute;rence arri&egrave;re vers l'entit&eacute; contenante.
+            </p><p>
+                L'&eacute;l&eacute;ment <tt class="literal">&lt;dynamic-component&gt;</tt> permet &agrave; une <tt class="literal">Map</tt> d'&ecirc;tre mapp&eacute;e 
+                comme un composant, quand les noms de la propri&eacute;t&eacute; font r&eacute;f&eacute;rence aux clefs de cette Map, voir 
+                <a href="components.html#components-dynamic" title="8.5.&nbsp;Composant Dynamique">Section&nbsp;8.5, &laquo;&nbsp;Composant Dynamique&nbsp;&raquo;</a>.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-properties"></a>5.1.14.&nbsp;properties</h3></div></div><div></div></div><p>
+                L'&eacute;l&eacute;ment <tt class="literal">&lt;properties&gt;</tt> permet la d&eacute;finition d'un groupement logique nomm&eacute; 
+                des propri&eacute;t&eacute;s d'une classe. L'utilisation la plus importante de cette construction est la possibilit&eacute; 
+                pour une combinaison de propri&eacute;t&eacute;s d'&ecirc;tre la cible d'un <tt class="literal">property-ref</tt>. C'est aussi 
+                un moyen pratique de d&eacute;finir une contrainte d'unicit&eacute; multi-colonnes.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;properties 
+        name="logicalName"                  <span class="co">(1)</span>
+        insert="true|false"                 <span class="co">(2)</span>
+        update="true|false"                 <span class="co">(3)</span>
+        optimistic-lock="true|false"        <span class="co">(4)</span>
+        unique="true|false"                 <span class="co">(5)</span>
+&gt;
+        
+        &lt;property ...../&gt;
+        &lt;many-to-one .... /&gt;
+        ........
+&lt;/properties&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : Le nom logique d'un regroupement et 
+                            <span class="emphasis"><em>non</em></span> le v&eacute;ritable nom d'une propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">insert</tt> : Est-ce que les colonnes mapp&eacute;es apparaissent dans les 
+                            <tt class="literal">INSERT</tt>s ?
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">update</tt> : Est-ce que les colonnes mapp&eacute;es apparaissent dans les 
+                            <tt class="literal">UPDATE</tt>s ?
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">optimistic-lock</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">true</tt>) :
+                                Indique que les mises &agrave; jour sur ce composant n&eacute;cessitent ou non l'acquisition d'un 
+                                verrou optimiste. En d'autres termes, cela d&eacute;termine si une incr&eacute;mentation 
+                                de version doit avoir lieu quand la propri&eacute;t&eacute; est marqu&eacute;e obsol&egrave;te (dirty).
+                            </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">unique</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">false</tt>) :
+                            Indique qu'une contrainte d'unicit&eacute; existe sur toutes les colonnes mapp&eacute;es de ce composant.
+                            </p></td></tr></table></div></div><p>
+                Par exemple, si nous avons le mapping de <tt class="literal">&lt;properties&gt;</tt> suivant :
+            </p><pre class="programlisting">&lt;class name="Person"&gt;
+    &lt;id name="personNumber"/&gt;
+    ...
+    &lt;properties name="name" 
+            unique="true" update="false"&gt;
+        &lt;property name="firstName"/&gt;
+        &lt;property name="initial"/&gt;
+        &lt;property name="lastName"/&gt;
+    &lt;/properties&gt;
+&lt;/class&gt;</pre><p>
+                Alors nous pourrions avoir une association sur des donn&eacute;es d'un ancien syst&egrave;me (legacy) qui font r&eacute;f&eacute;rence 
+                &agrave; cette clef unique de la table <tt class="literal">Person</tt> au lieu de la clef primaire :
+            </p><pre class="programlisting">&lt;many-to-one name="person" 
+         class="Person" property-ref="name"&gt;
+    &lt;column name="firstName"/&gt;
+    &lt;column name="initial"/&gt;
+    &lt;column name="lastName"/&gt;
+&lt;/many-to-one&gt;</pre><p>
+                Nous ne recommandons pas l'utilisation de ce genre de chose en dehors du contexte de mapping de donn&eacute;es h&eacute;rit&eacute;es 
+                d'anciens syst&egrave;mes.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-subclass"></a>5.1.15.&nbsp;subclass</h3></div></div><div></div></div><p>
+                Pour finir, la persistance polymorphique n&eacute;cessite la d&eacute;claration de chaque sous-classe de la classe persistante de base. 
+                pour la strat&eacute;gie de mapping de type table-per-class-hierarchy, on utilise la d&eacute;claration 
+                <tt class="literal">&lt;subclass&gt;</tt>.    
+            </p><div class="programlistingco"><pre class="programlisting">&lt;subclass
+        name="ClassName"                              <span class="co">(1)</span>
+        discriminator-value="discriminator_value"     <span class="co">(2)</span>
+        proxy="ProxyInterface"                        <span class="co">(3)</span>
+        lazy="true|false"                             <span class="co">(4)</span>
+        dynamic-update="true|false"
+        dynamic-insert="true|false"
+        entity-name="EntityName"
+        node="element-name"
+        extends="SuperclassName"&gt;
+
+        &lt;property .... /&gt;
+        .....
+&lt;/subclass&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : Le nom complet de la sous-classe.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">discriminator-value</tt> (optionnel - par d&eacute;faut le nom de la classe) : 
+                            une valeur qui distingue les diff&eacute;rentes sous-classes.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">proxy</tt> (optionnel) : Indique une classe ou interface &agrave; utiliser pour les chargements
+                            &agrave; la demande des proxies (lazy).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">lazy</tt> (optionnel, par d&eacute;faut &agrave; <tt class="literal">true</tt>) : Sp&eacute;cifier 
+                            <tt class="literal">lazy="false"</tt> d&eacute;sactive l'utilisation du chargement &agrave; la demande (lazy).
+                        </p></td></tr></table></div></div><p>
+                Chaque sous-classe devrait d&eacute;clarer ses propres propri&eacute;t&eacute;s persistantes et sous-classes.
+                Les propri&eacute;t&eacute;s <tt class="literal">&lt;version&gt;</tt> et <tt class="literal">&lt;id&gt;</tt> 
+                sont implicitement h&eacute;rit&eacute;s de la classe de base. Chaque sous-classe dans une hi&eacute;rarchie doit 
+                d&eacute;finir une unique <tt class="literal">discriminator-value</tt>. Si aucune n'est sp&eacute;cifi&eacute;e, 
+                le nom complet de la classe Java est utilis&eacute;.
+            </p><p>
+                Pour plus d'infos sur le mapping d'h&eacute;ritage, voir <a href="inheritance.html" title="Chapitre&nbsp;9.&nbsp;Mapping d'h&eacute;ritage de classe">Chapitre&nbsp;9, <i>Mapping d'h&eacute;ritage de classe</i></a>.
+        </p><pre class="programlisting">
+&lt;hibernate-mapping&gt;
+    &lt;subclass name="DomesticCat" extends="Cat" discriminator-value="D"&gt;
+         &lt;property name="name" type="string"/&gt;
+    &lt;/subclass&gt;
+&lt;/hibernate-mapping&gt;</pre><p>
+                Pour des informations sur les mappings d'h&eacute;ritage, voir <a href="inheritance.html" title="Chapitre&nbsp;9.&nbsp;Mapping d'h&eacute;ritage de classe">Chapitre&nbsp;9, <i>Mapping d'h&eacute;ritage de classe</i></a>.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-joinedsubclass"></a>5.1.16.&nbsp;joined-subclass</h3></div></div><div></div></div><p>
+                Une autre fa&ccedil;on possible de faire est la suivante, chaque sous-classe peut &ecirc;tre mapp&eacute;e vers sa propre table (strat&eacute;gie 
+                de mapping de type table-per-subclass). L'&eacute;tat h&eacute;rit&eacute; est r&eacute;cup&eacute;r&eacute; en joignant la table de la super-classe.
+                L'&eacute;l&eacute;ment <tt class="literal">&lt;joined-subclass&gt;</tt> est utilis&eacute;.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;joined-subclass
+        name="ClassName"                    <span class="co">(1)</span>
+        table="tablename"                   <span class="co">(2)</span>
+        proxy="ProxyInterface"              <span class="co">(3)</span>
+        lazy="true|false"                   <span class="co">(4)</span>
+        dynamic-update="true|false"
+        dynamic-insert="true|false"
+        schema="schema"
+        catalog="catalog"
+        extends="SuperclassName"
+        persister="ClassName"
+        subselect="SQL expression"
+        entity-name="EntityName"&gt;
+
+        &lt;key .... &gt;
+
+        &lt;property .... /&gt;
+        .....
+&lt;/joined-subclass&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : Le nom Java complet de la sous-classe.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">table</tt> : Le nom de la table de la sous-classe.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">proxy</tt> (optionnel) : Indique une classe ou interface pour le chargement diff&eacute;r&eacute; des proxies.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">lazy</tt> (optionnel, par d&eacute;faut &agrave; <tt class="literal">true</tt>) : Indiquer 
+                            <tt class="literal">lazy="false"</tt> d&eacute;sactive l'utilisation du chargement &agrave; la demande.
+                         </p></td></tr></table></div></div><p>
+                Aucune colonne discriminante n'est n&eacute;cessaire pour cette strat&eacute;gie de mapping. Cependant, 
+                chaque sous-classe doit d&eacute;clarer une colonne de table contenant l'objet identifiant qui utilise l'&eacute;l&eacute;ment 
+                <tt class="literal">&lt;key&gt;</tt>. Le mapping au d&eacute;but de ce chapitre serait r&eacute;-&eacute;crit ainsi :
+            </p><pre class="programlisting">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;
+
+&lt;hibernate-mapping package="eg"&gt;
+
+        &lt;class name="Cat" table="CATS"&gt;
+                &lt;id name="id" column="uid" type="long"&gt;
+                        &lt;generator class="hilo"/&gt;
+                &lt;/id&gt;
+                &lt;property name="birthdate" type="date"/&gt;
+                &lt;property name="color" not-null="true"/&gt;
+                &lt;property name="sex" not-null="true"/&gt;
+                &lt;property name="weight"/&gt;
+                &lt;many-to-one name="mate"/&gt;
+                &lt;set name="kittens"&gt;
+                        &lt;key column="MOTHER"/&gt;
+                        &lt;one-to-many class="Cat"/&gt;
+                &lt;/set&gt;
+                &lt;joined-subclass name="DomesticCat" table="DOMESTIC_CATS"&gt;
+                    &lt;key column="CAT"/&gt;
+                    &lt;property name="name" type="string"/&gt;
+                &lt;/joined-subclass&gt;
+        &lt;/class&gt;
+
+        &lt;class name="eg.Dog"&gt;
+                &lt;!-- mapping for Dog could go here --&gt;
+        &lt;/class&gt;
+
+&lt;/hibernate-mapping&gt;</pre><p>
+                 Pour des informations sur les mappings d'h&eacute;ritage, voir <a href="inheritance.html" title="Chapitre&nbsp;9.&nbsp;Mapping d'h&eacute;ritage de classe">Chapitre&nbsp;9, <i>Mapping d'h&eacute;ritage de classe</i></a>.
+             </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-unionsubclass"></a>5.1.17.&nbsp;union-subclass</h3></div></div><div></div></div><p>
+               Une troisi&egrave;me option est de seulement mapper vers des tables les classes concr&egrave;tes 
+               d'une hi&eacute;rarchie d'h&eacute;ritage, (strat&eacute;gie de type table-per-concrete-class) o&ugrave; 
+               chaque table d&eacute;finit tous les &eacute;tats persistants de la classe, y compris les &eacute;tats h&eacute;rit&eacute;s. 
+               Dans Hibernate il n'est absolument pas n&eacute;cessaire de mapper explicitement de telles hi&eacute;rarchies 
+               d'h&eacute;ritage. Vous pouvez simplement mapper chaque classe avec une d&eacute;claration <tt class="literal">&lt;class&gt;</tt> 
+               diff&eacute;rente. Cependant, si vous souhaitez utiliser des associations polymorphiques (c&agrave;d une association 
+               vers la superclasse de la hi&eacute;rarchie), vous devez utiliser le mapping <tt class="literal">&lt;union-subclass&gt;</tt>.
+           </p><div class="programlistingco"><pre class="programlisting">&lt;union-subclass
+        name="ClassName"                    <span class="co">(1)</span>
+        table="tablename"                   <span class="co">(2)</span>
+        proxy="ProxyInterface"              <span class="co">(3)</span>
+        lazy="true|false"                   <span class="co">(4)</span>
+        dynamic-update="true|false"
+        dynamic-insert="true|false"
+        schema="schema"
+        catalog="catalog"
+        extends="SuperclassName"
+        abstract="true|false"
+        persister="ClassName"
+        subselect="SQL expression"
+        entity-name="EntityName"&gt;
+
+        &lt;property .... /&gt;
+        .....
+&lt;/union-subclass&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : Le nom Java complet de la sous-classe.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">table</tt> : nom de la table de la sous-classe.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">proxy</tt> (optionnel) : Indique une classe ou interface pour le chargement diff&eacute;r&eacute; des proxies.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">lazy</tt> (optionnel, par d&eacute;faut &agrave; <tt class="literal">true</tt>) : Indiquer 
+                            <tt class="literal">lazy="false"</tt> d&eacute;sactive l'utilisation du chargement &agrave; la demande.
+                         </p></td></tr></table></div></div><p>
+                Aucune colonne discriminante ou colonne clef n'est requise pour cette strat&eacute;gie de mapping.
+            </p><p>
+                Pour des informations sur les mappings d'h&eacute;ritage, voir <a href="inheritance.html" title="Chapitre&nbsp;9.&nbsp;Mapping d'h&eacute;ritage de classe">Chapitre&nbsp;9, <i>Mapping d'h&eacute;ritage de classe</i></a>.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-join"></a>5.1.18.&nbsp;join</h3></div></div><div></div></div><p>
+                En utilisant l'&eacute;l&eacute;ment <tt class="literal">&lt;join&gt;</tt>, il est possible de mapper 
+                des propri&eacute;t&eacute;s d'une classe sur plusieurs tables.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;join
+        table="tablename"                        <span class="co">(1)</span>
+        schema="owner"                           <span class="co">(2)</span>
+        catalog="catalog"                        <span class="co">(3)</span>
+        fetch="join|select"                      <span class="co">(4)</span>
+        inverse="true|false"                     <span class="co">(5)</span>
+        optionnel="true|false"&gt;                  <span class="co">(6)</span>
+        
+        &lt;key ... /&gt;
+        
+        &lt;property ... /&gt;
+        ...
+&lt;/join&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">table</tt> : Le nom de la table jointe.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">schema</tt> (optionnel) : court-circuite le nom de sch&eacute;ma sp&eacute;cifi&eacute; par l'&eacute;l&eacute;ment de base 
+                            <tt class="literal">&lt;hibernate-mapping&gt;</tt>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">catalog</tt> (optionnel) : court-circuite le nom de catalogue sp&eacute;cifi&eacute; par l'&eacute;l&eacute;ment de base 
+                            <tt class="literal">&lt;hibernate-mapping&gt;</tt>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">fetch</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">join</tt>) :
+                            Si positionn&eacute; &agrave; <tt class="literal">join</tt>, Hibernate utilisera une jointure interne pour charger
+                            une <tt class="literal">jointure</tt> d&eacute;finie par une classe ou ses super-classes et une jointure externe
+                            pour une <tt class="literal">&lt;jointure&gt;</tt> d&eacute;finie par une sous-classe.
+                            Si positionn&eacute; &agrave; <tt class="literal">select</tt> alors Hibernate utilisera un select s&eacute;quentiel 
+                            pour une <tt class="literal">&lt;jointure&gt;</tt> d&eacute;finie sur une sous-classe, qui ne sera d&eacute;livr&eacute;e que
+                            si une ligne se repr&eacute;sente une instance de la sous-classe. Les jointures internes seront quand m&ecirc;me 
+                            utilis&eacute;es pour charger une <tt class="literal">&lt;jointure&gt;</tt> d&eacute;finie par une classe et ses super-classes.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">inverse</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">false</tt>) :
+                            Si positionn&eacute; &agrave; true, Hibernate n'essaiera pas d'ins&eacute;rer ou de mettre &agrave; jour les 
+                            propri&eacute;t&eacute;s d&eacute;finies par cette jointure.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">optionnel</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">false</tt>) :
+                            Si positionn&eacute; &agrave; true, Hibernate ins&egrave;rera une ligne seulement si les propri&eacute;t&eacute;s d&eacute;finies 
+                            par cette jointure sont non-nulles et utilisera toujours une jointure externe pour charger les propri&eacute;t&eacute;s.
+                        </p></td></tr></table></div></div><p>
+                Par exemple, les informations d'adresse pour une personne peuvent &ecirc;tre mapp&eacute;es vers une table 
+                s&eacute;par&eacute;e (tout en pr&eacute;servant des s&eacute;mantiques de type valeur pour toutes ses propri&eacute;t&eacute;s) :
+            </p><pre class="programlisting">&lt;class name="Person"
+    table="PERSON"&gt;
+
+    &lt;id name="id" column="PERSON_ID"&gt;...&lt;/id&gt;
+
+    &lt;join table="ADDRESS"&gt;
+        &lt;key column="ADDRESS_ID"/&gt;
+        &lt;property name="address"/&gt;
+        &lt;property name="zip"/&gt;
+        &lt;property name="country"/&gt;
+    &lt;/join&gt;
+    ...</pre><p>
+                Cette fonctionnalit&eacute; est souvent seulement utile pour les mod&egrave;les de donn&eacute;es 
+                h&eacute;rit&eacute;s d'anciens syst&egrave;mes (legacy), nous recommandons d'utiliser moins de tables que de classes 
+                et un mod&egrave;le de domaine &agrave; granularit&eacute; fine. Cependant, c'est utile 
+                pour passer d'une strat&eacute;gie de mapping d'h&eacute;ritage &agrave; une autre dans une hi&eacute;rarchie simple ainsi qu'il est 
+                expliqu&eacute; plus tard.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-key"></a>5.1.19.&nbsp;key</h3></div></div><div></div></div><p>
+                Nous avons rencontr&eacute; l'&eacute;l&eacute;ment <tt class="literal">&lt;key&gt;</tt> &agrave; plusieurs reprises maintenant. 
+                Il appara&icirc;t partout que l'&eacute;l&eacute;ment de mapping parent d&eacute;finit une jointure sur une nouvele table, et 
+                d&eacute;finit la clef &eacute;trang&egrave;re dans la table jointe, ce qui r&eacute;f&eacute;rence la clef primaire de la table d'origine.
+            </p><div class="programlistingco"><pre class="programlisting">&lt;key
+        column="columnname"                      <span class="co">(1)</span>
+        on-delete="noaction|cascade"             <span class="co">(2)</span>
+        property-ref="propertyName"              <span class="co">(3)</span>
+        not-null="true|false"                    <span class="co">(4)</span>
+        update="true|false"                      <span class="co">(5)</span>
+        unique="true|false"                      <span class="co">(6)</span>
+/&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">column</tt> (optionnel) : Le nom de la colonne de la clef &eacute;trang&egrave;re
+                            Cela peut aussi &ecirc;tre sp&eacute;cifi&eacute; par l'&eacute;l&eacute;ment(s) int&eacute;gr&eacute;(s) <tt class="literal">&lt;column&gt;</tt>.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">on-delete</tt> (optionnel, par d&eacute;faut &agrave; <tt class="literal">noaction</tt>) :
+                            Indique si la contrainte de clef &eacute;trang&egrave;re poss&egrave;de la possibilit&eacute; au niveau base de donn&eacute;es 
+                            de suppression en cascade.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">property-ref</tt> (optionnel) : Indique que la clef &eacute;trang&egrave;re fait 
+                            r&eacute;f&eacute;rence &agrave; des colonnes qui ne sont pas la clef primaire de la table d'origine 
+                            (Pour les donn&eacute;es de syst&egrave;mes legacy).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">not-null</tt> (optionnel) : Indique que les colonnes des clefs &eacute;trang&egrave;res ne 
+                            peuvent pas &ecirc;tre nulles (c'est implicite si la clef &eacute;trang&egrave;re fait partie de la clef primaire).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">update</tt> (optionnel) : Indique que la clef &eacute;trang&egrave;re ne devrait jamais &ecirc;tre mise &agrave; jour 
+                            (implicite si celle-ci fait partie de la clef primaire).
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">unique</tt> (optionnel) : Indique que la clef &eacute;trang&egrave;re doit poss&eacute;der une contrainte 
+                            d'unicit&eacute; (implicite si la clef &eacute;trang&egrave;re est aussi la clef primaire).
+                        </p></td></tr></table></div></div><p>
+                Nous recommandons pour les syst&egrave;mes o&ugrave; les suppressions doivent &ecirc;tre performantes de d&eacute;finir toutes 
+                les clefs <tt class="literal">on-delete="cascade"</tt>, ainsi Hibernate utilisera une contrainte 
+                <tt class="literal">ON CASCADE DELETE</tt> au niveau base de donn&eacute;es, plut&ocirc;t que de nombreux
+                <tt class="literal">DELETE</tt> individuels. Attention, cette fonctionnalit&eacute; court-circuite la strat&eacute;gie 
+                habituelle de verrou optimiste pour les donn&eacute;es versionn&eacute;es.
+            </p><p>
+                Les attributs <tt class="literal">not-null</tt> et <tt class="literal">update</tt> sont utiles pour 
+                mapper une association one-to-many unidirectionnelle. Si vous mappez un one-to-many unidirectionnel 
+                vers une clef &eacute;trang&egrave;re non nulle, vous <span class="emphasis"><em>devez</em></span> d&eacute;clarer la colonne de la clef 
+                en utilisant <tt class="literal">&lt;key not-null="true"&gt;</tt>.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-column"></a>5.1.20.&nbsp;&eacute;l&eacute;ments column et formula</h3></div></div><div></div></div><p>
+               Tout &eacute;l&eacute;ment de mapping qui accepte un attribut <tt class="literal">column</tt> acceptera alternativement 
+               un sous-&eacute;l&eacute;ment <tt class="literal">&lt;column&gt;</tt>. De fa&ccedil;on identique, <tt class="literal">&lt;formula&gt;</tt> 
+               est une alternative &agrave; l'attribut <tt class="literal">formula</tt>.
+           </p><pre class="programlisting">&lt;column
+        name="column_name"
+        length="N"
+        precision="N"
+        scale="N"
+        not-null="true|false"
+        unique="true|false"
+        unique-key="multicolumn_unique_key_name"
+        index="index_name"
+        sql-type="sql_type_name"
+        check="SQL expression"/&gt;</pre><pre class="programlisting">&lt;formula&gt;SQL expression&lt;/formula&gt;</pre><p>
+                Les attributs <tt class="literal">column</tt> et <tt class="literal">formula</tt> peuvent m&ecirc;me &ecirc;tre combin&eacute;s 
+                au sein d'une m&ecirc;me propri&eacute;t&eacute; ou mapping d'association pour exprimer, par exemple, des conditions 
+                de jointure exotiques.
+            </p><pre class="programlisting">&lt;many-to-one name="homeAddress" class="Address"
+        insert="false" update="false"&gt;
+    &lt;column name="person_id" not-null="true" length="10"/&gt;
+    &lt;formula&gt;'MAILING'&lt;/formula&gt;
+&lt;/many-to-one&gt;</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-declaration-import"></a>5.1.21.&nbsp;import</h3></div></div><div></div></div><p>
+                Supposez que votre application poss&egrave;de deux classes persistantes du m&ecirc;me nom, et vous ne voulez pas pr&eacute;ciser 
+                le nom Java complet (packages inclus) dans les queries Hibernate. Les classes peuvent alors &ecirc;tre "import&eacute;es" 
+                explicitement plut&ocirc;t que de compter sur <tt class="literal">auto-import="true"</tt>.Vous pouvez m&ecirc;me importer 
+                des classes et interfaces qui ne sont pas mapp&eacute;es explicitement.
+            </p><pre class="programlisting">&lt;import class="java.lang.Object" rename="Universe"/&gt;</pre><div class="programlistingco"><pre class="programlisting">&lt;import
+        class="ClassName"              <span class="co">(1)</span>
+        rename="ShortName"             <span class="co">(2)</span>
+/&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">class</tt> : Nom Java complet de la classe.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">rename</tt> (optionnel - par d&eacute;faut vaut le nom de la classe Java (sans package)) :
+                            Nom pouvant &ecirc;tre utilis&eacute; dans le langage de requ&ecirc;te.
+                        </p></td></tr></table></div></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-types-anymapping"></a>5.1.22.&nbsp;any</h3></div></div><div></div></div><p>
+                Il existe encore un type de mapping de propri&eacute;t&eacute;. L'&eacute;l&eacute;ment de mapping <tt class="literal">&lt;any&gt;</tt> 
+                d&eacute;finit une association polymorphique vers des classes de tables multiples. Ce type de mapping requiert 
+                toujours plus d'une colonne. La premi&egrave;re colonne contient le type de l'entit&eacute; associ&eacute;e. Les colonnes 
+                restantes contiennent l'identifiant. il est impossible de sp&eacute;cifier une contrainte de clef &eacute;trang&egrave;re 
+                pour ce type d'association, donc ce n'est certainement pas consid&eacute;r&eacute; comme le moyen habituel de mapper 
+                des associations (polymorphiques). Vous devriez utiliser cela uniquement dans des cas particuliers 
+                (par exemple des logs d'audit, des donn&eacute;es de session utilisateur, etc...).
+            </p><p>
+                 L'attribut <tt class="literal">meta-type</tt> permet &agrave; l'application de sp&eacute;cifier un type personnalis&eacute; qui mappe 
+                 des valeurs de colonnes de le base de donn&eacute;es sur des classes persistantes qui ont un attribut identifiant 
+                 du type sp&eacute;cifi&eacute; par <tt class="literal">id-type</tt>. Vous devez sp&eacute;cifier le mapping &agrave; partir de valeurs du 
+                 m&eacute;ta-type sur les noms des classes.
+            </p><pre class="programlisting">&lt;any name="being" id-type="long" meta-type="string"&gt;
+    &lt;meta-value value="TBL_ANIMAL" class="Animal"/&gt;
+    &lt;meta-value value="TBL_HUMAN" class="Human"/&gt;
+    &lt;meta-value value="TBL_ALIEN" class="Alien"/&gt;
+    &lt;column name="table_name"/&gt;
+    &lt;column name="id"/&gt;
+&lt;/any&gt;</pre><div class="programlistingco"><pre class="programlisting">&lt;any
+        name="propertyName"                      <span class="co">(1)</span>
+        id-type="idtypename"                     <span class="co">(2)</span>
+        meta-type="metatypename"                 <span class="co">(3)</span>
+        cascade="cascade_style"                  <span class="co">(4)</span>
+        access="field|property|ClassName"        <span class="co">(5)</span>
+        optimistic-lock="true|false"             <span class="co">(6)</span>
+&gt;
+        &lt;meta-value ... /&gt;
+        &lt;meta-value ... /&gt;
+        .....
+        &lt;column .... /&gt;
+        &lt;column .... /&gt;
+        .....
+&lt;/any&gt;</pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left">(1)</td><td valign="top" align="left"><p>
+                            <tt class="literal">name</tt> : le nom de la propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(2)</td><td valign="top" align="left"><p>
+                            <tt class="literal">id-type</tt> : le type identifiant.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(3)</td><td valign="top" align="left"><p>
+                            <tt class="literal">meta-type</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">string</tt>) : 
+                            Tout type permis pour un mapping par discriminateur.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(4)</td><td valign="top" align="left"><p>
+                            <tt class="literal">cascade</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">none</tt>) : 
+                            le style de cascade.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(5)</td><td valign="top" align="left"><p>
+                            <tt class="literal">access</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">property</tt>) : La strat&eacute;gie 
+                            &agrave; utiliser par Hibernate pour acc&eacute;der &agrave; cette propri&eacute;t&eacute;.
+                        </p></td></tr><tr><td width="5%" valign="top" align="left">(6)</td><td valign="top" align="left"><p>
+                            <tt class="literal">optimistic-lock</tt> (optionnel - par d&eacute;faut &agrave; <tt class="literal">true</tt>) : 
+                            Indique que les mises &agrave; jour sur cette propri&eacute;t&eacute; n&eacute;cessitent ou non l'acquisition d'un 
+                            verrou optimiste. En d'autres termes, d&eacute;finit si un incr&eacute;ment de version doit avoir lieu 
+                            quand cette propri&eacute;t&eacute; est marqu&eacute;e dirty.
+                        </p></td></tr></table></div></div></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mapping-types"></a>5.2.&nbsp;Hibernate Types</h2></div></div><div></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-types-entitiesvalues"></a>5.2.1.&nbsp;Entit&eacute;s et valeurs</h3></div></div><div></div></div><p>
+                Pour comprendre le comportement des diff&eacute;rents objets Java par rapport au service 
+                de persistance, nous avons besoin de les classer en deux groupes :
+            </p><p>
+                Une <span class="emphasis"><em>entit&eacute;</em></span> existe ind&eacute;pendamment de tout autre objet poss&eacute;dant 
+                une r&eacute;f&eacute;rence vers l'entit&eacute;. Comparez cela avec le mod&egrave;le Java habituel o&ugrave; un objet 
+                est supprim&eacute; par le garbage collector d&egrave;s qu'il n'est plus r&eacute;f&eacute;renc&eacute;. Les entit&eacute;s 
+                doivent &ecirc;tre explicitement enregistr&eacute;es et supprim&eacute;es (sauf dans les cas o&ugrave; 
+                sauvegardes et suppressions sont <span class="emphasis"><em>cascad&eacute;es</em></span> d'une entit&eacute; m&egrave;re 
+                vers ses enfants). C'est diff&eacute;rent du mod&egrave;le ODMG de persistance par 
+                atteignabilit&eacute; - et correspond mieux &agrave; la fa&ccedil;on dont les objets sont 
+                habituellement utilis&eacute;s dans des grands syst&egrave;mes. Les entit&eacute;s permettent les r&eacute;f&eacute;rences 
+                circulaires et partag&eacute;es. Elles peuvent aussi &ecirc;tre versionn&eacute;es.
+            </p><p>
+                L'&eacute;tat persistant d'une entit&eacute; consiste en des r&eacute;f&eacute;rences vers d'autres entit&eacute;s et 
+                instances de types <span class="emphasis"><em>valeurs</em></span>. Ces valeurs sont des types primitifs, 
+                des collections (et non le contenu d'une collection), des composants de certains objets 
+                immuables. Contrairement aux entit&eacute;s, les valeurs (et en particulier les collections et 
+                composants) <span class="emphasis"><em>sont</em></span> persist&eacute;s par atteignabiliit&eacute;. Comme les 
+                valeurs (et types primitifs) sont persist&eacute;s et supprim&eacute;s avec l'entit&eacute; qui les contient, 
+                ils ne peuvent pas poss&eacute;der leurs propres versions. Les valeurs n'ont pas d'identit&eacute; 
+                ind&eacute;pendantes, ainsi elles ne peuvent pas &ecirc;tre partag&eacute;es par deux entit&eacute;s ou collections.
+            </p><p>
+                Jusqu'&agrave; pr&eacute;sent nous avons utilis&eacute; le terme "classe persistante" pour parler d'entit&eacute;s. 
+                Nous allons continuer &agrave; faire ainsi. Cependant, au sens strict, toutes 
+                les classes d&eacute;finies par un utilisateur poss&eacute;dant un &eacute;tat persistant ne sont pas des 
+                entit&eacute;s. Un <span class="emphasis"><em>composant</em></span> est une classe d&eacute;finie par un utilisateur 
+                avec les caract&eacute;ristiques d'une valeur. Une propri&eacute;t&eacute; Java de type <tt class="literal">java.lang.String</tt>
+                a aussi les caract&eacute;ristiques d'une valeur. 
+                
+                
+                
+                Given this definition, we can say that all types (classes) provided
+                by the JDK have value type semantics in Java, while user-defined types may
+                be mapped with entity or value type semantics. This decision is up to the
+                application developer. A good hint for an entity class in a domain model are
+                shared references to a single instance of that class, while composition or
+                aggregation usually translates to a value type.
+            </p><p>
+                Nous nous pencherons sur ces deux concepts tout au long de la documentation.
+            </p><p>
+                Le d&eacute;fi est de mapper les type Javas (et la d&eacute;finition des d&eacute;veloppeurs des 
+                entit&eacute;s et valeurs types) sur les types du SQL ou des bases de donn&eacute;es. Le pont 
+                entre les deux syst&egrave;mes est propos&eacute; par Hibernate : pour les entit&eacute;s nous utilisons 
+                <tt class="literal">&lt;class&gt;</tt>, <tt class="literal">&lt;subclass&gt;</tt> et ainsi de suite.
+                Pour les types valeurs nous utilisons <tt class="literal">&lt;property&gt;</tt>,
+                <tt class="literal">&lt;component&gt;</tt>, etc., habituellement avec un attribut <tt class="literal">type</tt>. 
+                La valeur de cet attribut est le nom d'un <span class="emphasis"><em>type de mapping</em></span> Hibernate. 
+                Hibernate propose de base de nombreux mappings (pour les types de valeurs standards du JDK). 
+                Vous pouvez &eacute;crire vos propres types de mappings et impl&eacute;menter aussi vos propres strat&eacute;gies 
+                de conversion, nous le verrons plus tard.
+            </p><p>
+                Tous les types propos&eacute;s de base par Hibernate &agrave; part les collections autorisent la valeur null.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-types-basictypes"></a>5.2.2.&nbsp;Basic value types</h3></div></div><div></div></div><p>
+                Les <span class="emphasis"><em>types basiques de mapping</em></span> propos&eacute;s de base peuvent grossi&egrave;rement &ecirc;tre 
+                rang&eacute;s dans les cat&eacute;gories suivantes :
+                </p><div class="variablelist"><dl><dt><span class="term">
+                            <tt class="literal">integer, long, short, float, double, character, byte,
+                            boolean, yes_no, true_false</tt>
+                        </span></dt><dd><p>
+                                Les mappings de type des primitives Java ou leurs classes wrappers (ex: Integer 
+                                pour int) vers les types SQL (propri&eacute;taires) appropri&eacute;s. <tt class="literal">boolean, 
+                                yes_no</tt>et <tt class="literal">true_false</tt> sont tous des alternatives 
+                                pour les types Java <tt class="literal">boolean</tt> ou <tt class="literal">java.lang.Boolean</tt>.
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">string</tt>
+                        </span></dt><dd><p>
+                                Mapping de type de <tt class="literal">java.lang.String</tt> vers
+                                <tt class="literal">VARCHAR</tt> (ou le <tt class="literal">VARCHAR2</tt> Oracle).
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">date, time, timestamp</tt>
+                        </span></dt><dd><p>
+                                Mappings de type pour <tt class="literal">java.util.Date</tt> et ses sous-classes  
+                                vers les types SQL <tt class="literal">DATE</tt>, <tt class="literal">TIME</tt> et
+                                <tt class="literal">TIMESTAMP</tt> (ou &eacute;quivalent).
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">calendar, calendar_date</tt>
+                        </span></dt><dd><p>
+                                Mappings de type pour <tt class="literal">java.util.Calendar</tt> vers les types SQL 
+                                <tt class="literal">TIMESTAMP</tt> et <tt class="literal">DATE</tt>
+                                (ou &eacute;quivalent).
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">big_decimal, big_integer</tt>
+                        </span></dt><dd><p>
+                                Mappings de type pour <tt class="literal">java.math.BigDecimal</tt> et
+                                <tt class="literal">java.math.BigInteger</tt> vers <tt class="literal">NUMERIC</tt> 
+                                (ou le <tt class="literal">NUMBER</tt> Oracle).
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">locale, timezone, currency</tt>
+                        </span></dt><dd><p>
+                                Mappings de type pour <tt class="literal">java.util.Locale</tt>,
+                                <tt class="literal">java.util.TimeZone</tt> et 
+                                <tt class="literal">java.util.Currency</tt> 
+                                vers <tt class="literal">VARCHAR</tt> (ou le <tt class="literal">VARCHAR2</tt> Oracle).
+                                Les instances de <tt class="literal">Locale</tt> et <tt class="literal">Currency</tt> sont 
+                                mapp&eacute;es sur leurs codes ISO. Les instances de <tt class="literal">TimeZone</tt> sont
+                                mapp&eacute;es sur leur <tt class="literal">ID</tt>.
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">class</tt>
+                        </span></dt><dd><p>
+                                Un type de mapping pour <tt class="literal">java.lang.Class</tt> vers
+                                <tt class="literal">VARCHAR</tt> (ou le <tt class="literal">VARCHAR2</tt> Oracle).
+                                Un objet <tt class="literal">Class</tt> est mapp&eacute; sur son nom Java complet.
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">binary</tt>
+                        </span></dt><dd><p>
+                                Mappe les tableaux de bytes vers le type binaire SQL appropri&eacute;.
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">text</tt>
+                        </span></dt><dd><p>
+                                Mappe les longues cha&icirc;nes de caract&egrave;res Java vers les types SQL 
+                                <tt class="literal">CLOB</tt> ou <tt class="literal">TEXT</tt>.
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">serializable</tt>
+                        </span></dt><dd><p>
+                                Mappe les types Java s&eacute;rialisables vers le type SQL binaire appropri&eacute;. Vous pouvez 
+                                aussi indiquer le type Hibernate <tt class="literal">serializable</tt> avec le nom 
+                                d'une classe Java s&eacute;rialisable ou une interface qui ne soit pas par d&eacute;faut un type de base.
+                            </p></dd><dt><span class="term">
+                            <tt class="literal">clob, blob</tt>
+                        </span></dt><dd><p>
+                                Mappings de type pour les classes JDBC <tt class="literal">java.sql.Clob</tt> and
+                                <tt class="literal">java.sql.Blob</tt>. Ces types peuvent ne pas convenir pour certaines 
+                                applications car un objet blob ou clob peut ne pas &ecirc;tre r&eacute;utilisable en dehors 
+                                d'une transaction (de plus l'impl&eacute;mentation par les pilotes est moyennement bonne).
+                           </p></dd><dt><span class="term">
+                            <tt class="literal">imm_date, imm_time, imm_timestamp, imm_calendar, imm_calendar_date,
+                            imm_serializable, imm_binary</tt>
+                        </span></dt><dd><p>
+                                Mappings de type pour ceux qui sont habituellement modifiable, pour lesquels
+                                Hibernate effectue certains optimisations convenant seulement aux types Java immuables,
+                                et l'application les traite comme immuable. 
+                                Par exemple, vous ne devriez pas appeler <tt class="literal">Date.setTime()</tt> sur une instance
+                                mapp&eacute;e sur un <tt class="literal">imm_timestamp</tt>. Pour changer la valeur
+                                de la propri&eacute;t&eacute;, et faire que cette modification soit persist&eacute;e, l'application
+                                doit assigner un nouvel (non identique) objet &agrave; la propri&eacute;t&eacute;.
+                            </p></dd></dl></div><p>
+            </p><p>
+                Les identifiants uniques des entit&eacute;s et collections peuvent &ecirc;tre de n'importe quel type de base except&eacute; 
+                <tt class="literal">binary</tt>, <tt class="literal">blob</tt> et <tt class="literal">clob</tt> (les identifiants 
+                composites sont aussi permis, voir plus bas).
+            </p><p>
+                Les types de base des valeurs ont des <tt class="literal">Type</tt> constants correspondants d&eacute;finis 
+                dans <tt class="literal">org.hibernate.Hibernate</tt>. Par exemple, <tt class="literal">Hibernate.STRING</tt>
+                repr&eacute;sent&eacute; le type <tt class="literal">string</tt>.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-types-custom"></a>5.2.3.&nbsp;Types de valeur d&eacute;finis par l'utilisateur</h3></div></div><div></div></div><p>
+                Il est assez facile pour les d&eacute;veloppeurs de cr&eacute;er leurs propres types de valeurs. Par exemple, 
+                vous pourriez vouloir persister des propri&eacute;t&eacute;s du type <tt class="literal">java.lang.BigInteger</tt>
+                dans des colonnnes <tt class="literal">VARCHAR</tt>. Hibernate ne procure pas par d&eacute;faut un type pour cela. 
+                Mais les types que vous pouvez cr&eacute;er ne se limitent pas &agrave; mapper des propri&eacute;t&eacute;s (ou &eacute;l&eacute;ment collection) 
+                &agrave; une simple colonne d'une table. Donc, par exemple, vous pourriez avoir une propri&eacute;t&eacute; Java 
+                <tt class="literal">getName()</tt>/<tt class="literal">setName()</tt> de type 
+                <tt class="literal">java.lang.String</tt> persist&eacute;e dans les colonnes  
+                <tt class="literal">FIRST_NAME</tt>, <tt class="literal">INITIAL</tt>, <tt class="literal">SURNAME</tt>.
+            </p><p>
+                Pour impl&eacute;menter votre propre type, vous pouvez soit impl&eacute;menter <tt class="literal">org.hibernate.UserType</tt> 
+                soit <tt class="literal">org.hibernate.CompositeUserType</tt> et d&eacute;clarer des propri&eacute;t&eacute;s utilisant des 
+                noms de classes complets du type. Regardez <tt class="literal">org.hibernate.test.DoubleStringType</tt> 
+                pour voir ce qu'il est possible de faire.
+            </p><pre class="programlisting">&lt;property name="twoStrings" type="org.hibernate.test.DoubleStringType"&gt;
+    &lt;column name="first_string"/&gt;
+    &lt;column name="second_string"/&gt;
+&lt;/property&gt;</pre><p>
+                Remarquez l'utilisation des tags <tt class="literal">&lt;column&gt;</tt> pour mapper une propri&eacute;t&eacute; sur des colonnes 
+                multiples.
+            </p><p>
+                Les interfaces <tt class="literal">CompositeUserType</tt>, <tt class="literal">EnhancedUserType</tt>,
+                <tt class="literal">UserCollectionType</tt>, et <tt class="literal">UserVersionType</tt> permettent des utilisations 
+                plus sp&eacute;cialis&eacute;es.
+            </p><p>
+                Vous pouvez m&ecirc;me donner des param&egrave;tres en indiquant <tt class="literal">UserType</tt> dans le fichier 
+                de mapping ; Pour cela, votre <tt class="literal">UserType</tt> doit impl&eacute;menter l'interface 
+                <tt class="literal">org.hibernate.usertype.ParameterizedType</tt>. Pour sp&eacute;cifier des param&egrave;tres dans 
+                votre type propre, vous pouvez utiliser l'&eacute;l&eacute;ment <tt class="literal">&lt;type&gt;</tt> dans vos fichiers de mapping.
+            </p><pre class="programlisting">&lt;property name="priority"&gt;
+    &lt;type name="com.mycompany.usertypes.DefaultValueIntegerType"&gt;
+        &lt;param name="default"&gt;0&lt;/param&gt;
+    &lt;/type&gt;
+&lt;/property&gt;</pre><p>
+                Le <tt class="literal">UserType</tt> permet maintenant de r&eacute;cup&eacute;rer la valeur pour le param&egrave;tre nomm&eacute; 
+                <tt class="literal">default</tt> &agrave; partir de l'objet <tt class="literal">Properties</tt> qui lui est pass&eacute;.
+            </p><p>
+                Si vous utilisez fr&eacute;quemment un <tt class="literal">UserType</tt>, cela peut &ecirc;tre utile de lui d&eacute;finir un 
+                nom plus court. Vous pouvez faire cela en utilisant l'&eacute;l&eacute;ment <tt class="literal">&lt;typedef&gt;</tt>. 
+                Les typedefs permettent d'assigner un nom &agrave; votre type propre et peuvent aussi contenir une liste de 
+                valeurs de param&egrave;tres par d&eacute;faut si ce type est param&eacute;tr&eacute;.
+            </p><pre class="programlisting">&lt;typedef class="com.mycompany.usertypes.DefaultValueIntegerType" name="default_zero"&gt;
+    &lt;param name="default"&gt;0&lt;/param&gt;
+&lt;/typedef&gt;</pre><pre class="programlisting">&lt;property name="priority" type="default_zero"/&gt;</pre><p>
+                Il est aussi possible de red&eacute;finir les param&egrave;tres par d&eacute;faut du typedef au cas par cas en 
+                utilisant des param&egrave;tres type sur le mapping de la propri&eacute;t&eacute;. 
+            </p><p>
+                Bien que le fait que Hibernate propose de base une riche vari&eacute;t&eacute; de types, et qu'il supporte les composants 
+                signifie que vous aurez tr&egrave;s rarement <span class="emphasis"><em>besoin</em></span> d'utiliser un nouveau type propre, 
+                il est n&eacute;anmoins de bonne pratique d'utiliser des types propres pour les classes (non entit&eacute;s) qui 
+                apparaissent fr&eacute;quemment dans votre application. Par exemple une classe <tt class="literal">MonetaryAmount</tt> 
+                est un bon candidat pour un <tt class="literal">CompositeUserType</tt> m&ecirc;me s'il pourrait facilement 
+                &ecirc;tre mapp&eacute; comme un composant. Une motivation pour cela est l'abstraction. Avec un type propre 
+                vos documents de mapping sont &agrave; l'abri des changements futurs dans votre fa&ccedil;on de repr&eacute;senter des 
+                valeurs mon&eacute;taires.
+            </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mapping-entityname"></a>5.3.&nbsp;Mapper une classe plus d'une fois</h2></div></div><div></div></div><p>
+            Il est possible de proposer plus d'un mapping par classe persistante. Dans ce cas, vous
+            devez sp&eacute;cifier un <span class="emphasis"><em>nom d'entit&eacute;</em></span> pour lever l'ambiguit&eacute; entre les instances
+            des entit&eacute;s mapp&eacute;es (par d&eacute;faut, le nom de l'entit&eacute; est celui de la classe). Hibernate
+            vous permet de sp&eacute;cifier le nom de l'entit&eacute; lorsque vous utilisez des objets persistants, lorsque
+            vous &eacute;crivez des requ&ecirc;tes ou quand vous mappez des associations vers les entit&eacute;s nomm&eacute;es.
+        </p><pre class="programlisting">&lt;class name="Contract" table="Contracts" 
+        entity-name="CurrentContract"&gt;
+    ...
+    &lt;set name="history" inverse="true" 
+            order-by="effectiveEndDate desc"&gt;
+        &lt;key column="currentContractId"/&gt;
+        &lt;one-to-many entity-name="HistoricalContract"/&gt;
+    &lt;/set&gt;
+&lt;/class&gt;
+
+&lt;class name="Contract" table="ContractHistory" 
+        entity-name="HistoricalContract"&gt;
+    ...
+    &lt;many-to-one name="currentContract" 
+            column="currentContractId" 
+            entity-name="CurrentContract"/&gt;
+&lt;/class&gt;</pre><p>
+            Remarquez comment les associations sont d&eacute;sormais sp&eacute;cifi&eacute;es en utilisant
+            <tt class="literal">entity-name</tt> au lieu de <tt class="literal">class</tt>.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mapping-quotedidentifiers"></a>5.4.&nbsp;SQL quoted identifiers</h2></div></div><div></div></div><p>
+            Vous pouvez forcer Hibernate &agrave; mettre un identifiant entre quotes dans le SQL g&eacute;n&eacute;r&eacute; en mettant le nom 
+            de la table ou de la colonne entre backticks dans le 
+            document de mapping. Hibernate utilisera les bons styles de quotes pour le <tt class="literal">Dialect</tt> SQL 
+            (habituellement des doubles quotes, mais des parenth&egrave;ses pour SQL server et des backticks pour MySQL).
+        </p><pre class="programlisting">&lt;class name="LineItem" table="`Line Item`"&gt;
+    &lt;id name="id" column="`Item Id`"/&gt;&lt;generator class="assigned"/&gt;&lt;/id&gt;
+    &lt;property name="itemNumber" column="`Item #`"/&gt;
+    ...
+&lt;/class&gt;</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mapping-alternatives"></a>5.5.&nbsp;alternatives Metadata</h2></div></div><div></div></div><p>
+            XML ne convient pas &agrave; tout le monde, il y a donc des moyens alternatifs pour d&eacute;finir des metatda 
+            de mappings O/R dans Hibernate.
+        </p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-xdoclet"></a>5.5.1.&nbsp;utilisation de XDoclet</h3></div></div><div></div></div><p>
+                De nombreux utilisateurs de Hibernate pr&eacute;f&egrave;rent embarquer les informations de mappings 
+                directement au sein du code source en utilisant les tags XDoclet <tt class="literal">@hibernate.tags</tt>. 
+                Nous ne couvrons pas cette approche dans ce document cependant, puisque c'est consid&eacute;r&eacute; comme faisant partie 
+                de XDoclet. Cependant, nous pr&eacute;sentons l'exemple suivant de la classe <tt class="literal">Cat</tt> avec 
+                des mappings XDoclet.
+        </p><pre class="programlisting">package eg;
+import java.util.Set;
+import java.util.Date;
+
+/**
+ * @hibernate.class
+ *  table="CATS"
+ */
+public class Cat {
+    private Long id; // identifier
+    private Date birthdate;
+    private Cat mother;
+    private Set kittens
+    private Color color;
+    private char sex;
+    private float weight;
+
+    /*
+     * @hibernate.id
+     *  generator-class="native"
+     *  column="CAT_ID"
+     */
+    public Long getId() {
+        return id;
+    }
+    private void setId(Long id) {
+        this.id=id;
+    }
+
+    /**
+     * @hibernate.many-to-one
+     *  column="PARENT_ID"
+     */
+    public Cat getMother() {
+        return mother;
+    }
+    void setMother(Cat mother) {
+        this.mother = mother;
+    }
+
+    /**
+     * @hibernate.property
+     *  column="BIRTH_DATE"
+     */
+    public Date getBirthdate() {
+        return birthdate;
+    }
+    void setBirthdate(Date date) {
+        birthdate = date;
+    }
+    /**
+     * @hibernate.property
+     *  column="WEIGHT"
+     */
+    public float getWeight() {
+        return weight;
+    }
+    void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    /**
+     * @hibernate.property
+     *  column="COLOR"
+     *  not-null="true"
+     */
+    public Color getColor() {
+        return color;
+    }
+    void setColor(Color color) {
+        this.color = color;
+    }
+    /**
+     * @hibernate.set
+     *  inverse="true"
+     *  order-by="BIRTH_DATE"
+     * @hibernate.collection-key
+     *  column="PARENT_ID"
+     * @hibernate.collection-one-to-many
+     */
+    public Set getKittens() {
+        return kittens;
+    }
+    void setKittens(Set kittens) {
+        this.kittens = kittens;
+    }
+    // addKitten not needed by Hibernate
+    public void addKitten(Cat kitten) {
+        kittens.add(kitten);
+    }
+
+    /**
+     * @hibernate.property
+     *  column="SEX"
+     *  not-null="true"
+     *  update="false"
+     */
+    public char getSex() {
+        return sex;
+    }
+    void setSex(char sex) {
+        this.sex=sex;
+    }
+}</pre><p>
+            Voyez le site web de Hibernate pour plus d'exemples sur XDoclet et Hibernate.
+        </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="mapping-annotations"></a>5.5.2.&nbsp;Utilisation des annotations JDK 5.0</h3></div></div><div></div></div><p>
+                Le JDK 5.0 introduit des annotations proches de celles de XDoclet au niveau java, qui sont 
+                type-safe et v&eacute;rifi&eacute;es &agrave; la compilation. Ce m&eacute;canisme est plus puissant que XDoclet et mieux 
+                support&eacute; par les outils et IDE. IntelliJ IDEA, par exemple, supporte l'auto-compl&eacute;tion et le 
+                surlignement syntaxique des annotations JDK 5.0. La nouvelle r&eacute;vision des sp&eacute;cifications des EJB 
+                (JSR-220) utilise les annotations JDK 5.0 comme m&eacute;canisme primaire pour les meta-donn&eacute;es des beans entit&eacute;s. 
+                Hibernate3 impl&eacute;mente l'<tt class="literal">EntityManager</tt> de la JSR-220 (API de persistance), 
+                le support du mapping de meta-donn&eacute;es est disponible via le package <span class="emphasis"><em>Hibernate Annotations</em></span>, 
+                en tant que module s&eacute;par&eacute; &agrave; t&eacute;l&eacute;charger. EJB3 (JSR-220) et les m&eacute;tadata Hibernate3 sont support&eacute;s.
+             </p><p>
+                Ceci est un exemple d'une classe POJO annot&eacute;e comme un EJB entit&eacute; :
+            </p><pre class="programlisting">@Entity(access = AccessType.FIELD)
+public class Customer implements Serializable {
+
+    @Id;
+    Long id;
+
+    String firstName;
+    String lastName;
+    Date birthday;
+
+    @Transient
+    Integer age;
+
+    @Embedded
+    private Address homeAddress;
+
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="CUSTOMER_ID")
+    Set&lt;Order&gt; orders;
+
+    // Getter/setter and business methods
+}</pre><p>
+                Notez que le support des annotations JDK 5.0 (et de la JSR-220) est encore en cours et n'est pas termin&eacute;.
+                R&eacute;f&eacute;rez vous au module Hibernate Annotation pour plus de d&eacute;tails.
+            </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mapping-generated"></a>5.6.&nbsp;Propri&eacute;t&eacute;s g&eacute;n&eacute;r&eacute;es</h2></div></div><div></div></div><p>
+            Les propri&eacute;t&eacute;s g&eacute;n&eacute;r&eacute;es sont des propri&eacute;t&eacute;s dont les valeurs sont g&eacute;n&eacute;r&eacute;es par
+            la base de donn&eacute;es. Typiquement, les applications Hibernate avaient besoin d'invoquer
+            <tt class="literal">refresh</tt> sur les instances qui contenaient des propri&eacute;t&eacute;s pour lesquelles
+            la base de donn&eacute;es g&eacute;n&eacute;rait des valeurs. Marquer les propri&eacute;t&eacute;s comme g&eacute;n&eacute;r&eacute;es permet &agrave;
+            l'application de d&eacute;l&eacute;guer cette responsabilit&eacute; &agrave; Hibernate. Principalement, &agrave; chaque fois
+            qu'Hibernate r&eacute;alise une insertion ou une mise &agrave; jour en base de donn&eacute;es pour une entit&eacute;
+            marqu&eacute;e comme telle, cela provoque imm&eacute;diatement un select pour r&eacute;cup&eacute;rer les valeurs g&eacute;n&eacute;r&eacute;es.
+        </p><p>
+            Les propri&eacute;t&eacute;s marqu&eacute;es comme g&eacute;n&eacute;r&eacute;es doivent de plus ne pas &ecirc;tre ins&eacute;rables et modifiables 
+            Seuls <a href="mapping.html#mapping-declaration-version" title="5.1.7.&nbsp;version (optionnel)">Section&nbsp;5.1.7, &laquo;&nbsp;version (optionnel)&nbsp;&raquo;</a>,
+            <a href="mapping.html#mapping-declaration-timestamp" title="5.1.8.&nbsp;timestamp (optionnel)">Section&nbsp;5.1.8, &laquo;&nbsp;timestamp (optionnel)&nbsp;&raquo;</a>, et
+            <a href="mapping.html#mapping-declaration-property" title="5.1.9.&nbsp;property">Section&nbsp;5.1.9, &laquo;&nbsp;property&nbsp;&raquo;</a> peuvent &ecirc;tre marqu&eacute;s comme
+            g&eacute;n&eacute;r&eacute;es.
+        </p><p>
+            <tt class="literal">never</tt> (par d&eacute;faut) - indique la valeur de la propri&eacute;t&eacute; n'est pas g&eacute;n&eacute;r&eacute;e
+            dans la base de donn&eacute;es.
+        </p><p>
+            <tt class="literal">insert</tt> - indique que la valeur de la propri&eacute;t&eacute; donn&eacute;e est
+            g&eacute;n&eacute;r&eacute;e &agrave; l'insertion mais pas lors des futures mises &agrave; jour de l'enregistrement.
+            Les colonnes de type "date de cr&eacute;ation" sont le cas d'utilisation typique de cette option.
+            Notez que m&ecirc;me les propri&eacute;t&eacute;s <a href="mapping.html#mapping-declaration-version" title="5.1.7.&nbsp;version (optionnel)">Section&nbsp;5.1.7, &laquo;&nbsp;version (optionnel)&nbsp;&raquo;</a> et
+            <a href="mapping.html#mapping-declaration-timestamp" title="5.1.8.&nbsp;timestamp (optionnel)">Section&nbsp;5.1.8, &laquo;&nbsp;timestamp (optionnel)&nbsp;&raquo;</a> peuvent &ecirc;tre
+            d&eacute;clar&eacute;es comme g&eacute;n&eacute;r&eacute;es, cette option n'est pas disponible &agrave; cet endroit...
+        </p><p>
+            <tt class="literal">always</tt> - indique que la valeur de la propri&eacute;t&eacute; est g&eacute;n&eacute;r&eacute;e &agrave; l'insert 
+            comme aux updates.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mapping-database-object"></a>5.7.&nbsp;Objets auxiliaires de la base de donn&eacute;es</h2></div></div><div></div></div><p>
+            Permettent les ordres CREATE et DROP d'objets arbitraire de la base de donn&eacute;&eacute;es, en conjonction avec
+            les outils Hibernate d'&eacute;volutions de sch&eacute;ma, pour permettre de d&eacute;finir compl&egrave;tement
+            un sch&eacute;ma utilisateur au sein des fichiers de mapping Hibernate. Bien que con&ccedil;u sp&eacute;cifiquement
+            pour cr&eacute;er et supprimer des objets tels que des triggers et des proc&eacute;dures stock&eacute;es,
+            ou toute commande pouvant &ecirc;tre ex&eacute;cut&eacute;e via une m&eacute;thode de <tt class="literal">java.sql.Statement.execute()</tt>
+            (ALTERs, INSERTS, etc). Il y a principalement deux modes pour d&eacute;finir les objets auxiliaires de base de donn&eacute;es...
+        </p><p>
+            Le premier mode est de lister explicitement les commandes CREATE et DROP dans le fichier
+            de mapping:
+        </p><pre class="programlisting">&lt;hibernate-mapping&gt;
+    ...
+    &lt;database-object&gt;
+        &lt;create&gt;CREATE TRIGGER my_trigger ...&lt;/create&gt;
+        &lt;drop&gt;DROP TRIGGER my_trigger&lt;/drop&gt;
+    &lt;/database-object&gt;
+&lt;/hibernate-mapping&gt;</pre><p>
+            Le second mode est de fournir une classe particuli&egrave;re qui connait comment construire
+            les commandes CREATE et DROP. Cette classe particuli&egrave;re doit impl&eacute;menter l'interface
+            <tt class="literal">org.hibernate.mapping.AuxiliaryDatabaseObject</tt>.
+        </p><pre class="programlisting">&lt;hibernate-mapping&gt;
+    ...
+    &lt;database-object&gt;
+        &lt;definition class="MyTriggerDefinition"/&gt;
+    &lt;/database-object&gt;
+&lt;/hibernate-mapping&gt;</pre><p>
+            Additionnellement, ces objets de base de donn&eacute;es peuvent &ecirc;tre optionnellement trait&eacute;s
+            selon l'utilisation de dialectes particuliers..
+        </p><pre class="programlisting">&lt;hibernate-mapping&gt;
+    ...
+    &lt;database-object&gt;
+        &lt;definition class="MyTriggerDefinition"/&gt;
+        &lt;dialect-scope name="org.hibernate.dialect.Oracle9Dialect"/&gt;
+        &lt;dialect-scope name="org.hibernate.dialect.OracleDialect"/&gt;
+    &lt;/database-object&gt;
+&lt;/hibernate-mapping&gt;</pre></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="persistent-classes.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="collections.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;4.&nbsp;Classes persistantes&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;6.&nbsp;Mapping des collections</td></tr></table></div></body></html>

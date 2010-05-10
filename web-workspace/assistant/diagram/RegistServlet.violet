@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.4.2_04" class="java.beans.XMLDecoder"> 
+ <object class="com.horstmann.violet.SequenceDiagramGraph"> 
+  <void method="addNode"> 
+   <object id="ImplicitParameterNode0" class="com.horstmann.violet.ImplicitParameterNode"> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>registerpage.jsp</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>0.0</double> 
+    <double>0.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="ImplicitParameterNode1" class="com.horstmann.violet.ImplicitParameterNode"> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>RegistServlet</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>140.0</double> 
+    <double>0.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode0" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode1" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode0"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode0"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>42.0</double> 
+    <double>73.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="ImplicitParameterNode2" class="com.horstmann.violet.ImplicitParameterNode"> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>LoginServlet</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>290.0</double> 
+    <double>0.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="ImplicitParameterNode3" class="com.horstmann.violet.ImplicitParameterNode"> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>DataBase</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>490.0</double> 
+    <double>0.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.NoteNode"> 
+    <void property="color"> 
+     <object class="java.awt.Color"> 
+      <int>255</int> 
+      <int>200</int> 
+      <int>0</int> 
+      <int>255</int> 
+     </object> 
+    </void> 
+    <void property="text"> 
+     <void property="text"> 
+      <string>username
+password
+..................</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>70.0</double> 
+    <double>190.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode1"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>50.0</double> 
+    <double>93.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode2" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode3" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode1"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode0"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>42.0</double> 
+    <double>158.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode3"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>172.0</double> 
+    <double>178.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode4" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode5" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode3"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode1"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>172.0</double> 
+    <double>223.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode6" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode7" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode1"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode3"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>522.0</double> 
+    <double>293.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode5"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>522.0</double> 
+    <double>243.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode8" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode9" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode0"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode1"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>172.0</double> 
+    <double>359.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode7"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>172.0</double> 
+    <double>313.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode9"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>42.0</double> 
+    <double>379.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode10" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode11" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode3"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode1"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>172.0</double> 
+    <double>444.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode11"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>522.0</double> 
+    <double>464.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="CallNode12" class="com.horstmann.violet.CallNode"> 
+    <void method="addChild"> 
+     <object id="CallNode13" class="com.horstmann.violet.CallNode"> 
+      <void property="implicitParameter"> 
+       <object idref="ImplicitParameterNode2"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="implicitParameter"> 
+     <object idref="ImplicitParameterNode1"/> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>172.0</double> 
+    <double>529.0</double> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object idref="CallNode13"/> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <double>322.0</double> 
+    <double>549.0</double> 
+   </object> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>检验信息完整性</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode0"/> 
+   <object idref="CallNode1"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>注册用户</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode2"/> 
+   <object idref="CallNode3"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>查询是否已注册</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode4"/> 
+   <object idref="CallNode5"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>返回查询结果</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode6"/> 
+   <object idref="CallNode7"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>已注册重填(foward)</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode8"/> 
+   <object idref="CallNode9"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>未注册，存储信息至数据库</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode10"/> 
+   <object idref="CallNode11"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.CallEdge"> 
+    <void property="middleLabel"> 
+     <string>foward</string> 
+    </void> 
+   </object> 
+   <object idref="CallNode12"/> 
+   <object idref="CallNode13"/> 
+  </void> 
+ </object> 
+</java> 

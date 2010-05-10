@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.hibernate.test.component">
+
+	<class name="A" table="aa">
+		<id name="id"/>
+		<dynamic-component name="dynComp">
+			<property name="a" type="string"/>
+		</dynamic-component>
+	</class>
+
+	<joined-subclass name="B" extends="A" table="bb">
+		<key column="A"/>
+		<dynamic-component name="dynComp">
+			<property name="b" type="string"/>
+		</dynamic-component>
+	</joined-subclass>
+
+	<joined-subclass name="C" extends="B" table="cc">
+		<key column="B"/>
+		<dynamic-component name="dynComp">
+			<property name="c" type="string"/>
+		</dynamic-component>
+	</joined-subclass>
+	
+	
+</hibernate-mapping>

@@ -1,0 +1,585 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;14.&nbsp;HQL: Langage de requ&ecirc;tage d'Hibernate</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="batch.html" title="Chapitre&nbsp;13.&nbsp;Traitement par paquet"><link rel="next" href="querycriteria.html" title="Chapitre&nbsp;15.&nbsp;Requ&ecirc;tes par crit&egrave;res"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;14.&nbsp;HQL: Langage de requ&ecirc;tage d'Hibernate</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="batch.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="querycriteria.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="queryhql"></a>Chapitre&nbsp;14.&nbsp;HQL: Langage de requ&ecirc;tage d'Hibernate</h2></div></div><div></div></div><p>
+        Hibernate fourni un langage d'interrogation extr&ecirc;mement puissant qui
+        ressemble (et c'est voulu) au SQL. Mais ne soyez pas distraits par la syntaxe ;
+        HQL est totalement orient&eacute; objet, comprenant des notions d'h&eacute;ritage, de
+        polymorphisme et d'association.
+    </p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-casesensitivity"></a>14.1.&nbsp;Sensibilit&eacute; &agrave; la casse</h2></div></div><div></div></div><p>
+            Les requ&ecirc;tes sont insensibles &agrave; la casse, &agrave; l'exception des noms des classes Java
+            et des propri&eacute;t&eacute;s.
+            Ainsi, <tt class="literal">SeLeCT</tt> est identique &agrave;
+            <tt class="literal">sELEct</tt> et &agrave;
+            <tt class="literal">SELECT</tt> mais
+            <tt class="literal">net.sf.hibernate.eg.FOO</tt> n'est pas identique
+            <tt class="literal">net.sf.hibernate.eg.Foo</tt> et
+            <tt class="literal">foo.barSet</tt> n'est pas identique &agrave;
+            <tt class="literal">foo.BARSET</tt>.
+        </p><p>
+            Ce guide utilise les mots cl&eacute;s HQL en minuscule. Certains utilisateurs trouvent les
+            requ&ecirc;tes &eacute;crites avec les mots cl&eacute;s en majuscule plus lisibles, mais nous trouvons
+            cette convention p&eacute;nible lorsqu'elle est lue dans du code Java.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-from"></a>14.2.&nbsp;La clause from</h2></div></div><div></div></div><p>
+            La requ&ecirc;te Hibernate la plus simple est de la forme :
+        </p><pre class="programlisting">from eg.Cat</pre><p>
+            qui retourne simplement toutes les instances de la classe <tt class="literal">eg.Cat</tt>. 
+            Nous n'avons pas besoin d'habitude de qualifier le nom de la classe, 
+            puisque <tt class="literal">auto-import</tt> est la valeur par d&eacute;faut. Donc nous &eacute;crivons presque toujours :
+        </p><pre class="programlisting">from Cat</pre><p>
+            La plupart du temps, vous devrez assigner un <span class="emphasis"><em>alias</em></span> puisque vous
+            voudrez faire r&eacute;f&eacute;rence &agrave; <tt class="literal">Cat</tt> dans d'autres parties de la requ&ecirc;te.
+        </p><pre class="programlisting">from Cat as cat</pre><p>
+            Cette requ&ecirc;te assigne l'alias <tt class="literal">cat</tt> &agrave; l'instance <tt class="literal">Cat</tt>,
+            nous pouvons donc utiliser cet alias ailleurs dans la requ&ecirc;te. Le mot cl&eacute; <tt class="literal">as</tt>
+            est optionnel ; nous aurions pu &eacute;crire :
+        </p><pre class="programlisting">from Cat cat</pre><p>
+            Plusieurs classes peuvent appara&icirc;tre, ce qui conduira &agrave; un produit
+            cart&eacute;sien (encore appel&eacute; jointures crois&eacute;es).
+        </p><pre class="programlisting">from Formula, Parameter</pre><pre class="programlisting">from Formula as form, Parameter as param</pre><p>
+            C'est une bonne pratique que de nommer les alias dans les requ&ecirc;tes en utilisant l'initiale
+            en miniscule, ce qui a le m&eacute;rite d'&ecirc;tre en phase avec les standards de
+            nommage Java pour les variables locales (<tt class="literal">domesticCat</tt>).
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-joins"></a>14.3.&nbsp;Associations et jointures</h2></div></div><div></div></div><p>
+            On peut aussi assigner des alias &agrave; des entit&eacute;s associ&eacute;es, ou m&ecirc;me aux &eacute;l&eacute;ments d'une collection
+            de valeurs, en utilisant un <tt class="literal">join</tt> (jointure).
+        </p><pre class="programlisting">from Cat as cat
+    inner join cat.mate as mate
+    left outer join cat.kittens as kitten</pre><pre class="programlisting">from Cat as cat left join cat.mate.kittens as kittens</pre><pre class="programlisting">from Formula form full join form.parameter param</pre><p>
+            Les types de jointures support&eacute;es sont celles de ANSI SQL
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                    <tt class="literal">inner join</tt> (jointure ferm&eacute;e)
+                </p></li><li><p>
+                    <tt class="literal">left outer join</tt> (jointure ouverte par la gauche)
+                </p></li><li><p>
+                    <tt class="literal">right outer join</tt> (jointure ouverte par la droite)
+                </p></li><li><p>
+                    <tt class="literal">full join</tt> (jointure ouverte totalement - g&eacute;n&eacute;ralement inutile)
+                </p></li></ul></div><p>
+            Les constructions des jointures <tt class="literal">inner join</tt>, <tt class="literal">left outer join</tt>
+            et <tt class="literal">right outer join</tt> peuvent &ecirc;tre abbr&eacute;g&eacute;es.
+        </p><pre class="programlisting">from Cat as cat
+    join cat.mate as mate
+    left join cat.kittens as kitten</pre><p>
+            Nous pouvons soumettre des conditions de jointure suppl&eacute;mentaires en utilisant le mot-clef HQL <tt class="literal">with</tt>.
+        </p><pre class="programlisting">from Cat as cat
+    left join cat.kittens as kitten
+        with kitten.bodyWeight &gt; 10.0</pre><p>
+            Par ailleurs, une jointure "fetch&eacute;e" (rapport&eacute;e) permet d'initialiser
+            les associations ou collections de valeurs en m&ecirc;me temps que leur objet parent,
+            le tout n'utilisant qu'un seul Select.
+            Ceci est particuli&egrave;rement utile dans le cas des collections. Ce syst&egrave;me permet de surcharger
+            les d&eacute;clarations "lazy" et "outer-join" des fichiers de mapping pour les associations et
+            collections. Voir
+            <a href="performance.html#performance-fetching" title="19.1.&nbsp;Strat&eacute;gies de chargement">Section&nbsp;19.1, &laquo;&nbsp;Strat&eacute;gies de chargement&nbsp;&raquo;</a> pour plus d'informations.
+        </p><pre class="programlisting">from Cat as cat
+    inner join fetch cat.mate
+    left join fetch cat.kittens</pre><p>
+            Une jointure "fetch&eacute;e" (rapport&eacute;e) n'a g&eacute;n&eacute;ralement pas besoin de se voir assigner
+            un alias puisque les objets associ&eacute;s n'ont pas &agrave; &ecirc;tre utilis&eacute;s dans les autres clauses.
+            Notez aussi que les objets associ&eacute;s ne sont pas retourn&eacute;s directement dans le r&eacute;sultat de
+            la requ&ecirc;te mais l'on peut y acc&eacute;der via l'objet parent. La seule raison pour laquelle nous 
+            pourrions avoir besoin d'un alias est si nous r&eacute;cup&eacute;rions r&eacute;cursivement une collection suppl&eacute;mentaire :
+        </p><pre class="programlisting">from Cat as cat
+    inner join fetch cat.mate
+    left join fetch cat.kittens child
+    left join fetch child.kittens</pre><p>
+            Notez que la construction de <tt class="literal">fetch</tt> ne peut pas &ecirc;tre utilis&eacute;e dans les requ&ecirc;tes appel&eacute;es par
+            <tt class="literal">scroll()</tt> ou <tt class="literal">iterate()</tt>.
+            <tt class="literal">fetch</tt> ne devrait pas non plus &ecirc;tre utilis&eacute; avec <tt class="literal">setMaxResults()</tt> ou
+            <tt class="literal">setFirstResult()</tt>. <tt class="literal">fetch</tt> ne peut pas non plus &ecirc;tre utilis&eacute; avec une 
+            condition <tt class="literal">with</tt> ad hoc. Il est
+            possible de cr&eacute;er un produit cart&eacute;sien par jointure en r&eacute;cup&eacute;rant plus d'une collection dans une requ&ecirc;te, 
+            donc faites attention dans ce cas. R&eacute;cup&eacute;rer par jointure de multiples collections donne aussi parfois 
+            des r&eacute;sultats inattendus pour des mappings de bag, donc soyez prudent lorsque vous formulez vos requ&ecirc;tes dans de tels cas.
+            Finalement, notez que <tt class="literal">full join fetch</tt> et <tt class="literal">right join fetch</tt> ne sont pas utiles en g&eacute;n&eacute;ral.
+        </p><p>
+            Si vous utilisez un chargement retard&eacute; pour les propri&eacute;t&eacute;s (avec une instrumentation par bytecode), il est possible 
+            de forcer Hibernate &agrave; r&eacute;cup&eacute;rer les propri&eacute;t&eacute;s non encore charg&eacute;es imm&eacute;diatement (dans la premi&egrave;re requ&ecirc;te) 
+            en utilisant <tt class="literal">fetch all properties</tt>.
+        </p><pre class="programlisting">from Document fetch all properties order by name</pre><pre class="programlisting">from Document doc fetch all properties where lower(doc.name) like '%cats%'</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-joins-forms"></a>14.4.&nbsp;Formes de syntaxes pour les jointures</h2></div></div><div></div></div><p>
+            HQL supporte deux formes pour joindre les associations: <tt class="literal">implicite</tt> et <tt class="literal">explicite</tt>.
+        </p><p>
+            Les requ&ecirc;tes pr&eacute;sentes dans la section pr&eacute;c&eacute;dente utilisent la forme <tt class="literal">explicite</tt> 
+            o&ugrave; le mode cl&eacute; join est explicitement utilis&eacute; dans la clause from. C'est la forme recommand&eacute;e.
+        </p><p>
+            La forme <tt class="literal">implicite</tt> n'utilise pas le mot cl&eacute; join.
+            A la place, les associations sont "d&eacute;r&eacute;f&eacute;renc&eacute;es" en utilisant le notation '.'. Ces
+            jointures peuvent apparaitre dans toutes les clauses. Les jointures <tt class="literal">implicites</tt> 
+            r&eacute;sultent en des inner join dans le SQL g&eacute;n&eacute;r&eacute;.
+        </p><pre class="programlisting">from Cat as cat where cat.mate.name like '%s%'</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-select"></a>14.5.&nbsp;La clause select</h2></div></div><div></div></div><p>
+            La clause <tt class="literal">select</tt> s&eacute;lectionne les objets et propri&eacute;t&eacute;s
+            qui doivent &ecirc;tre retourn&eacute;s dans le r&eacute;sultat de la requ&ecirc;te.
+        Soit :
+        </p><pre class="programlisting">select mate
+from Cat as cat
+    inner join cat.mate as mate</pre><p>
+            La requ&ecirc;te recherchera les <tt class="literal">mate</tt>s li&eacute;s aux <tt class="literal">Cat</tt>s.
+            Vous pouvez explimer la requ&ecirc;te d'une mani&egrave;re plus compacte :
+        </p><pre class="programlisting">select cat.mate from Cat cat</pre><p>
+            Les requ&ecirc;tes peuvent retourner des propri&eacute;t&eacute;s de n'importe quel type, m&ecirc;me celles de type
+        composant (component) :
+        </p><pre class="programlisting">select cat.name from DomesticCat cat
+where cat.name like 'fri%'</pre><pre class="programlisting">select cust.name.firstName from Customer as cust</pre><p>
+            Les requ&ecirc;tes peuvent retourner plusieurs objets et/ou propri&eacute;t&eacute;s sous la forme
+        d'un tableau du type <tt class="literal">Object[]</tt>,
+        </p><pre class="programlisting">select mother, offspr, mate.name
+from DomesticCat as mother
+    inner join mother.mate as mate
+    left outer join mother.kittens as offspr</pre><p>
+            ou sous la forme d'une <tt class="literal">List</tt>,
+        </p><pre class="programlisting">select new list(mother, offspr, mate.name)
+from DomesticCat as mother
+    inner join mother.mate as mate
+    left outer join mother.kittens as offspr</pre><p>
+            ou sous la forme d'un objet Java typ&eacute;,
+        </p><pre class="programlisting">select new Family(mother, mate, offspr)
+from DomesticCat as mother
+    join mother.mate as mate
+    left join mother.kittens as offspr</pre><p>
+            &agrave; condition que la classe <tt class="literal">Family</tt> poss&egrave;de le constructeur appropri&eacute;.
+        </p><p>
+            Vous pouvez assigner des alias aux expressions s&eacute;lectionn&eacute;es en utilisant <tt class="literal">as</tt> :
+        </p><pre class="programlisting">select max(bodyWeight) as max, min(bodyWeight) as min, count(*) as n
+from Cat cat</pre><p>
+            C'est surtout utile lorsque c'est utilis&eacute; avec
+            <tt class="literal">select new map</tt> :
+        </p><pre class="programlisting">select new map( max(bodyWeight) as max, min(bodyWeight) as min, count(*) as n )
+from Cat cat</pre><p>
+            Cette requ&ecirc;te retourne une <tt class="literal">Map</tt> &agrave; partir des alias vers les valeurs s&eacute;lectionn&eacute;es.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-aggregation"></a>14.6.&nbsp;Fonctions d'aggr&eacute;gation</h2></div></div><div></div></div><p>
+            Les requ&ecirc;tes HQL peuvent aussi retourner le r&eacute;sultat de fonctions d'aggr&eacute;gation
+            sur les propri&eacute;t&eacute;s :
+        </p><pre class="programlisting">select avg(cat.weight), sum(cat.weight), max(cat.weight), count(cat)
+from Cat cat</pre><p>
+            Les fonctions support&eacute;es sont
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                    <tt class="literal">avg(...), sum(...), min(...), max(...)</tt>
+                </p></li><li><p>
+                    <tt class="literal">count(*)</tt>
+                </p></li><li><p>
+                    <tt class="literal">count(...), count(distinct ...), count(all...)</tt>
+                </p></li></ul></div><p>
+            Vous pouvez utiliser des op&eacute;rateurs arithm&eacute;tiques, la concat&eacute;nation, et des fonctions SQL reconnues dans la clause select :
+        </p><pre class="programlisting">select cat.weight + sum(kitten.weight)
+from Cat cat
+    join cat.kittens kitten
+group by cat.id, cat.weight</pre><pre class="programlisting">select firstName||' '||initial||' '||upper(lastName) from Person</pre><p>
+            Les mots cl&eacute; <tt class="literal">distinct</tt> et <tt class="literal">all</tt> peuvent &ecirc;tre utilis&eacute;s et ont
+        la m&ecirc;me signification qu'en SQL.
+        </p><pre class="programlisting">select distinct cat.name from Cat cat
+
+select count(distinct cat.name), count(cat) from Cat cat</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-polymorphism"></a>14.7.&nbsp;Requ&ecirc;tes polymorphiques</h2></div></div><div></div></div><p>
+            Une requ&ecirc;te comme:
+        </p><pre class="programlisting">from Cat as cat</pre><p>
+            retourne non seuleument les instances de <tt class="literal">Cat</tt>, mais aussi celles des
+            sous classes comme <tt class="literal">DomesticCat</tt>. Les requ&ecirc;tes Hibernate peuvent nommer n'importe
+            quelle classe ou interface Java dans la clause <tt class="literal">from</tt>. La requ&ecirc;te retournera les
+            instances de toutes les classes persistantes qui &eacute;tendent cette classe ou impl&eacute;mente cette interface.
+        La requ&ecirc;te suivante retournera tous les objets persistants :
+        </p><pre class="programlisting">from java.lang.Object o</pre><p>
+            L'interface <tt class="literal">Named</tt> peut &ecirc;tre impl&eacute;ment&eacute;e par plusieurs classes persistantes :
+        </p><pre class="programlisting">from Named n, Named m where n.name = m.name</pre><p>
+            Notez que ces deux derni&egrave;res requ&ecirc;tes n&eacute;cessitent plus d'un <tt class="literal">SELECT</tt> SQL.
+            Ce qui signifie que la clause <tt class="literal">order by</tt> ne trie pas correctement la totalit&eacute;
+            des r&eacute;sultats (cela signifie aussi que vous ne pouvez ex&eacute;cuter ces requ&ecirc;tes en appelant
+        <tt class="literal">Query.scroll()</tt>).
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-where"></a>14.8.&nbsp;La clause where</h2></div></div><div></div></div><p>
+            La clause <tt class="literal">where</tt> vous permet de r&eacute;duire la liste des instances retourn&eacute;es. 
+            Si aucun alias n'existe, vous pouvez vous r&eacute;f&eacute;rer aux propri&eacute;t&eacute;s par leur nom :
+        </p><pre class="programlisting">from Cat where name='Fritz'</pre><p>
+            S'il y a un alias, utilisez un nom de propri&eacute;t&eacute; qualifi&eacute; :
+        </p><pre class="programlisting">from Cat as cat where cat.name='Fritz'</pre><p>
+            retourne les instances de <tt class="literal">Cat</tt> dont name est &eacute;gale &agrave; 'Fritz'.
+        </p><pre class="programlisting">select foo
+from Foo foo, Bar bar
+where foo.startDate = bar.date</pre><p>
+            retournera les instances de <tt class="literal">Foo</tt> pour lesquelles
+            il existe une instance de <tt class="literal">bar</tt> avec la
+            propri&eacute;t&eacute; <tt class="literal">date</tt> est &eacute;gale &agrave; la
+            propri&eacute;t&eacute; <tt class="literal">startDate</tt> de <tt class="literal">Foo</tt>.
+            Les expressions utilisant la navigation rendent la clause <tt class="literal">where</tt>
+        extr&ecirc;mement puissante. Soit :
+        </p><pre class="programlisting">from Cat cat where cat.mate.name is not null</pre><p>
+            Cette requ&ecirc;te se traduit en SQL par une jointure interne &agrave; une table.
+        Si vous souhaitez &eacute;crire quelque chose comme :
+        </p><pre class="programlisting">from Foo foo
+where foo.bar.baz.customer.address.city is not null</pre><p>
+            vous finiriez avec une requ&ecirc;te qui n&eacute;cessiterait quatre jointures en SQL.
+        </p><p>
+            L'op&eacute;rateur <tt class="literal">=</tt> peut &ecirc;tre utilis&eacute; pour comparer aussi bien des propri&eacute;t&eacute;s que des instances :
+        </p><pre class="programlisting">from Cat cat, Cat rival where cat.mate = rival.mate</pre><pre class="programlisting">select cat, mate
+from Cat cat, Cat mate
+where cat.mate = mate</pre><p>
+            La propri&eacute;t&eacute; sp&eacute;ciale (en minuscule) <tt class="literal">id</tt> peut &ecirc;tre utilis&eacute;e
+            pour faire r&eacute;f&eacute;rence &agrave; l'identifiant d'un objet (vous pouvez aussi utiliser
+        le nom de cette propri&eacute;t&eacute;).
+        </p><pre class="programlisting">from Cat as cat where cat.id = 123
+
+from Cat as cat where cat.mate.id = 69</pre><p>
+            La seconde requ&ecirc;te est particuli&egrave;rement efficace. Aucune jointure n'est n&eacute;cessaire !
+        </p><p>
+            Les propri&eacute;t&eacute;s d'un identifiant compos&eacute; peuvent aussi &ecirc;tre utilis&eacute;es. Supposez que
+            <tt class="literal">Person</tt> ait un identifiant compos&eacute; de <tt class="literal">country</tt> et
+            <tt class="literal">medicareNumber</tt>.
+        </p><pre class="programlisting">from bank.Person person
+where person.id.country = 'AU'
+    and person.id.medicareNumber = 123456</pre><pre class="programlisting">from bank.Account account
+where account.owner.id.country = 'AU'
+    and account.owner.id.medicareNumber = 123456</pre><p>
+            Une fois de plus, la seconde requ&ecirc;te ne n&eacute;cessite pas de jointure.
+        </p><p>
+            De m&ecirc;me, la propri&eacute;t&eacute; sp&eacute;ciale <tt class="literal">class</tt> interroge la valeur discriminante
+            d'une instance dans le cas d'une persistance polymorphique. Le nom d'une classe Java incorpor&eacute;e
+        dans la clause where sera traduite par sa valeur discriminante.
+        </p><pre class="programlisting">from Cat cat where cat.class = DomesticCat</pre><p>
+            Vous pouvez aussi sp&eacute;cifier les propri&eacute;t&eacute;s des composants ou types utilisateurs compos&eacute;s
+            (components, composite user types etc). N'essayez jamais d'utiliser un expression de navigation
+            qui se terminerait par une propri&eacute;t&eacute; de type composant (qui est diff&eacute;rent d'une propri&eacute;t&eacute; d'un
+            composant). Par exemple, si <tt class="literal">store.owner</tt> est une entit&eacute; avec un composant
+        <tt class="literal">address</tt>
+        </p><pre class="programlisting">store.owner.address.city    // okay
+store.owner.address         // error!</pre><p>
+            Un type "any" poss&egrave;de les propri&eacute;t&eacute;s sp&eacute;ciales <tt class="literal">id</tt> et <tt class="literal">class</tt>,
+            qui nous permettent d'exprimer une jointure de la mani&egrave;re suivante (o&ugrave; <tt class="literal">AuditLog.item</tt>
+            est une propri&eacute;t&eacute; mapp&eacute;e avec <tt class="literal">&lt;any&gt;</tt>).
+        </p><pre class="programlisting">from AuditLog log, Payment payment
+where log.item.class = 'Payment' and log.item.id = payment.id</pre><p>
+            Dans la requ&ecirc;te pr&eacute;c&eacute;dente, notez que <tt class="literal">log.item.class</tt> et <tt class="literal">payment.class</tt>
+            feraient r&eacute;f&eacute;rence &agrave; des valeurs de colonnes de la base de donn&eacute;es compl&egrave;tement diff&eacute;rentes.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-expressions"></a>14.9.&nbsp;Expressions</h2></div></div><div></div></div><p>
+            Les expressions permises dans la clause <tt class="literal">where</tt> incluent
+        la plupart des choses que vous pouvez utiliser en SQL :
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                    op&eacute;rateurs math&eacute;matiques <tt class="literal">+, -, *, /</tt>
+                </p></li><li><p>
+                    op&eacute;rateur de comparaison binaire <tt class="literal">=, &gt;=, &lt;=, &lt;&gt;, !=, like</tt>
+                </p></li><li><p>
+                    op&eacute;rateurs logiques <tt class="literal">and, or, not</tt>
+                </p></li><li><p>
+                    Parenth&egrave;ses <tt class="literal">( )</tt>, indiquant un regroupement
+                </p></li><li><p>
+                    <tt class="literal">in</tt>,
+                    <tt class="literal">not in</tt>,
+                    <tt class="literal">between</tt>,
+                    <tt class="literal">is null</tt>,
+                    <tt class="literal">is not null</tt>,
+                    <tt class="literal">is empty</tt>,
+                    <tt class="literal">is not empty</tt>,
+                    <tt class="literal">member of</tt> and
+                    <tt class="literal">not member of</tt>
+                </p></li><li><p>
+                    "Simple" case, <tt class="literal">case ... when ... then ... else ... end</tt>, and
+                    "searched" case, <tt class="literal">case when ... then ... else ... end</tt>
+                </p></li><li><p>
+                    concatenation de cha&icirc;ne de caract&egrave;res <tt class="literal">...||...</tt> ou <tt class="literal">concat(...,...)</tt>
+                </p></li><li><p>
+                    <tt class="literal">current_date()</tt>, <tt class="literal">current_time()</tt>,
+                    <tt class="literal">current_timestamp()</tt>
+                </p></li><li><p>
+                    <tt class="literal">second(...)</tt>, <tt class="literal">minute(...)</tt>,
+                    <tt class="literal">hour(...)</tt>, <tt class="literal">day(...)</tt>,
+                    <tt class="literal">month(...)</tt>, <tt class="literal">year(...)</tt>,
+                </p></li><li><p>
+                    N'importe quel fonction ou op&eacute;rateur d&eacute;fini par EJB-QL 3.0 : <tt class="literal">substring(), trim(),
+                    lower(), upper(), length(), locate(), abs(), sqrt(), bit_length(), mod()</tt>
+                </p></li><li><p>
+                    <tt class="literal">coalesce()</tt> et <tt class="literal">nullif()</tt>
+                </p></li><li><p>
+                    <tt class="literal">str()</tt> pour convertir des valeurs num&eacute;riques ou temporelles vers une cha&icirc;ne de caract&egrave;res lisible
+                </p></li><li><p>
+                    <tt class="literal">cast(... as ...)</tt>, o&ugrave; le second argument est le nom d'un type Hibernate, et <tt class="literal">extract(... from ...)</tt> si le
+                    <tt class="literal">cast()</tt> ANSI et <tt class="literal">extract()</tt> sont support&eacute;s par la base de donn&eacute;es sous-jacente
+                </p></li><li><p>
+                    La fonction HQL <tt class="literal">index()</tt>, qui s'applique aux alias d'une collection index&eacute;e jointe
+                </p></li><li><p>
+                    Les fonctions HQL qui s'appliquent expressions repr&eacute;sentant des collections : <tt class="literal">size(),
+                    minelement(), maxelement(), minindex(), maxindex()</tt>, ainsi que les fonctions sp&eacute;ciales <tt class="literal">elements()</tt> 
+                    et <tt class="literal">indices</tt> qui peuvent &ecirc;tre quantifi&eacute;es en utilisant <tt class="literal">some, all, exists, any, in</tt>.
+                </p></li><li><p>
+                    N'importe quelle fonction scalaire support&eacute;e par la base de donn&eacute;es comme
+                    <tt class="literal">sign()</tt>,
+                    <tt class="literal">trunc()</tt>, <tt class="literal">rtrim()</tt>, <tt class="literal">sin()</tt>
+                </p></li><li><p>
+                    Les param&egrave;tres positionnels de JDBC
+                    <tt class="literal">?</tt>
+                </p></li><li><p>
+                    param&egrave;tres nomm&eacute;s <tt class="literal">:name</tt>, <tt class="literal">:start_date</tt>, <tt class="literal">:x1</tt>
+                </p></li><li><p>
+                    litt&eacute;ral SQL <tt class="literal">'foo'</tt>, <tt class="literal">69</tt>, <tt class="literal">'1970-01-01 10:00:01.0'</tt>
+                </p></li><li><p>
+                    Constantes Java <tt class="literal">public static final</tt> <tt class="literal">eg.Color.TABBY</tt>
+                </p></li></ul></div><p>
+            <tt class="literal">in</tt> et <tt class="literal">between</tt> peuvent &ecirc;tre utilis&eacute;s comme suit :
+        </p><pre class="programlisting">from DomesticCat cat where cat.name between 'A' and 'B'</pre><pre class="programlisting">from DomesticCat cat where cat.name in ( 'Foo', 'Bar', 'Baz' )</pre><p>
+            et la forme n&eacute;gative peut &ecirc;tre &eacute;crite
+        </p><pre class="programlisting">from DomesticCat cat where cat.name not between 'A' and 'B'</pre><pre class="programlisting">from DomesticCat cat where cat.name not in ( 'Foo', 'Bar', 'Baz' )</pre><p>
+            De m&ecirc;me, <tt class="literal">is null</tt> et <tt class="literal">is not null</tt> peuvent &ecirc;tre utilis&eacute;s pour tester
+        les valeurs nulle.
+        </p><p>
+            Les bool&eacute;ens peuvent &ecirc;tre facilement utilis&eacute;s en d&eacute;clarant les substitutions de requ&ecirc;tes dans la
+        configuration Hibernate :
+        </p><pre class="programlisting">&lt;property name="hibernate.query.substitutions"&gt;true 1, false 0&lt;/property&gt;</pre><p>
+            Ce qui remplacera les mots cl&eacute;s <tt class="literal">true</tt> et <tt class="literal">false</tt> par
+            <tt class="literal">1</tt> et <tt class="literal">0</tt> dans la traduction SQL du HQL suivant :
+        </p><pre class="programlisting">from Cat cat where cat.alive = true</pre><p>
+            Vous pouvez tester la taille d'une collection par la propri&eacute;t&eacute; sp&eacute;ciale <tt class="literal">size</tt>, ou
+            la fonction sp&eacute;ciale <tt class="literal">size()</tt>.
+        </p><pre class="programlisting">from Cat cat where cat.kittens.size &gt; 0</pre><pre class="programlisting">from Cat cat where size(cat.kittens) &gt; 0</pre><p>
+            Pour les collections index&eacute;es, vous pouvez faire r&eacute;f&eacute;rence aux indices minimum et maximum en
+            utilisant les fonctions <tt class="literal">minindex</tt> and <tt class="literal">maxindex</tt>. De mani&egrave;re similaire,
+            vous pouvez faire r&eacute;f&eacute;rence aux &eacute;l&eacute;ments minimum et maximum d'une collection de type basiques
+        en utilisant les fonctions <tt class="literal">minelement</tt> et <tt class="literal">maxelement</tt>.
+        </p><pre class="programlisting">from Calendar cal where maxelement(cal.holidays) &gt; current date</pre><pre class="programlisting">from Order order where maxindex(order.items) &gt; 100</pre><pre class="programlisting">from Order order where minelement(order.items) &gt; 10000</pre><p>
+            Les fonctions SQL <tt class="literal">any, some, all, exists, in</tt> supportent que leur soient pass&eacute;es
+            l'&eacute;l&eacute;ment, l'index d'une collection (fonctions <tt class="literal">elements</tt> et <tt class="literal">indices</tt>)
+        ou le r&eacute;sultat d'une sous requ&ecirc;te (voir ci dessous).
+        </p><pre class="programlisting">select mother from Cat as mother, Cat as kit
+where kit in elements(foo.kittens)</pre><pre class="programlisting">select p from NameList list, Person p
+where p.name = some elements(list.names)</pre><pre class="programlisting">from Cat cat where exists elements(cat.kittens)</pre><pre class="programlisting">from Player p where 3 &gt; all elements(p.scores)</pre><pre class="programlisting">from Show show where 'fizard' in indices(show.acts)</pre><p>
+            Notez que l'&eacute;criture de - <tt class="literal">size</tt>, <tt class="literal">elements</tt>,
+            <tt class="literal">indices</tt>, <tt class="literal">minindex</tt>, <tt class="literal">maxindex</tt>,
+            <tt class="literal">minelement</tt>, <tt class="literal">maxelement</tt> - peuvent seulement &ecirc;tre utilis&eacute;e dans la clause where dans Hibernate3.
+        </p><p>
+            Les &eacute;l&eacute;ments de collections index&eacute;es (arrays, lists, maps) peuvent &ecirc;tre r&eacute;f&eacute;renc&eacute;s via index
+        (dans une clause where seulement) :
+        </p><pre class="programlisting">from Order order where order.items[0].id = 1234</pre><pre class="programlisting">select person from Person person, Calendar calendar
+where calendar.holidays['national day'] = person.birthDay
+    and person.nationality.calendar = calendar</pre><pre class="programlisting">select item from Item item, Order order
+where order.items[ order.deliveredItemIndices[0] ] = item and order.id = 11</pre><pre class="programlisting">select item from Item item, Order order
+where order.items[ maxindex(order.items) ] = item and order.id = 11</pre><p>
+            L'expression entre <tt class="literal">[]</tt> peut m&ecirc;me &ecirc;tre une expression arithm&eacute;tique.
+        </p><pre class="programlisting">select item from Item item, Order order
+where order.items[ size(order.items) - 1 ] = item</pre><p>
+            HQL propose aussi une fonction <tt class="literal">index()</tt> interne, pour les &eacute;l&eacute;ments
+        d'une association one-to-many ou d'une collections de valeurs.
+        </p><pre class="programlisting">select item, index(item) from Order order
+    join order.items item
+where index(item) &lt; 5</pre><p>
+            Les fonctions SQL scalaires support&eacute;es par la base de donn&eacute;es utilis&eacute;e peuvent &ecirc;tre utilis&eacute;es
+        </p><pre class="programlisting">from DomesticCat cat where upper(cat.name) like 'FRI%'</pre><p>
+            Si vous n'&ecirc;tes pas encore convaincu par tout cela, imaginez la taille et l'illisibilit&eacute; qui caract&eacute;riseraient
+        la transformation SQL de la requ&ecirc;te HQL suivante :
+        </p><pre class="programlisting">select cust
+from Product prod,
+    Store store
+    inner join store.customers cust
+where prod.name = 'widget'
+    and store.location.name in ( 'Melbourne', 'Sydney' )
+    and prod = all elements(cust.currentOrder.lineItems)</pre><p>
+            <span class="emphasis"><em>Un indice :</em></span> cela donnerait quelque chose comme
+        </p><pre class="programlisting">SELECT cust.name, cust.address, cust.phone, cust.id, cust.current_order
+FROM customers cust,
+    stores store,
+    locations loc,
+    store_customers sc,
+    product prod
+WHERE prod.name = 'widget'
+    AND store.loc_id = loc.id
+    AND loc.name IN ( 'Melbourne', 'Sydney' )
+    AND sc.store_id = store.id
+    AND sc.cust_id = cust.id
+    AND prod.id = ALL(
+        SELECT item.prod_id
+        FROM line_items item, orders o
+        WHERE item.order_id = o.id
+            AND cust.current_order = o.id
+    )</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-ordering"></a>14.10.&nbsp;La clause order by</h2></div></div><div></div></div><p>
+            La liste retoun&eacute;e par la requ&ecirc;te peut &ecirc;tre tri&eacute;e par n'importe quelle propri&eacute;t&eacute; de la classe ou
+        du composant retourn&eacute; :
+        </p><pre class="programlisting">from DomesticCat cat
+order by cat.name asc, cat.weight desc, cat.birthdate</pre><p>
+            Le mot optionnel <tt class="literal">asc</tt> ou <tt class="literal">desc</tt> indique respectivement si le tri
+        doit &ecirc;tre croissant ou d&eacute;croissant.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-grouping"></a>14.11.&nbsp;La clause group by</h2></div></div><div></div></div><p>
+            Si la requ&ecirc;te retourne des valeurs aggr&eacute;g&eacute;es, celles ci peuvent &ecirc;tre group&eacute;es par propri&eacute;t&eacute; ou composant :
+        </p><pre class="programlisting">select cat.color, sum(cat.weight), count(cat)
+from Cat cat
+group by cat.color</pre><pre class="programlisting">select foo.id, avg(name), max(name)
+from Foo foo join foo.names name
+group by foo.id</pre><p>
+            Une clause <tt class="literal">having</tt> est aussi permise.
+        </p><pre class="programlisting">select cat.color, sum(cat.weight), count(cat)
+from Cat cat
+group by cat.color
+having cat.color in (eg.Color.TABBY, eg.Color.BLACK)</pre><p>
+            Les fonctions SQL et les fonctions d'aggr&eacute;gations sont permises dans les clauses <tt class="literal">having</tt>
+            et <tt class="literal">order by</tt>, si elles sont support&eacute;es par la base de donn&eacute;es (ce que ne fait pas MySQL par exemple).
+        </p><pre class="programlisting">select cat
+from Cat cat
+    join cat.kittens kitten
+group by cat
+having avg(kitten.weight) &gt; 100
+order by count(kitten) asc, sum(kitten.weight) desc</pre><p>
+            Notez que ni la clause <tt class="literal">group by</tt> ni la clause
+            <tt class="literal">order by</tt> ne peuvent contenir d'expressions arithm&eacute;tiques.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-subqueries"></a>14.12.&nbsp;Sous-requ&ecirc;tes</h2></div></div><div></div></div><p>
+            Pour les bases de donn&eacute;es le supportant, Hibernate supporte les sous requ&ecirc;tes dans les requ&ecirc;tes.
+            Une sous requ&ecirc;te doit &ecirc;tre entre parenth&egrave;ses (souvent pour un appel &agrave; une fonction d'agr&eacute;gation SQL)
+            M&ecirc;me les sous requ&ecirc;tes corr&eacute;l&eacute;es (celles qui font r&eacute;f&eacute;rence &agrave; un alias de la requ&ecirc;te principale) sont
+        support&eacute;es.
+        </p><pre class="programlisting">from Cat as fatcat
+where fatcat.weight &gt; (
+    select avg(cat.weight) from DomesticCat cat
+)</pre><pre class="programlisting">from DomesticCat as cat
+where cat.name = some (
+    select name.nickName from Name as name
+)</pre><pre class="programlisting">from Cat as cat
+where not exists (
+    from Cat as mate where mate.mate = cat
+)</pre><pre class="programlisting">from DomesticCat as cat
+where cat.name not in (
+    select name.nickName from Name as name
+)</pre><pre class="programlisting">select cat.id, (select max(kit.weight) from cat.kitten kit)
+from Cat as cat</pre><p>
+            Notez que les sous-requ&ecirc;tes HQL peuvent arriver seulememnt dans les clauses select ou where.
+        </p><p>
+            Pour des sous-requ&ecirc;tes avec plus d'une expression dans le select, vous pouvez utiliser un constructeur de tuples :
+        </p><pre class="programlisting">from Cat as cat
+where not ( cat.name, cat.color ) in (
+    select cat.name, cat.color from DomesticCat cat
+)</pre><p>
+            Notez que sur certaines bases de donn&eacute;es (mais par Oracle ou HSQL), vous pouvez utiliser des constructeurs de tuples 
+            dans d'autres contextes, par exemple lors du requ&ecirc;tage de composants ou de types utilisateur composites :
+        </p><pre class="programlisting">from Person where name = ('Gavin', 'A', 'King')</pre><p>
+            Ce qui est &eacute;quivalent &agrave; la forme plus verbeuse suivante :
+        </p><pre class="programlisting">from Person where name.first = 'Gavin' and name.initial = 'A' and name.last = 'King')</pre><p>
+            Il y a deux bonnes raisons que vous ne puissiez ne pas vouloir faire cette sorte de choses : d'abord, ce n'est
+            pas compl&egrave;tement portable entre les plateformes de base de donn&eacute;es ; deuxi&egrave;mement, la requ&ecirc;te est maintenant
+            d&eacute;pendante de l'ordre des propri&eacute;t&eacute;s dans le document de mapping.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-examples"></a>14.13.&nbsp;Exemples HQL</h2></div></div><div></div></div><p>
+            Les requ&ecirc;tes Hibernate peuvent &ecirc;tre relativement puissantes et complexes. En fait, la puissance
+            du langage de requ&ecirc;tage est l'un des avantages principaux d'Hibernate. Voici quelques exemples
+            tr&egrave;s similaires aux requ&ecirc;tes que nous avons utilis&eacute;es lors d'un r&eacute;cent projet. Notez que la plupart
+        des requ&ecirc;tes que vous &eacute;crirez seront plus simples que les exemples suivantes !
+        </p><p>
+            La requ&ecirc;te suivante retourne l'id de commande (order), le nombre d'articles (items) et la valeur
+            totale de la commande (order) pour toutes les commandes non pay&eacute;es d'un client (customer) particulier
+            pour un total minimum donn&eacute;, le tout tri&eacute; par la valeur totale. La requ&ecirc;te SQL g&eacute;n&eacute;r&eacute;e sur les tables
+            <tt class="literal">ORDER</tt>, <tt class="literal">ORDER_LINE</tt>, <tt class="literal">PRODUCT</tt>,
+            <tt class="literal">CATALOG</tt> et <tt class="literal">PRICE</tt> est compos&eacute;e de quatre jointures interne ainsi que
+        d'une sous-requ&ecirc;te (non corr&eacute;l&eacute;e).
+        </p><pre class="programlisting">select order.id, sum(price.amount), count(item)
+from Order as order
+    join order.lineItems as item
+    join item.product as product,
+    Catalog as catalog
+    join catalog.prices as price
+where order.paid = false
+    and order.customer = :customer
+    and price.product = product
+    and catalog.effectiveDate &lt; sysdate
+    and catalog.effectiveDate &gt;= all (
+        select cat.effectiveDate
+        from Catalog as cat
+        where cat.effectiveDate &lt; sysdate
+    )
+group by order
+having sum(price.amount) &gt; :minAmount
+order by sum(price.amount) desc</pre><p>
+            Quel monstre !
+            En principe, nous ne sommes pas tr&egrave;s fan des sous-requ&ecirc;tes, la requ&ecirc;te ressemblait donc plut&ocirc;t
+        &agrave; cela :
+        </p><pre class="programlisting">select order.id, sum(price.amount), count(item)
+from Order as order
+    join order.lineItems as item
+    join item.product as product,
+    Catalog as catalog
+    join catalog.prices as price
+where order.paid = false
+    and order.customer = :customer
+    and price.product = product
+    and catalog = :currentCatalog
+group by order
+having sum(price.amount) &gt; :minAmount
+order by sum(price.amount) desc</pre><p>
+            La requ&ecirc;te suivante compte le nombre de paiements (payments) pour chaque status, en excluant
+            les paiements dans le status <tt class="literal">AWAITING_APPROVAL</tt> o&ugrave; le changement de status
+            le plus r&eacute;cent &agrave; &eacute;t&eacute; fait par l'utilisateur courant. En SQL, cette requ&ecirc;te effectue deux
+            jointures internes et des sous requ&ecirc;tes corr&eacute;l&eacute;es sur les tables <tt class="literal">PAYMENT</tt>,
+        <tt class="literal">PAYMENT_STATUS</tt> et <tt class="literal">PAYMENT_STATUS_CHANGE</tt>.
+        </p><pre class="programlisting">select count(payment), status.name
+from Payment as payment
+    join payment.currentStatus as status
+    join payment.statusChanges as statusChange
+where payment.status.name &lt;&gt; PaymentStatus.AWAITING_APPROVAL
+    or (
+        statusChange.timeStamp = (
+            select max(change.timeStamp)
+            from PaymentStatusChange change
+            where change.payment = payment
+        )
+        and statusChange.user &lt;&gt; :currentUser
+    )
+group by status.name, status.sortOrder
+order by status.sortOrder</pre><p>
+            Si nous avions mapp&eacute; la collection <tt class="literal">statusChanges</tt> comme une liste, au lieu d'un ensemble,
+            la requ&ecirc;te aurait &eacute;t&eacute; plus facile &agrave; &eacute;crire.
+        </p><pre class="programlisting">select count(payment), status.name
+from Payment as payment
+    join payment.currentStatus as status
+where payment.status.name &lt;&gt; PaymentStatus.AWAITING_APPROVAL
+    or payment.statusChanges[ maxIndex(payment.statusChanges) ].user &lt;&gt; :currentUser
+group by status.name, status.sortOrder
+order by status.sortOrder</pre><p>
+            La requ&ecirc;te qui suit utilise la fonction de MS SQL <tt class="literal">isNull()</tt> pour retourner
+            tous les comptes (accounts) et paiements (payments) impay&eacute;s pour l'organisation &agrave; laquelle
+            l'uilisateur (user) courant appartient. Elle est traduite en SQL par trois jointures internes,
+            une jointure externe ainsi qu'une sous requ&ecirc;te sur les tables <tt class="literal">ACCOUNT</tt>, <tt class="literal">PAYMENT</tt>,
+            <tt class="literal">PAYMENT_STATUS</tt>, <tt class="literal">ACCOUNT_TYPE</tt>, <tt class="literal">ORGANIZATION</tt> et
+            <tt class="literal">ORG_USER</tt>.
+        </p><pre class="programlisting">select account, payment
+from Account as account
+    left outer join account.payments as payment
+where :currentUser in elements(account.holder.users)
+    and PaymentStatus.UNPAID = isNull(payment.currentStatus.name, PaymentStatus.UNPAID)
+order by account.type.sortOrder, account.accountNumber, payment.dueDate</pre><p>
+            Pour d'autres base de donn&eacute;es, nous aurions d&ucirc; faire sans la sous-requ&ecirc;te (corr&eacute;l&eacute;e).
+        </p><pre class="programlisting">select account, payment
+from Account as account
+    join account.holder.users as user
+    left outer join account.payments as payment
+where :currentUser = user
+    and PaymentStatus.UNPAID = isNull(payment.currentStatus.name, PaymentStatus.UNPAID)
+order by account.type.sortOrder, account.accountNumber, payment.dueDate</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-bulk"></a>14.14.&nbsp;Mise &agrave; jour et suppression</h2></div></div><div></div></div><p>
+            HQL supporte maintenant les expressions <tt class="literal">update</tt>, <tt class="literal">delete</tt> et
+            <tt class="literal">insert ... select ...</tt>.
+            Voir <a href="batch.html#batch-direct" title="13.4.&nbsp;Op&eacute;rations de style DML">Section&nbsp;13.4, &laquo;&nbsp;Op&eacute;rations de style DML&nbsp;&raquo;</a> pour les d&eacute;tails.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="queryhql-tipstricks"></a>14.15.&nbsp;Trucs &amp; Astuces</h2></div></div><div></div></div><p>
+            Vous pouvez compter le nombre de r&eacute;sultats d'une requ&ecirc;te sans les retourner :
+        </p><pre class="programlisting">( (Integer) session.iterate("select count(*) from ....").next() ).intValue()</pre><p>
+            Pour trier les r&eacute;sultats par la taille d'une collection, utilisez la requ&ecirc;te suivante :
+        </p><pre class="programlisting">select usr.id, usr.name
+from User as usr
+    left join usr.messages as msg
+group by usr.id, usr.name
+order by count(msg)</pre><p>
+            Si votre base de donn&eacute;es supporte les sous-requ&ecirc;tes, vous pouvez placer des
+        conditions sur la taille de la s&eacute;lection dans la clause where de votre requ&ecirc;te:
+        </p><pre class="programlisting">from User usr where size(usr.messages) &gt;= 1</pre><p>
+            Si votre base de donn&eacute;es ne supporte pas les sous-requ&ecirc;tes, utilisez la requ&ecirc;te suivante :
+        </p><pre class="programlisting">select usr.id, usr.name
+from User usr.name
+    join usr.messages msg
+group by usr.id, usr.name
+having count(msg) &gt;= 1</pre><p>
+            Cette solution ne peut pas retourner un <tt class="literal">User</tt> avec z&eacute;ro message
+            &agrave; cause de la jointure interne, la forme suivante peut donc &ecirc;tre utile :
+        </p><pre class="programlisting">select usr.id, usr.name
+from User as usr
+    left join usr.messages as msg
+group by usr.id, usr.name
+having count(msg) = 0</pre><p>
+            Les propri&eacute;t&eacute;s d'un JavaBean peuvent &ecirc;tre inject&eacute;es dans les param&egrave;tres nomm&eacute;s d'un requ&ecirc;te :
+        </p><pre class="programlisting">Query q = s.createQuery("from foo Foo as foo where foo.name=:name and foo.size=:size");
+q.setProperties(fooBean); // fooBean has getName() and getSize()
+List foos = q.list();</pre><p>
+            Les collections sont paginables via l'utilisation de l'interface <tt class="literal">Query</tt> avec un filtre :
+        </p><pre class="programlisting">Query q = s.createFilter( collection, "" ); // the trivial filter
+q.setMaxResults(PAGE_SIZE);
+q.setFirstResult(PAGE_SIZE * pageNumber);
+List page = q.list();</pre><p>
+            Les &eacute;l&eacute;ments d'une collection peuvent &ecirc;tre tri&eacute;s ou group&eacute;s en utilisant un filtre de requ&ecirc;te :
+        </p><pre class="programlisting">Collection orderedCollection = s.filter( collection, "order by this.amount" );
+Collection counts = s.filter( collection, "select this.type, count(this) group by this.type" );</pre><p>
+            Vous pouvez r&eacute;cup&eacute;rer la taille d'une collection sans l'initialiser :
+        </p><pre class="programlisting">( (Integer) session.iterate("select count(*) from ....").next() ).intValue();</pre></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="batch.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="querycriteria.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;13.&nbsp;Traitement par paquet&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;15.&nbsp;Requ&ecirc;tes par crit&egrave;res</td></tr></table></div></body></html>

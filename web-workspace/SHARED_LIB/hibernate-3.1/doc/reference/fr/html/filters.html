@@ -1,0 +1,91 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;17.&nbsp;Filtrer les donn&eacute;es</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="querysql.html" title="Chapitre&nbsp;16.&nbsp;SQL natif"><link rel="next" href="xml.html" title="Chapitre&nbsp;18.&nbsp;Mapping XML"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;17.&nbsp;Filtrer les donn&eacute;es</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="querysql.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="xml.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="filters"></a>Chapitre&nbsp;17.&nbsp;Filtrer les donn&eacute;es</h2></div></div><div></div></div><p>
+        Hibernate3 fournit une nouvelle approche innovatrice pour g&eacute;rer des donn&eacute;es
+        avec des r&egrave;gles de "visibilit&eacute;". Un <span class="emphasis"><em>filtre Hibernate</em></span> est un filtre
+        global, nomm&eacute;, param&eacute;tr&eacute; qui peut &ecirc;tre activ&eacute; ou d&eacute;sactiv&eacute; pour une session Hibernate
+        particuli&egrave;re.
+    </p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="objectstate-filters"></a>17.1.&nbsp;Filtres Hibernate</h2></div></div><div></div></div><p>
+            Hibernate3 ajoute la capacit&eacute; de pr&eacute;d&eacute;finir des crit&egrave;res de filtre et d'attacher ces
+            filtres &agrave; une classe ou &agrave; une collection. Un crit&egrave;re de filtre est la facult&eacute; de d&eacute;finir
+            une clause de restriction tr&egrave;s similaire &agrave; l'attribut "where" existant disponible sur
+            une classe et divers &eacute;l&eacute;ments d'une collection. Mis &agrave; part que ces conditions de filtre
+            peuvent &ecirc;tre param&eacute;tr&eacute;es. L'application peut alors prendre la d&eacute;cision &agrave; l'ex&eacute;cution
+            si des filtres donn&eacute;s devraient &ecirc;tre activ&eacute;s et quels devraient &ecirc;tre leurs param&egrave;tres.
+            Des filtres peuvent &ecirc;tre utilis&eacute;s comme des vues de base de donn&eacute;es, mais param&eacute;tr&eacute;es
+            dans l'application.
+        </p><p>
+            Afin d'utiliser des filtres, ils doivent d'abord &ecirc;tre d&eacute;finis, puis attach&eacute;s aux &eacute;l&eacute;ments
+            de mapping appropri&eacute;s. Pour d&eacute;finir un filtre, utilisez l'&eacute;l&eacute;ment <tt class="literal">&lt;filter-def/&gt;</tt>
+            dans un &eacute;l&eacute;ment <tt class="literal">&lt;hibernate-mapping/&gt;</tt> :
+        </p><pre class="programlisting">&lt;filter-def name="myFilter"&gt;
+    &lt;filter-param name="myFilterParam" type="string"/&gt;
+&lt;/filter-def&gt;</pre><p>
+            Puis, ce filtre peut &ecirc;tre attach&eacute; &agrave; une classe :
+        </p><pre class="programlisting">&lt;class name="myClass" ...&gt;
+    ...
+    &lt;filter name="myFilter" condition=":myFilterParam = MY_FILTERED_COLUMN"/&gt;
+&lt;/class&gt;</pre><p>
+            ou &agrave; une collection :
+        </p><pre class="programlisting">&lt;set ...&gt;
+    &lt;filter name="myFilter" condition=":myFilterParam = MY_FILTERED_COLUMN"/&gt;
+&lt;/set&gt;</pre><p>
+            ou m&ecirc;me aux deux (ou &agrave; plusieurs de chaque) en m&ecirc;me temps.
+        </p><p>
+            Les m&eacute;thodes sur <tt class="literal">Session</tt> sont : <tt class="literal">enableFilter(String filterName)</tt>,
+            <tt class="literal">getEnabledFilter(String filterName)</tt>, et <tt class="literal">disableFilter(String filterName)</tt>.
+            Par d&eacute;faut, les filtres <span class="emphasis"><em>ne sont pas</em></span> activ&eacute;s pour une session donn&eacute;e ;
+            ils doivent &ecirc;tre explicitement activ&eacute;s en appelant la m&eacute;thode
+            <tt class="literal">Session.enabledFilter()</tt>, laquelle retourne une instance de l'interface
+            <tt class="literal">Filter</tt>. Utiliser le simple filtre d&eacute;fini au-dessus ressemblerait &agrave; :
+        </p><pre class="programlisting">session.enableFilter("myFilter").setParameter("myFilterParam", "some-value");</pre><p>
+            Notez que des m&eacute;thodes sur l'interface org.hibernate.Filter autorisent le cha&icirc;nage de beaucoup
+            de m&eacute;thodes communes d'Hibernate.
+        </p><p>
+            Un exemple complet, utilisant des donn&eacute;es temporelles avec une structure de date
+            d'enregistrement effectif :
+        </p><pre class="programlisting">&lt;filter-def name="effectiveDate"&gt;
+    &lt;filter-param name="asOfDate" type="date"/&gt;
+&lt;/filter-def&gt;
+
+&lt;class name="Employee" ...&gt;
+...
+    &lt;many-to-one name="department" column="dept_id" class="Department"/&gt;
+    &lt;property name="effectiveStartDate" type="date" column="eff_start_dt"/&gt;
+    &lt;property name="effectiveEndDate" type="date" column="eff_end_dt"/&gt;
+...
+    &lt;!--
+        Note that this assumes non-terminal records have an eff_end_dt set to
+        a max db date for simplicity-sake
+    --&gt;
+    &lt;filter name="effectiveDate"
+            condition=":asOfDate BETWEEN eff_start_dt and eff_end_dt"/&gt;
+&lt;/class&gt;
+
+&lt;class name="Department" ...&gt;
+...
+    &lt;set name="employees" lazy="true"&gt;
+        &lt;key column="dept_id"/&gt;
+        &lt;one-to-many class="Employee"/&gt;
+        &lt;filter name="effectiveDate"
+                condition=":asOfDate BETWEEN eff_start_dt and eff_end_dt"/&gt;
+    &lt;/set&gt;
+&lt;/class&gt;</pre><p>
+            Puis, afin de s'assurer que vous pouvez toujours r&eacute;cup&eacute;rer les enregistrements actuellement
+            effectifs, activez simplement le filtre sur la session avant de r&eacute;cup&eacute;rer des donn&eacute;es des
+            employ&eacute;s :
+        </p><pre class="programlisting">Session session = ...;
+session.enabledFilter("effectiveDate").setParameter("asOfDate", new Date());
+List results = session.createQuery("from Employee as e where e.salary &gt; :targetSalary")
+         .setLong("targetSalary", new Long(1000000))
+         .list();
+</pre><p>
+            Dans le HQL ci-dessus, bien que nous ayons seulement mentionn&eacute; une contrainte de
+            salaire sur les resultats, &agrave; cause du filtre activ&eacute;, la requ&ecirc;te retournera seulement
+            les employ&eacute;s actuellement actifs qui ont un salaire sup&eacute;rieur &agrave; un million de dollars.
+        </p><p>
+            A noter : si vous pr&eacute;voyez d'utiliser des filtres avec des jointures externes (soit
+            &agrave; travers HQL, soit par le chargement) faites attention &agrave; la direction de l'expression
+            de condition. Il est plus s&ucirc;r de la positionner pour les jointures externes &agrave; gauche ;
+            en g&eacute;n&eacute;ral, placez le param&egrave;tre d'abord, suivi du(des) nom(s) de colonne apr&egrave;s l'op&eacute;rateur.
+        </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="querysql.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="xml.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;16.&nbsp;SQL natif&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;18.&nbsp;Mapping XML</td></tr></table></div></body></html>

@@ -1,0 +1,227 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;13.&nbsp;Traitement par paquet</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="events.html" title="Chapitre&nbsp;12.&nbsp;Les intercepteurs et les &eacute;v&eacute;nements"><link rel="next" href="queryhql.html" title="Chapitre&nbsp;14.&nbsp;HQL: Langage de requ&ecirc;tage d'Hibernate"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;13.&nbsp;Traitement par paquet</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="events.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="queryhql.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="batch"></a>Chapitre&nbsp;13.&nbsp;Traitement par paquet</h2></div></div><div></div></div><p>
+        Une approche na&iuml;ve pour ins&eacute;rer 100 000 lignes dans la base de donn&eacute;es en utilisant
+        Hibernate pourrait ressembler &agrave; &ccedil;a :
+    </p><pre class="programlisting">Session session = sessionFactory.openSession();
+Transaction tx = session.beginTransaction();
+for ( int i=0; i&lt;100000; i++ ) {
+    Customer customer = new Customer(.....);
+    session.save(customer);
+}
+tx.commit();
+session.close();</pre><p>
+        Ceci devrait s'&eacute;crouler avec une <tt class="literal">OutOfMemoryException</tt> quelque
+        part aux alentours de la 50 000&egrave;me ligne. C'est parce qu'Hibernate cache toutes
+        les instances de <tt class="literal">Customer</tt> nouvellement ins&eacute;r&eacute;es dans le cache
+        de second niveau.
+    </p><p>
+        Dans ce chapitre nous montrerons comment &eacute;viter ce probl&egrave;me. D'abord, cependant,
+        si vous faites des traitements par batch, il est absolument critique que vous
+        activiez l'utilisation ds paquet JDBC (NdT : JDBC batching), si vous avez l'intention
+        d'obtenir des performances raisonnables. Configurez la taille du paquet JDBC avec un
+        nombre raisonnable (disons, 10-50) :
+    </p><pre class="programlisting">hibernate.jdbc.batch_size 20</pre><p>
+        Vous pourriez aussi vouloir faire cette sorte de travail dans un traitement o&ugrave;
+        l'interaction avec le cache de second niveau est compl&egrave;tement d&eacute;sactiv&eacute; :
+    </p><pre class="programlisting">hibernate.cache.use_second_level_cache false</pre><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="batch-inserts"></a>13.1.&nbsp;Insertions en paquet</h2></div></div><div></div></div><p>
+            Lorsque vous rendez des nouveaux objets persistants, vous devez r&eacute;guli&egrave;rement appeler
+            <tt class="literal">flush()</tt> et puis <tt class="literal">clear()</tt> sur la session,
+            pour contr&ocirc;ler la taille du cache de premier niveau.
+        </p><pre class="programlisting">Session session = sessionFactory.openSession();
+Transaction tx = session.beginTransaction();
+
+for ( int i=0; i&lt;100000; i++ ) {
+    Customer customer = new Customer(.....);
+    session.save(customer);
+    if ( i % 20 == 0 ) { //20, m&ecirc;me taille que la taille du paquet JDBC
+        //flush un paquet d'insertions et lib&egrave;re la m&eacute;moire :
+        session.flush();
+        session.clear();
+    }
+}
+
+tx.commit();
+session.close();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="batch-update"></a>13.2.&nbsp;Paquet de mises &agrave; jour</h2></div></div><div></div></div><p>
+            Pour r&eacute;cup&eacute;rer et mettre &agrave; jour des donn&eacute;es les m&ecirc;mes id&eacute;es s'appliquent. En plus,
+            vous avez besoin d'utiliser <tt class="literal">scroll()</tt> pour tirer partie des
+            curseurs c&ocirc;t&eacute; serveur pour les requ&ecirc;tes qui retournent beaucoup de lignes de donn&eacute;es.
+        </p><pre class="programlisting">Session session = sessionFactory.openSession();
+Transaction tx = session.beginTransaction();
+
+ScrollableResults customers = session.getNamedQuery("GetCustomers")
+    .setCacheMode(CacheMode.IGNORE)
+    .scroll(ScrollMode.FORWARD_ONLY);
+int count=0;
+while ( customers.next() ) {
+    Customer customer = (Customer) customers.get(0);
+    customer.updateStuff(...);
+    if ( ++count % 20 == 0 ) {
+        //flush un paquet de mises &agrave; jour et lib&egrave;re la m&eacute;moire :
+        session.flush();
+        session.clear();
+    }
+}
+
+tx.commit();
+session.close();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="batch-statelesssession"></a>13.3.&nbsp;L'interface StatelessSession</h2></div></div><div></div></div><p>
+            Alternativement, Hibernate fournit une API orient&eacute;e commande qui peut &ecirc;tre
+            utilis&eacute;e avec des flux de donn&eacute;es pour et en provenance de la base de donn&eacute;es
+            sous la forme d'objets d&eacute;tach&eacute;s. Une <tt class="literal">StatelessSession</tt> n'a pas
+            de contexte de persistance associ&eacute; et ne fournit pas beaucoup de s&eacute;mantique de
+            dur&eacute;e de vie de haut niveau. En particulier, une session sans &eacute;tat n'impl&eacute;mente
+            pas de cache de premier niveau et n'interagit pas non plus avec un cache de
+            seconde niveau ou un cache de requ&ecirc;tes. Elle n'impl&eacute;mente pas les transactions
+            ou la v&eacute;rification sale automatique (NdT : automatic dirty checking). Les
+            op&eacute;rations r&eacute;alis&eacute;es avec une session sans &eacute;tat ne sont jamais r&eacute;percut&eacute;es
+            en cascade sur les instances associ&eacute;es. Les collections sont ignor&eacute;es par une
+            session sans &eacute;tat. Les op&eacute;rations ex&eacute;cut&eacute;es via une session sans &eacute;tat outrepasse
+            le mod&egrave;le d'&eacute;v&eacute;nements d'Hibernate et les intercepteurs. Les sessions sans &eacute;tat sont
+            vuln&eacute;rables aux effets de modification des donn&eacute;es, ceci est d&ucirc; au manque de cache
+            de premier niveau. Une session sans &eacute;tat est une abstraction bas niveau, plus
+            proche de la couche JDBC sous-jacente.
+        </p><pre class="programlisting">StatelessSession session = sessionFactory.openStatelessSession();
+Transaction tx = session.beginTransaction();
+
+ScrollableResults customers = session.getNamedQuery("GetCustomers")
+    .scroll(ScrollMode.FORWARD_ONLY);
+while ( customers.next() ) {
+    Customer customer = (Customer) customers.get(0);
+    customer.updateStuff(...);
+    session.update(customer);
+}
+
+tx.commit();
+session.close();</pre><p>
+            Notez que dans le code de l'exemple, les intances de <tt class="literal">Customer</tt>
+            retourn&eacute;es par la requ&ecirc;te sont imm&eacute;diatement d&eacute;tach&eacute;es. Elles ne sont jamais
+            associ&eacute;es &agrave; un contexte de persistance.
+        </p><p>
+            Les op&eacute;rations <tt class="literal">insert()</tt>, <tt class="literal">update()</tt> et
+            <tt class="literal">delete()</tt> d&eacute;finies par l'interface <tt class="literal">StatelessSession</tt>
+            sont consid&eacute;r&eacute;es comme des op&eacute;rations d'acc&egrave;s direct aux lignes de la base de donn&eacute;es,
+            ce qui r&eacute;sulte en une ex&eacute;cution imm&eacute;diate du SQL <tt class="literal">INSERT</tt>, <tt class="literal">UPDATE</tt>
+            ou <tt class="literal">DELETE</tt> respectif. De l&agrave;, elles ont des s&eacute;mantiques tres diff&eacute;rentes des
+            op&eacute;rations <tt class="literal">save()</tt>, <tt class="literal">saveOrUpdate()</tt>
+            et <tt class="literal">delete()</tt> d&eacute;finies par l'interface <tt class="literal">Session</tt>.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="batch-direct"></a>13.4.&nbsp;Op&eacute;rations de style DML</h2></div></div><div></div></div><p>
+            Comme d&eacute;j&agrave; discut&eacute; avant, le mapping objet/relationnel automatique et transparent
+            est int&eacute;ress&eacute; par la gestion de l'&eacute;tat de l'objet. Ceci implique que l'&eacute;tat de l'objet
+            est disponible en m&eacute;moire, d'o&ugrave; manipuler (en utilisant des expressions du langage de
+            manipulation de donn&eacute;es - <tt class="literal">Data Manipulation Language</tt> (DML) - SQL)
+            les donn&eacute;es directement dans la base n'affectera pas l'&eacute;tat en m&eacute;moire. Pourtant, Hibernate
+            fournit des m&eacute;thodes pour l'ex&eacute;cution d'expression DML de style SQL lesquelles sont
+            r&eacute;alis&eacute;es &agrave; travers le langage de requ&ecirc;te d'Hibernate (<a href="queryhql.html" title="Chapitre&nbsp;14.&nbsp;HQL: Langage de requ&ecirc;tage d'Hibernate">Chapitre&nbsp;14, <i>HQL: Langage de requ&ecirc;tage d'Hibernate</i></a>).
+        </p><p>
+            La pseudo-syntaxe pour les expressions <tt class="literal">UPDATE</tt> et <tt class="literal">DELETE</tt>
+            est : <tt class="literal">( UPDATE | DELETE ) FROM? EntityName (WHERE where_conditions)?</tt>.
+            Certains points sont &agrave; noter :
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                    Dans la clause from, le mot-clef FROM est optionnel
+                </p></li><li><p>
+                    Il ne peut y avoir qu'une seule entit&eacute; nomm&eacute;e dans la clause from ; elle peut
+                    optionnellement avoir un alias. Si le nom de l'entit&eacute; a un alias, alors
+                    n'importe quelle r&eacute;f&eacute;rence de propri&eacute;t&eacute; doit &ecirc;tre qualifi&eacute;e en ayant un alias ;
+                    si le nom de l'entit&eacute; n'a pas d'alias, alors il est ill&eacute;gal pour n'importe quelle
+                    r&eacute;f&eacute;rence de propri&eacute;t&eacute; d'&ecirc;tre qualifi&eacute;e.
+                </p></li><li><p>
+                    Aucune jointure (implicite ou explicite) ne peut &ecirc;tre sp&eacute;cifi&eacute;e dans une requ&ecirc;te HQL.
+                    Les sous-requ&ecirc;tes peuvent &ecirc;tre utilis&eacute;es dans la clause where ; les sous-requ&ecirc;tes,
+                    elles-m&ecirc;mes, peuvent contenir des jointures.
+                </p></li><li><p>
+                    La clause where est aussi optionnelle.
+                </p></li></ul></div><p>
+            Par exemple, pour ex&eacute;cuter un <tt class="literal">UPDATE</tt> HQL, utilisez la m&eacute;thode
+            <tt class="literal">Query.executeUpdate()</tt> (la m&eacute;thode est donn&eacute;es pour ceux
+            qui sont familiers avec <tt class="literal">PreparedStatement.executeUpdate()</tt> de
+            JDBC) :
+        </p><pre class="programlisting">Session session = sessionFactory.openSession();
+Transaction tx = session.beginTransaction();
+
+String hqlUpdate = "update Customer c set c.name = :newName where c.name = :oldName";
+// ou String hqlUpdate = "update Customer set name = :newName where name = :oldName";
+int updatedEntities = s.createQuery( hqlUpdate )
+        .setString( "newName", newName )
+        .setString( "oldName", oldName )
+        .executeUpdate();
+tx.commit();
+session.close();</pre><p>
+            Pour ex&eacute;cuter un <tt class="literal">DELETE</tt> HQL, utilisez la m&ecirc;me m&eacute;thode
+            <tt class="literal">Query.executeUpdate()</tt> :
+        </p><pre class="programlisting">Session session = sessionFactory.openSession();
+Transaction tx = session.beginTransaction();
+
+String hqlDelete = "delete Customer c where c.name = :oldName";
+// or String hqlDelete = "delete Customer where name = :oldName";
+int deletedEntities = s.createQuery( hqlDelete )
+        .setString( "oldName", oldName )
+        .executeUpdate();
+tx.commit();
+session.close();</pre><p>
+            La valeur du <tt class="literal">int</tt> retourn&eacute; par la m&eacute;thode <tt class="literal">Query.executeUpdate()</tt>
+            indique le nombre d'entit&eacute;s affect&eacute;es par l'op&eacute;ration. Consid&eacute;rez que cela peut ou pas
+            corr&eacute;ler le nombre de lignes affect&eacute;s dans la base de donn&eacute;es. Une op&eacute;ration HQL
+            pourrait entra&icirc;ner l'ex&eacute;cution de multiples expressions SQL r&eacute;elles, pour des classes
+            filles mapp&eacute;es par jointure (NdT: join-subclass), par exemple. Le nombre retourn&eacute;
+            indique le nombre d'entit&eacute;s r&eacute;elles affect&eacute;es par l'expression. Retour &agrave; l'exemple de la
+            classe fille mapp&eacute;e par jointure, un effacement d'une des classes filles peut r&eacute;ellement
+            entra&icirc;ner des suppressions pas seulement dans la table qui mappe la classe fille, mais
+            aussi dans la table "racine" et potentillement dans les tables des classes filles plus bas
+            dans la hi&eacute;rarchie d'h&eacute;ritage.
+        </p><p>
+            La pseudo-syntaxe pour l'expression <tt class="literal">INSERT</tt> est :
+            <tt class="literal">INSERT INTO EntityName properties_list select_statement</tt>. Quelques
+            points sont &agrave; noter :
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                    Seule la forme INSERT INTO ... SELECT ... est support&eacute;e ; pas la forme INSERT INTO ... VALUES ... .
+                </p><p>
+                    La properties_list est analogue &agrave; la <tt class="literal">sp&eacute;cification de la colonne</tt>
+
+                    The properties_list is analogous to the <tt class="literal">column speficiation</tt> dans
+                    l'expression SQL <tt class="literal">INSERT</tt>. Pour les entit&eacute;s impliqu&eacute;es dans
+                    un h&eacute;ritage mapp&eacute;, seules les propri&eacute;t&eacute;s directement d&eacute;finies &agrave; ce niveau de classe
+                    donn&eacute; peuvent &ecirc;tre utilis&eacute;es dans properties_list. Les propri&eacute;t&eacute;s de la classe m&egrave;re
+                    ne sont pas permises ; et les propri&eacute;t&eacute;s des classes filles n'ont pas de sens. En
+                    d'autres mots, les expressions <tt class="literal">INSERT</tt> par nature non polymorphiques.
+                </p></li><li><p>
+                    select_statement peut &ecirc;tre n'importe quelle requ&ecirc;te de s&eacute;lection HQl valide, avec
+                    l'avertissement que les types de retour doivent correspondre aux types attendus par
+                    l'insertion. Actuellement, c'est v&eacute;rifi&eacute; durant la compilation de la requ&ecirc;te plut&ocirc;t
+                    que la v&eacute;rification soit rel&eacute;gu&eacute;e &agrave; la base de donn&eacute;es. Notez cependant que cela
+                    pourrait poser des probl&egrave;mes entre les <tt class="literal">Type</tt>s d'Hibernate qui
+                    sont <span class="emphasis"><em>&eacute;quivalents</em></span> oppos&eacute; &agrave; <span class="emphasis"><em>&eacute;gaux</em></span>. Cela
+                    pourrait poser des probl&egrave;mes avec des disparit&eacute;s entre une propri&eacute;t&eacute; d&eacute;finie
+                    comme un <tt class="literal">org.hibernate.type.DateType</tt> et une propri&eacute;t&eacute; d&eacute;finie
+                    comme un <tt class="literal">org.hibernate.type.TimestampType</tt>, m&ecirc;me si la base de donn&eacute;es
+                    ne ferait pas de distinction ou ne serait pas capable de g&eacute;rer la conversion.
+                </p></li><li><p>
+                    Pour la propri&eacute;te id, l'expression d'insertion vous donne deux options. Vous
+                    pouvez soit sp&eacute;cifier explicitement la propri&eacute;t&eacute; id dans properties_list
+                    (auquel cas sa valeur est extraite de l'expression de s&eacute;lection correspondante),
+                    soit l'omettre de properties_list (auquel cas une valeur g&eacute;n&eacute;r&eacute;e est utilis&eacute;e).
+                    Cette derni&egrave;re option est seulement disponible en utilisant le g&eacute;n&eacute;rateur d'identifiant
+                    qui op&egrave;re dans la base de donn&eacute;es ; tenter d'utiliser cette option avec n'importe quel
+                    type de g&eacute;n&eacute;rateur "en m&eacute;moire" causera une exception durant l'analyse. Notez
+                    que pour les buts de cette discussion, les g&eacute;n&eacute;rateurs "en base" sont consid&eacute;r&eacute;s
+                    &ecirc;tre <tt class="literal">org.hibernate.id.SequenceGenerator</tt> (et ses classes filles)
+                    et n'importe quelles impl&eacute;mentations de
+                    <tt class="literal">org.hibernate.id.PostInsertIdentifierGenerator</tt>.
+                    L'exception la plus notable ici est <tt class="literal">org.hibernate.id.TableHiLoGenerator</tt>,
+                    qu ne peut pas &ecirc;tre utilis&eacute;e parce qu'il ne propose pas un moyen de d'exposer ses valeurs
+                    par un select.
+                </p></li><li><p>
+                    Pour des propri&eacute;t&eacute;s mapp&eacute;es comme <tt class="literal">version</tt> ou <tt class="literal">timestamp</tt>,
+                    l'expression d'insertion vous donne deux options. Vous pouvez soit sp&eacute;cifier la propri&eacute;t&eacute; dans
+                    properties_list (auquel cas sa valeur est extraite des expressions select correspondantes),
+                    soit l'omettre de properties_list (auquel cas la <tt class="literal">valeur de graine</tt>
+                    (NdT : seed value) d&eacute;finie par le <tt class="literal">org.hibernate.type.VersionType</tt> est utilis&eacute;e).
+                </p></li></ul></div><p>
+            Un exemple d'ex&eacute;cution d'une expression <tt class="literal">INSERT</tt> HQL :
+        </p><pre class="programlisting">Session session = sessionFactory.openSession();
+Transaction tx = session.beginTransaction();
+
+String hqlInsert = "insert into DelinquentAccount (id, name) select c.id, c.name from Customer c where ...";
+int createdEntities = s.createQuery( hqlInsert )
+        .executeUpdate();
+tx.commit();
+session.close();</pre></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="events.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="queryhql.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;12.&nbsp;Les intercepteurs et les &eacute;v&eacute;nements&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;14.&nbsp;HQL: Langage de requ&ecirc;tage d'Hibernate</td></tr></table></div></body></html>

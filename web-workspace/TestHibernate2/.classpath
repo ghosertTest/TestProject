@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry path="src" kind="src"/>
+	<classpathentry path="db" kind="src"/>
+	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
+	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip" path="JUNIT_HOME/junit.jar" kind="var"/>
+	<classpathentry path="lib/hibernate3.jar" kind="lib"/>
+	<classpathentry path="lib/hsqldb.jar" kind="lib"/>
+	<classpathentry path="lib/activation.jar" kind="lib"/>
+	<classpathentry path="lib/aopalliance.jar" kind="lib"/>
+	<classpathentry path="lib/commons-beanutils.jar" kind="lib"/>
+	<classpathentry path="lib/commons-dbcp.jar" kind="lib"/>
+	<classpathentry path="lib/commons-lang.jar" kind="lib"/>
+	<classpathentry path="lib/commons-pool.jar" kind="lib"/>
+	<classpathentry path="lib/commons-collections.jar" kind="lib"/>
+	<classpathentry path="lib/antlr-2.7.5H3.jar" kind="lib"/>
+	<classpathentry path="lib/dom4j-1.6.jar" kind="lib"/>
+	<classpathentry path="lib/cglib-nodep-2.1_3.jar" kind="lib"/>
+	<classpathentry path="lib/ehcache-1.1.jar" kind="lib"/>
+	<classpathentry path="lib/jta.jar" kind="lib"/>
+	<classpathentry path="lib/commons-logging.jar" kind="lib"/>
+	<classpathentry path="lib/log4j-1.2.11.jar" kind="lib"/>
+	<classpathentry path="bin" kind="output"/>
+</classpath>

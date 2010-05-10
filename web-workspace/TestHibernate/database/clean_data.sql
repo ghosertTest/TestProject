@@ -1,0 +1,4 @@
+DELETE FROM T_Passport;
+DELETE FROM T_Address;
+DELETE FROM T_User;
+DELETE FROM T_Group;

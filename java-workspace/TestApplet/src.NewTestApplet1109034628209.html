@@ -1,0 +1,74 @@
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<html>
+<body>
+
+<FORM METHOD=POST name="fmTest" ACTION="">
+
+  <input type="text" name="tbLabel" value="Value from tbLabel.">
+  <INPUT TYPE="checkbox" NAME="cbBox" value="Value from cbBox0">
+  <INPUT TYPE="checkbox" NAME="cbBox" value="Value from cbBox1">
+
+  <SELECT NAME="stTest">
+  <option> SHANGHAI </option>
+  <option> BEIJING </option>
+  <option> GUANGZHOU </option>
+  <option> NEWYORK </option>
+  </SELECT>
+
+  <applet name="NewTestApplet" code=src.NewTestApplet.class width="200" height="200" mayscript>
+  <!--
+    <param name = "labelInfo" value = "Value from labelInfo." >
+  -->
+  </applet>
+
+  <br><br>
+  please click submit button first, then change the value of tbLabel, and click getValue button at last.
+</FORM>
+
+
+<input type="button" name="btSubmit" value="submit" onclick="fnStartNewTestApplet(fmTest)">
+<input type="button" name="btSubmit" value="getValue" onclick="fnGetValue()">
+
+<script language="javascript">
+  function fnStartNewTestApplet(fm)
+  {
+	  var comm = fm.tbLabel.value;
+	  var blueTooth = fm.cbBox[0].checked;
+	  var num = 9;
+	  var array = new Array( 3 );
+	  array[0] = "I";
+	  array[1] = "LOVE";
+	  array[2] = "YOU";
+	  var selectedIndex = fm.stTest.selectedIndex;
+	  var selectText = fm.stTest.options[selectedIndex].text;
+
+	  NewTestApplet.startWithParam( comm, blueTooth, num, array, selectText );
+  }
+  function fnRefreshFromNewTestApplet(result0, result1, result2, result3)
+  {
+      var s = result0 + "  " + result1 + "  " + result2 + "  " + result3 + "  " + "<br>";
+	  document.all.div[0].innerHTML = s
+  }
+</script>
+<div id="div">
+<div>
+<div id="div">
+<div>
+<div id="div">
+<div>
+<!--
+<form action="ssss.jsp" method="post" name="foSubmit">
+  <input name="btSubmit" type="submit" value="" style="display:none " >
+</form>
+<script language="javascript">
+  function post()
+  {
+      document.foSubmit.btSubmit.click();
+  }
+  post();
+</script>
+-->
+
+
+</body>
+</html>

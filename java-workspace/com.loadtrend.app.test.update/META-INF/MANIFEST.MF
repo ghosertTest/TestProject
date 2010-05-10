@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Update Plug-in
+Bundle-SymbolicName: com.loadtrend.app.test.update; singleton:=true
+Bundle-Version: 1.0.1
+Bundle-Activator: com.loadtrend.app.test.update.UpdatePlugin
+Bundle-Vendor: LOADTREND
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.update.core,
+ org.eclipse.update.ui,
+ org.eclipse.update.configurator
+Eclipse-AutoStart: true

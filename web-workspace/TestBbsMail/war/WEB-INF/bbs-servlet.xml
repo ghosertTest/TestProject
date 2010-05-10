@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	
+    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+	             <!-- Below code is written for the BBS System. -->
+	             <prop key="/listNote.do">ListNoteAction</prop> 
+	             <prop key="/postNote.do">PostNoteAction</prop>
+	             <prop key="/listReplyNote.do">ListReplyNoteAction</prop>
+	             <prop key="/postReplyNote.do">PostReplyNoteAction</prop>
+	             <!-- BBS System is end. -->
+     		</props>
+        </property>
+    </bean>
+    
+    <!-- Below code is written for the BBS System. -->
+    <bean id="PostReplyNoteAction" class="com.loadtrend.bbs.action.PostReplyNoteAction">
+	    <property name="commandClass" value="com.loadtrend.bbs.info.PostReplyNoteInfo"/>
+		<property name="formView" value="listReplyNote"/>
+		<property name="successView" value="forward:/listReplyNote.do"/>
+		<property name="noteManager" ref="noteManager"/>
+		<property name="replyNoteManager" ref="replyNoteManager"/>
+		<property name="postMailInfo" ref="postMailInfo"/>
+	</bean>
+	
+    <bean id="ListReplyNoteAction" class="com.loadtrend.bbs.action.ListReplyNoteAction">
+		<property name="pageView" value="listReplyNote"/>
+		<property name="errorView" value="error"/>
+		<property name="noteManager" ref="noteManager"/>
+	</bean>
+	 
+    <bean id="PostNoteAction" class="com.loadtrend.bbs.action.PostNoteAction">
+	    <property name="commandClass" value="com.loadtrend.bbs.info.PostNoteInfo"/>
+		<property name="formView" value="postNote"/>
+		<property name="successView" value="forward:/listNote.do"/>
+		<property name="noteManager" ref="noteManager"/>
+		<property name="postMailInfo" ref="postMailInfo"/>
+	</bean>
+	
+	<bean id="ListNoteAction" class="com.loadtrend.bbs.action.ListNoteAction">
+		<property name="pageView" value="listNote"/>
+		<property name="errorView" value="error"/>
+		<property name="noteManager" ref="noteManager"/>
+	</bean>
+	
+	<!-- BBS System is end. -->
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+	
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages" />
+    </bean>
+    
+</beans>

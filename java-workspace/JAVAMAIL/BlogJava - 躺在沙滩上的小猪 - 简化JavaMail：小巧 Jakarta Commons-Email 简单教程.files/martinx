@@ -1,0 +1,18 @@
+
+    var douban_badge_width;
+    var douban_badge_font;
+    var douban_style;
+
+    var dou_width = douban_badge_width?'width: '+douban_badge_width+';':'';
+    var dou_fnt = douban_badge_font?'font: '+douban_badge_font+';':'';
+    var dou_style= douban_style? douban_style:'';        
+    var dou_bdr= '';
+
+    document.write('<div style="'+dou_style+'"><table cellspacing="0" cellpadding="4" style="'+dou_width+'">');
+    document.write('  <tr align="center"><td style="'+dou_fnt+'"><a href="http://www.douban.com/subject/1178142/" title="UML和模式应用（原书第2版）\n\nApplying UML and Patterns:An Introduction to Object-Oriented Analysis and Design and the Unified Process,Second Edition " target=_blank><img src="http://www.douban.com/spic/s1607813.jpg" border="0"/></a></td><td style="'+dou_fnt+'"><a href="http://www.douban.com/subject/1477390/" title="代码大全（第二版）\n\n" target=_blank><img src="http://www.douban.com/spic/s1559486.jpg" border="0"/></a></td></tr>');
+document.write('  <tr align="center"><td style="'+dou_fnt+'"><a href="http://www.douban.com/subject/1756093/" title="Ruby for Rails\n\n" target=_blank><img src="http://www.douban.com/spic/s1627571.jpg" border="0"/></a></td><td style="'+dou_fnt+'"><a href="http://www.douban.com/subject/1140457/" title="敏捷软件开发\n\nAgile Software Development: Principles, Patterns, and Practices " target=_blank><img src="http://www.douban.com/spic/s1107674.jpg" border="0"/></a></td></tr>');
+document.write('  <tr align="center"><td style="'+dou_fnt+'"><a href="http://www.douban.com/subject/1229923/" title="重构－改善既有代码的设计（中文版）\n\nRefactoring: Improving the Design of Existing Code " target=_blank><img src="http://www.douban.com/spic/s1287860.jpg" border="0"/></a></td><td style="'+dou_fnt+'"><a href="http://www.douban.com/subject/1432162/" title="Ajax in Action\n\n" target=_blank><img src="http://www.douban.com/spic/s1497315.jpg" border="0"/></a></td></tr>');
+document.write('  <tr align="center"><td style="'+dou_fnt+'"><a href="http://www.douban.com/subject/1629512/" title="领域驱动设计:软件核心复杂性应对之道\n\n" target=_blank><img src="http://www.douban.com/spic/s1510870.jpg" border="0"/></a></td><td style="'+dou_fnt+'"><a href="http://www.douban.com/subject/1230036/" title="测试驱动开发（中文版）\n\n" target=_blank><img src="http://www.douban.com/spic/s1441607.jpg" border="0"/></a></td></tr>');
+
+    document.write('  </table></div>');
+    

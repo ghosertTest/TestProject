@@ -1,0 +1,183 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;2.&nbsp;Architecture</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="tutorial.html" title="Chapitre&nbsp;1.&nbsp;Introduction &agrave; Hibernate"><link rel="next" href="session-configuration.html" title="Chapitre&nbsp;3.&nbsp;Configuration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;2.&nbsp;Architecture</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tutorial.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="session-configuration.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="architecture"></a>Chapitre&nbsp;2.&nbsp;Architecture</h2></div></div><div></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="architecture-overview"></a>2.1.&nbsp;G&eacute;n&eacute;ralit&eacute;s</h2></div></div><div></div></div><p>
+            Voici une vue (tr&egrave;s) haut niveau de l'architecture d'Hibernate :
+        </p><div class="mediaobject" align="center"><img src="../shared/images/overview.gif" align="middle"></div><p>
+            Ce diagramme montre Hibernate utilisant une base de donn&eacute;es et des donn&eacute;es
+            de configuration pour fournir un service de persistance (et des objets
+            persistants) &agrave; l'application.
+        </p><p>
+            Nous aimerions d&eacute;crire une vue plus d&eacute;taill&eacute;e de l'architecture. Malheureusement,
+            Hibernate est flexible et supporte diff&eacute;rentes approches. Nous allons en
+            montrer les deux extr&ecirc;mes. L'architecture l&eacute;g&egrave;re laisse l'application fournir
+            ses propres connexions JDBC et g&eacute;rer ses propres transactions. Cette approche
+            utilise le minimum des APIs Hibernate :
+        </p><div class="mediaobject" align="center"><img src="../shared/images/lite.gif" align="middle"></div><p>
+            L'architecture la plus compl&egrave;te abstrait l'application des APIs JDBC/JTA 
+            sous-jacentes et laisse Hibernate s'occuper des d&eacute;tails.
+        </p><div class="mediaobject" align="center"><img src="../shared/images/full_cream.gif" align="middle"></div><p>
+            Voici quelques d&eacute;finitions des objets des diagrammes :
+
+            </p><div class="variablelist"><dl><dt><span class="term">SessionFactory (<tt class="literal">org.hibernate.SessionFactory</tt>)</span></dt><dd><p>
+                            Un cache threadsafe (immuable) des mappings vers une (et une seule) base 
+                            de donn&eacute;es. Une factory (fabrique) de <tt class="literal">Session</tt> et un client
+                            de <tt class="literal">ConnectionProvider</tt>. Peut contenir un cache optionnel de
+                            donn&eacute;es (de second niveau) qui est r&eacute;utilisable entre les diff&eacute;rentes transactions
+                            que cela soit au sein du m&ecirc;me processus (JVLM) ou par plusieurs n&frac12;uds d'un cluster.
+                        </p></dd><dt><span class="term">Session (<tt class="literal">org.hibernate.Session</tt>)</span></dt><dd><p>
+                            Un objet mono-thread&eacute;, &agrave; dur&eacute;e de vie courte, qui repr&eacute;sente une conversation
+                            entre l'application et l'entrep&ocirc;t de persistance. Encapsule une connexion JDBC.
+                            Factory (fabrique) des objets <tt class="literal">Transaction</tt>. Contient un cache
+                            (de premier niveau) des objets persistants, ce cache est obligatoire. Il est 
+                            utilis&eacute; lors de la navigation dans le graphe d'objets ou lors de la r&eacute;cup&eacute;ration
+                            d'objets par leur identifiant.
+                        </p></dd><dt><span class="term">Objets et Collections persistants</span></dt><dd><p>
+                            Objets mono-thread&eacute;s &agrave; vie courte contenant l'&eacute;tat de persistance
+                            et la fonction m&eacute;tier. Ceux-ci sont en g&eacute;n&eacute;ral les objets de type JavaBean
+                            (ou POJOs) ; la seule particularit&eacute; est qu'ils sont associ&eacute;s avec une (et
+                            une seule) <tt class="literal">Session</tt>. D&egrave;s que la <tt class="literal">Session</tt>
+                            est ferm&eacute;e, ils seront d&eacute;tach&eacute;s et libres d'&ecirc;tre utilis&eacute;s par n'importe laquelle
+                            des couches de l'application (ie. de et vers la pr&eacute;sentation en tant que Data 
+                            Transfer Objects - DTO : objet de transfert de donn&eacute;es).
+                        </p></dd><dt><span class="term">Objets et collections transients</span></dt><dd><p>
+                            Instances de classes persistantes qui ne sont actuellement pas associ&eacute;es &agrave;
+                            une <tt class="literal">Session</tt>. Elles ont pu &ecirc;tre instanci&eacute;es par l'application
+                            et ne pas avoir (encore) &eacute;t&eacute; persist&eacute;es ou elle ont pu &ecirc;tre instanci&eacute;es par
+                            une <tt class="literal">Session</tt> ferm&eacute;e.
+                        </p></dd><dt><span class="term">Transaction (<tt class="literal">org.hibernate.Transaction</tt>)</span></dt><dd><p>
+                            (Optionnel) Un objet mono-thread&eacute; &agrave; vie courte utilis&eacute; par l'application
+                            pour d&eacute;finir une unit&eacute; de travail atomique. Abstrait l'application des
+                            transactions sous-jacentes qu'elles soient JDBC, JTA ou CORBA. Une
+                            <tt class="literal">Session</tt> peut fournir plusieurs <tt class="literal">Transaction</tt>s
+                            dans certains cas. Toutefois, la d&eacute;limitation des transactions, via l'API d'Hibernate
+                            ou par la <tt class="literal">Transaction</tt> sous-jacente, n'est jamais optionnelle!
+                        </p></dd><dt><span class="term">ConnectionProvider (<tt class="literal">org.hibernate.connection.ConnectionProvider</tt>)</span></dt><dd><p>
+                            (Optionnel) Une fabrique de (pool de) connexions JDBC. Abstrait l'application
+                            de la <tt class="literal">Datasource</tt> ou du <tt class="literal">DriverManager</tt> sous-jacent.
+                            Non expos&eacute; &agrave; l'application, mais peut &ecirc;tre &eacute;tendu/impl&eacute;ment&eacute; par le d&eacute;veloppeur.
+                        </p></dd><dt><span class="term">TransactionFactory (<tt class="literal">org.hibernate.TransactionFactory</tt>)</span></dt><dd><p>
+                            (Optionnel) Une fabrique d'instances de <tt class="literal">Transaction</tt>. Non
+                            expos&eacute; &agrave; l'application, mais peut &ecirc;tre &eacute;tendu/impl&eacute;ment&eacute; par le d&eacute;veloppeur.
+                        </p></dd><dt><span class="term"><span class="emphasis"><em>Interfaces d'extension</em></span></span></dt><dd><p>
+                            Hibernate fournit de nombreuses interfaces d'extensions optionnelles que 
+                            vous pouvez impl&eacute;menter pour personnaliser le comportement de votre couche de persistance.
+                            Reportez vous &agrave; la documentation de l'API pour plus de d&eacute;tails.
+                        </p></dd></dl></div><p>
+        </p><p>
+            Dans une architecture l&eacute;g&egrave;re, l'application n'aura pas &agrave; utiliser les APIs
+            <tt class="literal">Transaction</tt>/<tt class="literal">TransactionFactory</tt>
+            et/ou n'utilisera pas les APIs <tt class="literal">ConnectionProvider</tt>
+            pour utiliser JTA ou JDBC.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="architecture-states"></a>2.2.&nbsp;Etats des instances</h2></div></div><div></div></div><p>
+            Une instance d'une classe persistante peut &ecirc;tre dans l'un des trois &eacute;tats suivants,
+            d&eacute;finis par rapport &agrave; un <span class="emphasis"><em>contexte de persistance</em></span>.
+            L'objet <tt class="literal">Session</tt> d'hibernate correspond &agrave; ce concept de 
+            contexte de persistance :
+        </p><div class="variablelist"><dl><dt><span class="term">passager (transient)</span></dt><dd><p>
+                        L'instance n'est pas et n'a jamais &eacute;t&eacute; associ&eacute;e &agrave; un contexte
+                        de persistance. Elle ne poss&egrave;de pas d'identit&eacute; persistante (valeur de cl&eacute; primaire)
+                    </p></dd><dt><span class="term">persistant</span></dt><dd><p>
+                        L'instance est associ&eacute;e au contexte de persistance.
+                        Elle poss&egrave;de une identit&eacute; persistante (valeur de cl&eacute; primaire)
+                        et, peut-&ecirc;tre, un enregistrement correspondant dans la base.
+                        Pour un contexte de persistance particulier, Hibernate
+                        <span class="emphasis"><em>garantit</em></span> que l'identit&eacute; persistante
+                        est &eacute;quivalente &agrave; l'identit&eacute; Java (emplacement m&eacute;moire de l'objet)
+                    </p></dd><dt><span class="term">d&eacute;tach&eacute;</span></dt><dd><p>
+                        L'instance a &eacute;t&eacute; associ&eacute;e au contexte de persistance mais ce
+                        contexte a &eacute;t&eacute; ferm&eacute;, ou l'instance a &eacute;t&eacute; s&eacute;rialis&eacute;e vers un
+                        autre processus. Elle poss&egrave;de une identit&eacute; persistante et
+                        peut-&ecirc;tre un enregistrement correspondant dans la base.
+                        Pour des instances d&eacute;tach&eacute;es, Hibernate ne donne aucune
+                        garantie sur la relation entre l'identit&eacute; persistante et
+                        l'identit&eacute; Java.
+                    </p></dd></dl></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="architecture-jmx"></a>2.3.&nbsp;Int&eacute;gration JMX</h2></div></div><div></div></div><p>
+            JMX est le standard J2EE de gestion des composants Java. 
+            Hibernate peut &ecirc;tre g&eacute;r&eacute; via un service JMX standard. Nous fournissons une impl&eacute;mentation
+            d'un MBean dans la distribution : <tt class="literal">org.hibernate.jmx.HibernateService</tt>.
+        </p><p>
+            Pour avoir un exemple sur la mani&egrave;re de d&eacute;ployer Hibernate en tant que service JMX dans le
+            serveur d'application JBoss Application Server, r&eacute;f&eacute;rez vous au guide utilisateur JBoss (JBoss User Guide).
+            Si vous d&eacute;ployez Hibernate via JMX sur JBoss AS, vous aurez &eacute;galement les b&eacute;n&eacute;fices suivants :
+        </p><div class="itemizedlist"><ul type="disc"><li><p>
+                    <span class="emphasis"><em>Gestion de la session :</em></span> Le cycle de vie de la <tt class="literal">Session</tt>
+                    Hibernate peut &ecirc;tre automatiquement limit&eacute;e &agrave; la port&eacute;e d'une transaction JTA.
+                    Cela signifie que vous n'avez plus besoin d'ouvrir et de fermer la <tt class="literal">Session</tt>
+                    manuellement, cela devient le travail de l'intercepteur EJB de JBoss. Vous n'avez
+                    pas non plus &agrave; vous occuper des d&eacute;marcations des transactions dans votre code (sauf
+                    si vous voulez &eacute;crire une couche de persistance qui soit portable, dans ce cas vous
+                    pouvez utiliser l'API optionnelle <tt class="literal">Transaction</tt> d'Hibernate).
+                    Vous appelez l'<tt class="literal">HibernateContext</tt> pour acc&eacute;der &agrave; la <tt class="literal">Session</tt>.
+                </p></li><li><p>
+                    <span class="emphasis"><em>D&eacute;ploiement HAR :</em></span> Habituellement vous d&eacute;ployez le service JMX
+                    Hibernate en utilisant le descripteur de d&eacute;ploiement de JBoss (dans un fichier EAR et/ou un SAR),
+                    il supporte toutes les options de configuration usuelles d'une <tt class="literal">SessionFactory</tt>
+                    Hibernate. Cependant, vous devez toujours nommer tous vos fichiers de mapping dans le
+                    descripteur de d&eacute;ploiement. Si vous d&eacute;cidez d'utiliser le d&eacute;ploiement optionnel sous forme
+                    de HAR, JBoss d&eacute;tectera automatiquement tous vos fichiers de mapping dans votre fichier HAR.
+                </p></li></ul></div><p>
+            Consultez le guide d'utilisation de JBoss AS pour plus d'informations sur ces options.
+        </p><p>
+            Les statistiques pendant l'ex&eacute;cution d'Hibernate (au runtime) sont une 
+            autre fonctionnalit&eacute; disponible en tant que service JMX. Voyez pour cela
+            <a href="session-configuration.html#configuration-optional-statistics" title="3.4.6.&nbsp;Statistiques Hibernate">Section&nbsp;3.4.6, &laquo;&nbsp;Statistiques Hibernate&nbsp;&raquo;</a>.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="architecture-jca"></a>2.4.&nbsp;Support JCA</h2></div></div><div></div></div><p>
+            Hibernate peut aussi &ecirc;tre configur&eacute; en tant que connecteur JCA. R&eacute;f&eacute;rez-vous au site
+            web pour de plus amples d&eacute;tails. Il est important de noter que le support JCA d'Hibernate
+            est encore consid&eacute;r&eacute; comme exp&eacute;rimental.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="architecture-current-session"></a>2.5.&nbsp;Sessions Contextuelles</h2></div></div><div></div></div><p>
+            Certaines applications utilisant Hibernate ont besoin d'une sorte de session "contextuelle", o&ugrave;
+            une session est li&eacute;e &agrave; la port&eacute;e d'un contexte particulier. Cependant, les applications ne d&eacute;finissent
+            pas toutes la notion de contexte de la m&ecirc;me mani&egrave;re, et diff&eacute;rents contextes d&eacute;finissent diff&eacute;rentes
+            port&eacute;es &agrave; la notion de "courant". Les applications &agrave; base d'Hibernate, versions pr&eacute;c&eacute;dentes &agrave; la 3.0
+            utilisaient g&eacute;n&eacute;ralement un principe maison de sessions contextuelles bas&eacute;es sur le <tt class="literal">ThreadLocal</tt>,
+            ainsi que sur des classes utilitaires comme <tt class="literal">HibernateUtil</tt>, ou utilisaient des
+            framework tiers (comme Spring ou Pico) qui fournissaient des sessions contextuelles bas&eacute;es sur 
+            l'utilisation de proxy/interception.
+        </p><p>
+        	A partir de la version 3.0.1, Hibernate a ajout&eacute; la m&eacute;thode <tt class="literal">SessionFactory.getCurrentSession()</tt>.
+        	Initialement, cela demandait l'usage de transactions <tt class="literal">JTA</tt>, o&ugrave; la
+        	transaction <tt class="literal">JTA</tt> d&eacute;finissait la port&eacute;e et le contexte de la session courante.
+        	L'&eacute;quipe Hibernate pense que, &eacute;tant donn&eacute;e la maturit&eacute; des impl&eacute;mentations de <tt class="literal">JTA TransactionManager</tt> ,
+        	la plupart (sinon toutes) des applications devraient utiliser la gestion des transactions par <tt class="literal">JTA</tt> 
+        	qu'elles soient ou non d&eacute;ploy&eacute;es dans un conteneur <tt class="literal">J2EE</tt>. Par cons&eacute;quent,
+        	vous devriez toujours contextualiser vos sessions, si vous en avez besoin, via la m&eacute;thode bas&eacute;e sur JTA.
+        </p><p>
+            Cependant, depuis la version 3.1, la logique derri&egrave;re
+            <tt class="literal">SessionFactory.getCurrentSession()</tt> est d&eacute;sormais branchable.  
+            A cette fin, une nouvelle interface d'extension (<tt class="literal">org.hibernate.context.CurrentSessionContext</tt>)
+            et un nouveau param&egrave;tre de configuration (<tt class="literal">hibernate.current_session_context_class</tt>)
+            ont &eacute;t&eacute; ajout&eacute;s pour permettre de configurer d'autres moyens de d&eacute;finir la port&eacute;e et le contexte des
+            sessions courantes.
+        </p><p>
+            Allez voir les Javadocs de l'interface <tt class="literal">org.hibernate.context.CurrentSessionContext</tt>
+            pour une description d&eacute;taill&eacute;e de son contrat. Elle d&eacute;finit une seule m&eacute;thode,
+            <tt class="literal">currentSession()</tt>, depuis laquelle l'impl&eacute;mentation est responsable
+            de traquer la session courante du contexte. Hibernate fournit deux impl&eacute;mentation 
+            de cette interface.
+        </p><div class="itemizedlist"><ul type="disc"><li><p>
+                    <tt class="literal">org.hibernate.context.JTASessionContext</tt> - les sessions courantes sont
+                    associ&eacute;es &agrave; une transaction <tt class="literal">JTA</tt>.  La logique est la m&ecirc;me que
+                    l'ancienne approche bas&eacute;e sur JTA. Voir les javadocs pour les d&eacute;tails.
+                </p></li><li><p>
+                    <tt class="literal">org.hibernate.context.ThreadLocalSessionContext</tt> - les sessions
+                    courantes sont associ&eacute;es au thread d'ex&eacute;cution. Voir les javadocs pour les d&eacute;tails.
+                </p></li></ul></div><p>
+            Les deux impl&eacute;mentations fournissent un mod&egrave;le de programmation de type "une session - une transaction
+            &agrave; la base de donn&eacute;es", aussi connu sous le nom de <span class="emphasis"><em>session-per-request</em></span>. 
+            Le d&eacute;but et la fin d'une session Hibernate sont d&eacute;finis par la dur&eacute;e d'une transaction de base de donn&eacute;es.
+            Si vous utilisez une d&eacute;marcation programmatique de la transaction (par exemple sous J2SE ou JTA/UserTransaction/BMT),
+            nous vous conseillons d'utiliser l'API Hibernate <tt class="literal">Transaction</tt> pour masquer le syst&egrave;me
+            de transaction utilis&eacute;. Si vous ex&eacute;cutez sous un conteneur EJB qui supporte CMT, vous n'avez besoin d'aucune
+            op&eacute;rations de d&eacute;marcations de session ou transaction dans votre code puisque tout
+            est g&eacute;r&eacute; de mani&egrave;re d&eacute;clarative. R&eacute;f&eacute;rez vous &agrave; <a href="transactions.html" title="Chapitre&nbsp;11.&nbsp;Transactions et acc&egrave;s concurrents">Chapitre&nbsp;11, <i>Transactions et acc&egrave;s concurrents</i></a> pour plus d'informations
+            et des exemples de code.
+        </p><p>
+            Le param&egrave;tre de configuration <tt class="literal">hibernate.current_session_context_class</tt> 
+            d&eacute;finit quelle impl&eacute;mentation de <tt class="literal">org.hibernate.context.CurrentSessionContext</tt> 
+            doit &ecirc;tre utilis&eacute;e. Notez que pour assurer la compatibilit&eacute; avec les versions pr&eacute;c&eacute;dentes, si
+            ce param&egrave;tre n'est pas d&eacute;fini mais qu'un <tt class="literal">org.hibernate.transaction.TransactionManagerLookup</tt> 
+            est configur&eacute;, Hibernate utilisera le <tt class="literal">org.hibernate.context.JTASessionContext</tt>.
+            La valeur de ce param&egrave;tre devrait juste nommer la classe d'impl&eacute;mentation &agrave; utiliser, 
+            pour les deux impl&eacute;mentations fournies, il y a cependant deux alias correspondant: "jta" et "thread".
+        </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tutorial.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="session-configuration.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;1.&nbsp;Introduction &agrave; Hibernate&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;3.&nbsp;Configuration</td></tr></table></div></body></html>

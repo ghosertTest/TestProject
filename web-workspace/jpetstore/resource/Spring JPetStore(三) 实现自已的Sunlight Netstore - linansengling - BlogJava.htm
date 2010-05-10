@@ -1,0 +1,847 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0067)http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html -->
+<HTML><HEAD id=Head><TITLE>Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=utf-8">
+<META content="博客 blog java blogjava" name=keywords><LINK id=MainCss 
+href="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/style.css" 
+type=text/css rel=stylesheet><LINK id=RSSLink title=RSS 
+href="http://www.blogjava.net/linansengling/rss.aspx" type=application/rss+xml 
+rel=alternate>
+<META content="MSHTML 6.00.2800.1578" name=GENERATOR></HEAD>
+<BODY>
+<FORM id=Form1 name=Form1 onsubmit="javascript:return WebForm_OnSubmit();" 
+action=70625.html method=post>
+<DIV><INPUT id=__EVENTTARGET type=hidden name=__EVENTTARGET> <INPUT 
+id=__EVENTARGUMENT type=hidden name=__EVENTARGUMENT> <INPUT 
+id="&#13;&#10;__VIEWSTATE" type=hidden name=__VIEWSTATE> </DIV>
+<SCRIPT type=text/javascript>
+<!--
+var theForm = document.forms['Form1'];
+if (!theForm) {
+    theForm = document.Form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+// -->
+</SCRIPT>
+
+<SCRIPT 
+src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/WebResource.axd" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript>
+									function ctlent(evt)
+											{
+												if(evt.ctrlKey && evt.keyCode == 13)
+												{	
+													try
+													{
+														TempSave('AnonymousPostComment1_tbComment');
+													}
+													catch(ex)
+													{
+													}
+													finally
+													{
+													    __doPostBack('AnonymousPostComment1$btnSubmit','')
+													}
+												}
+		
+												}</SCRIPT>
+
+<SCRIPT language=JavaScript>function SetReplyAuhor(author){document.getElementById('AnonymousPostComment1_tbComment').value+="@"+author+"\n";document.getElementById('AnonymousPostComment1_tbComment').focus();return false}</SCRIPT>
+
+<SCRIPT 
+src="C:\Documents and Settings\jiawei.zhang\My Documents\Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files\WebResource(1).axd" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT type=text/javascript>
+<!--
+function WebForm_OnSubmit() {
+if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+return true;
+}
+// -->
+</SCRIPT>
+
+<H1><A class=headermaintitle id=Header1_HeaderTitle 
+href="http://www.blogjava.net/linansengling/">linansengling</A></H1>
+<P id=tagline></P>
+<DIV id=rigthtag>&nbsp;</DIV>
+<DIV id=main>
+<DIV class=post>
+<H2><A id=viewpost1_TitleUrl 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html">Spring 
+JPetStore(三) 实现自已的Sunlight Netstore</A> </H2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; 看过了Spring JPetStore自已觉得界面有点不好看, 我觉得界面在购物网站建设中还是重要的. 
+所以在Spring&nbsp; JPetStore基础上我用Structs的Title框架对原系统做了一定的改变形成了自己的"阳光网店"(Sunlight 
+NetStore), 现在贴出来和大家分享, 大虾见了请别见笑, 还请多多指教, 学生的作品, 都没多少实用性, 只是学了一些东西来练练手.<BR><BR><A 
+title=eroor 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/test">Sunlight 
+NetStore源码下载</A>(文件太大无法上传, 想要的朋友请留下Eail, 
+或加我QQ:307838474)<BR><BR>下载的源程序是Eclipse下完成的工程源程序,可以在Eclipse下只接导入进来打开完成发布. 
+&nbsp;也可以在tomcat安装目录\webapps目录下新建一文件夹jpetstore然后把下载下来的WebRoot目录下的所有内容都拷过去.&nbsp; 
+数据库的建立, 我开发时使用的是mysql4.0(如果你用的是mysql5.0则可能有时会出错, 
+5.0是它的测试版我用了感觉有时会出现莫明其妙的错误,还以为是程序错误, 费了我好多时间, 而4.0是它的发布版很稳定的). 
+使用mysql你可以配合使用MySQL Control Center(mysql4.0, MySQL Control 
+Center可以网上下载Google一下吧这里就不提供下载地址了)很好用的和微软的SQL Server差不多. 在MySQL Control 
+Center中执行数据库脚本, 然后启动tomcat服务器. 你将看到如下:&nbsp;&nbsp;(开发使用的技术是Structs里面的东东, 就不说了. 
+架构, 业务层和数据层和原来的不变,<A title="spring jpetstore(二)" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html"> 
+想了解请看Spring JPetStore(二) Spring 
+JPetStore的分析</A>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<BR></P>
+<P align=center><IMG style="WIDTH: 630px; HEIGHT: 582px" height=768 
+alt=index1.jpg 
+src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/index1.jpg" 
+width=1024 border=0> </P>
+<P><BR><BR></P>
+<P align=center><IMG style="WIDTH: 623px; HEIGHT: 1232px" height=1364 
+alt=index3.jpg 
+src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/index3.jpg" 
+width=1024 border=0> </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<BR><BR></P>
+<P align=center><IMG style="WIDTH: 627px; HEIGHT: 587px" height=764 alt=dog.jpg 
+src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/dog.jpg" 
+width=1024 border=0> </P>
+<P>&nbsp;&nbsp;</P>
+<P align=center><IMG style="WIDTH: 624px; HEIGHT: 675px" height=764 alt=data.jpg 
+src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/data.jpg" 
+width=1024 border=0> </P>
+<P class=postfoot>posted on 2006-09-19 21:56 <A 
+href="http://www.blogjava.net/linansengling/">周先有</A> 阅读(465) <A 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#Post">评论(15)</A> 
+&nbsp;<A 
+href="http://www.blogjava.net/linansengling/admin/EditPosts.aspx?postid=70625">编辑</A>&nbsp;<A 
+href="http://www.blogjava.net/linansengling/AddToFavorite.aspx?id=70625">收藏</A> 
+<A 
+href="http://www.blogjava.net/linansengling/services/trackbacks/70625.aspx">引用</A> 
+<A 
+href="javascript:d=document;t=d.selection?(d.selection.type!='None'?d.selection.createRange().text:''):(d.getSelection?d.getSelection():'');void(keyit=window.open('http://www.365key.com/storeit.aspx?t='+escape(d.title)+'&amp;u='+escape(d.location.href)+'&amp;c='+escape(t),'keyit','scrollbars=no,width=475,height=575,left=75,top=20,status=no,resizable=yes'));keyit.focus();">收藏至365Key</A> 
+所属分类: <A 
+href="http://www.blogjava.net/linansengling/category/15124.html">JAVA</A> 
+</P></DIV><IMG height=1 
+src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/70625.html" 
+width=1> <!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+<rdf:Description
+rdf:about="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html"
+dc:identifier="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html"
+dc:title="Spring JPetStore(三) 实现自已的Sunlight Netstore"
+trackback:ping="http://www.blogjava.net/linansengling/services/trackbacks/70625.aspx" />
+</rdf:RDF>
+--><A name=pagedcomment></A><A name=评论>
+<DIV id=comments>
+<H3>评论</H3>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#70636">#</A>&nbsp;<A 
+name=70636></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-19 
+22:42 </SPAN><A id=Comments1_CommentList_ctl00_NameLink 
+target=_blank>leeichang</A> </H4>
+<P>leeichang@gmail.com <BR>thank you very much&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("leeichang")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl00_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl00$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl00_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#70679">#</A>&nbsp;<A 
+name=70679></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-20 
+09:09 </SPAN><A id=Comments1_CommentList_ctl01_NameLink 
+target=_blank>shiweijun</A> </H4>
+<P>junjun231953@hotmail.com <BR>感觉不错，谢谢了&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("shiweijun")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl01_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl01$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl01_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#70682">#</A>&nbsp;<A 
+name=70682></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-20 
+09:19 </SPAN><A id=Comments1_CommentList_ctl02_NameLink target=_blank>gui</A> 
+</H4>
+<P>xiwdu@126.com <BR><BR>thanks&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("gui")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl02_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl02$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl02_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#70685">#</A>&nbsp;<A 
+name=70685></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-20 
+09:21 </SPAN><A id=Comments1_CommentList_ctl03_NameLink target=_blank>lzj</A> 
+</H4>
+<P>lzj_yinmail@21cn.com thank you&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("lzj")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl03_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl03$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl03_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#70751">#</A>&nbsp;<A 
+name=70751></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-20 
+12:42 </SPAN><A id=Comments1_CommentList_ctl04_NameLink target=_blank>abb</A> 
+</H4>
+<P>sodmewuhan@hotmail.com&nbsp;&nbsp;<A onclick='return SetReplyAuhor("abb")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl04_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl04$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl04_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#70849">#</A>&nbsp;<A 
+name=70849></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-20 
+17:00 </SPAN><A id=Comments1_CommentList_ctl05_NameLink target=_blank>Simon 
+Hao</A> </H4>
+<P>呵呵，谢谢了，能不能给我也发一份呢？ <BR><BR>Email: haoqingshi@hotmail.com&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("Simon Hao")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl05_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl05$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl05_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#70851">#</A>&nbsp;<A 
+name=70851></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-20 
+17:09 </SPAN><A id=Comments1_CommentList_ctl06_NameLink 
+target=_blank>koujian</A> </H4>
+<P>我也想研究下 <BR>kjb1520032000@163.com先谢谢了&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("koujian")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl06_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl06$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl06_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#70972">#</A>&nbsp;<A 
+name=70972></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-21 
+08:19 </SPAN><A id=Comments1_CommentList_ctl07_NameLink 
+href="http://www.blogjava.net/javainthink/" target=_blank>酸酸菜</A> </H4>
+<P>xiongjunnan1@126.com&nbsp;&nbsp;<A onclick='return SetReplyAuhor("酸酸菜")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl07_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl07$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl07_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#71049">#</A>&nbsp;<A 
+name=71049></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-21 
+11:47 </SPAN><A id=Comments1_CommentList_ctl08_NameLink target=_blank>yapi</A> 
+</H4>
+<P>yapituy@sohu.com 谢谢 <BR>&nbsp;&nbsp;<A onclick='return SetReplyAuhor("yapi")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl08_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl08$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl08_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#71227">#</A>&nbsp;<A 
+name=71227></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-22 
+07:53 </SPAN><A id=Comments1_CommentList_ctl09_NameLink href="http://ase/" 
+target=_blank>ase</A> </H4>
+<P>asesong@gmail.com&nbsp;&nbsp;<A onclick='return SetReplyAuhor("ase")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl09_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl09$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl09_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#71236">#</A>&nbsp;<A 
+name=71236></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-22 
+09:07 </SPAN><A id=Comments1_CommentList_ctl10_NameLink 
+href="http://www.blogjava.net/linansengling/" target=_blank>周先有</A> </H4>
+<P>@leeichang <BR>很抱歉邮件发送过程中可能存在有一些错误（文件有点大）如果2天后没收到的请Q我&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("周先有")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl10_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl10$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl10_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#71635">#</A>&nbsp;<A 
+name=71635></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-09-25 
+08:33 </SPAN><A id=Comments1_CommentList_ctl11_NameLink 
+target=_blank>nk912114</A> </H4>
+<P>nk912114@163.com <BR>谢谢&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("nk912114")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl11_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl11$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl11_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#76582">#</A>&nbsp;<A 
+name=76582></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-10-21 
+23:04 </SPAN><A id=Comments1_CommentList_ctl12_NameLink 
+target=_blank>dragon777</A> </H4>
+<P>好东西,正在学习中,希望能发给我一份,谢谢. <BR>chyongzhou@56.com&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("dragon777")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl12_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl12$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl12_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#78510">#</A>&nbsp;<A 
+name=78510></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore <SPAN>2006-11-01 
+17:03 </SPAN><A id=Comments1_CommentList_ctl13_NameLink 
+target=_blank>talangniao</A> </H4>
+<P>liang_qizhi@sohu.com给我份代码,谢谢!&nbsp;&nbsp;<A 
+onclick='return SetReplyAuhor("talangniao")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl13_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl13$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl13_EditLink></A> </P>
+<H4><A title="permalink: re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#80910">#</A>&nbsp;<A 
+name=80910></A>re: Spring JPetStore(三) 实现自已的Sunlight Netstore<A name=Post></A> 
+<SPAN>2006-11-13 15:52 </SPAN><A id=Comments1_CommentList_ctl14_NameLink 
+target=_blank>SJ[匿名]</A> </H4>
+<P>kia126@gmail.com 谢谢.&nbsp;&nbsp;<A onclick='return SetReplyAuhor("SJ[匿名]")' 
+href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#post">回复</A> 
+<A id=Comments1_CommentList_ctl14_DeleteLink 
+href="javascript:__doPostBack('Comments1$CommentList$ctl14$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+id=Comments1_CommentList_ctl14_EditLink></A> </P></DIV>
+<STYLE>TD {
+	FONT-SIZE: 12px
+}
+.commentTextBox {
+	FONT-SIZE: 13px; FONT-FAMILY: Verdana
+}
+</STYLE>
+<!--Beging Temp Save-->
+<STYLE>.userData {
+	BEHAVIOR: url(#default#userdata)
+}
+</STYLE>
+
+<DIV class=userData id=CommentsPersistDiv></DIV>
+<SCRIPT>
+			function TempSave(ElementID)
+			{
+				
+				CommentsPersistDiv.setAttribute("CommentContent",document.getElementById(ElementID).value);
+				CommentsPersistDiv.save("CommentXMLStore");
+				
+			}
+			function Restore(ElementID)
+			{
+				CommentsPersistDiv.load("CommentXMLStore");
+				document.getElementById(ElementID).value=CommentsPersistDiv.getAttribute("CommentContent");
+			}		
+</SCRIPT>
+<!--Ene TempSave-->
+<DIV class=commentform><A name=Feedback></A>
+<TABLE cellSpacing=1 cellPadding=1 border=0>
+  <TBODY>
+  <TR>
+    <TD width=75></TD>
+    <TD></TD>
+    <TD></TD></TR>
+  <TR>
+    <TD width=55>标题</TD>
+    <TD><INPUT id=AnonymousPostComment1_tbTitle style="WIDTH: 320px" 
+      value="re: Spring JPetStore(三) 实现自已的Sunlight Netstore" 
+      name=AnonymousPostComment1$tbTitle></TD>
+    <TD><SPAN id=AnonymousPostComment1_RequiredFieldValidator1 
+      style="VISIBILITY: hidden; COLOR: red">请输入标题</SPAN></TD></TR>
+  <TR>
+    <TD>姓名</TD>
+    <TD><INPUT id=AnonymousPostComment1_tbName style="WIDTH: 320px" 
+      name=AnonymousPostComment1$tbName></TD>
+    <TD><SPAN id=AnonymousPostComment1_RequiredFieldValidator2 
+      style="VISIBILITY: hidden; COLOR: red">请输入你的姓名</SPAN></TD></TR>
+  <TR>
+    <TD>主页</TD>
+    <TD><INPUT id=AnonymousPostComment1_tbUrl style="WIDTH: 320px" 
+      name=AnonymousPostComment1$tbUrl></TD>
+    <TD><FONT face=宋体></FONT></TD></TR>
+  <TR>
+    <TD align=left colSpan=3>
+      <TABLE class=CommentForm id=AnonymousPostComment1_tbCaptchaImage 
+      cellSpacing=0 cellPadding=0 border=0>
+        <TBODY>
+        <TR>
+          <TD colSpan=3><SPAN id=AnonymousPostComment1_Requiredfieldvalidator4 
+            style="DISPLAY: none; COLOR: red">请输入验证码</SPAN> <SPAN 
+            id=AnonymousPostComment1_lblImage 
+            style="FONT-WEIGHT: bold; COLOR: red"></SPAN></TD></TR>
+        <TR>
+          <TD width=78>验证码</TD>
+          <TD><INPUT id=AnonymousPostComment1_CodeNumberTextBox 
+            name=AnonymousPostComment1$CodeNumberTextBox>*</TD>
+          <TD align=left><IMG id=AnonymousPostComment1_Img1 
+            src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/JpegImage.aspx"> 
+          </TD></TR></TBODY></TABLE></TD></TR>
+  <TR>
+    <TD colSpan=3>内容(提交失败后,可以通过“恢复上次提交”恢复刚刚提交的内容) <SPAN 
+      id=AnonymousPostComment1_RequiredFieldValidator3 
+      style="VISIBILITY: hidden; COLOR: red">请输入评论内容</SPAN><BR><TEXTAREA class=commentTextBox id=AnonymousPostComment1_tbComment onkeydown=ctlent(event) style="WIDTH: 480px; HEIGHT: 220px" name=AnonymousPostComment1$tbComment rows=10 cols=50></TEXTAREA></TD></TR>
+  <TR>
+    <TD colSpan=3><SPAN id=AnonymousPostComment1_Message 
+      style="COLOR: red"></SPAN></TD>
+  <TR>
+    <TD colSpan=3><INPUT id=AnonymousPostComment1_chkRemember tabIndex=-1 
+      type=checkbox CHECKED name=AnonymousPostComment1$chkRemember><LABEL 
+      for=AnonymousPostComment1_chkRemember>Remember Me?</LABEL></TD></TR>
+  <TR>
+    <TD height=23><INPUT class=commentTextBox id=AnonymousPostComment1_btnSubmit onclick="TempSave('AnonymousPostComment1_tbComment');WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;AnonymousPostComment1$btnSubmit&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" type=submit value=提交 name=AnonymousPostComment1$btnSubmit> 
+    </TD>
+    <TD colSpan=2 height=23>&nbsp; <A id=AnonymousPostComment1_lnkLogin 
+      href="http://www.blogjava.net/login.aspx?ReturnURL=http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html&amp;SourceURL=/linansengling/archive/2006/09/19/70625.html">登录</A>&nbsp;&nbsp;<!--<a id="AnonymousPostComment1_linkLoginComment" OnClick="if(document.getElementById('AnonymousPostComment1_tbComment').value != '') return confirm('未提交的评论内容将会丢失, 你真的要进入高级评论吗?');" href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html?login=1#Post">使用高级评论</a>&nbsp;&nbsp;--><A 
+      href="http://www.blogjava.net/RequireRegister.aspx">新用户注册</A>&nbsp;&nbsp;<A 
+      href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#Top">返回页首</A>&nbsp;&nbsp;<A 
+      id=AnonymousPostComment1_lbRestore 
+      onclick="Restore('AnonymousPostComment1_tbComment'); return false;" 
+      href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.html#Post">恢复上次提交</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    </TD></TR>
+  <TR>
+    <TD colSpan=3>[使用Ctrl+Enter键可以直接提交]</TD></TR>
+  <TR>
+    <TD colSpan=3 height=1></TD></TR>
+  <TR>
+    <TD colSpan=3><BR>
+      <SCRIPT type=text/javascript><!--
+google_ad_client = "pub-4210569241504288";
+google_ad_width = 468;
+google_ad_height = 60;
+google_ad_format = "468x60_as";
+google_ad_type = "text";
+google_ad_channel ="";
+google_color_link = "6699CC";
+//--></SCRIPT>
+
+      <SCRIPT 
+      src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/show_ads.js" 
+      type=text/javascript>
+</SCRIPT>
+    </TD></TR></TBODY></TABLE></DIV>
+<DIV id=AnonymousPostComment1_ValidationSummary1 
+style="DISPLAY: none; COLOR: red"></DIV></DIV>
+<DIV id=rightmenu>
+<H3>导航</H3>
+<UL>
+  <LI><A id=MyLinks1_HomeLink href="http://www.blogjava.net/">BlogJava</A> </LI>
+  <LI><A id=MyLinks1_MyHomeLink 
+  href="http://www.blogjava.net/linansengling/">首页</A> </LI>
+  <LI><A id=MyLinks1_NewPostLink 
+  href="http://www.blogjava.net/linansengling/admin/EditPosts.aspx?opt=1">新随笔</A> 
+  </LI>
+  <LI><A id=MyLinks1_ContactLink accessKey=9 
+  href="http://www.blogjava.net/linansengling/contact.aspx">联系</A> </LI>
+  <LI><A id=MyLinks1_Syndication 
+  href="http://www.blogjava.net/linansengling/Rss.aspx">聚合</A><A 
+  id=MyLinks1_XMLLink href="http://www.blogjava.net/linansengling/Rss.aspx"><IMG 
+  style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+  src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/xml.gif"></A> 
+  </LI>
+  <LI><A id=MyLinks1_Admin 
+  href="http://www.blogjava.net/linansengling/admin/EditPosts.aspx">管理</A> 
+</LI></UL>
+<H3>统计</H3>
+<UL>
+  <LI>随笔 - 10 </LI>
+  <LI>文章 - 2 </LI>
+  <LI>评论 - 34 </LI>
+  <LI>引用 - 0 </LI></UL>
+<H3>留言簿</H3>
+<UL>
+  <LI><A id=SingleColumn1_ctl00_lnkMessages 
+  href="http://www.blogjava.net/linansengling/Contact.aspx?id=1">给我留言</A> </LI>
+  <LI><A id=SingleColumn1_ctl00_lnkPublicMsgView 
+  href="http://www.blogjava.net/linansengling/default.aspx?opt=msg">查看公开留言</A> 
+  </LI>
+  <LI><A id=SingleColumn1_ctl00_lnkPrivateMsgView 
+  href="http://www.blogjava.net/linansengling/admin/MyMessages.aspx">查看私人留言</A> 
+  </LI></UL>
+<H3>最新随笔</H3>
+<DIV class=RecentComment>
+<UL style="WORD-BREAK: break-all">
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl01_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/11/06/79394.aspx">1.&nbsp;嵌入式系统入门</A> 
+  </LI>
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl02_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/11/06/79370.aspx">2.&nbsp;个人简历（今年要毕业大家帮看看简历这样写可以吗？有HR的大虾给个面视机会也不错^-^）</A> 
+  </LI>
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl03_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70960.aspx">3.&nbsp;java 
+  实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl04_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/19/70625.aspx">4.&nbsp;Spring 
+  JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl05_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/17/70157.aspx">5.&nbsp;灰子鸟的天空</A> 
+  </LI>
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl06_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/17/70122.aspx">6.&nbsp;Spring 
+  JPetStore(二) JPetStore的分析</A> </LI>
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl07_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/16/70041.aspx">7.&nbsp;Spring 
+  JPetStore(一) 发布JPetStore应用</A> </LI>
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl08_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/16/70015.aspx">8.&nbsp;天南地北双飞客 
+  老翅几回寒暑</A> </LI>
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl09_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/12/69251.aspx">9.&nbsp;个人介绍</A> 
+  </LI>
+  <LI><A id=SingleColumn1_ctl02_RecentPostsList_ctl10_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/12/69243.aspx">10.&nbsp;JSP开发入门用户登陆认证</A> 
+  </LI></UL></DIV>
+<H3>随笔分类<SPAN style="FONT-WEIGHT: normal; FONT-SIZE: 11px">(10)</SPAN></H3>
+<UL>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl01_Link 
+  href="http://www.blogjava.net/linansengling/category/15126.html">About 
+  me(4)</A> <A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl01_RssLink 
+  title="Subscribe to About me(4)" 
+  href="http://www.blogjava.net/linansengling/category/15126.html/rss">(rss)</A> 
+  </LI>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl02_Link 
+  href="http://www.blogjava.net/linansengling/category/15125.html">ARM and 
+  Liunx(1)</A> <A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl02_RssLink 
+  title="Subscribe to ARM and Liunx(1)" 
+  href="http://www.blogjava.net/linansengling/category/15125.html/rss">(rss)</A> 
+  </LI>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl03_Link 
+  href="http://www.blogjava.net/linansengling/category/15124.html">JAVA(5)</A> 
+  <A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl03_RssLink 
+  title="Subscribe to JAVA(5)" 
+  href="http://www.blogjava.net/linansengling/category/15124.html/rss">(rss)</A> 
+  </LI></UL>
+<H3>随笔档案<SPAN style="FONT-WEIGHT: normal; FONT-SIZE: 11px">(10)</SPAN></H3>
+<UL>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl01_LinkList_ctl01_Link 
+  href="http://www.blogjava.net/linansengling/archive/2006/11.html">2006年11月 
+  (2)</A> </LI>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl01_LinkList_ctl02_Link 
+  href="http://www.blogjava.net/linansengling/archive/2006/09.html">2006年9月 
+  (8)</A> </LI></UL>
+<H3>文章分类<SPAN style="FONT-WEIGHT: normal; FONT-SIZE: 11px">(1)</SPAN></H3>
+<UL>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl02_LinkList_ctl01_Link 
+  href="http://www.blogjava.net/linansengling/category/17509.html">ARM/liunx(1)</A> 
+  <A id=SingleColumn1_Categories_CatList_ctl02_LinkList_ctl01_RssLink 
+  title="Subscribe to ARM/liunx(1)" 
+  href="http://www.blogjava.net/linansengling/category/17509.html/rss">(rss)</A> 
+  </LI></UL>
+<H3>文章档案<SPAN style="FONT-WEIGHT: normal; FONT-SIZE: 11px">(2)</SPAN></H3>
+<UL>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl03_LinkList_ctl01_Link 
+  href="http://www.blogjava.net/linansengling/archives/2006/11.html">2006年11月 
+  (2)</A> </LI></UL>
+<H3>相册</H3>
+<UL>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl04_LinkList_ctl01_Link 
+  href="http://www.blogjava.net/linansengling/gallery/15122.html">my picture</A> 
+  </LI></UL>
+<H3>收藏夹<SPAN style="FONT-WEIGHT: normal; FONT-SIZE: 11px">(3)</SPAN></H3>
+<UL>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl05_LinkList_ctl01_Link 
+  href="http://www.blogjava.net/linansengling/favorite/15288.html">liunx(3)</A> 
+  <A id=SingleColumn1_Categories_CatList_ctl05_LinkList_ctl01_RssLink 
+  title="Subscribe to liunx(3)" 
+  href="http://www.blogjava.net/linansengling/favorite/15288.html/rss">(rss)</A> 
+  </LI></UL>
+<H3>my like</H3>
+<UL>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl06_LinkList_ctl01_Link 
+  href="http://www.google.com/">google</A> </LI>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl06_LinkList_ctl02_Link 
+  href="http://www.ynnu.edu.cn/">our school</A> </LI></UL>
+<SCRIPT language=JavaScript>
+function SearchGoogle(key,evt,site)
+		{
+			if(evt.keyCode==13 || evt.keyCode==0 || evt.type =='click')
+			{
+				key.focus();
+				var keystr = encodeURIComponent(key.value);
+				url = "http://www.google.com/search?q=";
+				url = url+keystr;
+				url += "&ie=UTF-8&oe=GB2312&hl=zh-CN&domains="+site+"&sitesearch="+site;
+				window.location=url;
+				return false;
+			}
+		}
+</SCRIPT>
+
+<H3>搜索</H3>
+<UL>
+  <LI></LI>
+  <LI><INPUT id=q 
+  onkeydown="return SearchGoogle(document.getElementById('q'),event,'www.blogjava.net/linansengling')" 
+  style="WIDTH: 130px" name=q>&nbsp;<INPUT onclick="SearchGoogle(document.getElementById('q'),event,'www.blogjava.net/linansengling')" type=button value=搜索 name=sa> 
+  </LI></UL>
+<H3>最新评论 <A id=SingleColumn1_ctl04_RSSHyperlink1 
+href="http://www.blogjava.net/linansengling/CommentsRSS.aspx"><IMG 
+style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/xml.gif"></A></H3>
+<DIV class=RecentComment>
+<UL>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl01_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/11/19/70960.html#82000">1.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">yanghuw@163.com <BR>谢谢 <BR></LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--yh </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl02_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/11/13/70625.html#80910">2.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">kia126@gmail.com 谢谢. </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--SJ[匿名] </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl03_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/11/06/79370.html#79413">3.&nbsp;re: 
+  个人简历（今年要毕业大家帮看看简历这样写可以吗？有HR的大虾给个面视机会也不错^-^）</A> </LI>
+  <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--potomo </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl04_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/11/01/70625.html#78510">4.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">liang_qizhi@sohu.com给我份代码,谢谢! </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--talangniao </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl05_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/10/21/70625.html#76582">5.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">好东西,正在学习中,希望能发给我一份,谢谢. <BR>chyongzhou@56.com 
+  </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--dragon777 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl06_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/10/08/70157.html#73914">6.&nbsp;re: 
+  灰子鸟的天空</A> </LI>
+  <LI style="WORD-BREAK: break-all">为梦想而执着!终有一天灰子鸟的梦想会实现的,现在没实现也许是因为这片天空不属于他吧! 
+  <BR>"苦尽甘来"的成功更让人喜悦! </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--怡然 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl07_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/10/03/70960.html#73246">7.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">流口水了 <BR>ad-hunter@hotmail.com <BR>万分感谢！ 
+  <BR>国庆快乐！ <BR>中秋快乐！ </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--thl </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl08_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/25/70625.html#71635">8.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">nk912114@163.com <BR>谢谢 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--nk912114 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl09_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/25/70960.html#71633">9.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">nk912114 (at) 163.com <BR>thanks </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--nk912114 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl10_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/23/70960.html#71473">10.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">也能给我一份源文件吗？谢谢！ <BR>nbspnbsp@126.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--nbsp </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl11_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/23/70960.html#71440">11.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">能给我一份源文件吗 谢谢 `~~ <BR>EMAIL: 
+  fjufirefox@gmail.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--fjufirefox </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl12_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/22/70960.html#71267">12.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">嘿嘿，那天给我发的petstore很不错，这个也给我发个吧 
+  <BR>kjb1520032000@163.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--koujian </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl13_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/22/70625.html#71236">13.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">@leeichang 
+  <BR>很抱歉邮件发送过程中可能存在有一些错误（文件有点大）如果2天后没收到的请Q我 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--周先有 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl14_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/22/70625.html#71227">14.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">asesong@gmail.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--ase </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl15_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70960.html#71051">15.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">谢谢 lianjiping@163.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--为了生活而继续 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl16_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70625.html#71049">16.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">yapituy@sohu.com 谢谢 <BR></LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--yapi </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl17_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70960.html#71029">17.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">能给我一份源文件吗 我想研究一下用法 谢谢 `~~ 
+  EMAIL:onejavaer@126.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--onejavaer </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl18_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70960.html#70984">18.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">多谢wuxj888@yahoo.com.cn </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--新新人类 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl19_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70960.html#70979">19.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">谢谢:kisscheng@citiz.net </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--kisscheng </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl20_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70960.html#70978">20.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">能提供一份吗？li98311@tom.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--cctv </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl21_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70960.html#70975">21.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">1 抵制新浪信箱. <BR>2 给我发一份 fiolvivi@gmail.com 
+  </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--Anubis </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl22_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70625.html#70972">22.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">xiongjunnan1@126.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--酸酸菜 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl23_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70960.html#70962">23.&nbsp;re: 
+  java 实现分页技术(Structs+Hibernate+MySQL)</A> </LI>
+  <LI style="WORD-BREAK: break-all">我想要个源文件，hotjava_zj@sina.com,谢谢 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--HotJava </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl24_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/21/70122.html#70961">24.&nbsp;re: 
+  Spring JPetStore(二) JPetStore的分析</A> </LI>
+  <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--周先有 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl25_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/20/70122.html#70953">25.&nbsp;re: 
+  Spring JPetStore(二) JPetStore的分析</A> </LI>
+  <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--周先有 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl26_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/20/70625.html#70851">26.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">我也想研究下 <BR>kjb1520032000@163.com先谢谢了 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--koujian </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl27_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/20/70625.html#70849">27.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">呵呵，谢谢了，能不能给我也发一份呢？ <BR><BR>Email: 
+  haoqingshi@hotmail.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--Simon Hao </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl28_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/20/70625.html#70751">28.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">sodmewuhan@hotmail.com </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--abb </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl29_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/20/70625.html#70685">29.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">lzj_yinmail@21cn.com thank you </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--lzj </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl30_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/20/70625.html#70682">30.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">xiwdu@126.com <BR><BR>thanks </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--gui </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl31_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/20/70625.html#70679">31.&nbsp;re: 
+  Spring JPetStore(三) 实现自已的Sunlight Netstore</A> </LI>
+  <LI style="WORD-BREAK: break-all">junjun231953@hotmail.com <BR>感觉不错，谢谢了 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--shiweijun </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl32_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/20/70122.html#70674">32.&nbsp;re: 
+  Spring JPetStore(二) JPetStore的分析</A> </LI>
+  <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--逆流的鱼 </LI>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1_ctl04_CommentList_ctl33_Hyperlink1 
+  href="http://www.blogjava.net/linansengling/archive/2006/09/19/70122.html#70644">33.&nbsp;re: 
+  Spring JPetStore(二) JPetStore的分析</A> </LI>
+  <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 </LI>
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--Supergoal 
+</LI></UL></DIV></DIV>
+<P id=footer>Powered by: <BR><A id=Footer1_Hyperlink3 
+style="FONT-SIZE: 12px; FONT-FAMILY: Verdana" href="http://www.blogjava.net/" 
+name=Hyperlink1>BlogJava</A> <BR>Copyright © 周先有 </P>
+<SCRIPT type=text/javascript>
+<!--
+var Page_ValidationSummaries =  new Array(document.getElementById("AnonymousPostComment1_ValidationSummary1"));
+var Page_Validators =  new Array(document.getElementById("AnonymousPostComment1_RequiredFieldValidator1"), document.getElementById("AnonymousPostComment1_RequiredFieldValidator2"), document.getElementById("AnonymousPostComment1_Requiredfieldvalidator4"), document.getElementById("AnonymousPostComment1_RequiredFieldValidator3"));
+// -->
+</SCRIPT>
+
+<SCRIPT type=text/javascript>
+<!--
+var AnonymousPostComment1_RequiredFieldValidator1 = document.all ? document.all["AnonymousPostComment1_RequiredFieldValidator1"] : document.getElementById("AnonymousPostComment1_RequiredFieldValidator1");
+AnonymousPostComment1_RequiredFieldValidator1.controltovalidate = "AnonymousPostComment1_tbTitle";
+AnonymousPostComment1_RequiredFieldValidator1.errormessage = "请输入标题";
+AnonymousPostComment1_RequiredFieldValidator1.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AnonymousPostComment1_RequiredFieldValidator1.initialvalue = "";
+var AnonymousPostComment1_RequiredFieldValidator2 = document.all ? document.all["AnonymousPostComment1_RequiredFieldValidator2"] : document.getElementById("AnonymousPostComment1_RequiredFieldValidator2");
+AnonymousPostComment1_RequiredFieldValidator2.controltovalidate = "AnonymousPostComment1_tbName";
+AnonymousPostComment1_RequiredFieldValidator2.errormessage = "请输入你的姓名";
+AnonymousPostComment1_RequiredFieldValidator2.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AnonymousPostComment1_RequiredFieldValidator2.initialvalue = "";
+var AnonymousPostComment1_Requiredfieldvalidator4 = document.all ? document.all["AnonymousPostComment1_Requiredfieldvalidator4"] : document.getElementById("AnonymousPostComment1_Requiredfieldvalidator4");
+AnonymousPostComment1_Requiredfieldvalidator4.controltovalidate = "AnonymousPostComment1_CodeNumberTextBox";
+AnonymousPostComment1_Requiredfieldvalidator4.errormessage = "请输入验证码";
+AnonymousPostComment1_Requiredfieldvalidator4.display = "Dynamic";
+AnonymousPostComment1_Requiredfieldvalidator4.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AnonymousPostComment1_Requiredfieldvalidator4.initialvalue = "";
+var AnonymousPostComment1_RequiredFieldValidator3 = document.all ? document.all["AnonymousPostComment1_RequiredFieldValidator3"] : document.getElementById("AnonymousPostComment1_RequiredFieldValidator3");
+AnonymousPostComment1_RequiredFieldValidator3.controltovalidate = "AnonymousPostComment1_tbComment";
+AnonymousPostComment1_RequiredFieldValidator3.errormessage = "请输入评论内容";
+AnonymousPostComment1_RequiredFieldValidator3.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AnonymousPostComment1_RequiredFieldValidator3.initialvalue = "";
+var AnonymousPostComment1_ValidationSummary1 = document.all ? document.all["AnonymousPostComment1_ValidationSummary1"] : document.getElementById("AnonymousPostComment1_ValidationSummary1");
+AnonymousPostComment1_ValidationSummary1.showmessagebox = "True";
+AnonymousPostComment1_ValidationSummary1.showsummary = "False";
+// -->
+</SCRIPT>
+
+<SCRIPT type=text/javascript>
+<!--
+var Page_ValidationActive = false;
+if (typeof(ValidatorOnLoad) == "function") {
+    ValidatorOnLoad();
+}
+
+function ValidatorOnSubmit() {
+    if (Page_ValidationActive) {
+        return ValidatorCommonOnSubmit();
+    }
+    else {
+        return true;
+    }
+}
+// -->
+</SCRIPT>
+</FORM>
+<SCRIPT 
+src="Spring JPetStore(三) 实现自已的Sunlight Netstore - linansengling - BlogJava.files/ShowHidden.js" 
+type=text/javascript></SCRIPT>
+</BODY></HTML>

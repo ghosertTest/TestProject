@@ -1,0 +1,8 @@
+grant {
+	// Allow everything for now
+	permission java.security.AllPermission;
+	// permission java.net.SocketPermission "*:1024-65535", "accept, connect, listen, resolve";
+	// permission java.net.SocketPermission "*:888", "accept, connect, listen, resolve";
+	// permission java.net.SocketPermission "*:80", "accept, connect, listen, resolve";
+
+};

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="com.loadtrend.app.test.update.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Perspective"
+            class="com.loadtrend.app.test.update.Perspective"
+            id="com.loadtrend.app.test.update.perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="View"
+            class="com.loadtrend.app.test.update.View"
+            id="com.loadtrend.app.test.update.view">
+      </view>
+   </extension>
+   <extension
+         id="update"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="com.loadtrend.app.test.update.application"
+            name="update"/>
+   </extension>
+
+</plugin>

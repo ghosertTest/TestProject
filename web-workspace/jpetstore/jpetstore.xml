@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context crossContext="true" debug="5"
+	docBase="E:\Project\Eclipse\TestWorkspace\jpetstore\war"
+	path="/jpetstore" reloadable="true">
+</Context>

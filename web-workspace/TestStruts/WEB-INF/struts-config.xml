@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config
+PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+"http://jakarta.apache.org/struts/dtds/struts.config_1_1.dtd">
+
+<struts-config>
+
+  <form-beans>
+	<form-bean name="lookupForm" type="wiley.LookupForm"/>
+  </form-beans>  
+  
+  <global-forwards>
+    <forward name="index" path="/index.jsp"/>
+  </global-forwards>
+  
+  <action-mappings>
+	
+	<action path="/Lookup"
+      type="wiley.LookupAction"
+      name="lookupForm"
+      input="/index.jsp">
+	  <!-- designed for WileyActionMapping which is defined in web.xml,
+		   also you should insert this Mapping class to Action class 
+		   -->
+	  <set-property property="logResults" value="true"/>
+      <forward name="success" path="/quote.jsp"/>
+      <forward name="failure" path="/index.jsp"/>
+    </action>
+    
+	<action path="/Translation"
+      type="wiley.TranslationAction"
+      input="/index.jsp">
+    </action>
+	
+  </action-mappings>
+  
+  <controller
+    processorClass="wiley.WileyRequestProcessor" />
+
+  <message-resources
+	parameter="wiley.ApplicationResources"/>
+
+  <plug-in className="wiley.WileyPlugin"/>
+
+</struts-config>

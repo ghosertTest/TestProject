@@ -1,0 +1,180 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;21.&nbsp;Exemple : P&egrave;re/Fils</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="toolsetguide.html" title="Chapitre&nbsp;20.&nbsp;Guide des outils"><link rel="next" href="example-weblog.html" title="Chapitre&nbsp;22.&nbsp;Exemple : application Weblog"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;21.&nbsp;Exemple : P&egrave;re/Fils</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="toolsetguide.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="example-weblog.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="example-parentchild"></a>Chapitre&nbsp;21.&nbsp;Exemple : P&egrave;re/Fils</h2></div></div><div></div></div><p>
+        L'une des premi&egrave;res choses que les nouveaux utilisateurs essaient de faire avec Hibernate est de mod&eacute;liser
+        une relation p&egrave;re/fils. Il y a deux approches diff&eacute;rentes pour cela. Pour un certain nombre de raisons, la m&eacute;thode la
+        plus courante, en particulier pour les nouveaux utilisateurs, est de mod&eacute;liser les deux relations <tt class="literal">P&egrave;re</tt>
+        et <tt class="literal">Fils</tt> comme des classes entit&eacute;s li&eacute;es par une association <tt class="literal">&lt;one-to-many&gt;</tt> du
+        <tt class="literal">P&egrave;re</tt> vers le <tt class="literal">Fils</tt> (l'autre approche est de d&eacute;clarer le <tt class="literal">Fils</tt>
+        comme un <tt class="literal">&lt;composite-element&gt;</tt>). Il est &eacute;vident que le sens de l'association un vers plusieurs
+        (dans Hibernate) est bien moins proche du sens habituel d'une relation p&egrave;re/fils que ne l'est celui d'un
+        &eacute;l&eacute;ment cmposite. Nous allons vous expliquer comment utiliser une association <span class="emphasis"><em>un vers plusieurs bidirectionnelle
+        avec cascade</em></span> afin de mod&eacute;liser efficacement et &eacute;l&eacute;gamment une relation p&egrave;re/fils, ce n'est vraiment
+        pas difficile !
+    </p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-parentchild-collections"></a>21.1.&nbsp;Une note &agrave; propos des collections</h2></div></div><div></div></div><p>
+            Les collections Hibernate sont consid&eacute;r&eacute;es comme &eacute;tant une partie logique
+            de l'entit&eacute; dans laquelle elles sont contenues ; jamais des entit&eacute;s qu'elle
+            contient. C'est une distinction crutiale ! Les cons&eacute;quences sont les suivantes :
+        </p><div class="itemizedlist"><ul type="disc"><li><p>
+                    Quand nous ajoutons / retirons un objet d'une collection, le num&eacute;ro de version du
+                    propri&eacute;taire de la collection est incr&eacute;ment&eacute;.
+                </p></li><li><p>
+                    Si un objet qui a &eacute;t&eacute; enlev&eacute; d'une collection est une instance de type valeur (ex :
+                    &eacute;l&eacute;ment composite), cet objet cessera d'&ecirc;tre persistant et son &eacute;tat sera compl&egrave;tement effac&eacute;
+                    de la base de donn&eacute;es. Par ailleurs, ajouter une instance de type valeur dans une collection
+                    aura pour cons&eacute;quence que son &eacute;tat sera imm&eacute;diatement persistant.
+                </p></li><li><p>
+                    Si une entit&eacute; est enlev&eacute;e d'une collection (association un-vers-plusieurs
+                    ou plusieurs-vers-plusieurs), par d&eacute;faut, elle ne sera pas effac&eacute;e. Ce comportement
+                    est compl&egrave;tement logique - une modification de l'un des &eacute;tats internes d'une entit&eacute;
+                    ne doit pas causer la disparition de l'entit&eacute; associ&eacute;e !
+                    De m&ecirc;me, l'ajout d'une entit&eacute; dans une collection n'engendre pas,
+                    par d&eacute;faut, la persistence de cette entit&eacute;.
+                </p></li></ul></div><p>
+            Le comportement par d&eacute;faut est donc que l'ajout d'une entit&eacute; dans une collection cr&eacute;&eacute;
+            simplement le lien entre les deux entit&eacute;s, et qu'effacer une entit&eacute; supprime ce lien.
+            C'est le comportement le plus appropri&eacute; dans la plupart des cas. Ce comportement n'est
+            cependant pas appropri&eacute; lorsque la vie du fils est li&eacute;e au cycle de vie du p&egrave;re.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-parentchild-bidir"></a>21.2.&nbsp;un-vers-plusieurs bidirectionnel</h2></div></div><div></div></div><p>
+            Supposons que nous ayons une simple association <tt class="literal">&lt;one-to-many&gt;</tt>
+            de <tt class="literal">Parent</tt> vers <tt class="literal">Child</tt>.
+        </p><pre class="programlisting">&lt;set name="children"&gt;
+                &lt;key column="parent_id"/&gt;
+                &lt;one-to-many class="Child"/&gt;
+            &lt;/set&gt;</pre><p>
+            Si nous executions le code suivant
+        </p><pre class="programlisting">Parent p = .....;
+Child c = new Child();
+p.getChildren().add(c);
+session.save(c);
+session.flush();</pre><p>
+            Hibernate ex&eacute;cuterait deux ordres SQL:
+        </p><div class="itemizedlist"><ul type="disc"><li><p>un <tt class="literal">INSERT</tt> pour cr&eacute;er l'enregistrement pour <tt class="literal">c</tt></p></li><li><p>
+                    un <tt class="literal">UPDATE</tt> pour cr&eacute;er le lien de <tt class="literal">p</tt> vers
+                    <tt class="literal">c</tt>
+                </p></li></ul></div><p>
+            Ceci est non seuleument inefficace, mais viole aussi toute contrainte <tt class="literal">NOT NULL</tt> sur
+            la colonne <tt class="literal">parent_id</tt>. Nous pouvons r&eacute;parer la contrainte de nullit&eacute;
+            en sp&eacute;cifiant <tt class="literal">not-null="true"</tt> dans le mapping de la collection :
+        </p><pre class="programlisting">&lt;set name="children"&gt;
+    &lt;key column="parent_id" not-null="true"/&gt;
+    &lt;one-to-many class="Child"/&gt;
+&lt;/set&gt;</pre><p>
+            Cependant ce n'est pas la solution recommand&eacute;e.
+        </p><p>
+            La cause sous jacente &agrave; ce comportement est que le lien (la cl&eacute; &eacute;trang&egrave;re <tt class="literal">parent_id</tt>) de
+            <tt class="literal">p</tt> vers <tt class="literal">c</tt> n'est pas consid&eacute;r&eacute;e comme faisant partie de l'&eacute;tat
+            de l'objet <tt class="literal">Child</tt> et n'est donc pas cr&eacute;&eacute; par l'<tt class="literal">INSERT</tt>.
+            La solution est donc que ce lien fasse partie du mapping de <tt class="literal">Child</tt>.
+        </p><pre class="programlisting">&lt;many-to-one name="parent" column="parent_id" not-null="true"/&gt;</pre><p>
+            (Nous avons aussi besoin d'ajouter la propri&eacute;t&eacute; <tt class="literal">parent</tt> dans la classe <tt class="literal">Child</tt>).
+        </p><p>
+            Maintenant que l'&eacute;tat du lien est g&eacute;r&eacute; par l'entit&eacute; <tt class="literal">Child</tt>, nous sp&eacute;cifions &agrave; la
+            collection de ne pas mettre &agrave; jour le lien. Nous utilisons l'attribut <tt class="literal">inverse</tt>.
+        </p><pre class="programlisting">&lt;set name="children" inverse="true"&gt;
+    &lt;key column="parent_id"/&gt;
+    &lt;one-to-many class="Child"/&gt;
+&lt;/set&gt;</pre><p>
+            Le code suivant serait utilis&eacute; pour ajouter un nouveau <tt class="literal">Child</tt>
+        </p><pre class="programlisting">Parent p = (Parent) session.load(Parent.class, pid);
+Child c = new Child();
+c.setParent(p);
+p.getChildren().add(c);
+session.save(c);
+session.flush();</pre><p>
+            Maintenant, seul un <tt class="literal">INSERT</tt> SQL est n&eacute;cessaire !
+        </p><p>
+            Pour all&eacute;ger encore un peu les choses, nous devrions cr&eacute;er une m&eacute;thode <tt class="literal">addChild()</tt>
+            dans <tt class="literal">Parent</tt>.
+        </p><pre class="programlisting">public void addChild(Child c) {
+    c.setParent(this);
+    children.add(c);
+}</pre><p>
+            Le code d'ajout d'un <tt class="literal">Child</tt> serait alors
+        </p><pre class="programlisting">Parent p = (Parent) session.load(Parent.class, pid);
+Child c = new Child();
+p.addChild(c);
+session.save(c);
+session.flush();</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-parentchild-cascades"></a>21.3.&nbsp;Cycle de vie en cascade</h2></div></div><div></div></div><p>
+            L'appel explicite de <tt class="literal">save()</tt> est un peu fastidieux. Nous pouvons
+            simplifier cela en utilisant les cascades.
+        </p><pre class="programlisting">&lt;set name="children" inverse="true" cascade="all"&gt;
+    &lt;key column="parent_id"/&gt;
+    &lt;one-to-many class="Child"/&gt;
+&lt;/set&gt;</pre><p>
+            Simplifie le code pr&eacute;c&eacute;dent en
+        </p><pre class="programlisting">Parent p = (Parent) session.load(Parent.class, pid);
+Child c = new Child();
+p.addChild(c);
+session.flush();</pre><p>
+            De la m&ecirc;me mani&egrave;re, nous n'avons pas &agrave; it&eacute;rer sur les fils lorsque nous sauvons
+            ou effacons un <tt class="literal">Parent</tt>. Le code suivant efface <tt class="literal">p</tt>
+            et tous ses fils de la base de donn&eacute;es.
+        </p><pre class="programlisting">Parent p = (Parent) session.load(Parent.class, pid);
+session.delete(p);
+session.flush();</pre><p>
+             Par contre, ce code
+         </p><pre class="programlisting">Parent p = (Parent) session.load(Parent.class, pid);
+Child c = (Child) p.getChildren().iterator().next();
+p.getChildren().remove(c);
+c.setParent(null);
+session.flush();</pre><p>
+             n'effacera pas <tt class="literal">c</tt> de la base de donn&eacute;es, il enl&egrave;vera seulement
+             le lien vers  <tt class="literal">p</tt> (et causera une violation de contrainte
+             <tt class="literal">NOT NULL</tt>, dans ce cas).
+             Vous devez explicitement utiliser <tt class="literal">delete()</tt> sur <tt class="literal">Child</tt>.
+         </p><pre class="programlisting">Parent p = (Parent) session.load(Parent.class, pid);
+Child c = (Child) p.getChildren().iterator().next();
+p.getChildren().remove(c);
+session.delete(c);
+session.flush();</pre><p>
+            Dans notre cas, un <tt class="literal">Child</tt> ne peut pas vraiment exister sans son p&egrave;re. Si nous
+            effacons un <tt class="literal">Child</tt> de la collection, nous voulons vraiment qu'il soit effac&eacute;.
+            Pour cela, nous devons utiliser <tt class="literal">cascade="all-delete-orphan"</tt>.
+        </p><pre class="programlisting">&lt;set name="children" inverse="true" cascade="all-delete-orphan"&gt;
+    &lt;key column="parent_id"/&gt;
+    &lt;one-to-many class="Child"/&gt;
+&lt;/set&gt;</pre><p>
+            A noter : m&ecirc;me si le mapping de la collection sp&eacute;cifie <tt class="literal">inverse="true"</tt>, les cascades
+            sont toujours assur&eacute;es par l'it&eacute;ration sur les &eacute;l&eacute;ments de la collection. Donc, si vous avez besoin
+            qu'un objet soit enregistr&eacute;, effac&eacute; ou mis &agrave; jour par cascade, vous devez l'ajouter dans la colleciton.
+            Il ne suffit pas d'appeler explicitement <tt class="literal">setParent()</tt>.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-parentchild-update"></a>21.4.&nbsp;Cascades et <tt class="literal">unsaved-value</tt></h2></div></div><div></div></div><p>
+            Supposons que nous ayons charg&eacute; un <tt class="literal">Parent</tt> dans une <tt class="literal">Session</tt>,
+            que nous l'ayons ensuite modifi&eacute; et que voulions persiter ces modifications dans une nouvelle session
+            en appelant <tt class="literal">update()</tt>.
+            Le <tt class="literal">Parent</tt> contiendra une collection de fils et, puisque la cascade est activ&eacute;e,
+            Hibernate a besoin de savoir quels fils viennent d'&ecirc;tre instanci&eacute;s et quels fils proviennent de la base
+            de donn&eacute;es. Supposons aussi que <tt class="literal">Parent</tt> et <tt class="literal">Child</tt> ont tous deux
+            des identifiants du type <tt class="literal">Long</tt>.
+            Hibernate utilisera la propri&eacute;t&eacute; de l'identifiant et la propri&eacute;t&eacute; de la version/horodatage pour d&eacute;terminer quels fils sont nouveaux
+            (vous pouvez aussi utiliser la propri&eacute;t&eacute; version ou timestamp, voir
+            ???).
+            <span class="emphasis"><em>Dans Hibernate3, il n'est plus n&eacute;cessaire de sp&eacute;cifier
+            une <tt class="literal">unsaved-value</tt> explicitement.</em></span>
+        </p><p>
+            Le code suivant mettra &agrave; jour <tt class="literal">parent</tt> et <tt class="literal">child</tt>
+            et ins&eacute;rera <tt class="literal">newChild</tt>.
+        </p><pre class="programlisting">//parent et child ont &eacute;t&eacute; charg&eacute;s dans une session pr&eacute;c&eacute;dente
+parent.addChild(child);
+Child newChild = new Child();
+parent.addChild(newChild);
+session.update(parent);
+session.flush();</pre><p>
+            Ceci est tr&egrave;s bien pour des identifiants g&eacute;n&eacute;r&eacute;s, mais qu'en est-il des identifiants assign&eacute;s et des
+            identifiants compos&eacute;s ? C'est plus difficile,
+            puisqu'Hibernate ne peut pas utiliser la propri&eacute;t&eacute; de l'identifiant pour distinguer un objet
+            nouvellement instanci&eacute; (avec un identifiant assign&eacute; par l'utilisateur) d'un objet charg&eacute; dans une session pr&eacute;c&eacute;dente.
+            Dans ce cas, Hibernate utilisera soit la propri&eacute;t&eacute; de version ou d'horodatage, soit effectuera vraiment une requ&ecirc;te au cache
+            de second niveau, soit, dans le pire des cas, &agrave; la base de donn&eacute;es, pour voir si la ligne existe.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-parentchild-conclusion"></a>21.5.&nbsp;Conclusion</h2></div></div><div></div></div><p>
+            Il y a quelques principes &agrave; ma&icirc;triser dans ce chapitre et tout cela peut para&icirc;tre d&eacute;routant la premi&egrave;re fois.
+            Cependant, dans la pratique, tout fonctionne parfaitement. La plupart des applications Hibernate utilisent
+            le pattern p&egrave;re / fils.
+        </p><p>
+            Nous avons &eacute;voqu&eacute; une alternative dans le premier paragraphe. Aucun des points trait&eacute;s pr&eacute;c&eacute;demment n'existe
+            dans le cas d'un mapping <tt class="literal">&lt;composite-element&gt;</tt> qui poss&egrave;de exactement la s&eacute;mantique
+            d'une relation p&egrave;re / fils. Malheureusement, il y a deux grandes limitations pour les classes &eacute;l&eacute;ments
+            composites : les &eacute;l&eacute;ments composites ne peuvent contenir de collections, et ils ne peuvent &ecirc;tre les fils
+            d'entit&eacute;s autres que l'unique parent.
+        </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="toolsetguide.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="example-weblog.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;20.&nbsp;Guide des outils&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;22.&nbsp;Exemple : application Weblog</td></tr></table></div></body></html>

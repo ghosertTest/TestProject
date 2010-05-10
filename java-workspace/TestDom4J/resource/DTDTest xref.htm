@@ -1,0 +1,584 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0056)http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html -->
+<HTML lang=en xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><HEAD><TITLE>DTDTest xref</TITLE>
+<META http-equiv=content-type content="text/html; charset=ISO-8859-1"><LINK 
+href="DTDTest xref.files/stylesheet.css" type=text/css rel=stylesheet>
+<META content="MSHTML 6.00.2900.2912" name=GENERATOR></HEAD>
+<BODY><PRE>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#1" name=1>1</A>   <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#2" name=2>2</A>   <EM class=comment> * Copyright 2001-2005 (C) MetaStuff, Ltd. All Rights Reserved.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#3" name=3>3</A>   <EM class=comment> *</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#4" name=4>4</A>   <EM class=comment> * This software is open source.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#5" name=5>5</A>   <EM class=comment> * See the bottom of this file for the licence.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#6" name=6>6</A>   <EM class=comment> */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#7" name=7>7</A>   
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#8" name=8>8</A>   <STRONG>package</STRONG> <A href="http://www.dom4j.org/xref-test/org/dom4j/io/package-summary.html">org.dom4j.io</A>;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#9" name=9>9</A>   
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#10" name=10>10</A>  <STRONG>import</STRONG> junit.framework.AssertionFailedError;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#11" name=11>11</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#12" name=12>12</A>  <STRONG>import</STRONG> junit.textui.TestRunner;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#13" name=13>13</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#14" name=14>14</A>  <STRONG>import</STRONG> java.io.FileInputStream;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#15" name=15>15</A>  <STRONG>import</STRONG> java.io.IOException;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#16" name=16>16</A>  <STRONG>import</STRONG> java.io.InputStream;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#17" name=17>17</A>  <STRONG>import</STRONG> java.util.ArrayList;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#18" name=18>18</A>  <STRONG>import</STRONG> java.util.Iterator;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#19" name=19>19</A>  <STRONG>import</STRONG> java.util.List;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#20" name=20>20</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#21" name=21>21</A>  <STRONG>import</STRONG> org.dom4j.AbstractTestCase;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#22" name=22>22</A>  <STRONG>import</STRONG> org.dom4j.Document;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#23" name=23>23</A>  <STRONG>import</STRONG> org.dom4j.DocumentType;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#24" name=24>24</A>  <STRONG>import</STRONG> org.dom4j.dtd.AttributeDecl;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#25" name=25>25</A>  <STRONG>import</STRONG> org.dom4j.dtd.ElementDecl;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#26" name=26>26</A>  <STRONG>import</STRONG> org.dom4j.dtd.ExternalEntityDecl;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#27" name=27>27</A>  <STRONG>import</STRONG> org.dom4j.dtd.InternalEntityDecl;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#28" name=28>28</A>  <STRONG>import</STRONG> org.dom4j.tree.DefaultDocumentType;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#29" name=29>29</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#30" name=30>30</A>  <STRONG>import</STRONG> org.xml.sax.EntityResolver;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#31" name=31>31</A>  <STRONG>import</STRONG> org.xml.sax.InputSource;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#32" name=32>32</A>  <STRONG>import</STRONG> org.xml.sax.SAXException;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#33" name=33>33</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#34" name=34>34</A>  <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#35" name=35>35</A>  <EM> * Tests the DocType functionality.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#36" name=36>36</A>  <EM> * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#37" name=37>37</A>  <EM> * &lt;p&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#38" name=38>38</A>  <EM> * Incorporated additional test cases for optional processing of the internal</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#39" name=39>39</A>  <EM> * and external DTD subsets. The "external" and "mixed" tests both &lt;strong&gt;fail</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#40" name=40>40</A>  <EM> * &lt;/strong&gt; due to a reported bug. See <A href="http://tinyurl.com/4dzyq" target=alexandria_uri>http://tinyurl.com/4dzyq</A></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#41" name=41>41</A>  <EM> * &lt;/p&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#42" name=42>42</A>  <EM> * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#43" name=43>43</A>  <EM> * @author &lt;a href="<A href="mailto:jstrachan@apache.org" target=alexandria_uri>mailto:jstrachan@apache.org</A>"&gt;James Strachan &lt;/a&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#44" name=44>44</A>  <EM> * @version $Revision: 1.4 $</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#45" name=45>45</A>  <EM> */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#46" name=46>46</A>  <STRONG>public</STRONG> <STRONG>class</STRONG> <A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html">DTDTest</A> <STRONG>extends</STRONG> <A href="http://www.dom4j.org/xref-test/org/dom4j/AbstractTestCase.html">AbstractTestCase</A> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#47" name=47>47</A>      <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#48" name=48>48</A>  <EM>     * Input XML file to read &lt;code&gt;xml/dtd/internal.xml&lt;/code&gt;- document</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#49" name=49>49</A>  <EM>     * using internal DTD subset, but no external DTD subset.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#50" name=50>50</A>  <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#51" name=51>51</A>      <STRONG>private</STRONG> <STRONG>static</STRONG> <STRONG>final</STRONG> String XML_INTERNAL_FILE = <SPAN class=string>"xml/dtd/internal.xml"</SPAN>;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#52" name=52>52</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#53" name=53>53</A>      <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#54" name=54>54</A>  <EM>     * Input XML file to read &lt;code&gt;xml/dtd/external.xml&lt;/code&gt;- document</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#55" name=55>55</A>  <EM>     * using external DTD subset, but no internal DTD subset. The external</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#56" name=56>56</A>  <EM>     * entity should be locatable by either PUBLIC or SYSTEM identifier. The</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#57" name=57>57</A>  <EM>     * testing harness should use an appropriate EntityResolver to locate the</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#58" name=58>58</A>  <EM>     * external entity as a local resource (no internet access).</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#59" name=59>59</A>  <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#60" name=60>60</A>      <STRONG>private</STRONG> <STRONG>static</STRONG> <STRONG>final</STRONG> String XML_EXTERNAL_FILE = <SPAN class=string>"xml/dtd/external.xml"</SPAN>;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#61" name=61>61</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#62" name=62>62</A>      <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#63" name=63>63</A>  <EM>     * Input XML file to read &lt;code&gt;xml/dtd/mixed.xml&lt;/code&gt;- document using</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#64" name=64>64</A>  <EM>     * both an internal and an external DTD subset. The external entity should</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#65" name=65>65</A>  <EM>     * be locatable by either PUBLIC or SYSTEM identifier. The testing harness</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#66" name=66>66</A>  <EM>     * should use an appropriate EntityResolver to locate the external entity as</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#67" name=67>67</A>  <EM>     * a local resource (no internet access).</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#68" name=68>68</A>  <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#69" name=69>69</A>      <STRONG>private</STRONG> <STRONG>static</STRONG> <STRONG>final</STRONG> String XML_MIXED = <SPAN class=string>"xml/dtd/mixed.xml"</SPAN>;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#70" name=70>70</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#71" name=71>71</A>      <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#72" name=72>72</A>  <EM>     * Input XML file to for {@linkEntityResolver}</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#73" name=73>73</A>  <EM>     * &lt;code&gt;xml/dtd/sample.dtd&lt;/code&gt;- the external entity providing the</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#74" name=74>74</A>  <EM>     * external DTD subset for test cases that need one. The SYSTEM identifier</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#75" name=75>75</A>  <EM>     * for this external entity is given by {@link#DTD_SYSTEM_ID}.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#76" name=76>76</A>  <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#77" name=77>77</A>      <STRONG>private</STRONG> <STRONG>static</STRONG> <STRONG>final</STRONG> String DTD_FILE = <SPAN class=string>"xml/dtd/sample.dtd"</SPAN>;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#78" name=78>78</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#79" name=79>79</A>      <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#80" name=80>80</A>  <EM>     * The PUBLIC identifier, which is &lt;code&gt;-//dom4j//DTD sample&lt;/code&gt;, for</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#81" name=81>81</A>  <EM>     * the external entity providing DTD for tests.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#82" name=82>82</A>  <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#83" name=83>83</A>      <STRONG>protected</STRONG> <STRONG>static</STRONG> <STRONG>final</STRONG> String DTD_PUBLICID = <SPAN class=string>"-//dom4j//DTD sample"</SPAN>;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#84" name=84>84</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#85" name=85>85</A>      <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#86" name=86>86</A>  <EM>     * The SYSTEM identifier, which is &lt;code&gt;sample.dtd&lt;/code&gt;, for the</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#87" name=87>87</A>  <EM>     * external entity providing DTD for tests.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#88" name=88>88</A>  <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#89" name=89>89</A>      <STRONG>protected</STRONG> <STRONG>static</STRONG> <STRONG>final</STRONG> String DTD_SYSTEM_ID = <SPAN class=string>"sample.dtd"</SPAN>;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#90" name=90>90</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#91" name=91>91</A>      <STRONG>public</STRONG> <STRONG>static</STRONG> <STRONG>void</STRONG> main(String[] args) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#92" name=92>92</A>          TestRunner.run(DTDTest.<STRONG>class</STRONG>);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#93" name=93>93</A>      }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#94" name=94>94</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#95" name=95>95</A>      <EM class=comment>// Test case(s)</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#96" name=96>96</A>      <EM class=comment>// -------------------------------------------------------------------------</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#97" name=97>97</A>  
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#98" name=98>98</A>      <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#99" name=99>99</A>  <EM>     * Test verifies correct identification of the internal DTD subset and</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#100" name=100>100</A> <EM>     * correct non-presence of the external DTD subset.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#101" name=101>101</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#102" name=102>102</A> <EM>     * @throws Exception</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#103" name=103>103</A> <EM>     *             DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#104" name=104>104</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#105" name=105>105</A>     <STRONG>public</STRONG> <STRONG>void</STRONG> testInternalDTDSubset() throws Exception {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#106" name=106>106</A>         <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#107" name=107>107</A> <EM class=comment>         * Setup the expected DocumentType.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#108" name=108>108</A> <EM class=comment>         * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#109" name=109>109</A> <EM class=comment>         * @todo dom4j should expose a DefaultDocumentType constructor that</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#110" name=110>110</A> <EM class=comment>         * accepts only the elementName property. This is used when only an</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#111" name=111>111</A> <EM class=comment>         * internal DTD subset is being provided via the &lt;!DOCTYPE foo [...]&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#112" name=112>112</A> <EM class=comment>         * syntax, in which case there is neither a SYSTEM nor PUBLIC</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#113" name=113>113</A> <EM class=comment>         * identifier.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#114" name=114>114</A> <EM class=comment>         */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#115" name=115>115</A>         DocumentType expected = <STRONG>new</STRONG> DefaultDocumentType();
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#116" name=116>116</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#117" name=117>117</A>         expected.setElementName(<SPAN class=string>"greeting"</SPAN>);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#118" name=118>118</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#119" name=119>119</A>         expected.setInternalDeclarations(getInternalDeclarations());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#120" name=120>120</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#121" name=121>121</A>         <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#122" name=122>122</A> <EM class=comment>         * Parse the test XML document and compare the expected and actual</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#123" name=123>123</A> <EM class=comment>         * DOCTYPEs.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#124" name=124>124</A> <EM class=comment>         */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#125" name=125>125</A>         <STRONG>try</STRONG> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#126" name=126>126</A>             assertSameDocumentType(expected, readDocument(
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#127" name=127>127</A>                     XML_INTERNAL_FILE, <STRONG>true</STRONG>, false).getDocType());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#128" name=128>128</A>         } <STRONG>catch</STRONG> (AssertionFailedError ex) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#129" name=129>129</A>             <STRONG>throw</STRONG> ex;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#130" name=130>130</A>         } <STRONG>catch</STRONG> (Throwable t) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#131" name=131>131</A>             fail(<SPAN class=string>"Not expecting: "</SPAN> + t);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#132" name=132>132</A>         }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#133" name=133>133</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#134" name=134>134</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#135" name=135>135</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#136" name=136>136</A> <EM>     * Test verifies correct identification of the external DTD subset and</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#137" name=137>137</A> <EM>     * correct non-presence of the internal DTD subset.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#138" name=138>138</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#139" name=139>139</A>     <STRONG>public</STRONG> <STRONG>void</STRONG> testExternalDTDSubset() {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#140" name=140>140</A>         <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#141" name=141>141</A> <EM class=comment>         * Setup the expected DocumentType.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#142" name=142>142</A> <EM class=comment>         */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#143" name=143>143</A>         DocumentType expected = <STRONG>new</STRONG> DefaultDocumentType(<SPAN class=string>"another-greeting"</SPAN>,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#144" name=144>144</A>                 <STRONG>null</STRONG>, DTD_SYSTEM_ID);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#145" name=145>145</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#146" name=146>146</A>         expected.setExternalDeclarations(getExternalDeclarations());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#147" name=147>147</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#148" name=148>148</A>         <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#149" name=149>149</A> <EM class=comment>         * Parse the test XML document and compare the expected and actual</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#150" name=150>150</A> <EM class=comment>         * DOCTYPEs.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#151" name=151>151</A> <EM class=comment>         */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#152" name=152>152</A>         <STRONG>try</STRONG> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#153" name=153>153</A>             assertSameDocumentType(expected, readDocument(
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#154" name=154>154</A>                     XML_EXTERNAL_FILE, false, <STRONG>true</STRONG>).getDocType());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#155" name=155>155</A>         } <STRONG>catch</STRONG> (AssertionFailedError ex) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#156" name=156>156</A>             <STRONG>throw</STRONG> ex;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#157" name=157>157</A>         } <STRONG>catch</STRONG> (Throwable t) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#158" name=158>158</A>             fail(<SPAN class=string>"Not expecting: "</SPAN> + t);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#159" name=159>159</A>         }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#160" name=160>160</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#161" name=161>161</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#162" name=162>162</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#163" name=163>163</A> <EM>     * Test verifies correct identification of the internal and external DTD</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#164" name=164>164</A> <EM>     * subsets.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#165" name=165>165</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#166" name=166>166</A>     <STRONG>public</STRONG> <STRONG>void</STRONG> testMixedDTDSubset() {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#167" name=167>167</A>         <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#168" name=168>168</A> <EM class=comment>         * Setup the expected DocumentType.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#169" name=169>169</A> <EM class=comment>         */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#170" name=170>170</A>         DocumentType expected = <STRONG>new</STRONG> DefaultDocumentType(<SPAN class=string>"another-greeting"</SPAN>,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#171" name=171>171</A>                 <STRONG>null</STRONG>, DTD_SYSTEM_ID);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#172" name=172>172</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#173" name=173>173</A>         expected.setInternalDeclarations(getInternalDeclarations());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#174" name=174>174</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#175" name=175>175</A>         expected.setExternalDeclarations(getExternalDeclarations());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#176" name=176>176</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#177" name=177>177</A>         <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#178" name=178>178</A> <EM class=comment>         * Parse the test XML document and compare the expected and actual</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#179" name=179>179</A> <EM class=comment>         * DOCTYPEs.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#180" name=180>180</A> <EM class=comment>         */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#181" name=181>181</A>         <STRONG>try</STRONG> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#182" name=182>182</A>             assertSameDocumentType(expected, readDocument(XML_MIXED,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#183" name=183>183</A>                     <STRONG>true</STRONG>, <STRONG>true</STRONG>).getDocType());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#184" name=184>184</A>         } <STRONG>catch</STRONG> (AssertionFailedError ex) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#185" name=185>185</A>             <STRONG>throw</STRONG> ex;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#186" name=186>186</A>         } <STRONG>catch</STRONG> (Throwable t) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#187" name=187>187</A>             fail(<SPAN class=string>"Not expecting: "</SPAN> + t);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#188" name=188>188</A>         }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#189" name=189>189</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#190" name=190>190</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#191" name=191>191</A>     <EM class=comment>// Implementation methods</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#192" name=192>192</A>     <EM class=comment>// -------------------------------------------------------------------------</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#193" name=193>193</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#194" name=194>194</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#195" name=195>195</A> <EM>     * Test helper method returns a {@link List}of DTD declarations that</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#196" name=196>196</A> <EM>     * represents the expected internal DTD subset (for the tests that use an</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#197" name=197>197</A> <EM>     * internal DTD subset).</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#198" name=198>198</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#199" name=199>199</A> <EM>     * &lt;p&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#200" name=200>200</A> <EM>     * Note: The declarations returned by this method MUST agree those actually</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#201" name=201>201</A> <EM>     * declared in {@link #XML_INTERNAL_FILE}and {@link</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#202" name=202>202</A> <EM>     * #XML_MIXED}.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#203" name=203>203</A> <EM>     * &lt;/p&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#204" name=204>204</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#205" name=205>205</A> <EM>     * &lt;p&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#206" name=206>206</A> <EM>     * &lt;/p&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#207" name=207>207</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#208" name=208>208</A> <EM>     * @return DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#209" name=209>209</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#210" name=210>210</A>     <STRONG>protected</STRONG> List getInternalDeclarations() {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#211" name=211>211</A>         List decls = <STRONG>new</STRONG> ArrayList();
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#212" name=212>212</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#213" name=213>213</A>         decls.add(<STRONG>new</STRONG> ElementDecl(<SPAN class=string>"greeting"</SPAN>, <SPAN class=string>"(#PCDATA)"</SPAN>));
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#214" name=214>214</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#215" name=215>215</A>         decls.add(<STRONG>new</STRONG> AttributeDecl(<SPAN class=string>"greeting"</SPAN>, <SPAN class=string>"foo"</SPAN>, <SPAN class=string>"ID"</SPAN>, <SPAN class=string>"#IMPLIED"</SPAN>, <STRONG>null</STRONG>));
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#216" name=216>216</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#217" name=217>217</A>         decls.add(<STRONG>new</STRONG> InternalEntityDecl(<SPAN class=string>"%boolean"</SPAN>, <SPAN class=string>"( true | false )"</SPAN>));
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#218" name=218>218</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#219" name=219>219</A>         <STRONG>return</STRONG> decls;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#220" name=220>220</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#221" name=221>221</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#222" name=222>222</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#223" name=223>223</A> <EM>     * Test helper method returns a {@link List}of DTD declarations that</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#224" name=224>224</A> <EM>     * represents the expected external DTD subset (for the tests that use an</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#225" name=225>225</A> <EM>     * external DTD subset).</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#226" name=226>226</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#227" name=227>227</A> <EM>     * @return DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#228" name=228>228</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#229" name=229>229</A>     <STRONG>protected</STRONG> List getExternalDeclarations() {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#230" name=230>230</A>         List decls = <STRONG>new</STRONG> ArrayList();
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#231" name=231>231</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#232" name=232>232</A>         decls.add(<STRONG>new</STRONG> ElementDecl(<SPAN class=string>"another-greeting"</SPAN>, <SPAN class=string>"(#PCDATA)"</SPAN>));
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#233" name=233>233</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#234" name=234>234</A>         <STRONG>return</STRONG> decls;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#235" name=235>235</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#236" name=236>236</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#237" name=237>237</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#238" name=238>238</A> <EM>     * Test helper method compares the expected and actual {@link DocumentType}</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#239" name=239>239</A> <EM>     * objects, including their internal and external DTD subsets.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#240" name=240>240</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#241" name=241>241</A> <EM>     * &lt;p&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#242" name=242>242</A> <EM>     * &lt;/p&gt;</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#243" name=243>243</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#244" name=244>244</A> <EM>     * @param expected</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#245" name=245>245</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#246" name=246>246</A> <EM>     * @param actual</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#247" name=247>247</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#248" name=248>248</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#249" name=249>249</A>     <STRONG>protected</STRONG> <STRONG>void</STRONG> assertSameDocumentType(DocumentType expected,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#250" name=250>250</A>             DocumentType actual) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#251" name=251>251</A>         <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#252" name=252>252</A> <EM class=comment>         * Nothing expected?</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#253" name=253>253</A> <EM class=comment>         */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#254" name=254>254</A>         <STRONG>if</STRONG> (expected == <STRONG>null</STRONG>) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#255" name=255>255</A>             <STRONG>if</STRONG> (actual == <STRONG>null</STRONG>) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#256" name=256>256</A>                 <STRONG>return</STRONG>; <EM class=comment>// Nothing found.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#257" name=257>257</A>             } <STRONG>else</STRONG> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#258" name=258>258</A>                 fail(<SPAN class=string>"Not expecting DOCTYPE."</SPAN>);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#259" name=259>259</A>             }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#260" name=260>260</A>         } <STRONG>else</STRONG> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#261" name=261>261</A>             <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#262" name=262>262</A> <EM class=comment>             * Something expected.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#263" name=263>263</A> <EM class=comment>             */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#264" name=264>264</A>             <STRONG>if</STRONG> (actual == <STRONG>null</STRONG>) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#265" name=265>265</A>                 fail(<SPAN class=string>"Expecting DOCTYPE"</SPAN>);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#266" name=266>266</A>             }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#267" name=267>267</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#268" name=268>268</A>             log(<SPAN class=string>"Expected DocumentType:\n"</SPAN> + expected.toString());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#269" name=269>269</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#270" name=270>270</A>             log(<SPAN class=string>"Actual DocumentType:\n"</SPAN> + actual.toString());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#271" name=271>271</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#272" name=272>272</A>             <EM class=comment>// Check the internal DTD subset.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#273" name=273>273</A>             assertSameDTDSubset(<SPAN class=string>"Internal"</SPAN>, expected.getInternalDeclarations(),
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#274" name=274>274</A>                     actual.getInternalDeclarations());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#275" name=275>275</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#276" name=276>276</A>             <EM class=comment>// Check the external DTD subset.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#277" name=277>277</A>             assertSameDTDSubset(<SPAN class=string>"External"</SPAN>, expected.getExternalDeclarations(),
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#278" name=278>278</A>                     actual.getExternalDeclarations());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#279" name=279>279</A>         }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#280" name=280>280</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#281" name=281>281</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#282" name=282>282</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#283" name=283>283</A> <EM>     * Test helper method compares an expected set of DTD declarations with an</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#284" name=284>284</A> <EM>     * actual set of DTD declarations. This method should be invoked seperately</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#285" name=285>285</A> <EM>     * for the internal DTD subset and the external DTD subset. The declarations</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#286" name=286>286</A> <EM>     * must occur in their logical ordering. See &lt;a</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#287" name=287>287</A> <EM>     * href="<A href="http://tinyurl.com/5jhd8" target=alexandria_uri>http://tinyurl.com/5jhd8</A>"&gt;Lexical Handler &lt;/a&gt; for conformance</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#288" name=288>288</A> <EM>     * criteria.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#289" name=289>289</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#290" name=290>290</A> <EM>     * @param txt</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#291" name=291>291</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#292" name=292>292</A> <EM>     * @param expected</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#293" name=293>293</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#294" name=294>294</A> <EM>     * @param actual</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#295" name=295>295</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#296" name=296>296</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#297" name=297>297</A> <EM>     * @throws AssertionError</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#298" name=298>298</A> <EM>     *             DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#299" name=299>299</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#300" name=300>300</A>     <STRONG>protected</STRONG> <STRONG>void</STRONG> assertSameDTDSubset(String txt, List expected, List actual) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#301" name=301>301</A>         <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#302" name=302>302</A> <EM class=comment>         * Nothing expected?</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#303" name=303>303</A> <EM class=comment>         */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#304" name=304>304</A>         <STRONG>if</STRONG> (expected == <STRONG>null</STRONG>) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#305" name=305>305</A>             <STRONG>if</STRONG> (actual == <STRONG>null</STRONG>) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#306" name=306>306</A>                 <STRONG>return</STRONG>; <EM class=comment>// Nothing found.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#307" name=307>307</A>             } <STRONG>else</STRONG> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#308" name=308>308</A>                 fail(<SPAN class=string>"Not expecting "</SPAN> + txt + <SPAN class=string>" DTD subset."</SPAN>);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#309" name=309>309</A>             }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#310" name=310>310</A>         } <STRONG>else</STRONG> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#311" name=311>311</A>             <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#312" name=312>312</A> <EM class=comment>             * Something expected.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#313" name=313>313</A> <EM class=comment>             */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#314" name=314>314</A>             <STRONG>if</STRONG> (actual == <STRONG>null</STRONG>) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#315" name=315>315</A>                 fail(<SPAN class=string>"Expecting "</SPAN> + txt + <SPAN class=string>" DTD subset."</SPAN>);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#316" name=316>316</A>             }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#317" name=317>317</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#318" name=318>318</A>             <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#319" name=319>319</A> <EM class=comment>             * Correct #of declarations found?</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#320" name=320>320</A> <EM class=comment>             */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#321" name=321>321</A>             assertEquals(txt + <SPAN class=string>" DTD subset has correct #of declarations"</SPAN>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#322" name=322>322</A>                     + <SPAN class=string>": expected=["</SPAN> + expected.toString() + <SPAN class=string>"]"</SPAN> + <SPAN class=string>", actual=["</SPAN>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#323" name=323>323</A>                     + actual.toString() + <SPAN class=string>"]"</SPAN>, expected.size(), actual.size());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#324" name=324>324</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#325" name=325>325</A>             <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#326" name=326>326</A> <EM class=comment>             * Check order, type, and values of each declaration. Serialization</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#327" name=327>327</A> <EM class=comment>             * tests are done separately.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#328" name=328>328</A> <EM class=comment>             */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#329" name=329>329</A>             Iterator itr1 = expected.iterator();
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#330" name=330>330</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#331" name=331>331</A>             Iterator itr2 = actual.iterator();
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#332" name=332>332</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#333" name=333>333</A>             <STRONG>while</STRONG> (itr1.hasNext()) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#334" name=334>334</A>                 Object obj1 = itr1.next();
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#335" name=335>335</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#336" name=336>336</A>                 Object obj2 = itr2.next();
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#337" name=337>337</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#338" name=338>338</A>                 assertEquals(txt + <SPAN class=string>" DTD subset: Same type of declaration"</SPAN>,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#339" name=339>339</A>                         obj1.getClass().getName(), obj2.getClass().getName());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#340" name=340>340</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#341" name=341>341</A>                 <STRONG>if</STRONG> (obj1 instanceof AttributeDecl) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#342" name=342>342</A>                     assertSameDecl((AttributeDecl) obj1, (AttributeDecl) obj2);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#343" name=343>343</A>                 } <STRONG>else</STRONG> <STRONG>if</STRONG> (obj1 instanceof ElementDecl) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#344" name=344>344</A>                     assertSameDecl((ElementDecl) obj1, (ElementDecl) obj2);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#345" name=345>345</A>                 } <STRONG>else</STRONG> <STRONG>if</STRONG> (obj1 instanceof InternalEntityDecl) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#346" name=346>346</A>                     assertSameDecl((InternalEntityDecl) obj1,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#347" name=347>347</A>                             (InternalEntityDecl) obj2);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#348" name=348>348</A>                 } <STRONG>else</STRONG> <STRONG>if</STRONG> (obj1 instanceof ExternalEntityDecl) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#349" name=349>349</A>                     assertSameDecl((ExternalEntityDecl) obj1,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#350" name=350>350</A>                             (ExternalEntityDecl) obj2);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#351" name=351>351</A>                 } <STRONG>else</STRONG> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#352" name=352>352</A>                     <STRONG>throw</STRONG> <STRONG>new</STRONG> AssertionError(<SPAN class=string>"Unexpected declaration type: "</SPAN>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#353" name=353>353</A>                             + obj1.getClass());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#354" name=354>354</A>                 }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#355" name=355>355</A>             }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#356" name=356>356</A>         }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#357" name=357>357</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#358" name=358>358</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#359" name=359>359</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#360" name=360>360</A> <EM>     * Test helper method compares an expected and an actual {@link</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#361" name=361>361</A> <EM>     * AttributeDecl}.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#362" name=362>362</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#363" name=363>363</A> <EM>     * @param expected</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#364" name=364>364</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#365" name=365>365</A> <EM>     * @param actual</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#366" name=366>366</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#367" name=367>367</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#368" name=368>368</A>     <STRONG>public</STRONG> <STRONG>void</STRONG> assertSameDecl(AttributeDecl expected, AttributeDecl actual) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#369" name=369>369</A>         assertEquals(<SPAN class=string>"attributeName is correct"</SPAN>, expected.getAttributeName(),
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#370" name=370>370</A>                 actual.getAttributeName());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#371" name=371>371</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#372" name=372>372</A>         assertEquals(<SPAN class=string>"elementName is correct"</SPAN>, expected.getElementName(),
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#373" name=373>373</A>                 actual.getElementName());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#374" name=374>374</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#375" name=375>375</A>         assertEquals(<SPAN class=string>"type is correct"</SPAN>, expected.getType(), actual.getType());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#376" name=376>376</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#377" name=377>377</A>         assertEquals(<SPAN class=string>"value is not correct"</SPAN>, expected.getValue(), actual
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#378" name=378>378</A>                 .getValue());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#379" name=379>379</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#380" name=380>380</A>         assertEquals(<SPAN class=string>"valueDefault is correct"</SPAN>, expected.getValueDefault(),
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#381" name=381>381</A>                 actual.getValueDefault());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#382" name=382>382</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#383" name=383>383</A>         assertEquals(<SPAN class=string>"toString() is correct"</SPAN>, expected.toString(), actual
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#384" name=384>384</A>                 .toString());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#385" name=385>385</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#386" name=386>386</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#387" name=387>387</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#388" name=388>388</A> <EM>     * Test helper method compares an expected and an actual {@link</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#389" name=389>389</A> <EM>     * ElementDecl}.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#390" name=390>390</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#391" name=391>391</A> <EM>     * @param expected</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#392" name=392>392</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#393" name=393>393</A> <EM>     * @param actual</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#394" name=394>394</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#395" name=395>395</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#396" name=396>396</A>     <STRONG>protected</STRONG> <STRONG>void</STRONG> assertSameDecl(ElementDecl expected, ElementDecl actual) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#397" name=397>397</A>         assertEquals(<SPAN class=string>"name is correct"</SPAN>, expected.getName(), actual.getName());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#398" name=398>398</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#399" name=399>399</A>         assertEquals(<SPAN class=string>"model is not correct"</SPAN>, expected.getModel(), actual
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#400" name=400>400</A>                 .getModel());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#401" name=401>401</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#402" name=402>402</A>         assertEquals(<SPAN class=string>"toString() is correct"</SPAN>, expected.toString(), actual
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#403" name=403>403</A>                 .toString());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#404" name=404>404</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#405" name=405>405</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#406" name=406>406</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#407" name=407>407</A> <EM>     * Test helper method compares an expected and an actual {@link</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#408" name=408>408</A> <EM>     * InternalEntityDecl}.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#409" name=409>409</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#410" name=410>410</A> <EM>     * @param expected</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#411" name=411>411</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#412" name=412>412</A> <EM>     * @param actual</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#413" name=413>413</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#414" name=414>414</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#415" name=415>415</A>     <STRONG>protected</STRONG> <STRONG>void</STRONG> assertSameDecl(InternalEntityDecl expected,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#416" name=416>416</A>             InternalEntityDecl actual) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#417" name=417>417</A>         assertEquals(<SPAN class=string>"name is correct"</SPAN>, expected.getName(), actual.getName());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#418" name=418>418</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#419" name=419>419</A>         assertEquals(<SPAN class=string>"value is not correct"</SPAN>, expected.getValue(), actual
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#420" name=420>420</A>                 .getValue());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#421" name=421>421</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#422" name=422>422</A>         assertEquals(<SPAN class=string>"toString() is correct"</SPAN>, expected.toString(), actual
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#423" name=423>423</A>                 .toString());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#424" name=424>424</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#425" name=425>425</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#426" name=426>426</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#427" name=427>427</A> <EM>     * Test helper method compares an expected and an actual {@link</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#428" name=428>428</A> <EM>     * ExternalEntityDecl}.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#429" name=429>429</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#430" name=430>430</A> <EM>     * @param expected</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#431" name=431>431</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#432" name=432>432</A> <EM>     * @param actual</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#433" name=433>433</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#434" name=434>434</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#435" name=435>435</A>     <STRONG>protected</STRONG> <STRONG>void</STRONG> assertSameDecl(ExternalEntityDecl expected,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#436" name=436>436</A>             ExternalEntityDecl actual) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#437" name=437>437</A>         assertEquals(<SPAN class=string>"name is correct"</SPAN>, expected.getName(), actual.getName());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#438" name=438>438</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#439" name=439>439</A>         assertEquals(<SPAN class=string>"publicID is correct"</SPAN>, expected.getPublicID(), actual
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#440" name=440>440</A>                 .getPublicID());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#441" name=441>441</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#442" name=442>442</A>         assertEquals(<SPAN class=string>"systemID is correct"</SPAN>, expected.getSystemID(), actual
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#443" name=443>443</A>                 .getSystemID());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#444" name=444>444</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#445" name=445>445</A>         assertEquals(<SPAN class=string>"toString() is correct"</SPAN>, expected.toString(), actual
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#446" name=446>446</A>                 .toString());
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#447" name=447>447</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#448" name=448>448</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#449" name=449>449</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#450" name=450>450</A> <EM>     * Helper method reads a local resource and parses it as an XML document.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#451" name=451>451</A> <EM>     * The internal and external DTD subsets are optionally retained by the</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#452" name=452>452</A> <EM>     * parser and exposed via the {@link DocumentType}object on the returned</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#453" name=453>453</A> <EM>     * {@link Document}. The parser is configured with an {@link</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#454" name=454>454</A> <EM>     * EntityResolver}that knows how to find the local resource identified by</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#455" name=455>455</A> <EM>     * {@link #DTD_FILE}whose SYSTEM identifier is given by {@link</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#456" name=456>456</A> <EM>     * #DTD_SYSTEM_ID}.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#457" name=457>457</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#458" name=458>458</A> <EM>     * @param resourceName</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#459" name=459>459</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#460" name=460>460</A> <EM>     * @param includeInternal</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#461" name=461>461</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#462" name=462>462</A> <EM>     * @param includeExternal</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#463" name=463>463</A> <EM>     *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#464" name=464>464</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#465" name=465>465</A> <EM>     * @return DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#466" name=466>466</A> <EM>     * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#467" name=467>467</A> <EM>     * @throws Exception</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#468" name=468>468</A> <EM>     *             DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#469" name=469>469</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#470" name=470>470</A>     <STRONG>protected</STRONG> Document readDocument(String resourceName,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#471" name=471>471</A>             <STRONG>boolean</STRONG> includeInternal, <STRONG>boolean</STRONG> includeExternal) throws Exception {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#472" name=472>472</A>         SAXReader reader = <STRONG>new</STRONG> SAXReader();
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#473" name=473>473</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#474" name=474>474</A>         reader.setIncludeInternalDTDDeclarations(includeInternal);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#475" name=475>475</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#476" name=476>476</A>         reader.setIncludeExternalDTDDeclarations(includeExternal);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#477" name=477>477</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#478" name=478>478</A>         reader.setEntityResolver(<STRONG>new</STRONG> MyEntityResolver(DTD_FILE,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#479" name=479>479</A>                 DTD_PUBLICID, DTD_SYSTEM_ID));
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#480" name=480>480</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#481" name=481>481</A>         <STRONG>return</STRONG> getDocument(resourceName, reader);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#482" name=482>482</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#483" name=483>483</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#484" name=484>484</A>     <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#485" name=485>485</A> <EM>     * Provides a resolver for the local test DTD resource.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#486" name=486>486</A> <EM>     */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#487" name=487>487</A>     <STRONG>protected</STRONG> <STRONG>static</STRONG> <STRONG>class</STRONG> MyEntityResolver implements EntityResolver {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#488" name=488>488</A>         <STRONG>private</STRONG> String resourceName;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#489" name=489>489</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#490" name=490>490</A>         <STRONG>private</STRONG> String pubId;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#491" name=491>491</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#492" name=492>492</A>         <STRONG>private</STRONG> String sysId;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#493" name=493>493</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#494" name=494>494</A>         <STRONG>public</STRONG> MyEntityResolver(String localResourceName, String <STRONG>public</STRONG>Id,
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#495" name=495>495</A>                 String systemId) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#496" name=496>496</A>             resourceName = localResourceName;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#497" name=497>497</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#498" name=498>498</A>             sysId = systemId;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#499" name=499>499</A>         }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#500" name=500>500</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#501" name=501>501</A>         <STRONG>public</STRONG> InputSource resolveEntity(String <STRONG>public</STRONG>Id, String systemId)
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#502" name=502>502</A>                 throws SAXException, IOException {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#503" name=503>503</A>             <STRONG>if</STRONG> (pubId != <STRONG>null</STRONG>) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#504" name=504>504</A>                 <STRONG>if</STRONG> (pubId.equals(publicId)) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#505" name=505>505</A>                     <STRONG>return</STRONG> <STRONG>new</STRONG> InputSource(getInputStream(resourceName));
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#506" name=506>506</A>                 }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#507" name=507>507</A>             }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#508" name=508>508</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#509" name=509>509</A>             <STRONG>if</STRONG> (sysId.equals(systemId)) {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#510" name=510>510</A>                 <STRONG>return</STRONG> <STRONG>new</STRONG> InputSource(getInputStream(resourceName));
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#511" name=511>511</A>             } <STRONG>else</STRONG> {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#512" name=512>512</A>                 <STRONG>return</STRONG> <STRONG>null</STRONG>;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#513" name=513>513</A>             }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#514" name=514>514</A>         }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#515" name=515>515</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#516" name=516>516</A>         <EM>/**<EM>*</EM></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#517" name=517>517</A> <EM>         * Returns an {@link InputStream}that will read from the indicated</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#518" name=518>518</A> <EM>         * local resource.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#519" name=519>519</A> <EM>         * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#520" name=520>520</A> <EM>         * @param localResourceName</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#521" name=521>521</A> <EM>         *            DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#522" name=522>522</A> <EM>         * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#523" name=523>523</A> <EM>         * @return DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#524" name=524>524</A> <EM>         * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#525" name=525>525</A> <EM>         * @throws IOException</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#526" name=526>526</A> <EM>         *             DOCUMENT ME!</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#527" name=527>527</A> <EM>         */</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#528" name=528>528</A>         <STRONG>protected</STRONG> InputStream getInputStream(String localResourceName)
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#529" name=529>529</A>                 throws IOException {
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#530" name=530>530</A>             InputStream is = <STRONG>new</STRONG> FileInputStream(localResourceName);
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#531" name=531>531</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#532" name=532>532</A>             <STRONG>return</STRONG> is;
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#533" name=533>533</A>         }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#534" name=534>534</A>     }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#535" name=535>535</A> }
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#536" name=536>536</A> 
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#537" name=537>537</A> <EM class=comment>/*</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#538" name=538>538</A> <EM class=comment> * Redistribution and use of this software and associated documentation</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#539" name=539>539</A> <EM class=comment> * ("Software"), with or without modification, are permitted provided that the</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#540" name=540>540</A> <EM class=comment> * following conditions are met:</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#541" name=541>541</A> <EM class=comment> * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#542" name=542>542</A> <EM class=comment> * 1. Redistributions of source code must retain copyright statements and</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#543" name=543>543</A> <EM class=comment> * notices. Redistributions must also contain a copy of this document.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#544" name=544>544</A> <EM class=comment> * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#545" name=545>545</A> <EM class=comment> * 2. Redistributions in binary form must reproduce the above copyright notice,</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#546" name=546>546</A> <EM class=comment> * this list of conditions and the following disclaimer in the documentation</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#547" name=547>547</A> <EM class=comment> * and/or other materials provided with the distribution.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#548" name=548>548</A> <EM class=comment> * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#549" name=549>549</A> <EM class=comment> * 3. The name "DOM4J" must not be used to endorse or promote products derived</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#550" name=550>550</A> <EM class=comment> * from this Software without prior written permission of MetaStuff, Ltd. For</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#551" name=551>551</A> <EM class=comment> * written permission, please contact dom4j-info@metastuff.com.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#552" name=552>552</A> <EM class=comment> * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#553" name=553>553</A> <EM class=comment> * 4. Products derived from this Software may not be called "DOM4J" nor may</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#554" name=554>554</A> <EM class=comment> * "DOM4J" appear in their names without prior written permission of MetaStuff,</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#555" name=555>555</A> <EM class=comment> * Ltd. DOM4J is a registered trademark of MetaStuff, Ltd.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#556" name=556>556</A> <EM class=comment> * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#557" name=557>557</A> <EM class=comment> * 5. Due credit should be given to the DOM4J Project - <A href="http://www.dom4j.org/" target=alexandria_uri>http://www.dom4j.org/</A></EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#558" name=558>558</A> <EM class=comment> * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#559" name=559>559</A> <EM class=comment> * THIS SOFTWARE IS PROVIDED BY METASTUFF, LTD. AND CONTRIBUTORS ``AS IS'' AND</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#560" name=560>560</A> <EM class=comment> * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#561" name=561>561</A> <EM class=comment> * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#562" name=562>562</A> <EM class=comment> * ARE DISCLAIMED. IN NO EVENT SHALL METASTUFF, LTD. OR ITS CONTRIBUTORS BE</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#563" name=563>563</A> <EM class=comment> * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#564" name=564>564</A> <EM class=comment> * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#565" name=565>565</A> <EM class=comment> * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#566" name=566>566</A> <EM class=comment> * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#567" name=567>567</A> <EM class=comment> * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#568" name=568>568</A> <EM class=comment> * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#569" name=569>569</A> <EM class=comment> * POSSIBILITY OF SUCH DAMAGE.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#570" name=570>570</A> <EM class=comment> * </EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#571" name=571>571</A> <EM class=comment> * Copyright 2001-2005 (C) MetaStuff, Ltd. All Rights Reserved.</EM>
+<A href="http://www.dom4j.org/xref-test/org/dom4j/io/DTDTest.html#572" name=572>572</A> <EM class=comment> */</EM>
+</PRE>
+<HR>
+
+<DIV id=footer>This page was automatically generated by <A 
+href="http://maven.apache.org/">Maven</A></DIV></BODY></HTML>

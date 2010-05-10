@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+        Auto-generated mapping file from
+        the hibernate.org cfg2hbm engine
+-->
+    <class name="com.loadtrend.TAddress" table="t_address" catalog="test_hibernate">
+        <cache usage="read-write"/>
+        <id name="id" type="integer">
+            <column name="id" />
+            <generator class="native" />
+        </id>
+        <property name="address" type="string">
+            <column name="address" length="200" />
+        </property>
+        <property name="zipcode" type="string">
+            <column name="zipcode" length="10" />
+        </property>
+        <property name="tel" type="string">
+            <column name="tel" length="20" />
+        </property>
+        <property name="idx" type="integer">
+            <column name="idx" />
+        </property>
+        <many-to-one name="user" class="com.loadtrend.TUser" column="user_id" cascade="none">
+        </many-to-one>
+    </class>
+</hibernate-mapping>

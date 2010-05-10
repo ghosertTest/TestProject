@@ -1,0 +1,201 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;18.&nbsp;Mapping XML</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="filters.html" title="Chapitre&nbsp;17.&nbsp;Filtrer les donn&eacute;es"><link rel="next" href="performance.html" title="Chapitre&nbsp;19.&nbsp;Am&eacute;liorer les performances"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;18.&nbsp;Mapping XML</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="filters.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="performance.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="xml"></a>Chapitre&nbsp;18.&nbsp;Mapping XML</h2></div></div><div></div></div><p><span class="emphasis"><em>
+        Notez que cette fonctionnalit&eacute; est exp&eacute;rimentale dans Hibernate 3.0 et
+        est en d&eacute;veloppement extr&ecirc;mement actif.
+    </em></span></p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="xml-intro"></a>18.1.&nbsp;Travailler avec des donn&eacute;es XML</h2></div></div><div></div></div><p>
+            Hibernate vous laisse travailler avec des donn&eacute;es XML persistantes de la
+            m&ecirc;me mani&egrave;re que vous travaillez avec des POJOs persistants. Un arbre XML
+            peut &ecirc;tre vu comme une autre mani&egrave;re de repr&eacute;senter les donn&eacute;es relationnelles
+            au niveau objet, &agrave; la place des POJOs.
+        </p><p>
+            Hibernate supporte dom4j en tant qu'API pour la manipulation des arbres XML.
+            Vous pouvez &eacute;crire des requ&ecirc;tes qui r&eacute;cup&egrave;rent des arbres dom4j &agrave; partie de la
+            base de donn&eacute;es, et avoir toutes les modifications que vous faites sur l'arbre
+            automatiquement synchronis&eacute;es dans la base de donn&eacute;es. Vous pouvez  m&ecirc;me prendre
+            un document XML, l'analyser en utilisant dom4j, et l'&eacute;crire dans la base de
+            donn&eacute;es via les op&eacute;rations basiques d'Hibernate :
+            <tt class="literal">persist(), saveOrUpdate(), merge(), delete(), replicate()</tt>
+            (merge() n'est pas encore support&eacute;).
+        </p><p>
+            Cette fonctionnalit&eacute; a plusieurs applications dont l'import/export de donn&eacute;es,
+            l'externalisation d'entit&eacute;s via JMS ou SOAP et les rapports XSLT.
+        </p><p>
+            Un simple mapping peut &ecirc;tre utilis&eacute; pour simultan&eacute;ment mapper les propri&eacute;t&eacute;s
+            d'une classe et les noeuds d'un document XML vers la base de donn&eacute;es, ou,
+            si il n'y a pas de classe &agrave; mapper, il peut &ecirc;tre utilis&eacute; juste pour mapper
+            le XML.
+        </p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="xml-intro-mapping"></a>18.1.1.&nbsp;Sp&eacute;cifier le mapping XML et le mapping d'une classe ensemble</h3></div></div><div></div></div><p>
+                Voici un exemple de mapping d'un POJO et du XML simultan&eacute;ment :
+            </p><pre class="programlisting">&lt;class name="Account"
+        table="ACCOUNTS"
+        node="account"&gt;
+
+    &lt;id name="accountId"
+            column="ACCOUNT_ID"
+            node="@id"/&gt;
+
+    &lt;many-to-one name="customer"
+            column="CUSTOMER_ID"
+            node="customer/@id"
+            embed-xml="false"/&gt;
+
+    &lt;property name="balance"
+            column="BALANCE"
+            node="balance"/&gt;
+
+    ...
+
+&lt;/class&gt;</pre></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="xml-onlyxml"></a>18.1.2.&nbsp;Sp&eacute;cifier seulement un mapping XML</h3></div></div><div></div></div><p>
+                Voici un exemple dans lequel il n'y a pas de class POJO :
+            </p><pre class="programlisting">&lt;class entity-name="Account"
+        table="ACCOUNTS"
+        node="account"&gt;
+
+    &lt;id name="id"
+            column="ACCOUNT_ID"
+            node="@id"
+            type="string"/&gt;
+
+    &lt;many-to-one name="customerId"
+            column="CUSTOMER_ID"
+            node="customer/@id"
+            embed-xml="false"
+            entity-name="Customer"/&gt;
+
+    &lt;property name="balance"
+            column="BALANCE"
+            node="balance"
+            type="big_decimal"/&gt;
+
+    ...
+
+&lt;/class&gt;</pre><p>
+                Ce mapping vous permet d'acc&eacute;der aux donn&eacute;es comme un arbre dom4j, ou comme
+                un graphe de paire nom de propri&eacute;t&eacute;/valeur (<tt class="literal">Map</tt>s java). Les
+                noms des propri&eacute;t&eacute;s sont des constructions purement logiques qui peuvent &ecirc;tre
+                r&eacute;f&eacute;r&eacute;es des dans requ&ecirc;tes HQL.
+            </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="xml-mapping"></a>18.2.&nbsp;M&eacute;tadonn&eacute;es du mapping XML</h2></div></div><div></div></div><p>
+            Plusieurs &eacute;l&eacute;ments du mapping Hibernate acceptent l'attribut <tt class="literal">node</tt>.
+            Ceci vous permet de sp&eacute;cifier le nom d'un attribut XML ou d'un &eacute;l&eacute;ment qui
+            contient la propri&eacute;t&eacute; ou les donn&eacute;es de l'entit&eacute;. Le format de l'attribut
+            <tt class="literal">node</tt> doit &ecirc;tre un des suivants :
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p><tt class="literal">"element-name"</tt> - mappe vers l'&eacute;l&eacute;ment XML nomm&eacute;</p></li><li><p><tt class="literal">"@attribute-name"</tt> - mappe vers l'attribut XML nomm&eacute;</p></li><li><p><tt class="literal">"."</tt> - mappe vers le parent de l'&eacute;l&eacute;ment</p></li><li><p>
+                <tt class="literal">"element-name/@attribute-name"</tt> -
+                mappe vers l'&eacute;l&eacute;ment nomm&eacute; de l'attribut nomm&eacute;
+            </p></li></ul></div><p>
+            Pour des collections et de simples associations valu&eacute;es, il y a un attribut
+            <tt class="literal">embed-xml</tt> suppl&eacute;mentaire. Si <tt class="literal">embed-xml="true"</tt>,
+            qui est la valeur par d&eacute;faut, l'arbre XML pour l'entit&eacute; associ&eacute;e (ou la collection
+            des types de valeurs) sera embarqu&eacute;e directement dans l'arbre XML pour l'entit&eacute; qui
+            poss&egrave;de l'association. Sinon, si <tt class="literal">embed-xml="false"</tt>, alors
+            seule la valeur de l'identifiant r&eacute;f&eacute;renc&eacute; appara&icirc;tra dans le XML pour de simples
+            associations de points, et les collections n'appra&icirc;tront simplement pas.
+        </p><p>
+            Vous devriez faire attention &agrave; ne pas laisser <tt class="literal">embed-xml="true"</tt>
+            pour trop d'associations, puisque XML ne traite pas bien les liens circurlaires.
+        </p><pre class="programlisting">&lt;class name="Customer"
+        table="CUSTOMER"
+        node="customer"&gt;
+
+    &lt;id name="id"
+            column="CUST_ID"
+            node="@id"/&gt;
+
+    &lt;map name="accounts"
+            node="."
+            embed-xml="true"&gt;
+        &lt;key column="CUSTOMER_ID"
+                not-null="true"/&gt;
+        &lt;map-key column="SHORT_DESC"
+                node="@short-desc"
+                type="string"/&gt;
+        &lt;one-to-many entity-name="Account"
+                embed-xml="false"
+                node="account"/&gt;
+    &lt;/map&gt;
+
+    &lt;component name="name"
+            node="name"&gt;
+        &lt;property name="firstName"
+                node="first-name"/&gt;
+        &lt;property name="initial"
+                node="initial"/&gt;
+        &lt;property name="lastName"
+                node="last-name"/&gt;
+    &lt;/component&gt;
+
+    ...
+
+&lt;/class&gt;</pre><p>
+            dans ce cas, nous avons d&eacute;cid&eacute; d'embarquer la collection d'identifiants de compte,
+            mais pas les donn&eacute;es actuelles du compte. La requ&ecirc;te HQL suivante :
+        </p><pre class="programlisting">from Customer c left join fetch c.accounts where c.lastName like :lastName</pre><p>
+            devrait retourner l'ensemble de donn&eacute;es suivant :
+        </p><pre class="programlisting">&lt;customer id="123456789"&gt;
+    &lt;account short-desc="Savings"&gt;987632567&lt;/account&gt;
+    &lt;account short-desc="Credit Card"&gt;985612323&lt;/account&gt;
+    &lt;name&gt;
+        &lt;first-name&gt;Gavin&lt;/first-name&gt;
+        &lt;initial&gt;A&lt;/initial&gt;
+        &lt;last-name&gt;King&lt;/last-name&gt;
+    &lt;/name&gt;
+    ...
+&lt;/customer&gt;</pre><p>
+            Si vous positionnez <tt class="literal">embed-xml="true"</tt> sur le mapping
+            <tt class="literal">&lt;one-to-many&gt;</tt>, les donn&eacute;es pourraient
+            ressembler plus &agrave; &ccedil;a :
+        </p><pre class="programlisting">&lt;customer id="123456789"&gt;
+    &lt;account id="987632567" short-desc="Savings"&gt;
+        &lt;customer id="123456789"/&gt;
+        &lt;balance&gt;100.29&lt;/balance&gt;
+    &lt;/account&gt;
+    &lt;account id="985612323" short-desc="Credit Card"&gt;
+        &lt;customer id="123456789"/&gt;
+        &lt;balance&gt;-2370.34&lt;/balance&gt;
+    &lt;/account&gt;
+    &lt;name&gt;
+        &lt;first-name&gt;Gavin&lt;/first-name&gt;
+        &lt;initial&gt;A&lt;/initial&gt;
+        &lt;last-name&gt;King&lt;/last-name&gt;
+    &lt;/name&gt;
+    ...
+&lt;/customer&gt;</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="xml-manipulation"></a>18.3.&nbsp;Manipuler des donn&eacute;es XML</h2></div></div><div></div></div><p>
+            Relisons et mettons &agrave; jour des documents XML dans l'application. Nous faisons
+            &ccedil;a en obtenant une session dom4j :
+        </p><pre class="programlisting">Document doc = ....;
+
+Session session = factory.openSession();
+Session dom4jSession = session.getSession(EntityMode.DOM4J);
+Transaction tx = session.beginTransaction();
+
+List results = dom4jSession
+    .createQuery("from Customer c left join fetch c.accounts where c.lastName like :lastName")
+    .list();
+for ( int i=0; i&lt;results.size(); i++ ) {
+    //add the customer data to the XML document
+    Element customer = (Element) results.get(i);
+    doc.add(customer);
+}
+
+tx.commit();
+session.close();</pre><pre class="programlisting">Session session = factory.openSession();
+Session dom4jSession = session.getSession(EntityMode.DOM4J);
+Transaction tx = session.beginTransaction();
+
+Element cust = (Element) dom4jSession.get("Customer", customerId);
+for ( int i=0; i&lt;results.size(); i++ ) {
+    Element customer = (Element) results.get(i);
+    //change the customer name in the XML and database
+    Element name = customer.element("name");
+    name.element("first-name").setText(firstName);
+    name.element("initial").setText(initial);
+    name.element("last-name").setText(lastName);
+}
+
+tx.commit();
+session.close();</pre><p>
+            Il est extr&ecirc;mement utile de combiner cette fonctionnalit&eacute; avec l'op&eacute;ration
+            <tt class="literal">replicate()</tt> d'Hibernate pour impl&eacute;menter des imports/exports
+            de donn&eacute;es XML.
+        </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="filters.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="performance.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;17.&nbsp;Filtrer les donn&eacute;es&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;19.&nbsp;Am&eacute;liorer les performances</td></tr></table></div></body></html>

@@ -1,0 +1,982 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0061)http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/ -->
+<HTML lang=zh-CN xml:lang="zh-CN" 
+xmlns="http://www.w3.org/1999/xhtml"><HEAD><TITLE>使用 Update Manager 更新 RCP 应用程序</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=UTF-8">
+<META http-equiv=PICS-Label 
+content='(PICS-1.1 "http://www.icra.org/ratingsv02.html" l gen true r (cz 1 lz 1 nz 1 oz 1 vz 1) "http://www.rsac.org/ratingsv01.html" l gen true r (n 0 s 0 v 0 l 0) "http://www.classify.org/safesurf/" l gen true r (SS~~000 1))'><LINK 
+href="http://purl.org/DC/elements/1.0/" rel=schema.DC><LINK 
+href="http://www.ibm.com/favicon.ico" rel="SHORTCUT ICON">
+<META content=dw@cn.ibm.com name=Owner>
+<META scheme=rfc1766 content=zh-CN name=DC.Language>
+<META content=cn name=IBM.Country>
+<META content=Public name=Security>
+<META 
+content="Rich Client Platform，顾名思义，是一个构建富客户端应用的平台，基于 Eclipse的插件体系结构，由一系列所需要的最小插件集合所组成。一般来说，一个 RCP 应用程序在发布时有两种类型：基于插件（Plug-in）和基于功能部件（Feature）的。为了使用 Eclipse平台所提供的丰富功能（比如 Update，Web Start），我们必须开发基于功能部件的 RCP 应用。两者之间的转换也是非常容易的。这篇文章使用 Eclipse3.2 版本作为开发平台，提供了一个小型的 RCP 应用例程，并使用 Update Manager 来实现产品的自动更新。" 
+name=Abstract>
+<META 
+content="Rich Client Platform，顾名思义，是一个构建富客户端应用的平台，基于 Eclipse的插件体系结构，由一系列所需要的最小插件集合所组成。一般来说，一个 RCP 应用程序在发布时有两种类型：基于插件（Plug-in）和基于功能部件（Feature）的。为了使用 Eclipse平台所提供的丰富功能（比如 Update，Web Start），我们必须开发基于功能部件的 RCP 应用。两者之间的转换也是非常容易的。这篇文章使用 Eclipse3.2 版本作为开发平台，提供了一个小型的 RCP 应用例程，并使用 Update Manager 来实现产品的自动更新。" 
+name=Description>
+<META content="Eclipse, 富客户端, tttosca" name=Keywords>
+<META scheme=iso8601 content=2006-10-12 name=DC.Date>
+<META content="Based on v14 Template Generator, Template 14.0" name=Source>
+<META content="Copyright (c) 2006 by IBM Corporation" name=DC.Rights>
+<META content=index,follow name=Robots>
+<META scheme=W3CDTF content=2006-10-12 name=IBM.Effective>
+<META content=17012007zoucl@cn.ibm.com name="Last update"><LINK 
+media=screen,print href="使用 Update Manager 更新 RCP 应用程序.files/table.css" 
+type=text/css rel=stylesheet>
+<SCRIPT language=JavaScript src="使用 Update Manager 更新 RCP 应用程序.files/dwcss14.js" 
+type=text/javascript></SCRIPT>
+<NOSCRIPT><LINK href="使用 Update Manager 更新 RCP 应用程序.files/r1ss.css" 
+type=text/css rel=stylesheet></NOSCRIPT><LINK 
+href="使用 Update Manager 更新 RCP 应用程序.files/main.css" type=text/css 
+rel=stylesheet><LINK media=all 
+href="使用 Update Manager 更新 RCP 应用程序.files/screen.css" type=text/css 
+rel=stylesheet><LINK media=print 
+href="使用 Update Manager 更新 RCP 应用程序.files/print.css" type=text/css 
+rel=stylesheet>
+<SCRIPT language=JavaScript 
+src="使用 Update Manager 更新 RCP 应用程序.files/detection.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="使用 Update Manager 更新 RCP 应用程序.files/dropdown.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="使用 Update Manager 更新 RCP 应用程序.files/grabtitle.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript 
+src="使用 Update Manager 更新 RCP 应用程序.files/emailfriend2.js" 
+type=text/javascript></SCRIPT>
+<!--START RESERVED FOR FUTURE USE INCLUDE FILES-->
+<SCRIPT language=javascript src="使用 Update Manager 更新 RCP 应用程序.files/ajax1.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=javascript 
+src="使用 Update Manager 更新 RCP 应用程序.files/searchcount.js" 
+type=text/javascript></SCRIPT>
+<!--END RESERVED FOR FUTURE USE INCLUDE FILES-->
+<SCRIPT language=JavaScript type=text/javascript>var emailAbstract = "Rich Client Platform，顾名思义，是一个构建富客户端应用的平台，基于 Eclipse的插件体系结构，由一系列所需要的最小插件集合所组成。一般来说，一个 RCP 应用程序在发布时有两种类型：基于插件（Plug-in）和基于功能部件（Feature）的。为了使用 Eclipse平台所提供的丰富功能（比如 Update，Web Start），我们必须开发基于功能部件的 RCP 应用。两者之间的转换也是非常容易的。这篇文章使用 Eclipse3.2 版本作为开发平台，提供了一个小型的 RCP 应用例程，并使用 Update Manager 来实现产品的自动更新。"; </SCRIPT>
+
+<META content="MSHTML 6.00.2800.1589" name=GENERATOR></HEAD>
+<BODY><!--MASTHEAD_BEGIN-->
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD class=bbg width=110><A href="http://www.ibm.com/cn/"><IMG height=52 
+      alt=IBM® src="使用 Update Manager 更新 RCP 应用程序.files/ibm-logo.gif" width=110 
+      border=0></A></TD>
+    <TD class=bbg><IMG height=1 alt="" 
+      src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=1 border=0></TD>
+    <TD class=mbbg align=right width=650>
+      <TABLE cellSpacing=0 cellPadding=0 align=right border=0>
+        <TBODY>
+        <TR class=cty-tou>
+          <TD class=upper-masthead-corner width=17 rowSpan=2><A 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#main"><IMG 
+            height=1 alt=跳转到主要内容 src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+            width=1 border=0></A></TD>
+          <TD align=left>
+            <TABLE cellSpacing=0 cellPadding=0 align=left border=0>
+              <TBODY>
+              <TR>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><B 
+                  class=country>中国</B><SPAN class=spacer>&nbsp;[</SPAN><A 
+                  class=ur-link 
+                  href="http://www.ibm.com/developerworks/cn/country/">选择</A><SPAN 
+                  class=spacer>]</SPAN></TD>
+                <TD class=upper-masthead-divider 
+                width=29>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD align=left><A class=ur-link 
+                  href="http://www.ibm.com/legal/cn/">使用条款</A></TD></TR></TBODY></TABLE></TD>
+          <TD width=40>&nbsp;</TD></TR>
+        <TR>
+          <TD class=cty-tou-border colSpan=2 height=1><IMG height=1 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=1></TD></TR>
+        <TR>
+          <TD colSpan=3><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=1></TD></TR>
+        <TR>
+          <TD>&nbsp;</TD>
+          <TD align=middle colSpan=2>
+            <FORM id=form1 name=form1 
+            action=http://www-128.ibm.com/developerworks/search/searchResults.jsp 
+            method=get><INPUT type=hidden value=1 name=searchType><INPUT 
+            type=hidden value=dWChina name=searchSite><INPUT type=hidden 
+            value=zh name=pageLang><INPUT type=hidden value=UTF8 
+            name=langEncoding>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD width=1><IMG height=1 alt="Select a scope:" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=1></TD>
+                <TD align=right><LABEL for=sq><SELECT class=input-scope id=sq 
+                  name=searchScope><OPTION value=dW selected>dW 
+                    全部内容</OPTION><OPTION 
+                    value=dW>-----------------</OPTION><OPTION 
+                    value=aixunix>&nbsp;&nbsp;AIX and UNIX</OPTION><OPTION 
+                    value=dmdd>&nbsp;&nbsp;Information 
+                    management</OPTION><OPTION 
+                    value=lotusdd>&nbsp;&nbsp;Lotus</OPTION><OPTION 
+                    value=rdd>&nbsp;&nbsp;Rational</OPTION><OPTION 
+                    value=tivolidd>&nbsp;&nbsp;Tivoli</OPTION><OPTION 
+                    value=wsdd>&nbsp;&nbsp;WebSphere</OPTION><OPTION 
+                    value=workplace>&nbsp;&nbsp;Workplace</OPTION><OPTION 
+                    value=dW>-----------------</OPTION><OPTION 
+                    value=gridZ>&nbsp;&nbsp;Grid computing</OPTION><OPTION 
+                    value=javaZ>&nbsp;&nbsp;Java 技术</OPTION><OPTION 
+                    value=linuxZ>&nbsp;&nbsp;Linux</OPTION><OPTION 
+                    value=opensrcZ>&nbsp;&nbsp;Open source</OPTION><OPTION 
+                    value=securityZ>&nbsp;&nbsp;Security</OPTION><OPTION 
+                    value=webservZ>&nbsp;&nbsp;SOA &amp; Web 
+                    services</OPTION><OPTION value=webarchZ>&nbsp;&nbsp;Web 
+                    development</OPTION><OPTION 
+                    value=xmlZ>&nbsp;&nbsp;XML</OPTION><OPTION 
+                    value=dW>-----------------</OPTION><OPTION value=all>IBM 
+                    全部内容</OPTION></SELECT></LABEL></TD>
+                <TD align=right width=1><IMG height=1 alt="Search for:" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                width=1>&nbsp;&nbsp;</TD>
+                <TD align=right><INPUT class=input id=q maxLength=100 size=15 
+                  name=query></TD>
+                <TD width=7>&nbsp;</TD>
+                <TD><LABEL for=q><INPUT type=image alt=搜索 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/search.gif" value=搜索 
+                  name=Search></LABEL></TD>
+                <TD 
+      width=20>&nbsp;</TD></TR></TBODY></TABLE></FORM></TD></TR></TBODY></TABLE></TD></TR>
+  <TR>
+    <TD class=blbg colSpan=3>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN></TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/cn/">首页</A></TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/products/cn/">产品</A></TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/servicessolutions/cn/">服务与解决方案</A></TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/support/cn/">支持与下载</A></TD>
+                <TD class=masthead-divider 
+width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+                <TD><A class=masthead-mainlink 
+                  href="http://www.ibm.com/account/cn/">个性化服务</A></TD>
+                <TD><SPAN 
+              class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><!--
+<script src="//www.ibm.com/common/v14/pmh.js" language="JavaScript" type="text/javascript"></script>
+--><!-- end masthead dw liquid --><!--MASTHEAD_END--><!-- CMA ID for this content is: 167359 -->
+<TABLE id=v14-body-table cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR vAlign=top><!--LEFTNAV_BEGIN-->
+    <TD id=navigation width=150>
+      <TABLE cellSpacing=0 cellPadding=0 width=150 border=0>
+        <TBODY>
+        <TR>
+          <TD class=left-nav-spacer><A class=left-nav-overview 
+            href="http://www.ibm.com/developerworks/cn/">&nbsp;</A></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width=150 border=0>
+        <TBODY>
+        <TR>
+          <TD class=left-nav-overview colSpan=2><A class=left-nav-overview 
+            href="http://www.ibm.com/developerworks/cn/">developerWorks<BR>中国</A></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width=150 border=0>
+        <TBODY>
+        <TR>
+          <TD class=left-nav-highlight colSpan=2><A class=left-nav 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#">本文内容包括:</A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#N1004B">简介</A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#N10086">开始</A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#N100AF">功能部件</A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#N10107">包装成产品</A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#N10147">Update 
+            Manager</A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#N102C4">结论</A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#download">下载</A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#resources">参考资料 
+            </A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#author">关于作者</A></TD></TR>
+        <TR class=left-nav-child-highlight>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/cl-bullet.gif" width=2></TD>
+          <TD><A class=left-nav-child 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#rate">对本文的评价</A></TD></TR>
+        <TR class=left-nav-last>
+          <TD width=14><IMG class=display-img height=1 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=14></TD>
+          <TD width=136><IMG class=display-img height=19 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/left-nav-corner.gif" 
+            width=136></TD></TR></TBODY></TABLE><BR>
+      <TABLE cellSpacing=0 cellPadding=0 width=150 border=0>
+        <TBODY>
+        <TR>
+          <TD class=related colSpan=2><B class=related>相关链接:</B></TD></TR>
+        <TR class=rlinks>
+          <TD><IMG height=8 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/rl-bullet.gif" width=2></TD>
+          <TD><A class=rlinks 
+            href="http://www.ibm.com/developerworks/cn/views/opensource/articles.jsp">Open 
+            source 技术文档库</A></TD></TR><!--START RESERVED FOR FUTURE USE INCLUDE FILES--><!-- No content currently --><!--END RESERVED FOR FUTURE USE INCLUDE FILES-->
+        <TR>
+          <TD width=14><IMG class=display-img height=1 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=14></TD>
+          <TD width=136><IMG class=display-img height=19 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+        width=136></TD></TR></TBODY></TABLE><!--START RESERVED FOR FUTURE USE INCLUDE FILES--><!-- No content currently --><!--END RESERVED FOR FUTURE USE INCLUDE FILES--></TD><!--LEFTNAV_END-->
+    <TD width="100%">
+      <TABLE id=content-table cellSpacing=0 cellPadding=0 width="100%" 
+        border=0><TBODY>
+        <TR vAlign=top>
+          <TD width="100%">
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD><A name=main><IMG height=1 alt="skip to main content" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=592 
+                  border=0></A></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR vAlign=top>
+                <TD width=10 height=18><IMG height=18 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=10></TD>
+                <TD width="100%"><IMG height=6 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=1><BR><A 
+                  class=bctl 
+                  href="http://www.ibm.com/developerworks/cn/">developerWorks 
+                  中国</A><SPAN class=bct>&nbsp;&nbsp;&gt;&nbsp;&nbsp;</SPAN><A 
+                  class=bctl 
+                  href="http://www.ibm.com/developerworks/cn/opensource/">Open 
+                  source</A><SPAN class=bct>&nbsp;&nbsp;&gt;</SPAN><IMG height=1 
+                  alt="" src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                  width=1><BR>
+                  <H1>使用 Update Manager 更新 RCP 应用程序</H1><IMG class=display-img 
+                  height=6 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=1></TD>
+                <TD class=no-print width=192><IMG height=18 alt=developerWorks 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/dw.gif" 
+              width=192></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR vAlign=top>
+          <TD width=10><IMG height=1 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=10></TD>
+          <TD width="100%">
+            <TABLE class=no-print cellSpacing=0 cellPadding=0 width=160 
+            align=right border=0>
+              <TBODY>
+              <TR>
+                <TD width=10><IMG height=1 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=10></TD>
+                <TD>
+                  <TABLE cellSpacing=0 cellPadding=0 width=150 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD class=v14-header-1-small>文档选项</TD></TR></TBODY></TABLE>
+                  <TABLE class=v14-gray-table-border cellSpacing=0 cellPadding=0 
+                  border=0>
+                    <TBODY>
+                    <TR>
+                      <TD class=no-padding width=150>
+                        <TABLE cellSpacing=0 cellPadding=0 width=143 
+                          border=0><IMG height=1 alt="" 
+                          src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                          width=8>
+                          <FORM name=email 
+                          action=https://www.ibm.com/developerworks/secure/email-it.jsp><INPUT 
+                          type=hidden 
+                          value="Rich Client Platform，顾名思义，是一个构建富客户端应用的平台，基于 Eclipse的插件体系结构，由一系列所需要的最小插件集合所组成。一般来说，一个 RCP 应用程序在发布时有两种类型：基于插件（Plug-in）和基于功能部件（Feature）的。为了使用 Eclipse平台所提供的丰富功能（比如 Update，Web Start），我们必须开发基于功能部件的 RCP 应用。两者之间的转换也是非常容易的。这篇文章使用 Eclipse3.2 版本作为开发平台，提供了一个小型的 RCP 应用例程，并使用 Update Manager 来实现产品的自动更新。" 
+                          name=body><INPUT type=hidden 
+                          value="使用 Update Manager 更新 RCP 应用程序" 
+                          name=subject><INPUT type=hidden value=cn name=lang>
+                          <SCRIPT language=JavaScript type=text/javascript>
+<!--
+document.write('<tr valign="top"><td width="8"><img src="//www.ibm.com/i/c.gif" width="8" height="1" alt=""/></td><td width="16"><img src="//www.ibm.com/i/v14/icons/em.gif" height="16" width="16" vspace="3" alt="将此页作为电子邮件发送" /></td><td width="122"><p><a class="smallplainlink" href="javascript:document.email.submit();"><b>将此页作为电子邮件发送</b></a></p></td></tr>');
+//-->
+</SCRIPT>
+                          <NOSCRIPT>
+                          <TBODY>
+                          <TR vAlign=top>
+                            <TD width=8><IMG height=1 alt="" 
+                              src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                              width=8></TD>
+                            <TD width=16><IMG height=16 alt="" 
+                              src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                              width=16></TD>
+                            <TD class=small width=122>
+                              <P><SPAN class=ast>未显示需要 JavaScript 
+                              的文档选项</SPAN></P></TD></TR></NOSCRIPT></FORM>
+                          <TR vAlign=top>
+                            <TD width=8><IMG height=1 alt="" 
+                              src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                              width=8></TD>
+                            <TD width=16><IMG height=16 alt="" 
+                              src="使用 Update Manager 更新 RCP 应用程序.files/dn.gif" 
+                              width=16 vspace=3 border=0></TD>
+                            <TD width=122>
+                              <P><A class=smallplainlink 
+                              href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#download"><B>样例代码</B></A></P></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><!--START RESERVED FOR FUTURE USE INCLUDE FILES--><!-- 03/20/06 updated by gretchen --><BR>
+                  <TABLE cellSpacing=0 cellPadding=0 width=150 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD class=v14-header-2-small>拓展 Tomcat 
+                  应用</TD></TR></TBODY></TABLE>
+                  <TABLE class=v14-gray-table-border cellSpacing=0 cellPadding=0 
+                  border=0>
+                    <TBODY>
+                    <TR>
+                      <TD class=no-padding width=150>
+                        <TABLE cellSpacing=0 cellPadding=0 width=143 border=0>
+                          <TBODY>
+                          <TR vAlign=top>
+                            <TD width=8><IMG height=1 alt="" 
+                              src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                              width=8></TD>
+                            <TD><IMG height=16 alt="" 
+                              src="使用 Update Manager 更新 RCP 应用程序.files/fw_bold.gif" 
+                              width=16 vspace=3 border=0></TD>
+                            <TD width=125>
+                              <P><A class=smallplainlink 
+                              href="http://www.ibm.com/developerworks/cn/kickstart/webserver.html?S_TACT=105AGX52&amp;S_CMP=simpleart">下载 
+                              IBM 开源 J2EE 应用服务器 WAS CE 新版本 V1.1</A> 
+                          </P></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><!--END RESERVED FOR FUTURE USE INCLUDE FILES--><BR></TD></TR></TBODY></TABLE>
+            <P>级别: 初级</P>
+            <P><A 
+            href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#author">马 
+            吉荣</A> (<A 
+            href="mailto:majirong@cn.ibm.com?subject=使用 Update Manager 更新 RCP 应用程序">mailto:majirong@cn.ibm.com?subject=使用 
+            Update Manager 更新 RCP 应用程序</A>), IBM中国软件开发中心DB2 II 
+Team，软件工程师<BR></P>
+            <P>2006 年 10 月 12 日</P>
+            <BLOCKQUOTE>Rich Client Platform，顾名思义，是一个构建富客户端应用的平台，基于 
+              Eclipse的插件体系结构，由一系列所需要的最小插件集合所组成。一般来说，一个 RCP 
+              应用程序在发布时有两种类型：基于插件（Plug-in）和基于功能部件（Feature）的。为了使用 
+              Eclipse平台所提供的丰富功能（比如 Update，Web Start），我们必须开发基于功能部件的 RCP 
+              应用。两者之间的转换也是非常容易的。这篇文章使用 Eclipse3.2 版本作为开发平台，提供了一个小型的 RCP 应用例程，并使用 
+              Update Manager 来实现产品的自动更新。</BLOCKQUOTE><!--START RESERVED FOR FUTURE USE INCLUDE FILES--><!-- include java script once we verify teams wants to use this and it will work on dbcs and cyrillic characters --><!--END RESERVED FOR FUTURE USE INCLUDE FILES-->
+            <P><A name=N1004B><SPAN class=atitle>简介</SPAN></A></P>
+            <P>Eclipse RCP 是 Eclipse Platform 的一个子集（如图），从 Eclipse3.0 
+            版本开始，Eclipse项目组对代码进行了重构，将 IDE 与 Workbench（工作台）彻底分离，实现了一个 Generic 
+            Workbench，使得基本的 RCP 应用中不再有 IDE 的影子。构成 RCP 
+            的最小插件集合包括Runtime，OSGi，SWT，JFace，Workbench 等一些必须的部件，还有一些是可选部件（比如 
+            Help, Update 等，如下图所示），所有这些插件使得我们的 RCP 程序可以完成绝大部分的企业应用需求。</P><BR><IMG 
+            height=245 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image002.jpg" width=385 
+            border=0> <BR>
+            <P>Update 是 RCP 的一个可选部件，它的主要功能包括： </P>
+            <P>1) 更新已经安装了的功能部件; </P>
+            <P>2) 寻找新的功能并进行安装; </P>
+            <P>3) 对已安装的功能部件进行配置。</P>
+            <P>这篇文章会围绕 Update 这个可选插件，使用 PDE 来开发一个具有自动更新功能的小型 RCP 应用程序。</P>
+            <P>建议读者先阅读下面的一些链接，以便对 RCP 有一个清晰的概念：</P>
+            <P><A 
+            href="http://www.eclipse.org/articles/Article-RCP-1/tutorial1.html">http://www.eclipse.org/articles/Article-RCP-1/tutorial1.html</A></P>
+            <P><A 
+            href="http://www.eclipse.org/articles/Article-RCP-2/tutorial2.html">http://www.eclipse.org/articles/Article-RCP-2/tutorial2.html</A></P>
+            <P><A 
+            href="http://www.eclipse.org/articles/Article-RCP-3/tutorial3.html">http://www.eclipse.org/articles/Article-RCP-3/tutorial3.html</A></P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD><IMG height=1 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/blue_rule.gif" 
+                  width="100%"><BR><IMG height=6 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=8 
+                  border=0></TD></TR></TBODY></TABLE>
+            <TABLE class=no-print cellSpacing=0 cellPadding=0 align=right>
+              <TBODY>
+              <TR align=right>
+                <TD><IMG height=4 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                  width="100%"><BR>
+                  <TABLE cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD vAlign=center><IMG height=16 alt="" 
+                        src="使用 Update Manager 更新 RCP 应用程序.files/u_bold.gif" 
+                        width=16 border=0><BR></TD>
+                      <TD vAlign=top align=right><A class=fbox 
+                        href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#main"><B>回页首</B></A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR><BR>
+            <P><A name=N10086><SPAN class=atitle>开始</SPAN></A></P>
+            <P>首先，我们需要一个插件，用来启动 RCP 应用，这个插件会包含基本的应用扩展点，请参考上面的链接。这里，我们使用 PDE 
+            来创建一个 Eclipse 自带的具有一个视图（View）的例子程序。</P>
+            <P>启动 Eclipse，打开菜单File-&gt;New-&gt;Project, 选中Plug-in Project 
+            并且键入工程名，比如 
+            com.ibm.csdl.guardian.examples.。在下一页中，填写此插件的基本属性信息，对于问题"Would you 
+            like to create a rich client application?" 选择Yes. 最后，使用所提供的模板 "RCP 
+            application with a view" 并接受缺省设置来创建一个RCP的插件工程。</P><BR><IMG 
+            height=279 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image004.jpg" width=460 
+            border=0> <BR>
+            <P>浏览插件配置文件plugin.xml, 
+            我们会发现PDE创建了一个application的扩展，这个扩展将会作为RCP应用的程序入口，并且会被另外一个扩展：Product所使用（见本文产品部分）。</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>&lt;extension id="application" point="org.eclipse.core.runtime.applications"&gt;
+&lt;application&gt;
+&lt;run class="com.ibm.csdl.guardian.examples.Application"&gt; &lt;/run&gt;
+&lt;/application&gt;
+&lt;/extension&gt;
+</PRE></TD></TR></TBODY></TABLE><BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD><IMG height=1 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/blue_rule.gif" 
+                  width="100%"><BR><IMG height=6 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=8 
+                  border=0></TD></TR></TBODY></TABLE>
+            <TABLE class=no-print cellSpacing=0 cellPadding=0 align=right>
+              <TBODY>
+              <TR align=right>
+                <TD><IMG height=4 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                  width="100%"><BR>
+                  <TABLE cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD vAlign=center><IMG height=16 alt="" 
+                        src="使用 Update Manager 更新 RCP 应用程序.files/u_bold.gif" 
+                        width=16 border=0><BR></TD>
+                      <TD vAlign=top align=right><A class=fbox 
+                        href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#main"><B>回页首</B></A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR><BR>
+            <P><A name=N100AF><SPAN class=atitle>功能部件</SPAN></A></P>
+            <P>为了使用应用程序的更新功能，我们必须为RCP定义一个或多个功能部件（Feature）。打开菜单File-&gt;New-&gt;Project, 
+            选中 Feature Project 并且键入工程名称，比如 
+            com.ibm.csdl.guardian.examples.feature。在下一页，选中刚才所创建的插件工程： 
+            com.ibm.csdl.guardian.examples，作为此功能部件所包含的插件。</P>
+            <P>对于Eclipse3.2版本，一个可执行的RCP应用至少应包含下面的这些插件(Windows平台)：</P>
+            <P>com.ibm.icu,<BR>org.eclipse.core.commands,<BR>org.eclipse.core.contenttype, 
+            <BR>org.eclipse.core.expressions, <BR>org.eclipse.core.jobs, 
+            <BR>org.eclipse.core.runtime, <BR>org.eclipse.equinox.common, 
+            <BR>org.eclipse.equinox.preferences,<BR>org.eclipse.equinox.registry, 
+            <BR>org.eclipse.help, <BR>org.eclipse.jface, <BR>org.eclipse.osgi, 
+            <BR>org.eclipse.swt, <BR>org.eclipse.swt.win32.win32.x86, 
+            <BR>org.eclipse.ui.forms, <BR>org.eclipse.ui.workbench, 
+            <BR>org.eclipse.ui. 
+            <BR><BR>并且，为了使用RCP应用程序的更新功能，还需要包含下面的几个插件：<BR>org.eclipse.update.configurator, 
+            <BR>org.eclipse.update.core, <BR>org.eclipse.update.ui. </P>
+            <P>所以，同时选中这些插件来完成功能部件工程的创建。</P><BR><IMG height=259 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image006.jpg" width=419 
+            border=0> <BR>
+            <P>最后，键入一个更新站点的URL和站点名称，Update 
+            Manager会使用这些信息来连接一个或多个更新站点。在这里，URL既可以使用网络地址，也可以使用本地的文件系统地址。下面是功能部件的配置文件feature.xml的典型内容：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>…
+&lt;description url="http://www.example.com/description"&gt;
+[Enter Feature Description here.]
+&lt;/description&gt;
+&lt;copyright url="http://www.example.com/copyright"&gt;
+[Enter Copyright Description here.]
+&lt;/copyright&gt;
+&lt;license url="http://www.example.com/license"&gt;
+[Enter License Description here.]
+&lt;/license&gt;
+&lt;url&gt;
+&lt;update label="Examples RCP" url="file:/D:/temp/updates"/&gt;
+&lt;/url&gt;
+…
+</PRE></TD></TR></TBODY></TABLE><BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD><IMG height=1 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/blue_rule.gif" 
+                  width="100%"><BR><IMG height=6 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=8 
+                  border=0></TD></TR></TBODY></TABLE>
+            <TABLE class=no-print cellSpacing=0 cellPadding=0 align=right>
+              <TBODY>
+              <TR align=right>
+                <TD><IMG height=4 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                  width="100%"><BR>
+                  <TABLE cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD vAlign=center><IMG height=16 alt="" 
+                        src="使用 Update Manager 更新 RCP 应用程序.files/u_bold.gif" 
+                        width=16 border=0><BR></TD>
+                      <TD vAlign=top align=right><A class=fbox 
+                        href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#main"><B>回页首</B></A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR><BR>
+            <P><A name=N10107><SPAN class=atitle>包装成产品</SPAN></A></P>
+            <P>RCP应用程序在启动时，需要一个application的扩展点或一个product的扩展点作为入口。同时，为了简化RCP应用程序的打包过程，我们使用一个产品配置文件来对例子程序进行设置。其中product 
+            扩展点是基于application扩展点的。 </P>
+            <P>在PDE的Package Explorer视图中, 选中刚才所创建的RCP插件工程，打开菜单 
+            File-&gt;New-&gt;Product 
+            Configuration，键入一个产品配置文件名称，比如examples.product 
+            ，并且使用缺省设置来完成产品配置的创建工作。</P>
+            <P>在产品配置编辑器（product configuration 
+            editor）中，指定产品名称，比如examples。点击New按钮，使用缺省设置或指定一个产品标识，在RCP启动时会使用这个ID作为应用程序的入口。特别地，对于产品配置类型，要选择基于功能部件（features），否则无法使用更新功能。概览（Overview）页内容大致如下图所示：</P><BR><IMG 
+            height=261 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image008.jpg" width=434 
+            border=0> <BR>
+            <P>切换到配置页，将我们的功能部件com.ibm.csdl.guardian.examples.feature 
+            添加到部件列表中。如果必要，可以对其它页的属性信息进行更改，这里我们使用缺省值。最后，在插件配置文件plugin.xml中，添加product扩展：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>&lt;extension id="product" point="org.eclipse.core.runtime.products"&gt;
+&lt;product
+application="com.ibm.csdl.guardian.examples.application"
+name="Examples"/&gt;
+&lt;/extension&gt;
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>现在，我们可以切换到概览页，点击 "Launch the product" 来测试我们的RCP应用：</P><BR><IMG 
+            height=248 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image010.jpg" width=332 
+            border=0> <BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD><IMG height=1 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/blue_rule.gif" 
+                  width="100%"><BR><IMG height=6 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=8 
+                  border=0></TD></TR></TBODY></TABLE>
+            <TABLE class=no-print cellSpacing=0 cellPadding=0 align=right>
+              <TBODY>
+              <TR align=right>
+                <TD><IMG height=4 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                  width="100%"><BR>
+                  <TABLE cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD vAlign=center><IMG height=16 alt="" 
+                        src="使用 Update Manager 更新 RCP 应用程序.files/u_bold.gif" 
+                        width=16 border=0><BR></TD>
+                      <TD vAlign=top align=right><A class=fbox 
+                        href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#main"><B>回页首</B></A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR><BR>
+            <P><A name=N10147><SPAN class=atitle>Update Manager</SPAN></A></P>
+            <P>这只是一个很简单的RCP应用，我们可以在此基础上添加透视图及视图以实现各种各样的功能，但这些不是本文的重点，请参考其它资料。这里，我们将在此应用的基础上添加软件更新功能。</P>
+            <P><A name=N10150><SPAN class=smalltitle>添加更新菜单</SPAN></A></P>
+            <P>首先，应该有一种方式，用来呼叫出更新管理器，我们使用菜单来实现这个功能。在类 
+            ApplicationActionBarAdvisor中，修改 makeActions 方法,，添加一个Update 
+            Action：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>        …
+		exitAction = ActionFactory.QUIT.create(window);	
+		register(exitAction);
+		
+		updateAction = createUpdateAction(window);
+		register(updateAction);
+        …
+
+        </PRE></TD></TR></TBODY></TABLE><BR>
+            <P>修改 fillMenuBar 方法，将Update菜单添加到Help主菜单下：</P>… MenuManager helpMenu 
+            = new MenuManager("&amp;Help",IWorkbenchActionConstants.M_HELP); 
+            menuBar.add(helpMenu); helpMenu.add(updateAction); … 
+            <P><A name=N10165><SPAN class=smalltitle>实现软件更新功能</SPAN></A></P>
+            <P>在类 UpdateAction 中，实现 run 方法如下：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>BusyIndicator.showWhile(window.getShell().getDisplay(), new Runnable() {
+    public void run() {
+      UpdateJob job = new UpdateJob("Search for update", false, false);//$NON-NLS-1$
+      UpdateManagerUI.openInstaller(window.getShell(), job);
+      PlatformUI.getWorkbench().getProgressService().showInDialog(window.getShell(), job);
+}
+});
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>记得将 ore.eclipse.update.ui 这个插件添加到com.ibm.csdl.guardian.examples 
+            插件的所需插件列表中，否则上面的类将不能通过编译。</P>
+            <P>好了，我们的RCP应用已经具备了软件更新功能！是不是感觉很简单？是的，Eclipse平台一个优美的地方就是将很多功能部件都设计成为一个Framework，具有很高的可重用性，用户只需做很少量的工作就能实现很复杂的功能，Eclipse的Update 
+            Manager就是一个很好的例子。再次启动我们的RCP应用，已经可以使用软件更新功能了，如下图。不过，因为更新站点并没有准备好，所以不会发现新的版本，下面会详细介绍这方面的内容。</P><BR><IMG 
+            height=232 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image012.jpg" width=312 
+            border=0> <BR>
+            <P><A name=N1018E><SPAN class=smalltitle>打包RCP应用</SPAN></A></P>
+            <P>到目前为止，这个例子程序一直是作为一个Eclipse的运行时应用来运行的，我们需要将其打包到Eclipse之外，形成一个单独的可执行的应用程序。得益于Eclipse的插件体系结构，打包的过程将非常简单。当然，我们可以自己编写脚本代码去完成这个步骤，但是在PDE中，提供了一个导出工具，使得我们可以更加方便的实现这个过程。首先确认插件工程下的build.properties文件包含了所有必需的资源文件，因为PDE的导出向导将会使用Ant并读取这个配置文件来对每个插件进行打包工作。</P>
+            <P>现在使用产品配置编辑器打开examples.product文件，切换到概览页，点击 "Eclipse Product export 
+            wizard" ，弹出导出向导配置窗口。使用 examples.product 
+            作为配置文件并键入应用程序的主目录，比如ExampleRCP，PDE在打包时将会创建这个应用程序的根目录。另外，建议将"Synchronize 
+            before 
+            exporting"选中，以便在打包时检查配置文件是否与所包含的插件相匹配。最后，指定存放此RCP应用的目的文件夹并开始导出过程：</P><BR><IMG 
+            height=254 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image014.jpg" width=348 
+            border=0> <BR>
+            <P>现在，我们可以进入刚才所指定的目的文件夹，通过双击可执行文件（在Launcher页进行配置）来启动应用程序。</P>
+            <P><A name=N101AE><SPAN class=smalltitle>准备新版本</SPAN></A></P>
+            <P>假设一下产品已经发布出去，但是客户却想在树上显示四个节点，我们使用Update Manager来实现这个新的需求。</P>
+            <P>首先，需要在类View 中更改源代码：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>…
+public Object[] getElements(Object parent) {
+// add the fourth node to satisfy the customer's new requirement.
+return new String[] { "One", "Two", "Three", "Four" };
+}
+…
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>下一步需要创建一个更新站点的工程。打开菜单 File-&gt;New-&gt;Project，选择 Update Site 
+            Project，并且为此工程指定一个名称，比如com.ibm.csdl.guardian.examples.site.</P>
+            <P>在站点清单编辑器中，切换到Site 
+            Map页面，将不同的功能部件切分为类别。在Archives页面，设定更新站点的URL及描述信息，URL可以使用本地文件系统，或其它网络协议，比如HTTP等。为了方便测试，这里我们使用本地文件系统目录作为更新站点。</P><BR><IMG 
+            height=265 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image016.jpg" width=440 
+            border=0> <BR>
+            <P>文件site.xml 最终的样子：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>&lt;site&gt;
+   &lt;description url="file:///D:/temp/updates"&gt;
+     Examples RCP Application Update Site
+   &lt;/description&gt;
+   &lt;feature url="features/com.ibm.csdl.guardian.examples.feature_1.0.0.jar"
+         id="com.ibm.csdl.guardian.examples.feature" version="1.0.0"&gt;
+         &lt;category name="examples"/&gt;
+    &lt;/feature&gt;
+    &lt;category-def name="examples" label="examples"/&gt;
+&lt;/site&gt;
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>在新版本编译通过之后，修改RCP应用包含的所有插件及功能部件的版本号，确保比发布给客户的版本要高（不要修改插件的ID），以表示有更新版本可用。</P>
+            <P>在插件com.ibm.csdl.guardian.examples 的MANIFEST.MF文件中：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>…
+<SPAN class=boldcode>Bundle-Version: 1.0.1</SPAN>
+…
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>在feature.xml文件中：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>&lt;feature 
+   id="com.ibm.csdl.guardian.examples.feature"
+   label="Examples Feature"
+   version="1.0.1"
+   …
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>因为我们在功能部件的配置中使用了缺省设置 "Synchronize versions on build" 
+            ，所以PDE的打包工具会自动为所生成的二进制Jar文件生成正确的文件名以显示新的版本号。</P>
+            <P>现在的site.xml 文件内容：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>&lt;site&gt;
+    &lt;description url="file:///D:/temp/updates"&gt;
+       Examples RCP Application Update Site
+    &lt;/description&gt;
+   &lt;feature url="features/com.ibm.csdl.guardian.examples.feature_1.0.1.jar"
+      id="com.ibm.csdl.guardian.examples.feature" version="1.0.1"&gt;
+      &lt;category name="examples"/&gt;
+   &lt;/feature&gt;
+   &lt;category-def name="examples" label="examples"/&gt;
+&lt;/site&gt;
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>在站点清单编辑器的Site Map页面中，选中所要更新的功能部件并且点击 "Build" 
+            ，PDE会在此站点工程目录下生成所需要的更新功能部件及插件。将文件site.xml，目录features 和plugins 
+            拷贝到feature.xml中所指定的URL（在这里是本地文件系统）， 再次启动我们的例子RCP应用，现在即可以使用"Find and 
+            Install"菜单来对产品进行更新：</P><BR><IMG height=305 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image018.jpg" width=367 
+            border=0> <BR>
+            <P>点击Next，会出现许可证描述信息（在feature.xml指定），只有选择接受许可证之后，下载更新包及安装过程才会继续： 
+            </P><BR><IMG height=281 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image020.jpg" width=337 
+            border=0> <BR>
+            <P>下载并安装完毕之后，会提示重新启动RCP应用，这时即可以看到软件更新之后的效果：</P><BR><IMG height=241 
+            alt="" src="使用 Update Manager 更新 RCP 应用程序.files/image022.jpg" 
+            width=326 border=0> <BR>
+            <P><A name=N1024F><SPAN class=smalltitle>自动更新</SPAN></A></P>
+            <P>为了使更新过程更加智能，Update 
+            Manager还支持软件的自动更新，并提供了很多选项来对更新时间进行设置。我们所需要做的很简单，只需要将插件 
+            org.eclipse.update.scheduler 添加到 feature.xml 
+            的插件包含列表中并添加一个菜单来呼叫出自动更新的配置项页面：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>
+…
+preferencesAction = ActionFactory.PREFERENCES.create(window);
+register(preferencesAction);
+…
+MenuManager windowMenu
+= new MenuManager ("&amp;Window", IWorkbenchActionConstants.M_WINDOW);
+menuBar.add(windowMenu);
+windowMenu.add(preferencesAction);
+…
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>从这里可以看出，Update Manager 使用org.eclipse.ui.preferencePages 
+            这个扩展来对更新选项进行配置：</P><BR><IMG height=255 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image024.jpg" width=325 
+            border=0> <BR>
+            <P>配置完成后，当更新条件满足时，RCP会自动弹出一个窗口，提示用户是否存在新的版本可用并进行安装。</P><BR><IMG 
+            height=125 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image026.jpg" width=475 
+            border=0> <BR>
+            <P><B>有一点需要注意:</B> 在更新到新的版本后（其实是下载新版本的插件Jar包），老版本的Jar 
+            文件不会被自动删除，因为有时更新会出现问题，用户还可以再使用老的版本。对于这个问题，请参考下面这个链接来得到更多信息： <A 
+            href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=70990">https://bugs.eclipse.org/bugs/show_bug.cgi?id=70990</A>.</P>
+            <P><A name=N10292><SPAN class=smalltitle>管理所安装的功能部件</SPAN></A></P>
+            <P>一个大型的企业级RCP应用通常会包含大量的功能部件，如果有的功能部件暂时不会被使用，刚可以将其置为不可用状态，这样既可以加速应用程序的启动过程，也会对RCP应用的性能有所提高。Update 
+            Manager也提供了这个功能，我们的例子程序使用一个菜单来呼叫出管理窗口：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>…
+manageAction = createManageAction(window);
+register(manageAction);
+…
+MenuManager helpMenu = new MenuManager("&amp;Help", IWorkbenchActionConstants.M_HELP);
+helpMenu.add(manageAction);
+…
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>在类 ManageAction 中，实现 run 方法如下：</P><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD class=code-outline><PRE class=displaycode>BusyIndicator.showWhile(window.getShell().getDisplay(), new Runnable() {
+public void run() {
+UpdateManagerUI.openConfigurationManager(window.getShell());
+}
+});
+</PRE></TD></TR></TBODY></TABLE><BR>
+            <P>当点击此菜单后，即会弹出产品配置窗口，可以方便的管理所安装的功能部件：</P><BR><IMG height=265 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/image028.jpg" width=365 
+            border=0> <BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD><IMG height=1 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/blue_rule.gif" 
+                  width="100%"><BR><IMG height=6 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=8 
+                  border=0></TD></TR></TBODY></TABLE>
+            <TABLE class=no-print cellSpacing=0 cellPadding=0 align=right>
+              <TBODY>
+              <TR align=right>
+                <TD><IMG height=4 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                  width="100%"><BR>
+                  <TABLE cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD vAlign=center><IMG height=16 alt="" 
+                        src="使用 Update Manager 更新 RCP 应用程序.files/u_bold.gif" 
+                        width=16 border=0><BR></TD>
+                      <TD vAlign=top align=right><A class=fbox 
+                        href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#main"><B>回页首</B></A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR><BR>
+            <P><A name=N102C4><SPAN class=atitle>结论</SPAN></A></P>
+            <P>使用Update 
+            Manager不仅可以方便的给RCP应用程序添加软件更新功能，还可以对所安装的功能部件进行方便的管理。得益于Update 
+            Manager的框架结构（其它Eclipse的组件也是如此），我们还可以利用其所提供的API，对产品的更新功能进行定制，使得产品具有自己的特色。</P><BR><BR>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD><IMG height=1 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/blue_rule.gif" 
+                  width="100%"><BR><IMG height=6 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=8 
+                  border=0></TD></TR></TBODY></TABLE>
+            <TABLE class=no-print cellSpacing=0 cellPadding=0 align=right>
+              <TBODY>
+              <TR align=right>
+                <TD><IMG height=4 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                  width="100%"><BR>
+                  <TABLE cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD vAlign=center><IMG height=16 alt="" 
+                        src="使用 Update Manager 更新 RCP 应用程序.files/u_bold.gif" 
+                        width=16 border=0><BR></TD>
+                      <TD vAlign=top align=right><A class=fbox 
+                        href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#main"><B>回页首</B></A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR><BR>
+            <P><SPAN class=atitle><A name=download>下载</A></SPAN></P>
+            <TABLE class=data-table-1 cellSpacing=0 cellPadding=0 width="100%" 
+            border=0>
+              <TBODY>
+              <TR>
+                <TH scope=col>名字</TH>
+                <TH scope=col align=right>大小</TH>
+                <TH scope=col>下载方法</TH></TR>
+              <TR>
+                <TD noWrap>updatemanager.zip</TD>
+                <TD noWrap align=right>27KB</TD>
+                <TD noWrap><A class=fbox 
+                  href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/updatemanager.zip"><B>HTTP</B></A></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR vAlign=top>
+                <TD colSpan=5><IMG height=12 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=12 
+                  border=0></TD></TR>
+              <TR>
+                <TD><IMG height=16 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/fw.gif" width=16></TD>
+                <TD><A class=fbox 
+                  href="http://www.ibm.com/developerworks/cn/whichmethod.html">关于下载方法的信息</A></TD>
+                <TD><IMG height=1 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=50></TD>
+                <TD><IMG height=16 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/sout.gif" 
+width=16></TD>
+                <TD><A class=fbox 
+                  href="http://www.adobe.com/products/acrobat/readstep2.html">Get 
+                  Adobe® Reader®</A></TD></TR></TBODY></TABLE><BR><BR>
+            <P><A name=resources><SPAN class=atitle>参考资料 </SPAN></A></P>
+            <OL>
+              <LI>更多 Eclipse 内容请参考 <A 
+              href="http://www.ibm.com/developerworks/cn/opensource/top-projects/eclipse.html">Eclipse 
+              专题</A> 
+              <LI>Eclipse.org Articles. Eclipse.org. 
+              <LI>Eclipse Online Help. Eclipse.org. 
+              <LI>Eclipse Rich Client Platform-Designing, Coding, and Packaging 
+              Java Applications. Jeff McAffer, Jean-Michel Lemieux. 
+            </LI></OL><BR><BR>
+            <P><A name=author><SPAN class=atitle>关于作者</SPAN></A></P>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD colSpan=3><IMG height=5 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                width="100%"></TD></TR>
+              <TR vAlign=top align=left>
+                <TD>
+                  <P></P></TD>
+                <TD><IMG height=5 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=4></TD>
+                <TD width="100%">
+                  <P>马吉荣，IBM中国软件开发中心DB2 II Team，软件工程师，现主要从事GUI Test 
+                  Automation的框架研究及开发，DB2相关产品的测试工作。研究兴趣包括Eclipse，MDA，XML及数据库等相关领域。联系方式：<A 
+                  href="mailto:majirong@cn.ibm.com?cc=">mailto:majirong@cn.ibm.com?cc=</A>.</P></TD></TR></TBODY></TABLE><BR><BR><BR>
+            <P class=no-print><SPAN class=atitle><A 
+            name=rate>对本文的评价</A></SPAN></P><SPAN class=no-print>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR vAlign=top>
+                <TD>
+                  <FORM 
+                  action=https://www.ibm.com/developerworks/secure/cnratings.jsp 
+                  method=get><INPUT type=hidden 
+                  value="使用 Update Manager 更新 RCP 应用程序" name=ArticleTitle><INPUT 
+                  type=hidden value="Open source" name=Zone><INPUT type=hidden 
+                  value=http://www.ibm.com/developerworks/cn/thankyou/ 
+                  name=RedirectURL><INPUT type=hidden value=china 
+name=localsite>
+                  <SCRIPT language=javascript>document.write('<input type="hidden" name="url" value="'+location.href+'">');</SCRIPT>
+
+                  <TABLE cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD><IMG height=8 alt="" 
+                        src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                        width=100 border=0></TD></TR>
+                    <TR vAlign=top>
+                      <TD><INPUT type=radio value=1 name=Rating>太差！ (1)</TD></TR>
+                    <TR vAlign=top>
+                      <TD><INPUT type=radio value=2 name=Rating>需提高 (2)</TD></TR>
+                    <TR vAlign=top>
+                      <TD><INPUT type=radio value=3 name=Rating>一般；尚可 
+(3)</TD></TR>
+                    <TR vAlign=top>
+                      <TD><INPUT type=radio value=4 name=Rating>好文章 (4)</TD></TR>
+                    <TR vAlign=top>
+                      <TD><INPUT type=radio value=5 
+                    name=Rating>真棒！(5)</TD></TR></TBODY></TABLE><BR><B>建议？</B><BR><TEXTAREA id=Comments name=Comments rows=5 wrap=virtual cols=60>&nbsp;</TEXTAREA><BR><BR><INPUT type=submit value=反馈意见></FORM></TD></TR>
+              <TR vAlign=top>
+                <TD bgColor=#ffffff><IMG height=8 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" width=100 
+                  border=0></TD></TR></TBODY></TABLE></SPAN><SPAN class=no-print>
+            <TABLE cellSpacing=0 cellPadding=0 align=right>
+              <TBODY>
+              <TR align=right>
+                <TD><IMG height=8 alt="" 
+                  src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+                  width="100%"><BR>
+                  <TABLE cellSpacing=0 cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD vAlign=center><IMG height=16 alt="" 
+                        src="使用 Update Manager 更新 RCP 应用程序.files/u_bold.gif" 
+                        width=16 border=0><BR></TD>
+                      <TD vAlign=top align=right><A class=fbox 
+                        href="http://www.ibm.com/developerworks/cn/opensource/os-ecl-rcpum/#main"><B>回页首</B></A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR><BR></SPAN></TD>
+          <TD width=10><IMG height=1 alt="" 
+            src="使用 Update Manager 更新 RCP 应用程序.files/c.gif" 
+        width=10></TD></TR></TBODY></TABLE><SPAN class=small>IBM 公司保留在 
+      developerWorks 网站上发表的内容的著作权。未经IBM公司或原始作者的书面明确许可，请勿转载。如果您希望转载，请通过 <A 
+      href="https://www.ibm.com/developerworks/secure/reprintreq.jsp?domain=dwchina">提交转载请求表单</A> 
+      联系我们的编辑团队。</SPAN></TD></TR></TBODY></TABLE><!--FOOTER_BEGIN--><BR>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD class=bbg height=19>
+      <TABLE cellSpacing=0 cellPadding=0 border=0>
+        <TBODY>
+        <TR>
+          <TD><SPAN class=spacer>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><A 
+            class=mainlink href="http://www.ibm.com/cn/ibm/index.shtml">关于 
+            IBM</A></TD>
+          <TD class=footer-divider width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+          <TD><A class=mainlink 
+            href="http://www.ibm.com/cn/ibm/privacy/index.shtml">隐私条约</A></TD>
+          <TD class=footer-divider width=27>&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+          <TD><A class=mainlink href="http://www.ibm.com/contact/">联系 
+          IBM</A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+<SCRIPT language=JavaScript1.2 
+src="使用 Update Manager 更新 RCP 应用程序.files/stats.js" 
+type=text/javascript></SCRIPT>
+<NOSCRIPT><IMG height=1 alt="" 
+src="E:\Worksapce\TestWorkspace\com.loadtrend.app.test.update\使用 Update Manager 更新 RCP 应用程序.files\c(1).gif" 
+width=1 border=0></NOSCRIPT><!--FOOTER_END--><!--XSLT stylesheet used to transform this file:  dw-document-html-5.5.1.xsl--> 
+</BODY></HTML>

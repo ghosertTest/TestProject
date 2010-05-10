@@ -1,0 +1,55 @@
+<project name="HelloWorld" basedir="." default="main"> <!-- default target name which will be run after type 'ant' in console. -->
+
+	<!-- Properties defined area. -->
+    <property name="src.dir"     value="src"/>
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+    <property name="main-class"  value="oata.HelloWorld"/>
+	<property name="lib.dir"     value="lib"/>
+
+	<!-- Define a classpath path which include all the external lib jars under lib.dir.
+		 This path will be refered to 'compile' & 'run' target below.
+	-->
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+
+	<!-- Target defined area. -->
+    <target name="clean">
+		<delete dir="${build.dir}"/> <!-- Use ${prop_key} to refer to the value in 'Properties defined area'. -->
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/> <!-- refer to the classpath defined by <path id ...> above. -->
+		<copy todir="${classes.dir}">
+			<!-- copy the files exclude *.java under the src folder(which is log4j.properties in our case.) -->
+			<fileset dir="${src.dir}" excludes="**/*.java"/>
+        </copy>
+    </target>
+
+	<target name="jar" depends="compile"> <!-- "depends" here means the run the current target will run the depended target first. -->
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+            <manifest>
+				<attribute name="Main-Class" value="${main-class}"/> <!-- <manifest> tag here is the necessary element for <jar> tag. -->
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+		<java fork="true" classname="${main-class}">
+            <classpath>
+                <path refid="classpath"/> <!-- refer to the classpath defined by <path id ...> above. -->
+				<path location="${jar.dir}/${ant.project.name}.jar"/> <!-- locally defined jar file which is produced by target 'jar' above. -->
+            </classpath>
+        </java>
+    </target>
+
+	<target name="clean-build" depends="clean,jar"/> <!-- Pure depended target which has no itself excution code. -->
+
+	<target name="main" depends="clean,run"/> <!-- default target name which is defined in <project ... > tag above. -->
+
+</project>
+

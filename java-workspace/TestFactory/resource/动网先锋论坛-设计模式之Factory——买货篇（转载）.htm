@@ -1,0 +1,1070 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0055)http://www.comejava.com/printpage.asp?BoardID=22&ID=154 -->
+<!--HTTP头--><HTML xmlns:o = 
+"urn:schemas-microsoft-com:office:office"><HEAD><TITLE>动网先锋论坛-设计模式之Factory——买货篇（转载）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312">
+<META content="MSHTML 6.00.2900.2604" name=GENERATOR>
+<META content=aspsky,dvbbs,动网,动网论坛,asp,论坛,插件 name=keywords>
+<META content=动网论坛是使用量最多、覆盖面最广的免费中文论坛，也是国内知名的技术讨论站点，希望我们辛苦的努力可以为您带来很多方便 
+name=description><!--默认风格-->
+<STYLE type=text/css>A:link {
+	COLOR: #000000; TEXT-DECORATION: none
+}
+A:active {
+	COLOR: #000000; TEXT-DECORATION: none
+}
+A:visited {
+	COLOR: #000000; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #4455aa; TEXT-DECORATION: underline
+}
+BODY {
+	SCROLLBAR-FACE-COLOR: #dee3e7; FONT-SIZE: 12px; SCROLLBAR-HIGHLIGHT-COLOR: #ffffff; SCROLLBAR-SHADOW-COLOR: #dee3e7; COLOR: #000000; SCROLLBAR-3DLIGHT-COLOR: #d1d7dc; SCROLLBAR-ARROW-COLOR: #006699; SCROLLBAR-TRACK-COLOR: #efefef; FONT-FAMILY: 宋体; SCROLLBAR-DARKSHADOW-COLOR: #98aab1
+}
+FONT {
+	LINE-HEIGHT: normal
+}
+TD {
+	FONT-SIZE: 12px; LINE-HEIGHT: 15px; FONT-FAMILY: 宋体
+}
+TH {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND-IMAGE: url(Skins/Default/css/default/bg1.gif); COLOR: white; BACKGROUND-COLOR: #4455aa
+}
+TD.TableTitle2 {
+	BACKGROUND-COLOR: #e4e8ef
+}
+TD.TableBody1 {
+	LINE-HEIGHT: normal; BACKGROUND-COLOR: #ffffff
+}
+TD.TableBody2 {
+	LINE-HEIGHT: normal; BACKGROUND-COLOR: #e4e8ef
+}
+TD.TopDarkNav {
+	BACKGROUND-IMAGE: url(Skins/Default/css/default/topbg.gif)
+}
+TD.TopLighNav {
+	BACKGROUND-IMAGE: url(Skins/Default/css/default/bottombg.gif)
+}
+TD.TopLighNav1 {
+	BACKGROUND-IMAGE: url(Skins/Default/css/default/tabs_m_tile.gif)
+}
+TD.TopLighNav2 {
+	BACKGROUND-COLOR: #ffffff
+}
+.tableBorder1 {
+	BORDER-RIGHT: 1px; BORDER-TOP: 1px; BORDER-LEFT: 1px; WIDTH: 98%; BORDER-BOTTOM: 1px; BACKGROUND-COLOR: #6595d6
+}
+.tableBorder2 {
+	BORDER-RIGHT: #dedede 1px solid; BORDER-TOP: #dedede 1px solid; BORDER-LEFT: #dedede 1px solid; WIDTH: 98%; BORDER-BOTTOM: #dedede 1px solid; BACKGROUND-COLOR: #efefef
+}
+#TableTitleLink A:link {
+	COLOR: #ffffff; TEXT-DECORATION: none
+}
+#TableTitleLink A:visited {
+	COLOR: #ffffff; TEXT-DECORATION: none
+}
+#TableTitleLink A:active {
+	COLOR: #ffffff; TEXT-DECORATION: none
+}
+#TableTitleLink A:hover {
+	COLOR: #ffffff; TEXT-DECORATION: underline
+}
+INPUT {
+	FONT-SIZE: 12px; COLOR: #000000; LINE-HEIGHT: 15px; FONT-FAMILY: Tahoma,Verdana,"宋体"
+}
+SELECT {
+	FONT-SIZE: 12px; COLOR: #000000; LINE-HEIGHT: 15px; FONT-FAMILY: Tahoma,Verdana,"宋体"
+}
+TEXTAREA {
+	FONT-SIZE: 12px; COLOR: #000000; LINE-HEIGHT: 15px; FONT-FAMILY: Tahoma,Verdana,"宋体"
+}
+OPTION {
+	FONT-SIZE: 12px; COLOR: #000000; LINE-HEIGHT: 15px; FONT-FAMILY: Tahoma,Verdana,"宋体"
+}
+.normalTextSmall {
+	FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.menuskin {
+	BORDER-RIGHT: #666666 1px solid; BORDER-TOP: #666666 1px solid; BACKGROUND-IMAGE: url(Skins/Default/dvmenubg3.gif); VISIBILITY: hidden; FONT: 12px Verdana; BORDER-LEFT: #666666 1px solid; BORDER-BOTTOM: #666666 1px solid; BACKGROUND-REPEAT: repeat-y; POSITION: absolute; BACKGROUND-COLOR: #efefef
+}
+.menuskin A {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 25px; BEHAVIOR: url(inc/noline.htc); COLOR: black; TEXT-DECORATION: none
+}
+#mouseoverstyle {
+	BORDER-RIGHT: #597db5 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: #597db5 1px solid; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 2px; BORDER-LEFT: #597db5 1px solid; PADDING-TOP: 0px; BORDER-BOTTOM: #597db5 1px solid; BACKGROUND-COLOR: #c9d5e7
+}
+#mouseoverstyle A {
+	COLOR: black
+}
+.menuitems {
+	PADDING-RIGHT: 1px; PADDING-LEFT: 1px; PADDING-BOTTOM: 1px; MARGIN: 2px; WORD-BREAK: keep-all; PADDING-TOP: 1px
+}
+A.navlink:link {
+	COLOR: #000000; TEXT-DECORATION: none
+}
+A.navlink:visited {
+	COLOR: #000000; TEXT-DECORATION: none
+}
+A.navlink:hover {
+	COLOR: #003399; TEXT-DECORATION: none
+}
+.BrightClass {
+	BACKGROUND-COLOR: #d7d7d7
+}
+DIV.quote {
+	BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 5px; BACKGROUND: #f3f3f3; PADDING-BOTTOM: 5px; MARGIN: 5px 20px; BORDER-LEFT: #cccccc 1px solid; LINE-HEIGHT: normal; PADDING-TOP: 5px; BORDER-BOTTOM: #cccccc 1px solid
+}
+DIV.HtmlCode {
+	BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 5px; FONT-WEIGHT: bold; FONT-SIZE: 14px; BACKGROUND: #fdfddf; PADDING-BOTTOM: 5px; MARGIN: 5px 20px; BORDER-LEFT: #cccccc 1px solid; LINE-HEIGHT: normal; PADDING-TOP: 5px; BORDER-BOTTOM: #cccccc 1px solid; FONT-STYLE: oblique; FONT-FAMILY: Tahoma
+}
+</STYLE>
+<!--论坛页面开始代码-->
+<SCRIPT language=JavaScript 
+src="动网先锋论坛-设计模式之Factory——买货篇（转载）.files/Main.js"></SCRIPT>
+</HEAD>
+<BODY leftMargin=0 topMargin=0>
+<DIV class=menuskin id=popmenu 
+onmouseover="clearhidemenu();highlightmenu(event,'on')" style="Z-INDEX: 100" 
+onmouseout="highlightmenu(event,'off');dynamichide(event)"></DIV><!--printpage.asp##帖子可打印页面-->
+<TABLE style="TABLE-LAYOUT: fixed; WORD-BREAK: break-all" width="98%" 
+align=center border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=center 
+      align=top><B>以文本方式查看主题</B><BR><BR>-&nbsp;&nbsp;<B>动网先锋论坛</B>&nbsp;&nbsp;(http://www.comejava.com/index.asp)<BR>--&nbsp;&nbsp;<B>『 
+      设计模式(Design 
+      Patterns)』</B>&nbsp;&nbsp;(http://www.comejava.com/list.asp?boardid=22)<BR>----&nbsp;&nbsp;<B>设计模式之Factory——买货篇（转载）</B>&nbsp;&nbsp;(http://www.comejava.com/dispbbs.asp?boardid=22&amp;id=154)<BR>
+      <HR>
+    </TD></TR><!--printpage.asp##{$bbslist}循环部分-->
+  <TR>
+    <TD vAlign=center 
+      align=top>--&nbsp;&nbsp;作者：Kookman<BR>--&nbsp;&nbsp;发布时间：2004-12-7 
+      18:05:45<BR><BR>--&nbsp;&nbsp;设计模式之Factory——买货篇（转载）<BR>希望多找些这方面的资料啊····<BR><BR>
+      <TABLE cellSpacing=1 cellPadding=4 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD vAlign=top>
+            <DIV class=subhead><B>设计模式之Factory——买货篇</B></DIV></TD></TR>
+        <TR>
+          <TD vAlign=top>
+            <DIV class=content>
+            <P class=MsoNormal 
+            style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">今天老婆让我去市场买一些水果，具体买什么自己定（哈，老婆放放权了！）。来到市场，我发现主要有一些水果：苹果（</SPAN><SPAN 
+            lang=EN-US>Apple</SPAN><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">），葡萄（</SPAN><SPAN 
+            lang=EN-US>Grape</SPAN><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）和鸭梨（</SPAN><SPAN 
+            lang=EN-US>Pear</SPAN><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）。</SPAN><BR>
+            <P class=MsoNormal 
+            style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">到底买什么好呢？我一阵思量。俗话说：“饭后一只烟，赛过活神仙。饭后吃苹果，西施见我躲。”为了老婆的漂亮，我决定买苹果。</SPAN><BR>
+            <P class=MsoNormal 
+            style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">好，言归正传，开始买吧！</SPAN><BR>
+            <P class=MsoNormal 
+            style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+            lang=EN-US>&nbsp;<o:p></o:p></SPAN><BR>
+            <P class=MsoNormal 
+            style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">主要有以下三种</SPAN><SPAN 
+            lang=EN-US>Factory</SPAN><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">模式：</SPAN><BR>
+            <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><B><SPAN 
+            lang=EN-US>Simple Factory</SPAN></B><B><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">模式</SPAN><SPAN 
+            lang=EN-US><o:p></o:p></SPAN></B><BR>
+            <P class=MsoNormal 
+            style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">专门定义一个类来负责创建其它类的实例，被创建的实例通常都具有共同的父类。</SPAN><SPAN 
+            lang=EN-US> </SPAN><BR>
+            <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><B><SPAN 
+            lang=EN-US>Factory Method</SPAN></B><B><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">模式</SPAN><SPAN 
+            lang=EN-US><o:p></o:p></SPAN></B><BR>
+            <P class=MsoNormal 
+            style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">将对象的创建交由父类中定义的一个标准方法来完成，而不是其构造函数，究竟应该创建何种对象由具体的子类负责决定。</SPAN><SPAN 
+            lang=EN-US> </SPAN><BR>
+            <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><B><SPAN 
+            lang=EN-US>Abstract Factory</SPAN></B><B><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">模式</SPAN><SPAN 
+            lang=EN-US><o:p></o:p></SPAN></B><BR>
+            <P class=MsoNormal 
+            style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+            style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">提供一个共同的接口来创建相互关联的多个对象。</SPAN><BR>
+            <P class=MsoNormal 
+            style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+            lang=EN-US>&nbsp;<o:p></o:p></SPAN></P></DIV></TD></TR></TBODY></TABLE>
+      <HR>
+    </TD></TR><!--printpage.asp##{$bbslist}循环部分-->
+  <TR>
+    <TD vAlign=center 
+      align=top>--&nbsp;&nbsp;作者：Kookman<BR>--&nbsp;&nbsp;发布时间：2004-12-7 
+      18:06:10<BR><BR>--&nbsp;&nbsp;<BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+      style="FONT-SIZE: 16pt; FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-size: 12.0pt">一、</SPAN><B><SPAN 
+      lang=EN-US style="FONT-SIZE: 16pt; mso-bidi-font-size: 12.0pt">Simple 
+      Factory</SPAN></B><B><SPAN 
+      style="FONT-SIZE: 16pt; FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-size: 12.0pt">模式：</SPAN></B><SPAN 
+      lang=EN-US 
+      style="FONT-SIZE: 16pt; mso-bidi-font-size: 12.0pt"><o:p></o:p></SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l1 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>1、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">在这里，我们先定义水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public interface Fruit {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>void plant();<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">水果是被种植的</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>void enableEat();<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">水果能吃</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l1 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>2、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">苹果（</SPAN><SPAN 
+      lang=EN-US>Apple</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class Apple implements Fruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void plant(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">种苹果</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">苹果好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l1 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>3、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">葡萄（</SPAN><SPAN 
+      lang=EN-US>Grape</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class Grape implements Fruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void plant(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">种葡萄</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">葡萄好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l1 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>4、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">鸭梨（</SPAN><SPAN 
+      lang=EN-US>Pear</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class Pear implements Fruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void plant(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">种鸭梨</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">鸭梨好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>5</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、定义买水果（</SPAN><SPAN 
+      lang=EN-US>BuyFruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）这一过程类：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class BuyFruit {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>/**</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>* </SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">简单工厂方法</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>*/</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public static Fruit 
+      buyFruit(String which){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>if 
+      (which.equalsIgnoreCase("apple")) {<SPAN style="mso-spacerun: yes">&nbsp; 
+      </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">如果是苹果，则返回苹果实例</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>return new 
+      Apple();</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>else if 
+      (which.equalsIgnoreCase("pear")){<SPAN style="mso-spacerun: yes">&nbsp; 
+      </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">如果是鸭梨，则返回鸭梨实例</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>return new 
+      Strawberry();</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>else if 
+      (which.equalsIgnoreCase("grape")) { //</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">如果是葡萄，则返回葡萄实例</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>return new 
+      Grape();</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>else{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>return 
+      null;</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l0 level1 lfo2; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>6、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">编写测试类：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class FruitTest {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public static void<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>main(String args[]){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>BuyFruit buy = new 
+      BuyFruit();<SPAN style="mso-spacerun: yes">&nbsp;&nbsp; 
+      </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">开始买水果这个过程</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>buy.buyFruit("apple").enableEat(); //</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">调用苹果的</SPAN><SPAN 
+      lang=EN-US>enableEat()</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">方法</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l0 level1 lfo2; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>7、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">说明：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>A</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：我要购买苹果，只需向工厂角色（</SPAN><SPAN 
+      lang=EN-US>BuyFruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）请求即可。而工厂角色在接到请求后，会自行判断创建和提供哪一个产品。</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>B</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：但是对于工厂角色（</SPAN><SPAN 
+      lang=EN-US>BuyFruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）来说，增加新的产品（比如说增加草莓）就是一个痛苦的过程。工厂角色必须知道每一种产品，如何创建它们，以及何时向客户端提供它们。换言之，接纳新的产品意味着修改这个工厂。</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>C</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：因此</SPAN><SPAN 
+      lang=EN-US>Simple Factory</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">模式的开放性比较差。</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">有什么办法可以解决这个问题吗？那就需要</SPAN><SPAN 
+      lang=EN-US>Factory Method</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">模式来为我们服务了。</SPAN> 
+
+      <HR>
+    </TD></TR><!--printpage.asp##{$bbslist}循环部分-->
+  <TR>
+    <TD vAlign=center 
+      align=top>--&nbsp;&nbsp;作者：Kookman<BR>--&nbsp;&nbsp;发布时间：2004-12-7 
+      18:06:32<BR><BR>--&nbsp;&nbsp;<BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+      style="FONT-SIZE: 16pt; FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-size: 12.0pt">二、</SPAN><B><SPAN 
+      lang=EN-US style="FONT-SIZE: 16pt; mso-bidi-font-size: 12.0pt">Factory 
+      Method</SPAN></B><B><SPAN 
+      style="FONT-SIZE: 16pt; FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-size: 12.0pt">模式：</SPAN></B><B><SPAN 
+      lang=EN-US 
+      style="FONT-SIZE: 16pt; mso-bidi-font-size: 12.0pt"><o:p></o:p></SPAN></B><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>1</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、同样，我们先定义水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public interface Fruit {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>void plant();<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">水果是被种植的</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>void enableEat();<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">水果能吃</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>2</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、苹果（</SPAN><SPAN 
+      lang=EN-US>Apple</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class Apple implements Fruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void plant(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">种苹果</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">苹果好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>3</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、葡萄（</SPAN><SPAN 
+      lang=EN-US>Grape</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class Grape implements Fruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void plant(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">种葡萄</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">葡萄好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+      lang=EN-US>4</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、鸭梨（</SPAN><SPAN 
+      lang=EN-US>Pear</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class Pear implements Fruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void plant(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">种鸭梨</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">鸭梨好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>5</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、在这里我们将买水果（</SPAN><SPAN 
+      lang=EN-US>BuyFruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）定义为接口类：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public interface BuyFruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>/**</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>* </SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">工厂方法</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>*/</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public Fruit buyFruit();<SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">定义买水果这一过程</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>6</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、买苹果是（</SPAN><SPAN 
+      lang=EN-US>BuyApple</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）对买水果（</SPAN><SPAN 
+      lang=EN-US>BuyFruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）这个接口的实现</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class BuyApple implements BuyFruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public Fruit 
+buyFruit(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>return new 
+      Apple();<SPAN style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">返回苹果实例</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 10.5pt; mso-char-indent-count: 1.0; mso-char-indent-size: 10.5pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>7</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、买鸭梨是（</SPAN><SPAN 
+      lang=EN-US>BuyPear</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）对买水果（</SPAN><SPAN 
+      lang=EN-US>BuyFruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）这个接口的实现</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class BuyPear implements BuyFruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public Fruit BuyPear 
+(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>return new 
+      Pear();<SPAN style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">返回鸭梨实例</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 10.5pt; mso-char-indent-count: 1.0; mso-char-indent-size: 10.5pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>8</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、买葡萄是（</SPAN><SPAN 
+      lang=EN-US>BuyGrape</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）对买水果（</SPAN><SPAN 
+      lang=EN-US>BuyFruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）这个接口的实现</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class BuyGrape implements BuyFruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public Fruit BuyGrape 
+      (){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>return new Grape 
+      ();<SPAN style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">返回葡萄实例</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 10.5pt; mso-char-indent-count: 1.0; mso-char-indent-size: 10.5pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>9</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、编写测试类：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class FruitTest {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public static void<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>main(String args[]){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>BuyApple buy = new 
+      BuyApple(); //</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">开始买水果这个过程</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>buy.buyFruit().enableEat();<SPAN style="mso-spacerun: yes">&nbsp; 
+      </SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN><SPAN 
+      style="mso-spacerun: yes">&nbsp;</SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">调用苹果的</SPAN><SPAN 
+      lang=EN-US>enableEat()</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">方法</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN> 
+      <HR>
+    </TD></TR><!--printpage.asp##{$bbslist}循环部分-->
+  <TR>
+    <TD vAlign=center 
+      align=top>--&nbsp;&nbsp;作者：Kookman<BR>--&nbsp;&nbsp;发布时间：2004-12-7 
+      18:06:49<BR><BR>--&nbsp;&nbsp;<BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>10</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、说明：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>A</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：工厂方法模式和简单工厂模式在结构上的不同是很明显的。工厂方法模式的核心是一个抽象工厂类，而简单工厂模式把核心放在一个具体类上。工厂方法模式可以允许很多具体工厂类从抽象工厂类中将创建行为继承下来，从而可以成为多个简单工厂模式的综合，进而推广了简单工厂模式。</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>B</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：工厂方法模式退化后可以变得很像简单工厂模式。设想如果非常确定一个系统只需要一个具体工厂类，那么就不妨把抽象工厂类合并到具体的工厂类中去。由于反正只有一个具体工厂类，所以不妨将工厂方法改成为静态方法，这时候就得到了简单工厂模式。</SPAN><SPAN 
+      lang=EN-US>C</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：如果需要加入一个新的水果，那么只需要加入一个新的水果类以及它所对应的工厂类。没有必要修改客户端，也没有必要修改抽象工厂角色或者其他已有的具体工厂角色。对于增加新的水果类而言，这个系统完全支持“开</SPAN><SPAN 
+      lang=EN-US>-</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">闭”原则。</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>D</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：对</SPAN><SPAN 
+      lang=EN-US>Factory Method</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">模式而言，它只是针对一种类别（如本例中的水果类</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">），但如果我们还想买肉，那就不行了，这是就必须要</SPAN><SPAN 
+      lang=EN-US>Factory Method</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">模式帮忙了。</SPAN> 
+
+      <HR>
+    </TD></TR><!--printpage.asp##{$bbslist}循环部分-->
+  <TR>
+    <TD vAlign=center 
+      align=top>--&nbsp;&nbsp;作者：Kookman<BR>--&nbsp;&nbsp;发布时间：2004-12-7 
+      18:08:08<BR><BR>--&nbsp;&nbsp;<BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><B><SPAN 
+      style="FONT-SIZE: 16pt; FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-size: 12.0pt">三、</SPAN></B><B><SPAN 
+      lang=EN-US style="FONT-SIZE: 16pt; mso-bidi-font-size: 12.0pt">Abstract 
+      Factory</SPAN></B><B><SPAN 
+      style="FONT-SIZE: 16pt; FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-size: 12.0pt">模式</SPAN></B><B><SPAN 
+      lang=EN-US 
+      style="FONT-SIZE: 16pt; mso-bidi-font-size: 12.0pt"><o:p></o:p></SPAN></B><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>1</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、同样，我们先定义水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public interface Fruit {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>void plant();<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">水果是被种植的</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>void enableEat();<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">水果能吃</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>2</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、苹果（</SPAN><SPAN 
+      lang=EN-US>Apple</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class Apple implements Fruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void plant(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">种苹果</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">苹果好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>3</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、葡萄（</SPAN><SPAN 
+      lang=EN-US>Grape</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class Grape implements Fruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void plant(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">种葡萄</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">葡萄好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt"><SPAN 
+      lang=EN-US>4</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、鸭梨（</SPAN><SPAN 
+      lang=EN-US>Pear</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对水果（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class Pear implements Fruit{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void plant(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">种鸭梨</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">鸭梨好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l1 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>5、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">定义肉（</SPAN><SPAN 
+      lang=EN-US>Meat</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public interface Meat {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>void feed();<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">肉是喂养的</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>void enableEat();<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">肉能吃</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l1 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>6、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">猪肉（</SPAN><SPAN 
+      lang=EN-US>BigMeat</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对肉（</SPAN><SPAN 
+      lang=EN-US>Meat</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class BigMeat implements Meat{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void feed(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">养猪</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">猪肉好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l1 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>7、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">牛肉（</SPAN><SPAN 
+      lang=EN-US>CowMeat</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对肉（</SPAN><SPAN 
+      lang=EN-US>Meat</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class CowMeat implements Meat {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void feed(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">养牛</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public void 
+enableEat(){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>System.out.println("</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">牛肉好吃</SPAN><SPAN 
+      lang=EN-US>!");</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN> 
+      <HR>
+    </TD></TR><!--printpage.asp##{$bbslist}循环部分-->
+  <TR>
+    <TD vAlign=center 
+      align=top>--&nbsp;&nbsp;作者：Kookman<BR>--&nbsp;&nbsp;发布时间：2004-12-7 
+      18:08:24<BR><BR>--&nbsp;&nbsp;<BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l1 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>8、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">我们可以定义买货人（</SPAN><SPAN 
+      lang=EN-US>Buyer</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public interface Buyer {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>/**</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>* </SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">买水果工厂方法</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>*/</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public Fruit buyFruit(Fruit 
+      whichFruit);</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>/**</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>* </SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">买肉的工厂方法</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>*/</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public Meat buyMeat(Meat 
+      whichMeat);</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; mso-list: l1 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+      lang=EN-US>9、<SPAN style="FONT: 7pt 'Times New Roman'">&nbsp; 
+      </SPAN></SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">我（</SPAN><SPAN 
+      lang=EN-US>MyBuyer</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）是对买货人（</SPAN><SPAN 
+      lang=EN-US>Buyer</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）接口的实现：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class MyBuyer implements Buyer{</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>/**</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>* </SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">买水果工厂方法</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>*/</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public Fruit buyFruit(Fruit 
+      whichFruit){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>return 
+      whichFruit;</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>/**</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>* </SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">买肉的工厂方法</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>*/</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public Meat buyMeat(Meat 
+      whichMeat){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>return 
+      whichMeat;</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>10</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、编写测试类：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>public class MyBuyerAbstractTest {</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>public static void<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>main(String args[]){</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>Fruit apple = new 
+      Apple();<SPAN style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">苹果实例</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>Meat big = new 
+      BigMeat();<SPAN style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">猪肉实例</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>MyBuyer my = new 
+      MyBuyer();<SPAN style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">我是买者的实例</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>my.buyFruit(apple).enableEat();<SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">我买苹果</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+      </SPAN>my.buyMeat(big).enableEat();<SPAN 
+      style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>//</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">我买猪肉</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US><SPAN 
+      style="mso-spacerun: yes">&nbsp; </SPAN>}</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN lang=EN-US>} 
+      </SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>11</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、说明：</SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>A</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：抽象工厂模式可以向客户端提供一个接口，使得客户端在不必指定产品的具体类型的情况下，创建多个产品族中的产品对象。这就是抽象工厂模式的用意。</SPAN><BR>
+      <P class=MsoNormal 
+      style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 21pt; TEXT-ALIGN: left; mso-char-indent-count: 2.0; mso-char-indent-size: 10.5pt; mso-layout-grid-align: none" 
+      align=left><SPAN lang=EN-US>B</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-size: 10.5pt; mso-font-kerning: 0pt">抽象工厂模式是所有形态的工厂模式中最为抽象和最具一般性的一种形态。</SPAN><SPAN 
+      lang=EN-US 
+      style="FONT-SIZE: 10pt; FONT-FAMILY: 宋体; mso-hansi-font-family: 'Times New Roman'; mso-font-kerning: 0pt"><o:p></o:p></SPAN><BR>
+      <P class=MsoNormal style="MARGIN: 0cm 0cm 0pt 21pt"><SPAN 
+      lang=EN-US>C</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">：抽象工厂模式与工厂方法模式的最大区别就在于，工厂方法模式针对的是一个产品（</SPAN><SPAN 
+      lang=EN-US>Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">）等级结构；而抽象工厂模式则需要面对多个产品等级结构</SPAN><SPAN 
+      lang=EN-US>(Fruit</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">、</SPAN><SPAN 
+      lang=EN-US>Meat)</SPAN><SPAN 
+      style="FONT-FAMILY: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman'">。</SPAN><B><SPAN 
+      lang=EN-US 
+      style="FONT-SIZE: 16pt; mso-bidi-font-size: 12.0pt"><o:p></o:p></SPAN></B> 
+
+      <HR>
+    </TD></TR><!--printpage.asp##{$bbslist}循环部分-->
+  <TR>
+    <TD vAlign=center 
+      align=top>--&nbsp;&nbsp;作者：yanudd<BR>--&nbsp;&nbsp;发布时间：2004-12-7 
+      20:35:11<BR><BR>--&nbsp;&nbsp;<BR>好贴 
+      <HR>
+    </TD></TR><!--printpage.asp##{$bbslist}循环部分-->
+  <TR>
+    <TD vAlign=center 
+      align=top>--&nbsp;&nbsp;作者：icefans<BR>--&nbsp;&nbsp;发布时间：2004-12-8 
+      14:34:09<BR><BR>--&nbsp;&nbsp;<BR>我觉得Fruit、Meat、Buyer定义为抽象类更好妥当些。<BR>个人认为接口是为不同的类之间交互而使用的。<BR>对不？ 
+
+      <HR>
+    </TD></TR></TBODY></TABLE><!--页面结束部分-->
+<DIV id=bottom align=center></DIV><BR>
+<TABLE cellSpacing=0 cellPadding=0 width="98%" align=center border=0>
+  <TBODY>
+  <TR>
+    <TD id=Footer_ads align=middle></TD></TR>
+  <TR>
+    <TD align=middle>
+      <TABLE align=center>
+        <TBODY>
+        <TR>
+          <TD align=middle>Powered By ：<A 
+            href="http://www.dvbbs.net/download.asp" target=_blank>Dvbbs Version 
+            7.0.0</A> Sp2<BR>Copyright &copy;2002 - 2005 <A 
+            href="http://www.aspsky.net/"><FONT face=Verdana, sans-serif 
+            Helvetica, Arial,><B>Aspsky<FONT 
+            color=#cc0000>.Net</FONT></B></FONT></A><BR>执行时间：93.01758毫秒。查询数据库2次。<BR><FONT 
+            onmousemove="this.color='#FF0000';" 
+            onmouseout="this.color='#999999';" 
+            color=#999999>当前模板样式：[默认模板]</FONT> 
+</TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></BODY></HTML>

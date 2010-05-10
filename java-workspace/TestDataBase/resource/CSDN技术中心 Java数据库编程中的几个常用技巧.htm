@@ -1,0 +1,489 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0049)http://dev.csdn.net/develop/article/57/57619.shtm -->
+<HTML><HEAD><TITLE>CSDN技术中心 Java数据库编程中的几个常用技巧</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK 
+href="CSDN技术中心 Java数据库编程中的几个常用技巧.files/csdn.css" type=text/css rel=stylesheet>
+<META content="MSHTML 6.00.2900.2523" name=GENERATOR></HEAD>
+<BODY text=#000000 bgColor=#ffffff topMargin=0>
+<FORM id=Form1 name=Form1 action=readarticle.aspx?id=57619 method=post><INPUT 
+type=hidden 
+value=dDwtODA4MDI3MTg0O3Q8O2w8aTwwPjtpPDE+Oz47bDx0PDtsPGk8MT47aTw5PjtpPDExPjtpPDEzPjs+O2w8dDxwPHA8bDxXaWR0aDtIZWlnaHQ7XyFTQjs+O2w8MTxcZT47MTxcZT47aTwzODQ+Oz4+Oz47Oz47dDxwPHA8bDxXaWR0aDtIZWlnaHQ7Q1NETl9BcnRpY2xlSUQ7Q1NETl9BcnRpY2xlX1RpdGxlO18hU0I7PjtsPDE8XGU+OzE8XGU+O2k8NTc2MTk+O0phdmHmlbDmja7lupPnvJbnqIvkuK3nmoTlh6DkuKrluLjnlKjmioDlt6c7aTwzODQ+Oz4+Oz47Oz47dDxwPHA8bDxXaWR0aDtIZWlnaHQ7Q1NETl9BcnRpY2xlSUQ7XyFTQjs+O2w8MTxcZT47MTxcZT47aTw1NzYxOT47aTwzODQ+Oz4+Oz47Oz47dDxwPHA8bDxXaWR0aDtIZWlnaHQ7XyFTQjs+O2w8MTxcZT47MTxcZT47aTwzODQ+Oz4+Oz47Oz47Pj47dDxwPHA8bDxXaWR0aDtIZWlnaHQ7XyFTQjs+O2w8MTxcZT47MTxcZT47aTwzODQ+Oz4+Oz47Oz47Pj47Pqaue4bbrm/GGyJGnVUa63yO+fSC 
+name=__VIEWSTATE> <!-- 头部双层导航栏040827 -->
+<TABLE height=3 cellSpacing=0 cellPadding=0 width=955 align=center 
+bgColor=#666666 border=0>
+  <TBODY>
+  <TR>
+    <TD></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width=955 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD width=192><IMG height=75 
+      src="CSDN技术中心 Java数据库编程中的几个常用技巧.files/CSDN_Logo.gif" width=192></TD>
+    <TD width=542 background="CSDN技术中心 Java数据库编程中的几个常用技巧.files/01_bg_01.gif">
+      <TABLE borderColor=#000000 height=60 cellSpacing=0 cellPadding=0 width=470 
+      align=center bgColor=#ffffff border=0>
+        <TBODY>
+        <TR>
+          <TD width=320>&nbsp;</TD></TR></TBODY></TABLE></TD>
+    <TD width=221><IMG height=75 
+      src="CSDN技术中心 Java数据库编程中的几个常用技巧.files/01_bg_02.gif" 
+  width=221></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width=955 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD style="PADDING-TOP: 4px" width=510 
+    background="CSDN技术中心 Java数据库编程中的几个常用技巧.files/menu_bg.gif">&nbsp;&nbsp;<A 
+      href="http://www.csdn.net/" target=_blank>首 页</A> | <A 
+      href="http://www.csdn.net/news/" target=_blank>新 闻</A> | <A 
+      href="http://dev.csdn.net/">技术中心</A> | <A 
+      href="http://www.dearbook.com.cn/" target=_blank>第二书店</A> | <A 
+      href="http://www.csdn.net/magazine/" target=_blank>《程序员》</A> | <A 
+      href="http://www.csdn.net/CSDNMagazine/csdn_magazine.shtm" 
+      target=_blank>《开发高手》</A> | <A href="http://community.csdn.net/" 
+      target=_blank>社 区</A> | <A href="http://www.csdn.net/ypage/" 
+      target=_blank>黄 页</A> | <A href="http://www.csdn.net/commerce/#job" 
+      target=_blank>人 才</A> </TD>
+    <TD width=59><IMG height=29 
+      src="CSDN技术中心 Java数据库编程中的几个常用技巧.files/menu_1.gif" width=59></TD>
+    <TD vAlign=top align=left width=386 
+    background="CSDN技术中心 Java数据库编程中的几个常用技巧.files/menu_bg2.gif"><IMG height=24 
+      src="CSDN技术中心 Java数据库编程中的几个常用技巧.files/01_bg_03.gif" 
+  width=387></TD></TR></TBODY></TABLE>
+<TABLE style="MARGIN-BOTTOM: 4px" height=18 cellSpacing=0 cellPadding=0 
+width=955 align=center 
+background="CSDN技术中心 Java数据库编程中的几个常用技巧.files/title_buttom.gif" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=center align=middle height=22><A 
+      href="http://www.csdn.net/mobile/" target=_blank>移 动</A>∣<A 
+      href="http://www.csdn.net/subject/" target=_blank>专 题</A>∣<A 
+      href="http://www.csdn.net/sun/" target=_blank>SUN</A>∣<A 
+      href="http://www.csdn.net/ibmc/" target=_blank>IBM</A>∣<A 
+      href="http://www.csdn.net/microsoft/" target=_blank>微 软</A>∣<A 
+      href="http://www.csdn.net/wicresoft/" target=_blank>微 创</A>∣<A 
+      href="http://www.csdn.net/prime/" target=_blank>精 华</A>∣<A 
+      href="http://www.donews.com/" target=_blank>Donews</A>∣<A 
+      href="http://www.csdn.net/ptpress/" target=_blank>人 
+邮</A></TD></TR></TBODY></TABLE><!-- /头部双层导航栏111111111111111 -->
+<TABLE id=Table1 height=161 cellSpacing=0 cellPadding=0 width=955 align=center 
+border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top width=165 colSpan=2>
+      <TABLE cellSpacing=1 cellPadding=0 width="100%" bgColor=#000000 
+        border=0><TBODY>
+        <TR>
+          <TD vAlign=top bgColor=#ededed>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD align=right 
+                background="CSDN技术中心 Java数据库编程中的几个常用技巧.files/top.gif" 
+                  height=27><FONT 
+              class=fonttitle>我的技术中心&nbsp;</FONT></TD></TR></TBODY></TABLE>
+            <TABLE height=65 cellSpacing=0 cellPadding=0 width="100%" 
+              border=0><TBODY>
+              <TR align=middle>
+                <TD><A 
+                  href="http://www.csdn.net/Develop/MyClass/List_MyClass.asp">我的分类</A></TD>
+                <TD><A 
+                  href="http://www.csdn.net/Develop/My_Article.asp">我的文档</A></TD></TR>
+              <TR align=middle>
+                <TD><A href="http://dev.csdn.net/articlelist.aspx">全部文章</A></TD>
+                <TD><A 
+                  href="http://www.csdn.net/Develop/Add_Article.asp">发表文章</A></TD></TR>
+              <TR align=middle>
+                <TD><A 
+                  href="http://www.csdn.net/develop/author/Edit_intro.asp">专栏管理</A></TD>
+                <TD><A 
+              href="http://www.csdn.net/Develop/Help.shtm">使用说明</A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR><!-- Google 广告 -->
+      <SCRIPT type=text/javascript><!--
+google_ad_client = "pub-1076724771190722";
+google_ad_width = 125;
+google_ad_height = 125;
+google_ad_format = "125x125_as";
+google_ad_channel ="";
+//--></SCRIPT>
+
+      <SCRIPT src="CSDN技术中心 Java数据库编程中的几个常用技巧.files/show_ads.js" 
+      type=text/javascript>
+</SCRIPT>
+      <BR><BR>
+      <TABLE cellSpacing=1 cellPadding=0 width="100%" bgColor=#000000 
+        border=0><TBODY>
+        <TR>
+          <TD vAlign=top bgColor=#f1f1f1>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD align=right 
+                background="CSDN技术中心 Java数据库编程中的几个常用技巧.files/top.gif" 
+                  height=27><FONT class=fonttitle><IMG height=14 
+                  src="CSDN技术中心 Java数据库编程中的几个常用技巧.files/RSSIcon.gif" width=36 
+                  align=absMiddle>&nbsp;RSS 订阅&nbsp;</FONT></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD align=middle bgColor=#ffffff><A 
+                  href="http://dev.csdn.net/articlelist.aspx">最新文档列表</A></TD></TR></TBODY></TABLE>
+            <TABLE style="MARGIN-BOTTOM: 4px" cellSpacing=0 cellPadding=0 
+            width="95%" align=center border=0>
+              <TBODY>
+              <TR>
+                <TD style="COLOR: #0033ff; BORDER-BOTTOM: #b0c4de 1px dashed" 
+                align=right><FONT 
+              style="FONT-SIZE: 8pt">Windows/.NET</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=14">.NET</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=14">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=1">Visual 
+                  C++</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=1">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=2">Delphi</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=2">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=3">Visual 
+                  Basic</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=3">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=4">ASP</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=4">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=7">JavaScript</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=7">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR></TBODY></TABLE>
+            <TABLE style="MARGIN-BOTTOM: 4px" cellSpacing=0 cellPadding=0 
+            width="95%" align=center border=0>
+              <TBODY>
+              <TR>
+                <TD style="COLOR: #0033ff; BORDER-BOTTOM: #b0c4de 1px dashed" 
+                align=right><FONT 
+              style="FONT-SIZE: 8pt">Java/Linux</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=6">Java</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=6">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=5">Perl</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=5">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR></TBODY></TABLE>
+            <TABLE style="MARGIN-BOTTOM: 4px" cellSpacing=0 cellPadding=0 
+            width="95%" align=center border=0>
+              <TBODY>
+              <TR>
+                <TD style="COLOR: #0033ff; BORDER-BOTTOM: #b0c4de 1px dashed" 
+                align=right><FONT style="FONT-SIZE: 8pt">综合</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=9">其他开发语言</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=9">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=11">文件格式</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=11">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR></TBODY></TABLE>
+            <TABLE style="MARGIN-BOTTOM: 4px" cellSpacing=0 cellPadding=0 
+            width="95%" align=center border=0>
+              <TBODY>
+              <TR>
+                <TD style="COLOR: #0033ff; BORDER-BOTTOM: #b0c4de 1px dashed" 
+                align=right><FONT style="FONT-SIZE: 8pt">企业开发</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=10">游戏开发</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=10">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=12">网站制作技术</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=12">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR></TBODY></TABLE>
+            <TABLE style="MARGIN-BOTTOM: 4px" cellSpacing=0 cellPadding=0 
+            width="95%" align=center border=0>
+              <TBODY>
+              <TR>
+                <TD style="COLOR: #0033ff; BORDER-BOTTOM: #b0c4de 1px dashed" 
+                align=right><FONT style="FONT-SIZE: 8pt">数据库</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=8">数据库开发</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=8">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=0 cellPadding=0 width="95%" align=center 
+border=0>
+              <TBODY>
+              <TR>
+                <TD style="COLOR: #0033ff; BORDER-BOTTOM: #b0c4de 1px dashed" 
+                align=right><FONT style="FONT-SIZE: 8pt">软件工程</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/articlelist.aspx?c=13">其他</A>&nbsp;&nbsp;(<A 
+                  href="http://www.csdn.net/Rss/RssFeed.aspx?rssid=1&amp;bigclassid=13">rss</A>)&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR>
+      <TABLE cellSpacing=1 cellPadding=0 width="100%" bgColor=#000000 
+        border=0><TBODY>
+        <TR>
+          <TD vAlign=top bgColor=#ededed>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD align=right 
+                background="CSDN技术中心 Java数据库编程中的几个常用技巧.files/top.gif" 
+                  height=27><FONT 
+              class=fonttitle>积极原创作者&nbsp;</FONT></TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=1 cellPadding=2 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/Kendiv">Kendiv</A>&nbsp;<FONT 
+                  color=#ff0000>(44)</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/hahawen">hahawen</A>&nbsp;<FONT 
+                  color=#ff0000>(22)</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/wadefelix">wadefelix</A>&nbsp;<FONT 
+                  color=#ff0000>(6)</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/chikai">chikai</A>&nbsp;<FONT 
+                  color=#ff0000>(12)</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/sean_gao">sean_gao</A>&nbsp;<FONT 
+                  color=#ff0000>(1)</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/godttj">godttj</A>&nbsp;<FONT 
+                  color=#ff0000>(124)</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/ecrown">ecrown</A>&nbsp;<FONT 
+                  color=#ff0000>(5)</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/gouxiongmao">gouxiongmao</A>&nbsp;<FONT 
+                  color=#ff0000>(15)</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/jisiki">jisiki</A>&nbsp;<FONT 
+                  color=#ff0000>(4)</FONT></TD></TR>
+              <TR>
+                <TD align=right><A 
+                  href="http://dev.csdn.net/user/liujun999999">liujun999999</A>&nbsp;<FONT 
+                  color=#ff0000>(54)</FONT></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD>
+    <TD vAlign=top width=786>
+      <TABLE cellPadding=4 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD width=10 height=19></TD>
+          <TD height=19>
+            <TABLE cellSpacing=3 cellPadding=3 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD><A href="http://www.csdn.net/">CSDN</A> - <A 
+                  href="http://dev.csdn.net/">文档中心</A> - <FONT color=#003399><A 
+                  id=ArticleTitle1_ArticleTitle1_hlClass 
+                  href="http://dev.csdn.net/articlelist.aspx?c=6">Java</A></FONT> 
+                </TD>
+                <TD align=right>阅读：<SPAN 
+                  id=ArticleTitle1_ArticleTitle1_lblReadCount>2106</SPAN> 
+                  &nbsp;&nbsp;评论： <SPAN 
+                  id=ArticleTitle1_ArticleTitle1_lblCommentCount>0</SPAN> 
+                  &nbsp;&nbsp; <A 
+                  href="http://dev.csdn.net/develop/article/57/57619.shtm#Comment">参与评论</A> 
+                </TD></TR></TBODY></TABLE>
+            <TABLE cellSpacing=3 cellPadding=3 width="100%" bgColor=#eeeeee 
+            border=0>
+              <TBODY>
+              <TR>
+                <TD noWrap width=60 height=0></TD>
+                <TD></TD></TR>
+              <TR>
+                <TD noWrap align=middle bgColor=#003399 height=16><FONT 
+                  color=#ffffff>标题</FONT></TD>
+                <TD><B>&nbsp; <SPAN 
+                  id=ArticleTitle1_ArticleTitle1_lblTitle>Java数据库编程中的几个常用技巧</SPAN></B>&nbsp;&nbsp;&nbsp;&nbsp; 
+                  选择自 <A id=ArticleTitle1_ArticleTitle1_AuthorLink 
+                  href="http://dev.csdn.net/user/liujun999999">liujun999999</A> 
+                  的 Blog </TD></TR>
+              <TR>
+                <TD align=middle bgColor=#003399 height=16><FONT 
+                  color=#ffffff>关键字</FONT></TD>
+                <TD width=500>&nbsp; <SPAN 
+                  id=ArticleTitle1_ArticleTitle1_lblKeywords>Java数据库编程中的几个常用技巧</SPAN></TD></TR>
+              <TR>
+                <TD align=middle bgColor=#003399 height=16><FONT 
+                  color=#ffffff>出处</FONT></TD>
+                <TD>&nbsp; <SPAN 
+                  id=ArticleTitle1_ArticleTitle1_lblSource></SPAN></TD></TR></TBODY></TABLE></TD></TR>
+        <TR>
+          <TD width=10></TD>
+          <TD><SPAN 
+            id=ArticleContent1_ArticleContent1_lblContent>1、java数据库操作基本流程<BR><BR>　　2、几个常用的重要技巧：<BR><BR>　　可滚动、更新的记录集<BR><BR>　　批量更新<BR><BR>　　事务处理 
+            <BR><BR>　　java数据库操作基本流程：取得数据库连接 - 执行sql语句 - 处理执行结果 - 
+            释放数据库连接<BR><BR>　　1、取得数据库连接<BR><BR>　　1）用DriverManager取数据库连接<BR><BR>　　例子：<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>String className,url,uid,pwd;<BR>className = 
+                  "oracle.jdbc.driver.OracleDriver";<BR>url = 
+                  "jdbc:oracle:thin:@127.0.0.1:1521:orasvr;<BR>uid = 
+                  "system";<BR>pwd = 
+                  "manager";<BR>Class.forName(className);<BR>Connection cn = 
+                  DriverManager.getConnection(url,uid,pwd);</TD></TR></TBODY></TABLE><BR>　　2）用jndi(java的命名和目录服务)方式<BR><BR>　　例子<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>String jndi = "jdbc/db";<BR>Context ctx = (Context) new 
+                  InitialContext().lookup("java:comp/env");<BR>DataSource ds = 
+                  (DataSource) ctx.lookup(jndi);<BR>Connection cn = 
+                  ds.getConnection();</TD></TR></TBODY></TABLE><BR>　　多用于jsp中<BR><BR>　　2、执行sql语句<BR><BR>　　1）用Statement来执行sql语句<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>String sql;<BR>Statement sm = 
+                  cn.createStatement();<BR>sm.executeQuery(sql); // 
+                  执行数据查询语句（select）<BR>sm.executeUpdate(sql); // 
+                  执行数据更新语句（delete、update、insert、drop等）statement.close();</TD></TR></TBODY></TABLE><BR>　　2）用PreparedStatement来执行sql语句<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>String sql;<BR>sql = "insert into user (id,name) values 
+                  (?,?)";<BR>PreparedStatement ps = 
+                  cn.prepareStatement(sql);<BR>ps.setInt(1,xxx);<BR>ps.setString(2,xxx);<BR>...<BR>ResultSet 
+                  rs = ps.executeQuery(); // 查询<BR>int c = ps.executeUpdate(); 
+                  // 
+            更新</TD></TR></TBODY></TABLE><BR>　　3、处理执行结果<BR><BR>　　查询语句，返回记录集ResultSet。<BR><BR>　　更新语句，返回数字，表示该更新影响的记录数。<BR><BR>　　ResultSet的方法：<BR><BR>　　1、next()，将游标往后移动一行，如果成功返回true；否则返回false。<BR><BR>　　2、getInt("id")或getSting("name")，返回当前游标下某个字段的值。<BR><BR>　　3、释放连接。<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>cn.close();</TD></TR></TBODY></TABLE><BR>　　一般，先关闭ResultSet，然后关闭Statement（或者PreparedStatement）；最后关闭Connection<BR><BR>　　可滚动、更新的记录集<BR><BR>　　1、创建可滚动、更新的Statement<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>Statement sm = 
+                  cn.createStatement(ResultSet.TYPE_SCROLL_ENSITIVE,ResultSet.CONCUR_READ_ONLY);</TD></TR></TBODY></TABLE><BR>　　该Statement取得的ResultSet就是可滚动的<BR><BR>　　2、创建PreparedStatement时指定参数<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>PreparedStatemet ps = 
+                  cn.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);<BR><BR>ResultSet.absolute(9000); 
+                </TD></TR></TBODY></TABLE><BR>　　批量更新<BR><BR>　　1、Statement<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>Statement sm = 
+                  cn.createStatement();<BR>sm.addBatch(sql1);<BR>sm.addBatch(sql2);<BR>...<BR>sm.executeBatch()</TD></TR></TBODY></TABLE><BR>　　一个Statement对象，可以执行多个sql语句以后，批量更新。这多个语句可以是delete、update、insert等或兼有<BR><BR>　　2、PreparedStatement<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>PreparedStatement ps = 
+                  cn.preparedStatement(sql);<BR>{<BR>　ps.setXXX(1,xxx);<BR>　...<BR>　ps.addBatch();<BR>}<BR>ps.executeBatch();</TD></TR></TBODY></TABLE><BR>　　一个PreparedStatement，可以把一个sql语句，变换参数多次执行，一次更新。<BR><BR>　　事务的处理<BR><BR>　　1、关闭Connection的自动提交<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>cn.setAutoCommit(false);</TD></TR></TBODY></TABLE><BR>　　2、执行一系列sql语句<BR><BR>　　要点：执行每一个新的sql语句前，上一次执行sql语句的Statement（或者PreparedStatemet）必须先close<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>Statement sm ;<BR>sm = cn.createStatement(insert into 
+                  user...);<BR>sm.executeUpdate();<BR>sm.close();<BR><BR>sm = 
+                  cn.createStatement("insert into 
+                  corp...);<BR>sm.executeUpdate();<BR>sm.close();</TD></TR></TBODY></TABLE><BR>　　3、提交<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>cn.commit();</TD></TR></TBODY></TABLE><BR>　　4、如果发生异常，那么回滚<BR><BR>
+            <TABLE borderColor=#ffcc66 width="90%" align=center bgColor=#e6e4dd 
+            border=1>
+              <TBODY>
+              <TR>
+                <TD>cn.rollback();</TD></TR></TBODY></TABLE><BR><BR></SPAN><BR>
+            <DIV 
+            style="FONT-SIZE: 14px; LINE-HEIGHT: 25px"><STRONG>作者Blog：</STRONG><A 
+            id=ArticleContent1_ArticleContent1_AuthorBlogLink 
+            href="http://blog.csdn.net/liujun999999/" 
+            target=_blank>http://blog.csdn.net/liujun999999/</A></DIV>
+            <DIV 
+            style="FONT-SIZE: 14px; COLOR: #900; LINE-HEIGHT: 25px"><STRONG>相关文章</STRONG></DIV>
+            <TABLE id=ArticleContent1_ArticleContent1_RelatedArticles 
+            style="BORDER-COLLAPSE: collapse" cellSpacing=0 border=0>
+              <TBODY>
+              <TR>
+                <TD><A 
+                  href="http://dev.csdn.net/develop/article/57/article/58/58012.shtm">JAVA正则表达式4种常用功能 
+                  </A></TD></TR>
+              <TR>
+                <TD><A 
+                  href="http://dev.csdn.net/develop/article/57/article/57/57634.shtm">用JSP构建三层管理信息系统</A> 
+                </TD></TR>
+              <TR>
+                <TD><A 
+                  href="http://dev.csdn.net/develop/article/57/article/57/57631.shtm">JSP/Servlet应用程序优化八法</A> 
+                </TD></TR>
+              <TR>
+                <TD><A 
+                  href="http://dev.csdn.net/develop/article/57/article/57/57619.shtm">Java数据库编程中的几个常用技巧</A> 
+                </TD></TR>
+              <TR>
+                <TD><A 
+                  href="http://dev.csdn.net/develop/article/57/article/57/57618.shtm">深入浅出Java多线程程序设计</A> 
+                </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><A name=#Comment></A>
+      <TABLE cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" align=center 
+            bgColor=#006699 border=0>
+              <TBODY>
+              <TR bgColor=#006699>
+                <TD id=white align=middle width=556 bgColor=#006699><FONT 
+                  color=#ffffff>对该文的评论</FONT> </TD></TR></TBODY></TABLE>
+            <DIV align=right><A id=CommnetList1_CommnetList1_Morelink 
+            href="http://comment.csdn.net/Comment.aspx?c=2&amp;s=57619">【评论】</A> 
+            <A id=CommnetList1_CommnetList1_Hyperlink1 
+            href="javascript:window.close();">【关闭】</A> 
+      </DIV><BR></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></FORM><!-- 版权 -->
+<HR align=center width=770 noShade SIZE=1>
+
+<TABLE cellSpacing=0 cellPadding=0 width=500 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=bottom align=middle height=10><A 
+      href="http://www.csdn.net/intro/intro.asp?id=2">网站简介</A> - <A 
+      href="http://www.csdn.net/intro/intro.asp?id=5">广告服务</A> - <A 
+      href="http://www.csdn.net/map/map.shtm">网站地图</A> - <A 
+      href="http://www.csdn.net/help/help.asp">帮助信息</A> - <A 
+      href="http://www.csdn.net/intro/intro.asp?id=2">联系方式</A> - <A 
+      href="http://www.csdn.net/english">English</A> </TD>
+    <TD align=middle rowSpan=3><A 
+      href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001032100010"><IMG 
+      height=48 src="CSDN技术中心 Java数据库编程中的几个常用技巧.files/biaoshi.gif" width=40 
+      border=0></A></TD></TR>
+  <TR>
+    <TD vAlign=top align=middle>北京百联美达美数码科技有限公司 版权所有 京ICP证020026号</TD></TR>
+  <TR align=middle>
+    <TD vAlign=top><FONT face=Verdana>Copyright &copy; CSDN.NET, Inc. All Rights 
+      Reserved</FONT></TD></TR>
+  <TR>
+    <TD height=15></TD></TR></TBODY></TABLE><!-- /版权 -->
+<SCRIPT>
+      document.write("<img src=http://count.csdn.net/count/pageview1.asp?columnid=4&itemid=11 border=0 width=0 height=0>");
+    </SCRIPT>
+</BODY></HTML>

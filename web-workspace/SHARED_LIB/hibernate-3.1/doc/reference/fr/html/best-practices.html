@@ -1,0 +1,120 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;24.&nbsp;Meilleures pratiques</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="example-mappings.html" title="Chapitre&nbsp;23.&nbsp;Exemple : quelques mappings"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;24.&nbsp;Meilleures pratiques</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="example-mappings.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;</td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="best-practices"></a>Chapitre&nbsp;24.&nbsp;Meilleures pratiques</h2></div></div><div></div></div><div class="variablelist"><dl><dt><span class="term">D&eacute;coupez finement vos classes et mappez les en utilisant <tt class="literal">&lt;component&gt;</tt>.</span></dt><dd><p>
+                    Utilisez une classe <tt class="literal">Adresse</tt> pour encapsuler <tt class="literal">Rue</tt>,
+                    <tt class="literal">Region</tt>, <tt class="literal">CodePostal</tt>.
+                    Ceci permet la r&eacute;utilisation du code et simplifie la maintenance.
+                </p></dd><dt><span class="term">D&eacute;clarez des propri&eacute;t&eacute;s d'identifiants dans les classes persistantes.</span></dt><dd><p>
+                    Hibernate rend les propri&eacute;t&eacute;s d'identifiants optionnelles. Il existe beaucoup de raisons
+                    pour lesquelles vous devriez les utiliser. Nous recommandons que vous utilisiez des identifiants
+		    techniques (g&eacute;n&eacute;r&eacute;s, et sans connotation m&eacute;tier).
+                </p></dd><dt><span class="term">Identifiez les clefs naturelles.</span></dt><dd><p>
+                    Identifiez les clefs naturelles pour toutes les entit&eacute;s, et mappez les avec
+                    <tt class="literal">&lt;natural-id&gt;</tt>. Impl&eacute;mentez <tt class="literal">equals()</tt> et
+                    <tt class="literal">hashCode()</tt> pour comparer les propri&eacute;t&eacute;s qui composent la clef naturelle.
+                </p></dd><dt><span class="term">Placez chaque mapping de classe dans son propre fichier.</span></dt><dd><p>
+                    N'utilisez pas un unique document de mapping. Mappez <tt class="literal">com.eg.Foo</tt> dans
+                    le fichier <tt class="literal">com/eg/Foo.hbm.xml</tt>. Cela prend tout son sens lors
+                    d'un travail en &eacute;quipe.
+                </p></dd><dt><span class="term">Chargez les mappings comme des ressources.</span></dt><dd><p>
+                    D&eacute;ployez les mappings en m&ecirc;me temps que les classes qu'ils mappent.
+                </p></dd><dt><span class="term">Pensez &agrave; externaliser les cha&icirc;nes de caract&egrave;res.</span></dt><dd><p>
+                    Ceci est une bonne habitude si vos requ&ecirc;tes appellent des fonctions SQL qui ne sont
+                    pas au standard ANSI. Cette externalisation dans les fichiers de mapping rendra votre
+		    application plus portable.
+                </p></dd><dt><span class="term">Utilisez les variables "bind&eacute;es".</span></dt><dd><p>
+                    Comme en JDBC, remplacez toujours les valeurs non constantes par "?". N'utilisez jamais
+                    la manipulation des cha&icirc;nes de caract&egrave;res pour remplacer des valeurs non constantes dans
+		     une requ&ecirc;te ! Encore mieux, utilisez les param&egrave;tres nomm&eacute;s dans les requ&ecirc;tes.
+                </p></dd><dt><span class="term">Ne g&eacute;rez pas vous m&ecirc;me les connexions JDBC.</span></dt><dd><p>
+                    Hibernate laisse l'application g&eacute;rer les connexions JDBC. Vous ne devriez g&eacute;rer vos connexions
+                    qu'en dernier recours. Si vous ne pouvez pas utiliser les syst&egrave;mes de connexions livr&eacute;s,
+		    r&eacute;fl&eacute;chissez &agrave; l'id&eacute;e de fournir votre propre impl&eacute;mentation de <tt class="literal">org.hibernate.connection.ConnectionProvider</tt>.
+                </p></dd><dt><span class="term">Pensez &agrave; utiliser les types utilisateurs.</span></dt><dd><p>
+                    Supposez que vous ayez une type Java, de telle biblioth&egrave;que, qui a besoin d'&ecirc;tre persist&eacute; mais
+                    qui ne fournit pas les accesseurs n&eacute;cessaires pour le mapper comme composant. Vous devriez
+		    impl&eacute;menter
+                    <tt class="literal">org.hibernate.UserType</tt>.Cette approche lib&egrave;re le code de l'application
+                    de l'impl&eacute;mentation des transformations vers / depuis les types Hibernate.
+                </p></dd><dt><span class="term">Utilisez du JDBC pur dans les goulets d'&eacute;tranglement.</span></dt><dd><p>
+                    Dans certaines parties critiques de votre syst&egrave;me d'un point de vue performance, quelques op&eacute;rations
+                    peuvent tirer partie d'un appel JDBC natif.
+                    Mais attendez de <span class="emphasis"><em>savoir</em></span>
+                    que c'est un goulet d'&eacute;tranglement. Ne supposez jamais qu'un appel JDBC sera forc&eacute;ment plus
+                    rapide. Si vous avez besoin d'utiliser JDBC directement, ouvrez une <tt class="literal">Session</tt>
+                    Hibernate et utilisez la connexion SQL sous-jacente. Ainsi vous pourrez utiliser la m&ecirc;me strat&eacute;gie
+                    de transation et la m&ecirc;me gestion des connexions.
+                </p></dd><dt><span class="term">Comprendre le flush de <tt class="literal">Session</tt>.</span></dt><dd><p>
+                    De temps en temps la Session synchronise ses &eacute;tats persistants avec la base de donn&eacute;es.
+                    Les performances seront affect&eacute;es si ce processus arrive trop souvent. Vous pouvez parfois
+                    minimiser les flush non n&eacute;cessaires en d&eacute;sactivant le flush automatique ou m&ecirc;me en changeant
+                    l'ordre des op&eacute;rations men&eacute;es dans une transaction particuli&egrave;re.
+                </p></dd><dt><span class="term">Dans une architecture &agrave; trois couches, pensez &agrave; utiliser <tt class="literal">saveOrUpdate()</tt>.</span></dt><dd><p>
+                    Quand vous utilisez une architecture &agrave; base de servlet / session bean, vous pourriez passer
+                    des objets charg&eacute;s dans le bean session vers et depuis la couche servlet / JSP. Utilisez
+		    une nouvelle session pour traiter chaque requ&ecirc;te.
+                    Utilisez <tt class="literal">Session.merge()</tt> ou <tt class="literal">Session.saveOrUpdate()</tt> pour
+                    synchroniser les objets avec la base de donn&eacute;es.
+                </p></dd><dt><span class="term">Dans une architecture &agrave; deux couches, pensez &agrave; utiliser la d&eacute;connexion de session.</span></dt><dd><p>
+                    Les transactions de bases de donn&eacute;es doivent &ecirc;tre aussi courtes que possible
+                    pour une meilleure mont&eacute;e en charge.Cependant, il est souvent n&eacute;cessaire d'impl&eacute;menter
+                    de longues <span class="emphasis"><em>transactions applicatives</em></span>, une simple unit&eacute; de travail du point de vue de
+                    l'utilisateur. Une transaction applicative
+                    peut s'&eacute;taler sur plusieurs cycles de requ&ecirc;tes/r&eacute;ponses du client.
+                    Il est commun d'utiliser des objets d&eacute;tach&eacute;s pour impl&eacute;menter des transactions applicatives.
+                    Une alternative, extr&ecirc;mement appropri&eacute;e dans une architecture &agrave; 2 couches, est de
+                    maintenir un seul contact de persistance ouvert (session) pour toute la dur&eacute;e de vie
+                    de la transaction applicative et simplement se d&eacute;connecter de la connexion JDBC &agrave; la fin de chaque requ&ecirc;te,
+                    et se reconnecter au d&eacute;but de la requ&ecirc;te suivante. Ne partagez jamais une seule
+                    session avec plus d'une transaction applicative, ou vous travaillerez avec des
+                    donn&eacute;es p&eacute;rim&eacute;es.
+                </p></dd><dt><span class="term">Consid&eacute;rez que les exceptions ne sont pas rattrapables.</span></dt><dd><p>
+                    Il s'agit plus d'une pratique obligatoire que d'une "meilleure pratique". Quand une exception
+                    intervient, il faut faire un rollback de la <tt class="literal">Transaction</tt> et
+                    fermer la <tt class="literal">Session</tt>.
+                    Sinon, Hibernate ne peut garantir l'int&eacute;grit&eacute; des &eacute;tats persistants en m&eacute;moire. En particulier,
+                    n'utilisez pas <tt class="literal">Session.load()</tt> pour d&eacute;terminer si une instance avec un identifiant
+                    donn&eacute; existe en base de donn&eacute;es, utilisez <tt class="literal">Session.get()</tt> ou un requ&ecirc;te.
+                </p></dd><dt><span class="term">Pr&eacute;f&eacute;rez le chargement tardif des associations.</span></dt><dd><p>
+                    Utilisez le chargement complet avec mod&eacute;ration.
+                    Utilisez les proxies et les collections charg&eacute;es tardivement
+                    pour la plupart des associations vers des classes qui ne sont pas susceptibles
+                    d'&ecirc;tre compl&egrave;tement retenues dans le cache de second niveau.
+                    Pour les assocations de classes en cache, o&ugrave; il y a une extr&ecirc;mement
+                    forte probabilit&eacute; que l'&eacute;l&eacute;ment soit en cache, d&eacute;sactivez explicitement le chargement
+                    par jointures ouvertes en utilisant <tt class="literal">outer-join="false"</tt>.
+                    Lorsqu'un chargement par jointure ouverte est appropri&eacute; pour un cas d'utilisation
+                    particulier, utilisez une requ&ecirc;te avec un <tt class="literal">left join fetch</tt>.
+                </p></dd><dt><span class="term">
+                Utilisez le pattern <span class="emphasis"><em>d'une ouverture de session dans une vue</em></span>,
+                ou une <span class="emphasis"><em>phase d'assemblage</em></span> disciplin&eacute;e pour &eacute;viter des probl&egrave;mes
+                avec des donn&eacute;es non rapatri&eacute;es.
+            </span></dt><dd><p>
+                    Hibernate lib&egrave;re les d&eacute;veloppeurs de l'&eacute;criture fastidieuse des <span class="emphasis"><em>objets de transfert
+                    de donn&eacute;es (NdT : Data Transfer Objects)</em></span> (DTO). Dans une architecture EJB traditionnelle,
+                    les DTOs ont deux buts : premi&egrave;rement, ils contournent le probl&egrave;me des "entity bean" qui ne sont pas
+                    s&eacute;rialisables ; deuxi&egrave;mement, ils d&eacute;finissent implicitement une phase d'assemblage o&ugrave; toutes les
+                    donn&eacute;es utilis&eacute;es par la vue sont rapatri&eacute;es et organis&eacute;es dans les DTOs avant de retourner sous le
+                    contr&ocirc;le de la couche de pr&eacute;sentation. Hibernate &eacute;limine le premier but. Pourtant, vous aurez encore
+                    besoin d'une phase d'assemblage (pensez vos m&eacute;thodes m&eacute;tier comme ayant un contrat strict avec la
+                    couche de pr&eacute;sentation &agrave; propos de quelles donn&eacute;es sont disponibles dans les objets d&eacute;tach&eacute;s)
+                    &agrave; moins que vous soyez pr&eacute;par&eacute;s &agrave; garder le contexte de
+                    persistance (la session) ouvert &agrave; travers tout le processus de rendu de la vue.
+                </p></dd><dt><span class="term">Pensez &agrave; abstraite votre logique m&eacute;tier d'Hibernate.</span></dt><dd><p>
+                    Cachez le m&eacute;canisme d'acc&egrave;s aux donn&eacute;es (Hibernate) derri&egrave;re une interface. Combinez les patterns
+                    <span class="emphasis"><em>DAO</em></span> et <span class="emphasis"><em>Thread Local Session</em></span>. Vous pouvez m&ecirc;me avoir quelques
+                    classes persist&eacute;es par du JDBC pur, associ&eacute;es &agrave; Hibernate via un <tt class="literal">UserType</tt> (ce conseil est
+                    valable pour des applications de taille respectables ; il n'est pas valable pour une application
+                    avec cinq tables).
+                </p></dd><dt><span class="term">N'utilisez pas d'associations de mapping exotiques.</span></dt><dd><p>
+                    De bons cas d'utilisation pour de vraies associations plusieurs-vers-plusieurs
+                    sont rares. La plupart du temps vous avez besoin d'informations additionnelles
+                    stock&eacute;es dans la table d'association.
+                    Dans ce cas, il est pr&eacute;f&eacute;rable d'utiliser deux associations un-vers-plusieurs vers une classe
+                    de liaisons interm&eacute;diaire. En fait, nous pensons que la plupart des associations sont
+                    de type un-vers-plusieurs ou plusieurs-vers-un, vous devez &ecirc;tre tr&egrave;s attentifs lorsque
+                    vous utilisez autre chose et vous demander si c'est vraiment n&eacute;cessaire.
+                </p></dd><dt><span class="term">Pr&eacute;f&eacute;rez les associations bidirectionnelles.</span></dt><dd><p>
+                    Les associations unidirectionnelles sont plus difficiles &agrave; questionner.
+                    Dans une grande application, la plupart des associations devraient &ecirc;tre navigables dans les deux directions dans les requ&ecirc;tes.
+                </p></dd></dl></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="example-mappings.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;</td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;23.&nbsp;Exemple : quelques mappings&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;</td></tr></table></div></body></html>

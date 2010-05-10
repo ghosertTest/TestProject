@@ -1,0 +1,603 @@
+.dwo1 {
+	BACKGROUND-COLOR: #ffffff
+}
+.dwbg {
+	BACKGROUND-COLOR: #ffcc66
+}
+.dwg3 {
+	BACKGROUND-COLOR: #333333
+}
+.dwg6 {
+	BACKGROUND-COLOR: #666666
+}
+.pgray {
+	BACKGROUND-COLOR: #eeeeee
+}
+.ortext {
+	COLOR: #e15119
+}
+.title2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 22px; FONT-FAMILY: Arial, sans-serif
+}
+.dwsmall {
+	FONT-SIZE: 11px; FONT-FAMILY: Verdana, sans-serif
+}
+.dwinput {
+	FONT-SIZE: 8pt; FONT-FAMILY: Verdana, sans-serif
+}
+A.feature:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 17px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.feature:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 17px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.feature:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 17px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.dwbctl:link {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, sans-serif; TEXT-DECORATION: none
+}
+A.dwbctl:visited {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, sans-serif; TEXT-DECORATION: none
+}
+A.dwbctl:hover {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, sans-serif; TEXT-DECORATION: underline
+}
+.dwbct1 {
+	FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: Verdana, sans-serif
+}
+A.smalltitle:link {
+	FONT-WEIGHT: normal; FONT-SIZE: 15px; FONT-FAMILY: Arial, san-serif; TEXT-DECORATION: none
+}
+A.smalltitle:visited {
+	FONT-WEIGHT: normal; FONT-SIZE: 15px; FONT-FAMILY: Arial, san-serif; TEXT-DECORATION: none
+}
+A.smalltitle:hover {
+	FONT-WEIGHT: normal; FONT-SIZE: 15px; FONT-FAMILY: Arial, san-serif; TEXT-DECORATION: none
+}
+.bluebullet {
+	FONT-WEIGHT: bold; COLOR: #006699
+}
+.tdgold {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #ffcc66; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.tdgray9 {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #999999; COLOR: #ffffff; FONT-FAMILY: Arial, sans-serif
+}
+.tdblueb {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #b5c9db; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.tddmbg {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #40a629; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.tdesbg {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #333333; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.tdlsbg {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #ffd100; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.tdrbg {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #009ece; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.tdtvbg {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #fd1b14; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.tdwbg {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #6a3d9a; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.astitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 25px; COLOR: #cc6633; FONT-FAMILY: Arial, sans-serif
+}
+.atitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 25px; FONT-FAMILY: Arial, sans-serif
+}
+.atitle2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 18px; FONT-FAMILY: Arial, sans-serif
+}
+.atitle3 {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; FONT-FAMILY: Arial, sans-serif
+}
+.code {
+	FONT-SIZE: 14px; FONT-FAMILY: monospace
+}
+.boldcode {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; FONT-FAMILY: monospace
+}
+.rboldcode {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #ff0000; FONT-FAMILY: monospace
+}
+.gboldcode {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #009966; FONT-FAMILY: monospace
+}
+.bboldcode {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #0000ff; FONT-FAMILY: monospace
+}
+.tdgoldvw {
+	BACKGROUND: #ffcc66; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.sort {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; FONT-FAMILY: Helvetica, sans-serif
+}
+.sortg6 {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; COLOR: #666666; FONT-FAMILY: Helvetica, sans-serif
+}
+A.cvred:link {
+	COLOR: #cc6633; FONT-FAMILY: Verdana, sans-serif; TEXT-DECORATION: underline
+}
+A.cvred:visited {
+	COLOR: #cc6633; FONT-FAMILY: Verdana, sans-serif; TEXT-DECORATION: underline
+}
+A.cvred:hover {
+	COLOR: #cc6633; FONT-FAMILY: Verdana, sans-serif; TEXT-DECORATION: underline
+}
+.tbgdw {
+	BACKGROUND-IMAGE: url(http://www-136.ibm.com/i/gr100.gif); BACKGROUND-COLOR: #006699
+}
+.dwsmallwh {
+	FONT-SIZE: 11px; COLOR: #ffffff; FONT-FAMILY: Verdana, sans-serif
+}
+.dwsearch24 {
+	FONT-SIZE: 12px; COLOR: #ffffff; FONT-FAMILY: Arial, sans-serif
+}
+.dwsearch {
+	FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: Verdana, sans-serif
+}
+.tdosm {
+	FONT-SIZE: 11px; COLOR: #e15119; FONT-FAMILY: Verdana, sans-serif
+}
+A.searchtabnavss:link {
+	FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.searchtabnavss:visited {
+	FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.searchtabnavss:hover {
+	FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: underline
+}
+.searchtabhiss {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+.smallarialgr9 {
+	FONT-SIZE: 11px; COLOR: #999999; FONT-FAMILY: Arial, sans-serif
+}
+.bbg {
+	WHITE-SPACE: nowrap; BACKGROUND-COLOR: #000
+}
+.mbbg {
+	BACKGROUND: url(//www.ibm.com/i/v14/t/masthead-bg.gif) #000 repeat-x
+}
+.cty-tou {
+	BACKGROUND: #2f4e6f; WHITE-SPACE: nowrap
+}
+.upper-masthead-corner {
+	BACKGROUND-POSITION: 100% 100%; BACKGROUND-IMAGE: url(//www.ibm.com/i/v14/t/upper-nav-cnr.gif); BACKGROUND-REPEAT: no-repeat
+}
+.spacer {
+	FONT-SIZE: 10px; COLOR: #98b1c4; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap
+}
+.country {
+	FONT-SIZE: 10px; COLOR: #c8d7e3
+}
+A.ur-link:link {
+	FONT-SIZE: 10px; COLOR: #c8d7e3; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap; TEXT-DECORATION: none
+}
+A.ur-link:visited {
+	FONT-SIZE: 10px; COLOR: #c8d7e3; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap; TEXT-DECORATION: none
+}
+A.ur-link:hover {
+	FONT-SIZE: 10px; COLOR: #c8d7e3; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap; TEXT-DECORATION: underline
+}
+TD.upper-masthead-divider {
+	BACKGROUND-POSITION: 50% 50%; BACKGROUND-IMAGE: url(//www.ibm.com/i/v14/t/upper-masthead-divider.gif); BACKGROUND-REPEAT: no-repeat; HEIGHT: 17px
+}
+.cty-tou-border {
+	BACKGROUND: #3c5f84
+}
+.input {
+	FONT-SIZE: 10px; BACKGROUND: #eee; WIDTH: 130px; FONT-FAMILY: verdana,arial,sans-serif; HEIGHT: 16px
+}
+.input-scope {
+	FONT-SIZE: 10px; BACKGROUND: #eee; WIDTH: 150px; FONT-FAMILY: verdana,arial,sans-serif; HEIGHT: 16px
+}
+TD.blbg {
+	BORDER-TOP: #99afc4 2px solid; BACKGROUND: #c8d7e3; BORDER-BOTTOM: #99afc4 1px solid; WHITE-SPACE: nowrap; HEIGHT: 22px
+}
+A.masthead-mainlink:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap; TEXT-DECORATION: none
+}
+A.masthead-mainlink:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap; TEXT-DECORATION: none
+}
+A.masthead-mainlink:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap; TEXT-DECORATION: underline
+}
+TD.masthead-divider {
+	BACKGROUND-POSITION: 50% 60%; BACKGROUND-IMAGE: url(//www.ibm.com/i/v14/t/masthead-divider.gif); BACKGROUND-REPEAT: no-repeat
+}
+.dbg {
+	BACKGROUND-COLOR: #fff
+}
+TD.left-nav-spacer {
+	HEIGHT: 22px; TEXT-ALIGN: right
+}
+.left-nav-child-highlight IMG {
+	FLOAT: right; MARGIN-RIGHT: 0px
+}
+.left-nav-child IMG {
+	FLOAT: right; MARGIN-RIGHT: 0px
+}
+.rlinks IMG {
+	FLOAT: right; MARGIN-RIGHT: 0px
+}
+TH.left-nav-overview {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 4px; BACKGROUND: #98b1c4; PADDING-BOTTOM: 4px; PADDING-TOP: 3px; TEXT-ALIGN: left
+}
+A.left-nav-overview:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #fff; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.left-nav-overview:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #fff; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.left-nav-overview:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #fff; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: underline
+}
+TD.left-nav {
+	PADDING-RIGHT: 5px; BORDER-TOP: white 1px solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 4px; VERTICAL-ALIGN: top; PADDING-TOP: 3px; BACKGROUND-COLOR: #c8d7e3
+}
+A.left-nav:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.left-nav:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.left-nav:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: underline
+}
+TD.dw-left-nav-separator {
+	BACKGROUND: #98b1c4
+}
+TD.dw-left-nav {
+	BACKGROUND: #c8d7e3; PADDING-BOTTOM: 4px; PADDING-TOP: 3px
+}
+TR.left-nav-child TD {
+	PADDING-RIGHT: 4px; PADDING-BOTTOM: 4px; VERTICAL-ALIGN: top; PADDING-TOP: 3px; BACKGROUND-COLOR: #c8d7e3
+}
+A.left-nav-child:link {
+	FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.left-nav-child:visited {
+	FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.left-nav-child:hover {
+	FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: underline
+}
+TD.left-nav-highlight {
+	PADDING-RIGHT: 5px; BORDER-TOP: white 1px solid; PADDING-LEFT: 4px; BACKGROUND: #fff; PADDING-BOTTOM: 4px; VERTICAL-ALIGN: top; PADDING-TOP: 3px
+}
+TR.left-nav-child-highlight TD {
+	PADDING-RIGHT: 4px; BACKGROUND: #fff; PADDING-BOTTOM: 4px; VERTICAL-ALIGN: top; PADDING-TOP: 3px
+}
+TR.left-nav-last TD {
+	BORDER-TOP: white 1px solid
+}
+TR.left-nav-last {
+	VERTICAL-ALIGN: top; BACKGROUND-COLOR: #c8d7e3
+}
+TD.related {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 4px; PADDING-BOTTOM: 3px
+}
+B.related {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #666; FONT-FAMILY: verdana,arial,sans-serif
+}
+TR.rlinks TD {
+	PADDING-RIGHT: 4px; PADDING-BOTTOM: 2px; VERTICAL-ALIGN: top
+}
+A.rlinks:link {
+	FONT-SIZE: 10px; COLOR: #666; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.rlinks:visited {
+	FONT-SIZE: 10px; COLOR: #666; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.rlinks:hover {
+	FONT-SIZE: 10px; COLOR: #666; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: underline
+}
+.left-nav-corner {
+	BACKGROUND-POSITION: 100% 100%; BACKGROUND-IMAGE: url(//www.ibm.com/i/v14/t/left-nav-corner.gif); BACKGROUND-REPEAT: no-repeat
+}
+A.nav:link {
+	FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.nav:visited {
+	FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: none
+}
+A.nav:hover {
+	FONT-SIZE: 10px; COLOR: #293d6b; FONT-FAMILY: verdana,arial,sans-serif; TEXT-DECORATION: underline
+}
+UNKNOWN {
+	DISPLAY: block
+}
+IMG.display-img {
+	DISPLAY: block
+}
+A.mainlink:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #fff; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap; TEXT-DECORATION: none
+}
+A.mainlink:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #fff; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap; TEXT-DECORATION: none
+}
+A.mainlink:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #fff; FONT-FAMILY: verdana,arial,sans-serif; WHITE-SPACE: nowrap; TEXT-DECORATION: underline
+}
+TD.footer-divider {
+	BACKGROUND-POSITION: 50% 50%; BACKGROUND-IMAGE: url(//www.ibm.com/i/v14/t/footer-divider.gif); BACKGROUND-REPEAT: no-repeat
+}
+.hbg {
+	BACKGROUND-IMAGE: url(//www.ibm.com/i/v11/m/en/lines.gif); BACKGROUND-REPEAT: repeat; BACKGROUND-COLOR: #006699
+}
+.tbg {
+	BACKGROUND-IMAGE: url(//www.ibm.com/i/v11/m/en/gr760.gif); BACKGROUND-COLOR: #006699
+}
+.tbgl {
+	BACKGROUND-IMAGE: url(//www.ibm.com/i/v11/m/en/gr160.gif); BACKGROUND-COLOR: #006699
+}
+.tbgc {
+	BACKGROUND-COLOR: #006699
+}
+.mbg {
+	BACKGROUND-COLOR: #99ccff
+}
+.lbg {
+	BACKGROUND-COLOR: #cce5ff
+}
+.hil {
+	BACKGROUND-COLOR: #ffffff
+}
+.lgray {
+	BACKGROUND-COLOR: #cccccc
+}
+.tbgray {
+	BACKGROUND-COLOR: #dddddd
+}
+.greytext {
+	COLOR: #666666
+}
+.related {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #ffffff; FONT-FAMILY: Arial, sans-serif
+}
+A:link {
+	COLOR: #006699
+}
+A:visited {
+	COLOR: #996699
+}
+A:hover {
+	COLOR: #006699
+}
+A.highlight:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #ffcc00; FONT-FAMILY: Verdana, Arial, sans-serif; TEXT-DECORATION: none
+}
+A.highlight:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #ffcc00; FONT-FAMILY: Verdana, Arial, sans-serif; TEXT-DECORATION: none
+}
+A.highlight:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #ffcc00; FONT-FAMILY: Verdana, Arial, sans-serif; TEXT-DECORATION: underline
+}
+A.parent:link {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, sans-serif; TEXT-DECORATION: none
+}
+A.parent:visited {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, sans-serif; TEXT-DECORATION: none
+}
+A.parent:hover {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, sans-serif; TEXT-DECORATION: underline
+}
+A.nav:link {
+	FONT-SIZE: 12px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.nav:visited {
+	FONT-SIZE: 12px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.nav:hover {
+	FONT-SIZE: 12px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: underline
+}
+A.fbox:link {
+	FONT-SIZE: 12px; COLOR: #006699; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.fbox:visited {
+	FONT-SIZE: 12px; COLOR: #996699; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.fbox:hover {
+	FONT-SIZE: 12px; COLOR: #006699; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: underline
+}
+A.bctl:link {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.bctl:visited {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: none
+}
+A.bctl:hover {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif; TEXT-DECORATION: underline
+}
+.divider {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; COLOR: #999999; FONT-FAMILY: Verdana, Arial, sans-serif
+}
+.input {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; WIDTH: 150px; COLOR: #000000
+}
+.iform {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; BACKGROUND: #eeeeee; COLOR: #000000; FONT-FAMILY: Arial
+}
+BODY {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+P {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+B {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+I {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+STRONG {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+EM {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+DT {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+DD {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+DL {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+sl {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+CAPTION {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+TH {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+TD {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+TR {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+U {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+BLINK {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+SELECT {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+OPTION {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+FORM {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+DIV {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+FONT {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+LI {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, sans-serif
+}
+.title {
+	FONT-WEIGHT: normal; FONT-SIZE: 24px; FONT-FAMILY: Arial, sans-serif
+}
+.subtitle {
+	FONT-WEIGHT: normal; FONT-SIZE: 15px; FONT-FAMILY: Arial, sans-serif
+}
+.boldtitle {
+	FONT-WEIGHT: normal; FONT-SIZE: 24px; FONT-FAMILY: "Arial Black", Arial, sans-serif
+}
+.pagesubtitle {
+	FONT-WEIGHT: normal; FONT-SIZE: 15px; LINE-HEIGHT: 18px; FONT-FAMILY: Arial, sans-serif
+}
+.pagetitle {
+	FONT-WEIGHT: normal; FONT-SIZE: 24px; LINE-HEIGHT: 24px; FONT-FAMILY: "Arial Black", Arial, sans-serif
+}
+UL {
+	MARGIN-TOP: 2px; FONT-SIZE: 12px; MARGIN-BOTTOM: 2px; PADDING-BOTTOM: 2px; PADDING-TOP: 2px; FONT-FAMILY: Arial, sans-serif
+}
+OL {
+	MARGIN-TOP: 2px; FONT-SIZE: 12px; MARGIN-BOTTOM: 2px; PADDING-BOTTOM: 2px; PADDING-TOP: 2px; FONT-FAMILY: Arial, sans-serif
+}
+H1 {
+	FONT-WEIGHT: normal; FONT-SIZE: 35px; FONT-FAMILY: Arial, sans-serif
+}
+H2 {
+	FONT-WEIGHT: normal; FONT-SIZE: 25px; FONT-FAMILY: Arial, sans-serif
+}
+H3 {
+	FONT-WEIGHT: bold; FONT-SIZE: 22px; FONT-FAMILY: Arial, sans-serif
+}
+H4 {
+	FONT-WEIGHT: normal; FONT-SIZE: 18px; FONT-FAMILY: Arial, sans-serif
+}
+.small {
+	FONT-SIZE: 11px; FONT-FAMILY: Verdana, sans-serif
+}
+.title1 {
+	FONT-SIZE: 25px; FONT-FAMILY: Arial, sans-serif
+}
+.tbdark {
+	BACKGROUND: #a3aab0
+}
+.tbwhite {
+	BACKGROUND: #ffffff
+}
+.tbimage1 {
+	BACKGROUND-IMAGE: url(//www.ibm.com/i/v11/tabs/tbimage1.gif)
+}
+.tbimage2 {
+	BACKGROUND-IMAGE: url(//www.ibm.com/i/v11/tabs/tbimage2.gif)
+}
+A.tbmainlink:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none
+}
+A.tbmainlink:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none
+}
+A.tbmainlink:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: underline
+}
+A.tablink:link {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none
+}
+A.tablink:visited {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none
+}
+A.tablink:hover {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; COLOR: #333333; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: underline
+}
+A.tablinkblue:link {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none
+}
+A.tablinkblue:visited {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: none
+}
+A.tablinkblue:hover {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; FONT-FAMILY: Verdana, Arial; TEXT-DECORATION: underline
+}
+.tblue {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #6699cc; COLOR: #ffffff; FONT-FAMILY: Arial, sans-serif
+}
+.tdblue {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #006699; COLOR: #ffffff; FONT-FAMILY: Arial, sans-serif
+}
+.tgray {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; BACKGROUND: #666666; COLOR: #ffffff; FONT-FAMILY: Arial, sans-serif
+}
+.bct {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Arial, sans-serif
+}
+.fnt {
+	FONT-SIZE: 11px; FONT-FAMILY: Verdana, sans-serif
+}
+.ast {
+	COLOR: #cc6600
+}
+.bs:link {
+	COLOR: #006699; FONT-FAMILY: Verdana; TEXT-DECORATION: none
+}
+A.bs:visited {
+	COLOR: #996699; FONT-FAMILY: Verdana; TEXT-DECORATION: none
+}
+A.bs:hover {
+	COLOR: #006699; FONT-FAMILY: Verdana; TEXT-DECORATION: underline
+}
+IMG.pbl {
+	MARGIN-TOP: 7px; MARGIN-BOTTOM: 10px
+}

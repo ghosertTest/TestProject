@@ -1,0 +1,1129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0066)http://www.eclipse.org/articles/Article-Decorators/decorators.html -->
+<HTML><HEAD><TITLE>Understanding Decorators in Eclipse</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content="MSHTML 6.00.2900.2180" name=GENERATOR>
+<META content="Balaji Krish-Sampath" name=Author><LINK 
+href="Understanding Decorators in Eclipse_files/default_style.css" 
+rel=stylesheet></HEAD>
+<BODY vLink=#800080 link=#0000ff bgColor=#ffffff>
+<DIV align=right><FONT face="Times New Roman, Times, serif"><FONT 
+size=-1>Copyright © 2003 International Business Machines 
+Corp.</FONT></FONT></DIV>
+<TABLE cellSpacing=0 cellPadding=2 width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=left bgColor=#0080c0 colSpan=2><B><FONT 
+      face=Arial,Helvetica color=#ffffff>&nbsp;Eclipse Corner 
+    Article</FONT></B></TD></TR></TBODY></TABLE>
+<DIV></DIV>
+<DIV align=left>
+<H1><IMG height=86 src="Understanding Decorators in Eclipse_files/Idea.jpg" 
+width=120 align=center></H1></DIV>
+<P>&nbsp;</P>
+<H1 align=center>Understanding Decorators in Eclipse</H1>
+<BLOCKQUOTE><B>Summary</B> <BR>Decorators, as the name suggests, are used for 
+  adorning/annotating resources with useful information. Decorators can be used 
+  by plug-ins to convey more information about a resource and other objects 
+  displayed in different workbench views.&nbsp; This article, with the help of a 
+  simple plug-in example, will illustrate the steps involved in decorating 
+  resources, along with some best practice approaches for decorating resources. 
+  Finally, we will discuss performance issues that may arise when enabling 
+  decorators, and briefly go over the new <A 
+  href="http://www.eclipse.org/articles/Article-Decorators/decorators.html#New">Lightweight 
+  decorators</A> found in Eclipse 2.1. 
+  <P>We assume the reader already has a basic understanding of Eclipse and knows 
+  how to create simple plug-ins. 
+  <P><B>Balaji Krish-Sampath, IBM</B> <BR><FONT size=-1>January 16, 
+  2003</FONT></P></BLOCKQUOTE>
+<BLOCKQUOTE></BLOCKQUOTE>
+<HR width="100%">
+
+<H2>What are Decorators?</H2>Decorators are visual cues that convey useful state 
+information associated with objects or resources displayed in Eclipse views. 
+Many of the standard workbench views participate in showing decorations, <FONT 
+color=#000000>for example, the navigator view, the package explorer view and the 
+outline view.</FONT> With decorators, users can get valuable information about 
+the resources in a particular view. The following figure illustrates a simple 
+custom decoration. 
+<CENTER>
+<P><IMG height=224 
+src="Understanding Decorators in Eclipse_files/SimpleDecoration.gif" width=375> 
+<BR><B><FONT size=-1>Fig. 1: Simple Decorator Example</FONT></B></CENTER>
+<P>In the Fig. 1, a lock icon is superimposed on the Java icon image (<IMG 
+height=13 src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+align=center>) of the file ImageDecoration.java. A prefix and a suffix label are 
+added for the file TextDecoration.java (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24 
+align=center>). The file NoDecoration.java does not have any custom decoration 
+(<IMG height=13 src="Understanding Decorators in Eclipse_files/tag_2.gif" 
+width=24 align=center>). 
+<P>With the help of a simple example, this article will provide a step by step 
+approach to decorating resources. Since the performance of the UI is affected by 
+the speed with which decorations are performed, we will concentrate on the 
+approaches that should be followed to make decoration efficient. Decoration can 
+be performed on resources and other objects displayed in Eclipse views. Although 
+the article illustrates most of the concepts with reference to decorating a 
+resource, decorations are not limited to resources and same technique can be 
+applied to decorate all the objects displayed in Eclipse views. <BR>&nbsp; 
+<H2>Decorators are Everywhere</H2>To better understand decorators, it is 
+important<FONT color=#000000> to be able to spot some of the ba</FONT>sic 
+decorations provided by Eclipse. The introductory sentences about decorators and 
+figure shown above (Fig. 1) might have given you the impression that decorators 
+are just the custom images annotating the resources with more valuable 
+information. However, some of the basic images that users see, like the problem 
+marker that is shown to alert the user about compilation errors is a good 
+example of basic decoration provided by Eclipse. 
+<P>Now that we know some of the basic decorations provided by Eclipse, let's 
+revisit the package explorer view. 
+<CENTER>
+<P><IMG height=283 
+src="Understanding Decorators in Eclipse_files/BasicDecorations.gif" width=372> 
+<BR><B><FONT size=-1>Fig. 2: Basic Decorations</FONT></B></CENTER>
+<P>The figure shown above clearly illustrates the wealth of information that 
+Eclipse provides on resources and other objects contained in the 
+workspace.&nbsp; This ranges from information regarding the type of resource (a 
+file or a folder or a project), type of file (a Java file or a text file) and 
+various Java elements. In the figure shown above, a problem marker is 
+superimposed on the compilation unit (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+align=center>), Java class element (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+align=center>) and method (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24 
+align=center>). The problem marker decoration on the compilation unit indicates 
+that the compilation unit named ProblemMarkerDecoration.java has compilation 
+errors. The problem marker decoration on the compilationErrorMethod() method 
+(<IMG height=13 src="Understanding Decorators in Eclipse_files/tag_3.gif" 
+width=24 align=center>) indicates the method failed to compile. <FONT 
+color=#000000>By viewing the Package Explorer view with basic decorations 
+provided by Eclipse, users can get details like reasons for compilation errors 
+in a Java file.</FONT> 
+<H2><B><FONT size=+2>Types of Decorations</FONT></B></H2>The display of a 
+resource in a view has two components, the label (the name of the resource) and 
+an image denoting the type of resource and possibly other state information. 
+Using the Eclipse extension mechanism, we can <FONT color=#000000>change the 
+label of the resource and the image of the resource. Hence, we have two 
+different types of decorations:</FONT> 
+<UL>
+  <LI>Text Label Decorators 
+  <LI>Image Decorators </LI></UL>As the name suggests, text label decorators are 
+decorations on resource labels and image decorators are decorations on icon 
+images. The resource name is the base label provided by Eclipse. This is 
+important because this is the base value to be decorated and the decorator 
+developer can assume that it will at least be part of the input.&nbsp; Plug-in 
+developers can augment the base resource label with additional information. 
+<P>Let's revisit the Package Explorer view to understand more on text and label 
+decorators. 
+<CENTER>
+<P><IMG height=271 
+src="Understanding Decorators in Eclipse_files/ImageAndTextDecorations.gif" 
+width=417> <BR><B><FONT size=-1>Fig. 3: Image and Text 
+Decorators</FONT></B></CENTER>
+<P><FONT color=#000000>In the figure shown above, custom decorations are applied 
+to the base decorations provided by Eclipse</FONT><FONT 
+color=#ff6666>.</FONT><FONT color=#000000> The file NoDecoration.java does not 
+contain any contain any decoration (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24>). The file 
+ImageDecoration.java has a lock icon (image decoration) superimposed on the Java 
+icon image (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24>). The files 
+PrefixAdded.java and PrefixAndSuffixAdded.java have text decorations added to 
+their labels (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24><IMG 
+height=13 src="Understanding Decorators in Eclipse_files/tag_4.gif" width=24>). 
+The file ImageAndTextDecorations.java has both image decoration (a lock icon 
+superimposed on the compilation unit) and text decorations (a prefix and a 
+suffix added to base label) (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_5.gif" width=24>). The 
+CustomDecorationsWithProblemMarker.java has a problem marker decoration (basic 
+decoration provided by Eclipse) as well as custom image and text decorations 
+(<IMG height=13 src="Understanding Decorators in Eclipse_files/tag_6.gif" 
+width=24>)</FONT> 
+<P><FONT color=#000000>So, how did these decorations get there? Let's start our 
+quest for creating custom decorators.</FONT> <BR>&nbsp; 
+<H2><B><FONT color=#000000><FONT size=+2>Defining Decorators in 
+plugin.xml</FONT></FONT></B></H2><FONT color=#000000>The first step in providing 
+custom decoration is to contribute to the org.eclipse.ui.decorators extension 
+point.</FONT><A name=pluginXmlFile></A> <BR>&nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT><FONT color=#000000>&lt;extension 
+      point="org.eclipse.ui.decorators"&gt;</FONT></TT> <BR><TT><FONT 
+      color=#000000>&lt;decorator</FONT></TT> <BR><TT><FONT 
+      color=#000000>&nbsp;&nbsp;&nbsp; 
+      id="com.ibm.decoratordemo.ui.decorator.demodecorator"</FONT></TT> 
+      <BR><TT><FONT color=#000000>&nbsp;&nbsp;&nbsp; label="Decorator 
+      Example"</FONT></TT> <BR><TT><FONT color=#000000>&nbsp;&nbsp;&nbsp; 
+      state="false"</FONT></TT> <BR><TT><FONT color=#000000>&nbsp;&nbsp;&nbsp; 
+      class= "com.ibm.DecoratorDemo.ui.decorators.DemoDecorator"</FONT></TT> 
+      <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_1.gif" 
+      width=24><TT><FONT color=#000000>&nbsp; 
+      objectClass="org.eclipse.core.resources.IResource"</FONT></TT> 
+      <BR><TT><FONT color=#000000>&nbsp;&nbsp;&nbsp; 
+      adaptable="true"&gt;</FONT></TT> <BR><TT><FONT 
+      color=#000000>&nbsp;&nbsp;&nbsp; &lt;description&gt;</FONT></TT> 
+      <BR><TT><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This is an 
+      example to illustrate the use of decorators</FONT></TT> <BR><TT><FONT 
+      color=#000000>&nbsp;&nbsp;&nbsp; &lt;/description&gt;</FONT></TT> 
+      <BR><TT><FONT color=#000000>&nbsp; &lt;/decorator&gt;</FONT></TT> 
+      <BR><TT><FONT 
+color=#000000>&lt;/extension&gt;</FONT></TT></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 4: Plug-in manifest info</FONT></B> (<B><FONT 
+size=-1>plugin.xml)</FONT></B> </CENTER>
+<UL>
+  <LI>id - defines the id of our decorator. There may be many decorators 
+  contributed via the decorator extension point. The decorator id must be 
+  unique. 
+  <LI>label - defines the label of the decorator for the workbench Label 
+  Decorations Preference Page (shown in Fig. 5). 
+  <LI>state - defines the default state of the decorator. The decorator can be 
+  enabled or disabled by default. 
+  <LI>class - class that implements the decorator. The class must implement 
+  org.eclipse.jface.viewers.ILabelDecorator and is responsible for decorating 
+  the original label's image and text with our own annotations. 
+  <LI>objectClass - objectClass indicates the class of resources that need to be 
+  decorated. If the user requires decoration only on files, the objectClass 
+  element can be changed to denote that the decoration should be performed only 
+  on files. <FONT color=#000000>To provide decoration only on files,&nbsp;<IMG 
+  height=13 src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24> 
+  should be changed as objectClass="org.eclipse.core.resources.IFile"</FONT> 
+  <LI>adaptable -&nbsp; <FONT color=#000000>Indicates whether classes that adapt 
+  to the resources should also be decorated. The adaptable flag holds 
+  significance when decorations need to be performed on different elements that 
+  conform to IResource. A detailed discussion on the use of adaptable flag is 
+  provided later.</FONT> 
+  <LI>description - an optional sub-element which contains text providing a 
+  short description of the decorator. This will be shown in the Label 
+  Decorations preference page as the description of the custom decorator. 
+</LI></UL>
+<P><BR><B><FONT size=+2>Enabling / Disabling Custom Decorators</FONT></B> 
+<P>Individual decorators can be turned on and off from the Label Decorations 
+preference page. Users can access this page by selecting 
+Window-&gt;Preferences-&gt;Workbench-&gt;Label Decorations (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24>). 
+<CENTER>
+<P><IMG height=360 
+src="Understanding Decorators in Eclipse_files/LabelDecorationsPage.gif" 
+width=533> <BR><B><FONT size=-1>Fig. 5: Label Decorations Preference 
+Page</FONT></B></CENTER>
+<P>The name of the decorator is the value of the <I>label attribute </I>of the 
+decorator extension (Fig. 4) while the description is the text contained in the 
+<I>description</I> sub-element. In the figure shown above, the "Decorator 
+Example"<I> </I>decorator is turned on (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+align=center>), while the other decorations are turned off. Although the 
+above-mentioned scenario might be typical when the project is not shared with 
+CVS repository, enabling and disabling the decorators are extremely useful when 
+the decorations performed by two or more decorators conflict with each other. 
+For example, the CVS plug-in might decorate the base image by superimposing the 
+base image with a custom image while the "Decorate Example" plug-in might 
+superimpose a different custom image at the same position thereby conflicting 
+with the CVS plug-in decoration. <FONT color=#000000>If the decoration performed 
+by two different decorators on the same resource conflict, users should 
+appropriately enable / disable different decorators to get the required 
+decoration.</FONT> 
+<P><IMG height=11 src="Understanding Decorators in Eclipse_files/tip.gif" 
+width=56> It is very important to design custom decorators that don't conflict 
+with basic decorations provided by different Eclipse views. For example, the 
+package explorer view decorates Java files with problem markers (a problem 
+marker is placed at the bottom left hand corner) if there are compilation 
+errors. It is a bad practice to decorate resources with custom decoration 
+exactly at the position of a problem marker and developers should avoid this. 
+<FONT color=#000000>If the custom decoration is performed at the bottom left 
+corner, then custom decoration and the problem marker decoration, if any, 
+conflict each other and hence users will not be able to view the decorations. 
+The solution to the above mentioned problem is to provide a custom image 
+decoration at the bottom right corner which does not conflict with the basic 
+image decoration provided by Eclipse. The top left corner is the second best 
+place although it conflicts with the binary project decorator. The bottom left 
+and top right should be avoided as they are decorated outside of the decorator 
+mechanism.</FONT><FONT color=#000000></FONT> 
+<P>Before we proceed further, let's take a closer look at the class that 
+provides custom decoration. As mentioned earlier, the name of the class should 
+be same as the value specified in the class attribute. The class must implement 
+ILabelDecorator. <BR>&nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>// Class extends LabelProvider because LabelProvider</TT> 
+      <BR><TT>// provides methods for getting images and text labels from 
+      objects&nbsp;</TT> <BR><TT>public class DemoDecorator extends 
+      LabelProvider&nbsp;</TT> <BR><TT>&nbsp; implements ILabelDecorator</TT> 
+      <BR><TT>{</TT> <BR><TT>&nbsp; public DemoDecorator()</TT> <BR><TT>&nbsp; 
+      {</TT> <BR><TT>&nbsp;&nbsp;&nbsp; super();</TT> <BR><TT>&nbsp; }</TT> 
+      <BR><TT>&nbsp; // Method to decorate Image&nbsp;</TT> <BR><TT>&nbsp; 
+      public Image decorateImage(Image image, Object object)</TT> <BR><TT>&nbsp; 
+      {</TT> <BR><TT>&nbsp;&nbsp;&nbsp; // Return null to specify no 
+      decoration</TT> <BR><TT>&nbsp;&nbsp;&nbsp; return null;</TT> 
+      <BR><TT>&nbsp; }</TT> <BR><TT>&nbsp; // Method to decorate Text</TT> 
+      <BR><TT>&nbsp; public String decorateText(String label, Object 
+      object)</TT> <BR><TT>&nbsp; {</TT> <BR><TT>&nbsp;&nbsp;&nbsp; // return 
+      null to specify no decoration</TT> <BR><TT>&nbsp;&nbsp;&nbsp; return 
+      null;</TT> <BR><TT>&nbsp; }</TT> <BR><TT>}</TT></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 6: Decorator Implementation 
+class</FONT></B></CENTER>
+<P>The default implementation can be used as a template to get started. The 
+decorateImage() and decorateText() methods are used to decorate the image and 
+text respectively. A detailed discussion on how to decorate a resource using 
+these two methods is provided later. 
+<P><IMG height=13 src="Understanding Decorators in Eclipse_files/tryit.gif" 
+width=61> Contribute your custom decoration via the decorator extension point in 
+a plugin.xml manifest file (<A 
+href="http://www.eclipse.org/articles/Article-Decorators/decorators.html#pluginXmlFile">use 
+the example shown in previous section</A> ). Create a class to implement custom 
+decoration (Fig. 6). Note that the Java class name should be the same as the 
+text value of the <I>"class"</I> attribute of the decorator tag in plugin.xml. 
+Compile and run. You should be able to see your custom decoration appear inside 
+Window-&gt;Preferences-&gt;Workbench-&gt;Label Decorations as shown in Fig. 5. 
+<BR>&nbsp; 
+<H2><FONT size=+2>Individual Preference Pages for Label 
+Decoration</FONT></H2>The label decorations preference page<FONT color=#000000> 
+provides the user with only two options, eith</FONT>er to use a decorator or 
+not. To provide users more control over the decoration contents and use of a 
+subset of decorations out of a pool of decorations provided by a particular 
+decorator, a plug-ins can provide an individual preference page for its label 
+decorators. For example, the CVS plug-in provides a preference page 
+(Window-&gt;Preferences-&gt;Team-&gt;CVS-&gt; Label Decorations) that allows 
+users to control the presentation and content of CVS decorators. 
+<CENTER>
+<P><IMG height=437 
+src="Understanding Decorators in Eclipse_files/CVSLabelDecorations.gif" 
+width=665> <BR><B><FONT size=-1>Fig. 7: CVS Decoration Preference 
+Page</FONT></B> </CENTER>
+<P>The figure shown above illustrates how plug-ins can use the individual label 
+decorator preference page to provide users the ultimate control over the 
+decorations. <FONT color=#000000>The CVS plug-in gives a user the control over 
+the choice of decorations, the richness in decorating different resources and 
+the choice of types of resources that need to be decorated. They can even 
+control the look and feel of decoration (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+align=center><IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+align=center>).</FONT> 
+<P>One of the important considerations while providing custom decorations is the 
+performance of UI with and without decorators. Users can effectively use the 
+individual decorator preference page to avoid decorations that are expensive to 
+compute and thus enhance the performance. 
+<P><IMG height=11 src="Understanding Decorators in Eclipse_files/tip.gif" 
+width=56> An individual decoration preference page is extremely useful when 
+resources are decorated on receiving external events / notification. For 
+example, a repository provider plug-in (e.g. org.eclipse.team.cvs.ui) might be 
+collaborating with an external server to decorate resources with a lock icon, 
+whenever resources are checked out by some other user. The repository provider 
+plug-in might be listening to thousands of events and it would be better if the 
+user has ultimate control on what to decorate (and what not to). 
+<P>Since individual decoration preference pages are preference pages that are 
+used to provide control to the users on decorations, they should be contributed 
+via the preference pages extension point. Users can refer to the articles <I><A 
+href="http://www.eclipse.org/articles/Article-Preferences/preferences.htm">Preferences 
+in the Eclipse Workbench UI</A></I>&nbsp; by Tod Creasey and <I><A 
+href="http://www.eclipse.org/articles/Article-Field-Editors/field_editors.html">Simplifying 
+Preference Pages with Field Editors</A></I> by <FONT color=#000000>Ryan Cooper 
+to learn more about preference pages and ways to create them.</FONT> 
+<H2><B>Example Plug-in Introduction</B></H2>Now that we know how to declare a 
+custom label decoration, and contribute individual label decoration preference 
+pages,<FONT color=#000000> let's dive into our Example Plug-in.</FONT> 
+<P>The basic idea behind providing this example is to illustrate how to decorate 
+images and text. To keep it as simple as possible, users are pro<FONT 
+color=#000000>vided with a custom File Property page. The file property page has 
+a custom page "DecoratorDemo File Property page" that provides a control for the 
+users to set the "Busy" property (The "Busy" property indicates that the 
+resource is busy and hence should not be modified)</FONT>. The page also 
+provides controls for users to set the prefix and suffix values for the 
+resource. 
+<CENTER>
+<P><IMG height=330 
+src="Understanding Decorators in Eclipse_files/CustomFilePropertyPage.gif" 
+width=537> <BR><B><FONT size=-1>Fig. 8: Example Plug-in's File Property 
+Page</FONT></B></CENTER>
+<P>Using <FONT color=#000000>the file property page (Fig. 8) (a file property 
+page can be opened by right-clicking the file and selecting properties in the 
+context menu)</FONT>, users can set the busy state for the file. The busy state 
+when set is indicated by a lock icon superimposed on the base image provided by 
+Eclipse. Users can set the prefix and suffix values of resource labels (<IMG 
+height=13 src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+align=center><IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24 
+align=center>). 
+<P>An individual label decoration preference page is provided for users to 
+manage the decorations (Fig. 9). They provide users control over prefix/suffix 
+text decoration <IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+align=center>) and project label decoration (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24 
+align=center>). The project is decorated with a default text label decoration. 
+<CENTER>
+<P><IMG height=280 
+src="Understanding Decorators in Eclipse_files/IndividualLabelDecorationPreferencePage.gif" 
+width=524> <BR><B><FONT size=-1>Fig. 9: Example Plug-in's Label Decoration 
+Preference Page</FONT></B></CENTER>
+<P>Now that we have been introduced to the example plug-in, let's go into 
+details. 
+<H2><B><FONT color=#000000>Beyond the Basics</FONT></B></H2>
+<P><FONT color=#000000>Before delving deep into actual methods that provide 
+decorations, it is important to understand the concepts needed while decorating 
+a resource.</FONT></P>
+<H3>Persistent Resource Properties</H3>Decorators, as we mentioned before, are 
+used to visually annotate resources with state information. The state 
+information of a resource used for decoration should be persistent across 
+sessions. In our example plug-in, the prefix, the suffix and the busy state of 
+the resource should be persisted across sessions. There are two ways to persist 
+resource properties. One is the traditional way of associating resources names 
+with their corresponding properties, and storing them in a property file. The 
+second preferred method is to use Eclipse API to store persistent resource 
+properties. 
+<P></P>
+<P>Resources can have properties that hold state information. The properties of 
+a resource are declared, accessed and maintained by various plug-ins and are not 
+interpreted by the platform. There are two types of properties associated with a 
+resource: persistent properties and session properties. Persistent properties, 
+as the name suggests, are persistent across sessions while session properties 
+are maintained in memory and are lost when the project or workspace is closed. 
+Resource properties are deleted when the resources are deleted. 
+<P>Depending on the utility of the plug-in, plug-in developers can use 
+persistent or session properties. Persistent properties are stored on disk and 
+hence are accessible across platform sessions. The example plug-in requires the 
+busy state of the resource to be persisted across sessions. The persistent 
+property resource API is used to store and retrieve property values by key. The 
+following figure shows how to set and get the persistent properties. <BR>&nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>// Create a qualified Name for Busy state of the resource</TT> 
+      <BR><TT>QualifiedName q1 = new QualifiedName&nbsp;</TT> 
+      <BR><TT>&nbsp;("com.ibm.Decorator.DecoratorDemo", "Busy");</TT> 
+      <P><TT>// Create a qualified Name for Prefix&nbsp;</TT> 
+      <BR><TT>QualifiedName q2 = new QualifiedName</TT> 
+      <BR><TT>&nbsp;("com.ibm.Decorator.DecoratorDemo", "Prefix");</TT> 
+      <P><TT>// Set the persistent properties</TT> 
+      <BR><TT>resource.setPersistentProperty (q1, "true");</TT> 
+      <BR><TT>resource.setPersistentProperty (q2, "Prefix Value");</TT> 
+      <P><TT>// Get the value of persistent property q1... The value&nbsp;</TT> 
+      <BR><TT>// retrieved is "true"</TT> <BR><TT>String busyNature = 
+      resource.getPersistentProperty (q1);</TT></P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 10: Sample code to manage Resource 
+properties</FONT></B></CENTER>
+<P>The code snippet (shown above) explains how to set / get persistent property 
+of resources using <I>qualified name</I>s.&nbsp; A qualified name is analogous 
+to a key used for accessing / storing property values. Qualified names are 
+composed of two-part names, a qualifier and a local name. The local name (in the 
+example shown above, the local names are "Busy" and "Prefix") could be used by 
+any decorator. So it is extremely important to provide a unique URI value for 
+the qualifier part. The simplest way to ensure a unique qualifier value is to 
+use the id of your plug-in as the qualifier name. 
+<P><IMG height=13 src="Understanding Decorators in Eclipse_files/tip.gif" 
+width=62> Where does Eclipse store resource persistent properties? Eclipse 
+stores resource persistent properties in an internal database at "<EM>Workspace 
+Location</EM>/.metadata/.plugins/org.eclipse.core.resources/.projects/<EM>Project 
+Name</EM>/.properties". 
+<P><IMG height=13 src="Understanding Decorators in Eclipse_files/tip.gif" 
+width=62> Eclipse provides a mechanism to store the sync information associated 
+with a resource. Associating "sync info" with a resource and decorating a 
+resource using the sync information is also an option plug-in developers might 
+want to consider before proceeding with use of persistent properties. Sync info 
+maintains all the information in memory and writes to disk only on save or a 
+snapshot. Another advantage of using sync info is that changes to sync 
+information are reported in the subsequent delta while it is difficult to keep 
+track of the persistent property resource changes. Readers can refer to 
+"org.eclipse.core.resources.ISynchronizer" to know more about sync info and ways 
+to store sync information for a resource. 
+<H3>Overlay Images</H3>In order to provide our custom decorations on a resource 
+in addition to the basic decorations provided by Eclipse, we superimpose custom 
+images on the base image.<FONT color=#000000> Eclipse provides utility methods 
+to help with overlaying an image over another.</FONT> 
+<P><IMG height=13 src="Understanding Decorators in Eclipse_files/tip.gif" 
+width=62>&nbsp; It<FONT color=#000000> is a good idea to design your decorators 
+so that they do not overlap or conflict with the existing platform SDK 
+decorators.</FONT> For example, Eclipse provides the problem marker decorator to 
+alert users of compilation problems. The custom decoration should not 
+superimpose images at the same position as the problem marker. <FONT 
+color=#000000>The custom decoration also should not lose the problem marker 
+information. </FONT>Since different custom decorator providers don't have prior 
+knowledge about one another, there is a good chance that custom decoration from 
+two different plug-in providers will conflict each other. The Workbench label 
+decoration page and the individual preference page provided by different custom 
+decorators provide users the control over the choice of different decorations. 
+<P>Eclipse provides an API for overlaying one image over other. The following 
+code snippet explains how to overlay an icon image over another image. 
+<UL>
+  <LI>Create a class that extends 
+  org.eclipse.jface.resource.CompositeImageDescriptor. CompositeImageDescriptor 
+  is an abstract base class that should be used by image descriptors that 
+  synthesize an image from other images. 
+  <LI>Implement drawCompositeImage() method to superimpose a custom image on the 
+  base image. </LI></UL>
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>protected void drawCompositeImage(int width, int 
+      height)&nbsp;</TT> <BR><TT>{&nbsp;</TT> <BR><TT>&nbsp;&nbsp; // To draw a 
+      composite image, the base image should be&nbsp;</TT> <BR><TT>&nbsp;&nbsp; 
+      // drawn first (first layer) and then the overlay image&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp; // (second layer)&nbsp;</TT> 
+      <P><TT>&nbsp;&nbsp; // Draw the base image using the base image's image 
+      data</TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24><TT> 
+      drawImage(baseImage_.getImageData(), 0, 0);&nbsp;</TT> 
+      <P><TT>&nbsp;&nbsp; // Method to create the overlay image data&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp; // Get the image data from the Image store or by 
+      other means</TT> <BR><TT>&nbsp;&nbsp; ImageData overlayImageData = 
+      demoImages.getLockImageData();</TT> <BR><TT><BR></TT><TT>&nbsp;&nbsp; // 
+      Overlaying the icon in the top left corner i.e. x and y&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp; // coordinates are both zero</TT> 
+      <BR><TT>&nbsp;&nbsp; int xValue = 0;</TT> <BR><TT>&nbsp;&nbsp; int yValue 
+      = 0;</TT> <BR><IMG height=11 
+      src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24><TT> 
+      drawImage (overlayimageData, xValue, yValue)&nbsp;</TT> <BR><TT>}</TT> 
+    </P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 11: Overlay Custom Image on the base 
+Image</FONT></B></CENTER>
+<P>The base image is drawn (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24>) and then 
+the image that needs to be superimposed is drawn at the top left corner of the 
+base image (see&nbsp;<IMG height=11 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24>). <FONT 
+color=#000000>The example plug-in code "OverlayImageIcon.java"&nbsp; implements 
+superimposing the custom images on the base image at different locations.</FONT> 
+
+<P><IMG height=13 src="Understanding Decorators in Eclipse_files/tip.gif" 
+width=62> It is always good to create the overlay image icons (that need to be 
+superimposed on the base image) once and share the same image across different 
+views. In the example shown below (Fig. 12), an image descriptor for a lock icon 
+is created and the image data is returned when requested by the drawImage() 
+method of OverlayImageIcon (Fig. 11). In this way, custom images are shared 
+among objects across different views. The <A 
+href="http://www.eclipse.org/articles/Article-Decorators/decorators.html#best_practice_approaches">best 
+practice approaches</A> section also talks about the image registry and how it 
+can be best used to efficiently decorate resources with custom images. 
+<BR>&nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>public class DemoImages</TT> <BR><TT>{</TT> <BR><TT>&nbsp; private 
+      static final ImageDescriptor lockDescriptor =&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp; ImageDescriptor.createFromFile 
+      (DemoDecorator.class, "lock.gif");</TT> 
+      <P><TT>&nbsp; public ImageData getLockImageData()</TT> <BR><TT>&nbsp; 
+      {</TT> <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; return 
+      lockDescriptor.getImageData();</TT> <BR><TT>&nbsp; }</TT> 
+      <BR><TT>}</TT></P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 12: Illustration on how images can be shared among 
+objects across views</FONT></B></CENTER>
+<P>In our example plug-in, a lock icon is superimposed on the base image if the 
+file has its "busy" property set. The figure shown below shows how a resource's 
+image icon would look in the package explorer view (Fig. 13). The lock icon is 
+superimposed on the compilation unit and the runtime class instance of 
+ImageDecoration.java (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+align=center><IMG height=11 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+align=center>) 
+<CENTER>
+<P><IMG height=203 
+src="Understanding Decorators in Eclipse_files/ImageDecoration.gif" width=373> 
+<BR><B><FONT size=-1>Fig. 13: Superimpose a lock decorator</FONT></B></CENTER>
+<P>
+<H3>Re-Decorate</H3>When the workbench starts, the decorator manager checks for 
+enabled decorators (decorators are enabled using the Workbench &gt; Label 
+Decorations page) and decorates the resources inside different views using the 
+custom decorations provided by these decorators. 
+<P>The properties of a resource might change at runtime, which will trigger the 
+need for redecoration. For example, users might change a file's busy attribute 
+using the file property page - and therefore the image decoration must be 
+changed to reflect the change.&nbsp; To re-decorate the resources, we fire a 
+LabelProviderChangedEvent. The fired event notifies the different workbench 
+views that the label provider for the resource has changed.<FONT color=#000000> 
+Eclipse calls the decorateImage() and decorateText() methods for the resources 
+whose label provider has changed. A LabelProviderChangedEvent should only be 
+fired when some aspect of the element used to do the decoration changes. They 
+can also be fired when the labels need to be updated due to a change in 
+decoration presentation (e.g. due to a change in a preference page for the 
+decorator). Sending these events will update all affected views.</FONT> 
+<BR>&nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT><FONT color=#000000>public void refresh(List 
+      resourcesToBeUpdated)</FONT></TT> <BR><TT><FONT 
+      color=#000000>{</FONT></TT> <BR><TT><FONT color=#000000>&nbsp; // 
+      resourcesToBeUpdated is a list of resources whose decorators</FONT></TT> 
+      <BR><TT><FONT color=#000000>&nbsp; // need to be changed. The persistent 
+      property of the resources&nbsp;</FONT></TT> <BR><TT><FONT 
+      color=#000000>&nbsp; // has been changed and hence its decorators should 
+      change</FONT></TT> 
+      <P><TT>&nbsp; // Check to see whether the custom decoration is 
+      enabled&nbsp;</TT> <BR><TT>&nbsp; DemoDecorator demoDecorator = 
+      getDemoDecorator();</TT> <BR><TT>&nbsp; if (demoDecorator == null)</TT> 
+      <BR><TT>&nbsp; {</TT> <BR><TT>&nbsp;&nbsp;&nbsp; // Decorator is not 
+      enabled.. Don't decorate the resources.</TT> <BR><TT>&nbsp;&nbsp;&nbsp; 
+      return;</TT> <BR><TT>&nbsp; }</TT> 
+      <P><TT><FONT color=#000000>&nbsp; // Fire a label provider changed event 
+      to decorate the&nbsp;</FONT></TT> <BR><TT><FONT color=#000000>&nbsp; // 
+      resources whose image needs to be updated</FONT></TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+      align=center><TT><FONT color=#000000>fireLabelEvent(new 
+      LabelProviderChangedEvent(demoDecorator,</FONT></TT> <BR><TT><FONT 
+      color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      resourcesToBeUpdated.toArray()));</FONT></TT> <BR><TT><FONT 
+      color=#000000>}</FONT></TT> 
+      <P><TT><FONT color=#000000>private void fireLabelEvent(final 
+      LabelProviderChangedEvent event)</FONT></TT> <BR><TT><FONT 
+      color=#000000>{&nbsp;</FONT></TT> <BR><TT><FONT color=#000000>&nbsp; // 
+      Decorate using current UI thread</FONT></TT> <BR><IMG height=11 
+      src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+      align=center><TT><FONT color=#000000>Display.getDefault().asyncExec(new 
+      Runnable()</FONT></TT> <BR><TT><FONT color=#000000>&nbsp; {</FONT></TT> 
+      <BR><TT><FONT color=#000000>&nbsp;&nbsp;&nbsp; public void 
+      run()</FONT></TT> <BR><TT><FONT color=#000000>&nbsp;&nbsp;&nbsp; 
+      {</FONT></TT> <BR><TT><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      // Fire a LabelProviderChangedEvent to notify eclipse views</FONT></TT> 
+      <BR><TT><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // that label 
+      provider has been changed for the resources</FONT></TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24 
+      align=center><TT><FONT color=#000000>&nbsp;&nbsp; 
+      fireLabelProviderChanged(event);</FONT></TT> <BR><TT><FONT 
+      color=#000000>&nbsp;&nbsp;&nbsp; }</FONT></TT> <BR><TT><FONT 
+      color=#000000>&nbsp; });</FONT></TT> <BR><TT><FONT 
+      color=#000000>}</FONT></TT></P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT color=#000000><FONT size=-1>Fig. 14: Re-Decorate 
+Resources</FONT></FONT></B></CENTER>
+<P>A LabelProviderChangedEvent is triggered (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24>) to notify 
+different views that the label provider for the resources (in the figure shown 
+above, the resources list is stored in resourcesToBeUpdated) has been changed 
+and hence they need to be re-decorated. The plug-in developers must provide a 
+Runnable that fires a labelProviderChanged event (<IMG height=11 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+align=center>). 
+<P><FONT color=#000000>If users choose to change the decoration preference using 
+the individual decoration preference page, </FONT>all the resources in the 
+workspace need to be re-decorated. This could be done easily by changing 
+line&nbsp;<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 align=center> 
+in Fig. 14 to <I>fireLabelEvent (new LabelProviderChangedEvent 
+(demoDecorator)).</I> 
+<H3>IDecoratorManager Interface</H3>IDecoratorManager manages custom decorators 
+contributed via the decorator's extension point. Some of the utility methods 
+provided by IDecoratorManager are:</FONT> 
+<UL>
+  <LI><FONT color=#000000><B>ILabelDecorator getLabelDecorator(String 
+  decoratorID)</B>- Returns the label decorator for the specified decorator if 
+  it is enabled</FONT> 
+  <LI><FONT color=#000000><B>boolean getEnabled(String decoratorID)</B> - 
+  Returns whether the specified custom decorator is enabled or not</FONT> 
+  <LI><FONT color=#000000><B>void setEnabled (String decoratorID, boolean 
+  enabled)</B> - Enable/disable the custom decorator</FONT> </LI></UL>There could 
+be many custom decorators contributed via the decorator's extension point. The 
+id associated with the custom decorator is unique and should be used to<FONT 
+color=#ff6666> </FONT><FONT color=#000000>distinguish between different custom 
+decorators. Views that allow decoration of their elements should use the label 
+decorator returned by the getLabelDecorator() method (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24>). The custom 
+decorator objects (instance of the class used for decorating resources) can be 
+found using the decorator id (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24>). A custom 
+decorator can be enabled or disabled by default using the state sub-element in 
+the plugin.xml manifest file.</FONT> <BR>&nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>/**</TT> <BR><TT>&nbsp;* Gets the custom decorator object. This 
+      method should be called to get</TT> <BR><TT>&nbsp;* the custom decorator 
+      object by all methods that try to decorate resources</TT> <BR><TT>&nbsp;* 
+      @return Custom Decorator Instance if the custom decorator is enabled</TT> 
+      <BR><TT>&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; null if 
+      the custom decorator is not enabled&nbsp;</TT> <BR><TT>&nbsp;*/</TT> 
+      <BR><TT>public static DemoDecorator getDemoDecorator()</TT> <BR><TT>{</TT> 
+      <BR><TT>&nbsp; IDecoratorManager decoratorManager =</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp; 
+      DecoratorPlugin.getDefault().getWorkbench().getDecoratorManager();</TT> 
+      <P><TT>&nbsp; // com.ibm.decoratordemo.ui.decorator.demodecorator is the 
+      id of the&nbsp;</TT> <BR><TT>&nbsp; // custom decorator</TT> 
+      <P><TT>&nbsp; // If the decorator is disabled, a null value is 
+      returned&nbsp;</TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+      align=center><TT>return (DemoDecorator) 
+      decoratorManager.getLabelDecorator(</TT> <BR><TT>&nbsp;&nbsp; 
+      "com.ibm.decoratordemo.ui.decorator.demodecorator");</TT> 
+      <P><TT>}</TT></P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT color=#000000><FONT size=-1>Fig. 15: How to get custom 
+Decorator instance using DecoratorManager Interface</FONT></FONT></B> </CENTER>
+<P><FONT color=#000000>The custom decorator class used for decorating resources 
+is a singleton. The decorator developers should not use the decorator object 
+(instance of the class used for decorating resources) when the decorator is 
+disabled. The decorator developers should never cache the decorator object. The 
+decorator object is disposed when the decorator is disabled and is recreated 
+when the decorator is re-enabled. The utility method getLabelDecorator() returns 
+a null value if the custom decorator is disabled or a custom decorator with the 
+given decoratorId does not exist (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+align=center>).</FONT> 
+<H2><A name=best_practice_approaches></A>Best Practice Approaches</H2>The time 
+taken for decoration should be as small as possible because the performance of 
+the UI will be adversely affected by slow decorator code. Some of the best 
+practice approaches that should be followed to reduce the time involved in 
+decorations are as follows: <BR>&nbsp; 
+<LI><B>Use image descriptors to store descriptors of image rather than storing 
+the images</B> <BR>The org.eclipse.jface.resources.ImageDescriptor class, as the 
+name suggests, is a lightweight descriptor for an image. It contains all the 
+information required to create an image. Image Descriptors do not allocate an 
+actual platform image unless specifically requested using the createImage() 
+method. Use of image descriptors is one of the best strategies that should be 
+used when your code is structured such that it defines all the icons in one 
+place and allocates them when needed. <BR>&nbsp; 
+<LI><B>Use org.eclipse.jface.ImageRegistry to share images across different 
+views</B> <BR>The ImageRegistry class is used to keep a list of named images. 
+Clients can add image descriptors or SWT images directly to the list. When an 
+image is requested by name from the registry, the registry will return the image 
+if it has been created, or create one from the descriptor. This allows clients 
+of the registry to share images. A well-written article on images <A 
+href="http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html"><EM>Using 
+Images in the Eclipse UI</EM></A> by John Arthorne is a good reference for 
+learning how to manage images in Eclipse. 
+<P>Images that are added to or retrieved from the registry must not be disposed 
+by any client. The registry is responsible for disposing of the image since the 
+images are shared by multiple clients. The registry will dispose of the images 
+when the platform GUI system shuts down. Appropriate use of image descriptors 
+and the image registry is important while performing decorations. Since many 
+views participate in decoration, it is important to share the images using the 
+caching mechanism rather than creating images from scratch. <BR>&nbsp; </P>
+<LI><B>Use Lightweight Decorators when possible</B> <BR>Eclipse 2.1 introduces a 
+lightweight decorator that will handle the image management issues associated 
+with decoration. Changes to the decorator mechanism in Eclipse 2.1 and ways to 
+create custom decorations using <A 
+href="http://www.eclipse.org/articles/Article-Decorators/decorators.html#New">Lightweight 
+decorator</A> mechanism are discussed later. <BR>&nbsp; 
+<H2>Decorate Resources</H2>Let us look at the actual methods that decorate the 
+image or the text of resource labels. As mentioned before, the <FONT 
+color=#000000>class that is responsible for decoration should implement the 
+ILabelDecorator interface.</FONT> 
+<P><FONT color=#000000>The interface provides two utility methods to decorate 
+the text and image.</FONT> 
+<UL>
+  <LI><B><FONT color=#000000>Image decorateImage(Image baseImage, Object 
+  element)</FONT></B> 
+  <LI><B><FONT color=#000000>String decorateText(String initialText, Object 
+  element)</FONT></B> </LI></UL><FONT color=#000000>The decorateImage method is 
+used to decorate the object image with additional state information of the 
+resource. The current image of the object can be obtained using the getImage() 
+method of LabelProvider. The method returns an annotated image or a null image 
+if the object need not be decorated.</FONT> The decorateText method is used to 
+decorate the object label. <BR>&nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>public Image decorateImage(Image baseImage, Object object)</TT> 
+      <BR><TT>{</TT> <BR><TT>&nbsp;&nbsp; // This method returns an annotated 
+      image or null if the&nbsp;</TT> <BR><TT>&nbsp;&nbsp; // image need not be 
+      decorated. Returning a null image</TT> <BR><TT>&nbsp;&nbsp; // decorates 
+      resource icon with basic decorations provided</TT> <BR><TT>&nbsp;&nbsp; // 
+      by Eclipse</TT> 
+      <P><TT>&nbsp;&nbsp; IResource objectResource;</TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+      align=center><TT> objectResource = (IResource) object;</TT> 
+      <BR><TT>&nbsp;&nbsp; if (objectResource == null)</TT> <BR><TT>&nbsp;&nbsp; 
+      {</TT> <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; return null;</TT> 
+      <BR><TT>&nbsp;&nbsp; }</TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+      align=center><TT> if (objectResource.getType() != 
+      IResource.FILE</TT><TT>)</TT> <BR><TT>&nbsp;&nbsp; {</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; // Only files are decorated</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; return null;</TT> <BR><TT>&nbsp;&nbsp; 
+      }</TT> <BR><TT>&nbsp;&nbsp; // Overlay custom image over base 
+      image&nbsp;</TT> <BR><TT>&nbsp;&nbsp; Image image;</TT> 
+      <BR><TT>&nbsp;&nbsp; OverlayImageIcon overlayIcon = new&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; OverlayImageIcon(baseImage,&nbsp; 
+      "Lock");</TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24><TT> 
+      image = overlayIcon.getImage();</TT> <BR><TT>&nbsp;&nbsp; return 
+      image;</TT> 
+      <P><TT>&nbsp;&nbsp; // The image should be disposed when the plug-in 
+      is&nbsp;</TT> <BR><TT>&nbsp;&nbsp; // disabled or on shutdown</TT> 
+      <BR><TT>}</TT></P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 16: DecorateImage Method to decorate images 
+icons</FONT></B></CENTER>
+<P>The decorateImage() method (shown above) decorates only a file object and 
+does not decorate a project or a folder (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24>). The 
+IResource object (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24>) is used for 
+determining whether the object under consideration is a project / folder / file. 
+Using the OverlayImageIcon class (not shown), a lock decorator is superimposed 
+on the base image (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24>) <BR>&nbsp; 
+<BR>&nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>public String decorateText(String label, Object obj)</TT> 
+      <BR><TT>{</TT> <BR><TT>&nbsp; IResource objectResource;</TT> 
+      <BR><TT>&nbsp; objectResource = (IResource) object;</TT> 
+      <P><TT>&nbsp; if (objectResource.getType() != 
+      IResource.FILE)</TT><BR><TT>&nbsp; {</TT> <BR><TT>&nbsp;&nbsp;&nbsp; // 
+      Only files are decorated in this example</TT> <BR><TT>&nbsp;&nbsp;&nbsp; 
+      return null;</TT> <BR><TT>&nbsp; }</TT> 
+      <P><TT>&nbsp; // Decorate the label of the resource with the admin 
+      name&nbsp;</TT> <BR><TT>&nbsp; String ownerName = 
+      System.getProperties().getProperty("user.name");</TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+      align=center><TT>return label + " ( " + ownerName + " )";</TT> 
+      <BR><TT>}&nbsp;</TT></P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 17: DecorateText method to annotate the label of 
+resource</FONT></B></CENTER>
+<P>The decorateText() method returns null (no decoration) for non-files. It 
+decorates the label of a file with owner information. Returning a null value 
+signifies that the decorator is ignored - it does not clear out any existing 
+decorations. <BR>&nbsp; 
+<H2>When to Decorate</H2>Just because you know how to decorate does not mean you 
+know when to decorate. There are no strict rules that could be followed to find 
+out when to decorate and when not to. Human intuition is the best way to 
+proceed, although there are various factors that could be taken into 
+consideration. Factors that could affect the decision on decoration are as 
+follows: 
+<UL>
+  <LI>The amount of time to perform the decoration. 
+  <LI>The benefit to the user of seeing this particular state information. 
+  <LI>Is it possible to provide the state information in a different way? 
+  <LI>Is the decoration in any way interfering with the basic decorations 
+  provided by Eclipse. 
+  <LI>The frequency with which the state information changes. </LI></UL>Let us try 
+to understand the above mentioned factors with an example. Let us assume an 
+example plug-in which tries to emulate CVS behavior - i.e. trying to provide 
+functionality for the developers to checkin / checkout files from repository. 
+The plug-in collaborates with an external server to receive notification when 
+resources are checked out by other users (checking out a file means someone has 
+extracted the file and is making changes to the file). Let us assume the time 
+spent on computing image decoration is 0.5 seconds. The number of times the 
+plug-in receives notification from the external server would be huge since there 
+are many files in the repository and many users are working concurrently. 
+<P>In our example, it is advantageous for the users to know about the files that 
+are changed by others. But can they afford to lose 0.5 seconds for every 
+decoration?&nbsp; No.&nbsp; So the plug-in developers, rather than decorating 
+the image icon, can present the information to the user in a different way, for 
+example, the file properties view. Improper use of decorators can lead to poor 
+performance and will ultimately lead to plug-in decorators becoming useless. 
+<BR>&nbsp; 
+<H2><A name=Caveat></A>Caveat Lector (Reader Beware)</H2>We saw some of the best 
+practice approaches that could be used to reduce the time taken to decorate 
+image icons. Every image in Eclipse uses operating system resources. We don't 
+want to create 1,000 copies of the same image. It would be nice to use some of 
+the features in Eclipse to cache decorated images and use them for generating 
+similar images. Let us assume we want to superimpose a lock icon on three text 
+files. There are two different ways to do this using the methods described 
+earlier to superimpose a lock icon on the base image. The lock icon should be 
+superimposed on the base image for all three text files. It would be better to 
+decorate the first text file, cache the resultant image in the image registry 
+and use the cached image to decorate the remaining files. In this way, image 
+caching can be used to avoid superimposing the same custom image over the same 
+base image every time you perform decoration. Image caching would be 
+advantageous when the frequency of decoration is huge and the amount of time 
+spent on calculating the superimposed image is high. Image caching should be 
+used if the developers have a prior knowledge about images that might appear 
+multiple times. 
+<P><IMG height=13 src="Understanding Decorators in Eclipse_files/tip.gif" 
+width=62> Decorations are performed when workbench starts initially. It is 
+called when users open a resource, close a resource, expand the resource tree 
+etc. 
+<P>Image caching, although a good technique to reduce the time involved in 
+decorating resources is not without problems. Some of the inherent problems 
+associated with decoration using image caching approach are as follows: 
+<UL>
+  <LI><B>Plug-in developers should know all the decoration on a resource: </B>To 
+  understand the above mentioned problem, you should know how to generate a key 
+  that would be used for retrieving images from the image cache. The key is a 
+  string describing all the properties of the resource, for example, the type of 
+  the resource (a file or a folder or a project), type of the file (a Java file 
+  or a text file) and marker information associated with the resource. There 
+  could be new decorations provided by other plug-ins depending on a particular 
+  custom resource property. Decorators which do not have knowledge about the 
+  custom resource property can't differentiate between a resource that has the 
+  custom property set and resources that do not have the custom property set. 
+  This could lead to wrong decoration. </LI></UL>
+<UL>
+  <LI><B>Decorating Java files: </B>To understand the problems associated with 
+  using image caching to decorate Java files, let's revisit the plugin.xml file. 
+  </LI></UL>
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>&lt;extension point="org.eclipse.ui.decorators"&gt;</TT> 
+      <BR><TT>&nbsp; &lt;decorator&nbsp;</TT> <BR><TT>&nbsp;&nbsp;&nbsp; 
+      id="YourDecorator"&nbsp;</TT> <BR><TT>&nbsp;&nbsp;&nbsp; label="Decorator 
+      Label"&nbsp;</TT> <BR><TT>&nbsp;&nbsp;&nbsp; state="false"&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp; class="YourDecorator.class"&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp; 
+      objectClass="org.eclipse.core.resources.IResource"&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp; adaptable="true"&gt;&nbsp;</TT> <BR><TT>&nbsp; 
+      &lt;/decorator&gt;&nbsp;</TT> 
+<BR><TT>&lt;/extension&gt;</TT></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 18: Sample plugin.xml manifest file to contribute 
+decorators</FONT></B></CENTER>
+<P>The attributes that are of interest are: objectClass and adaptable. 
+ObjectClass indicates the class of resources that need to be decorated. The 
+adaptable flag indicates whether the classes that adapt to the IResource object 
+should also be decorated. 
+<P><IMG height=13 src="Understanding Decorators in Eclipse_files/tip.gif" 
+width=62> If a user tries to decorate a Java file in a navigator view, the 
+decorateImage() and decorateText() methods are called on the IFile object. If 
+the user tries to decorate the Java file in a package explorer, the 
+decorateImage() and decorateText() methods are called on all the Java elements 
+(because all Java elements are adaptable to IFile objects). 
+<P>Let's see what happens when a user decorates a Java file and the adaptable 
+attribute is set to true. The decorateImage() method is called on all the Java 
+elements for the resource (JavaProject,&nbsp; PackageFragmentRoot, 
+PackageFragment, CompilationUnit (Java file), and runtime class). If the 
+adaptable flag is true, the object parameter passed to the decorateImage() and 
+decorateText() methods is an IResource object for compilationUnit and runtime 
+class while a null is passed for all the other Java elements. 
+<P>So what's the problem? Let us assume we cache the image (lock icon 
+superimposed on a Java (Compilation Unit) icon) with the property "Java Lock" to 
+denote that it is Java file with a lock icon superimposed on the base image. You 
+might have cached the image when decorateImage method was called on the 
+compilation unit. When decorateImage() method is called on a class file, we get 
+the same property information using the IResource object (Fig. 16) and hence we 
+decorate the class file with the cached copy. So instead of getting a lock icon 
+on top of a class icon, the class file image icon is represented by a custom 
+lock decorator on top of a Java icon image. The following diagrams illustrate 
+the aforesaid behavior. 
+<CENTER>
+<P><IMG height=202 
+src="Understanding Decorators in Eclipse_files/ImageDecorationWithoutImageCaching.gif" 
+width=371> <BR><B><FONT size=-1>Fig. 19: Overlaying Image without Image 
+cache</FONT></B> <BR>&nbsp; 
+<P><IMG height=200 
+src="Understanding Decorators in Eclipse_files/ImageDecorationWithImageCaching.gif" 
+width=371> <BR><B><FONT size=-1>Fig. 20: Overlay Image using Image 
+Caching</FONT></B></CENTER>
+<P>From Fig. 19 and Fig. 20, it is clear that users should be careful while 
+using image caching with non-resource files. When image caching is used, the 
+runtime class is represented by a lock icon on top of the Java icon (<IMG 
+height=13 src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24> in 
+Fig. 20) instead of a lock icon on top of the runtime class icon. Image caching 
+can't be used because there was no way to distinguish between the different Java 
+elements using the IResource object and its associated properties. To 
+distinguish between the Java elements, one has to depend on JDT core and write 
+specific adapters for Java elements. 
+<P><IMG height=13 src="Understanding Decorators in Eclipse_files/tryit.gif" 
+width=61> Change plugin.xml provided with the example plug-in such that the 
+class that implements decoration is DemoDecoratorWithImageCaching rather than 
+DemoDecorator. The DemoDecorator object instance used in the "file property 
+page" and "individual label decorations preference page" should be replaced with 
+an instance of DemoDecoratorWithImageCaching. You should be able to see 
+decoration like the one shown in Fig. 20. 
+<P>Due to the above mentioned problems, image caching, although a good technique 
+to reduce the time involved in decorating resources should not be used. 
+<BR>&nbsp; 
+<P><A name=New></A><B><FONT size=+2>What's new in Eclipse 2.1?</FONT></B> 
+<P>In Eclipse 2.0, plug-in developers had to programmatically overlay the custom 
+images on top of the base image of the objects displayed in the Eclipse views. 
+Eclipse 2.1 introduces a lightweight decorator that will handle the image 
+management issues associated with decoration. It is also possible to declare a 
+lightweight decorator that simply overlays an icon when enabled that requires no 
+implementation from the plug-in. Lightweight decorators performs decorations in 
+a background thread and hence the UI thread is not blocked when the decorations 
+are performed. 
+<P>Let's look at the configuration markup for decorators in Eclipse 2.1. 
+<BR>&nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>!ELEMENT decorator &gt;&nbsp;</TT> <BR><TT>&nbsp;&nbsp; 
+      &lt;!ATTLIST decorator&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDATA #REQUIRED&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; label&nbsp;&nbsp; CDATA 
+      #REQUIRED&nbsp;</TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+      align=center><TT>&nbsp;&nbsp;&nbsp;&nbsp; class&nbsp;&nbsp; CDATA 
+      #OPTIONAL&nbsp; // #REQUIRED if lightweight = false&nbsp;</TT> <BR><IMG 
+      height=11 src="Understanding Decorators in Eclipse_files/tag_2.gif" 
+      width=24 align=center><TT>&nbsp;&nbsp;&nbsp;&nbsp; objectClass CDATA 
+      #REQUIRED&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      //deprecated. Make this part of the enablement&nbsp;</TT> <BR><IMG 
+      height=13 src="Understanding Decorators in Eclipse_files/tag_3.gif" 
+      width=24 align=center><TT>&nbsp;&nbsp;&nbsp;&nbsp; icon&nbsp;&nbsp;&nbsp; 
+      CDATA #OPTIONAL // required if there is no class&nbsp;</TT> <BR><IMG 
+      height=13 src="Understanding Decorators in Eclipse_files/tag_4.gif" 
+      width=24><TT>&nbsp;&nbsp;&nbsp;&nbsp; location ("TOP_LEFT" | "TOP_RIGHT" | 
+      "BOTTOM_LEFT" | "BOTTOM_RIGHT"|&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      "UNDERLAY") #OPTIONAL&nbsp;</TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_5.gif" 
+      width=24><TT>&nbsp;&nbsp;&nbsp;&nbsp; lightweight&nbsp; (true | false) 
+      #IMPLIED&nbsp;</TT> <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      adaptable&nbsp;&nbsp;&nbsp; (true | false) #IMPLIED&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      state&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (true | false) 
+      #IMPLIED&nbsp;</TT> <BR><TT>&nbsp;&nbsp; &gt;&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp; &lt;!ELEMENT description (#PCDATA)&gt;&nbsp;</TT> 
+      <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_6.gif" width=24><TT> 
+      &lt;!ELEMENT enablement (#PCDATA)&gt;&nbsp;</TT></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 21: Configuration Markup for decorators in Eclipse 
+2.1</FONT></B></CENTER>
+<P>As you can see from Fig. 21, there are quite a few changes in the 
+configuration markup for decorators in Eclipse 2.1. The class which was a 
+required field in Eclipse 2.0 is an optional field in Eclipse 2.1(<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24 
+align=center>). The class attribute represents a fully qualified name of a class 
+which implements org.eclipse.jface.viewers.ILabelDecorator if lightweight is 
+false or org.eclipse.jface.viewers.ILightweightLabelDecorator if lightweight is 
+true. The default value is false. If there is no class element it is assumed to 
+be true. The objectClass attribute is deprecated in Eclipse 2.1 and is part of 
+the enablement element (<IMG height=11 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24 
+align=center>). The icon attribute is a new attribute in Eclipse 2.1 and it 
+represents the path to the overlay image to apply if the decorator is 
+lightweight (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24 
+align=center>). Location attribute represents the location to apply the 
+decorator if the decorator is lightweight (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_4.gif" width=24>). The 
+default value of location is BOTTOM_RIGHT. Lightweight attribute can be used to 
+signify whether the decorator is lightweight or not (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_5.gif" width=24>). Enablement 
+sub-elements represent the actionExpression used to determine enabled state 
+(<IMG height=13 src="Understanding Decorators in Eclipse_files/tag_6.gif" 
+width=24>). 
+<P>Let's look at an example to understand lightweight decorators. &nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><TT>&lt;extension point="org.eclipse.ui.decorators"&gt;&nbsp;</TT> 
+      <BR><TT>&nbsp; &lt;decorator</TT> <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; 
+      id="com.ibm.DemoLightweightDecorator"&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; 
+      label="DemoLightweightDecorator"&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; state="false"&nbsp;</TT> <BR><IMG 
+      height=13 src="Understanding Decorators in Eclipse_files/tag_1.gif" 
+      width=24><TT>&nbsp; class="com.ibm.Demo.LightweightDecorator"&nbsp;</TT> 
+      <BR><IMG height=11 
+      src="Understanding Decorators in Eclipse_files/tag_2.gif" 
+      width=24><TT>&nbsp; lightweight="true"&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; location="TOP_LEFT"</TT> 
+      <P><TT>&nbsp;&nbsp;&nbsp;&nbsp; &lt;enablement&gt;</TT> <BR><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_3.gif" 
+      width=24><TT>&nbsp;&nbsp;&nbsp;&nbsp; 
+      &lt;objectClass="org.eclipse.core.resources.IResource"/&gt;&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; &lt;/enablement&gt;&nbsp;</TT> 
+      <BR><TT>&nbsp; &lt;/decorator&nbsp;</TT></P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 22: Decorator Extension using Lightweight 
+Decorator</FONT></B></CENTER>
+<P>Since the lightweight attribute has a true value (<IMG height=11 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24>), the class 
+com.ibm.Demo.LightweightDecorator (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24>) should 
+implement org.eclipse.jface.viewers.ILightweightLabelDecorator. The class 
+com.ibm.Demo.LightweightDecorator should provide the text decoration labels and 
+the image descriptor and need not be concerned with the resource handling. 
+Another advantage of using Lightweight decorators is that the decoration work is 
+done in a background thread. 
+<P>Let's look at the ILightweightLabelDecorator interface to see how easy 
+decorations can be performed in Eclipse 2.1. &nbsp; 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><B><TT>org.eclipse.jface.viewers.ILightweightLabelDecorator 
+      interface:</TT></B> <BR><TT>The ILightweightLabelDecorator is a decorator 
+      that decorates using a prefix, suffix and overlay image rather than doing 
+      all of the image and text management itself like an 
+      ILabelDecorator.&nbsp;</TT> 
+      <P><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24><TT> 
+      void <B>decorate</B>(Object element, IDecoration decoration)&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; calculates decorations 
+      based on element.</TT></P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 23: ILightweightLabelDecorator 
+interface</FONT></B></CENTER>
+<P>From Fig. 23, it is clear that plug-in developers should implement decorate() 
+method (<IMG height=13 src="Understanding Decorators in Eclipse_files/tag_1.gif" 
+width=24>) to perform both text and image decorations. This is a big difference 
+from Eclipse 2.0 where plug-in developers had to implement decorateText() for 
+performing text decorations and decorateImage() method for performing image 
+decorations. One added advantage of the Eclipse 2.1 lightweight decorator 
+mechanism is that plug-in developers need not be concerned with resource 
+handling and need only to provide the text and image descriptors. When a plug-in 
+developer tries to redecorate a resource by firing a LabelProviderChanged event, 
+Eclipse calls the decorate() method for the object. The plug-in developers 
+should appropriately set the overlay image descriptors, prefix label and the 
+suffix label using the IDecoration object instance. 
+<TABLE cols=1 width="100%" bgColor=#cccccc border=1>
+  <TBODY>
+  <TR>
+    <TD><B><TT>org.eclipse.jface.viewers.IDecoration interface:&nbsp;</TT></B> 
+      <BR><TT>Defines the result of decorating an element. This interface is not 
+      meant to be implemented and will be provided to instances of 
+      ILightweightLabelDecorator.&nbsp;</TT> 
+      <P><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24><TT> 
+      void <B>addOverlay </B>(ImageDescriptor overlay)</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Adds an overlay to the 
+      element's image.&nbsp;</TT> 
+      <P><IMG height=11 
+      src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24><TT> 
+      void <B>addPrefix </B>(String prefix)&nbsp;</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Adds a 
+      prefix to the element's label.&nbsp;</TT> 
+      <P><IMG height=13 
+      src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24><TT> 
+      void <B>addSuffix</B> (String suffix)</TT> 
+      <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Adds a 
+      suffix to the element's label.&nbsp;</TT></P></TD></TR></TBODY></TABLE>
+<CENTER><B><FONT size=-1>Fig. 24: IDecoration interface</FONT></B> </CENTER>
+<P>For the Example Plug-in, the lock image descriptor (to signify the busy state 
+of a resource) can be set using the addOverlay() method (<IMG height=13 
+src="Understanding Decorators in Eclipse_files/tag_1.gif" width=24>). The prefix 
+and suffix labels for an object element can be set using the addPrefix() and 
+addSuffix() methods (<IMG height=11 
+src="Understanding Decorators in Eclipse_files/tag_2.gif" width=24><IMG 
+height=13 src="Understanding Decorators in Eclipse_files/tag_3.gif" width=24>). 
+<P>If a plug-in requires a developer to provide only image decoration and no 
+text decorations, then the plug-in developer could make use of a declarative 
+LightweightDecorator. This means that plug-in developer need not provide a class 
+to implement ILightweightLabelDecorator but instead provide the path for the 
+icon image and location where the icon needs to be placed (TOP_LEFT | 
+BOTTOM_LEFT | TOP_RIGHT | BOTTOM_RIGHT | UNDERLAY). Eclipse LightweightDecorator 
+mechanism takes care of resource handling and image decoration. 
+<P>As we have seen, the new LightweightDecorator mechanism is quite powerful and 
+makes it easy for developers to decorate resources. The source code for the 
+Example Plug-in implemented using lightweight decorators (Eclipse M4 stable 
+version) is provided below. 
+<H2>Source Code</H2>The example plug-in uses most of the best practice 
+approaches that should be followed while decorating a resource. Some of the 
+classes are as follows: 
+<UL>
+  <LI>DemoDecorator - Decorates the label and image icon of the resources. 
+  <LI>DemoImages - Maintains the image descriptors of the custom decorator image 
+  icons. 
+  <LI>DemoStore - Stores user decoration preferences. 
+  <LI>DemoImageRegistry - Accesses the image registry to get the images from 
+  registry. 
+  <LI>DemoLabelDecoratorPreferencePage - Individual label decoration preference 
+  page provided by DecoratorDemo plug-in. 
+  <LI>DemoFilePropertyPage - Custom file property page. 
+  <LI>OverlayImageIcon - Class to overlay images. </LI></UL>To run the example or 
+view the source code for this article, unzip <A 
+href="http://www.eclipse.org/articles/Article-Decorators/sourceOfDecoratorPlugin.zip">sourceCodeOfDecoratorPlugin.zip</A> 
+into your <I>plug-ins/ </I>subdirectory. To run view the source code for the 
+Example plug-in using lightweight decorators, unzip <A 
+href="http://www.eclipse.org/articles/Article-Decorators/sourceOfLightweightDecorator.zip">sourceCodeOfDecoratorPluginUsingLightweightDecorators.zip</A> 
+into your plug-ins/ subdirectory. 
+<H2>Summary</H2>Decorators are visual cues that convey useful state information 
+associated with objects or resources displayed in Eclipse views. Eclipse 
+provides ways for users to change the image and label decorators.&nbsp; The 
+performance of the Eclipse UI can be affected by the efficiency with which 
+decorations are performed. The best practice approaches mentioned in this 
+article can be used to reduce the time involved in decoration. An old saying, 
+"<I>Pictures are worth 1000 words - but only if you know the words</I>" aptly 
+describes the use of decorators. 
+<P><B><FONT color=#000000><FONT size=+2>Acknowledgements</FONT></FONT></B> 
+<P>The author would like to thank Jan J. Kratky, Patrick McCarthy, Tod Creasey, 
+and Nick Edgar (all at IBM) for providing constructive comments on the 
+article.</P>
+<P><SMALL>Java and all Java-based trademarks and logos are trademarks or 
+registered trademarks of Sun Microsystems, Inc. in the United States, other 
+countries, or both.</SMALL></P></LI></BODY></HTML>

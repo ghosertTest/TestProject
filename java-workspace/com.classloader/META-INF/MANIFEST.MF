@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Classloader Plug-in
+Bundle-SymbolicName: com.classloader
+Bundle-Version: 1.0.0
+Bundle-Activator: com.classloader.ClassloaderPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-AutoStart: true
+Export-Package: com.classloader

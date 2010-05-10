@@ -1,0 +1,392 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;4.&nbsp;Classes persistantes</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="session-configuration.html" title="Chapitre&nbsp;3.&nbsp;Configuration"><link rel="next" href="mapping.html" title="Chapitre&nbsp;5.&nbsp;Mapping O/R basique"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;4.&nbsp;Classes persistantes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="session-configuration.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="mapping.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="persistent-classes"></a>Chapitre&nbsp;4.&nbsp;Classes persistantes</h2></div></div><div></div></div><p>
+        Les classes persistantes sont les classes d'une application qui impl&eacute;mentent
+        les entit&eacute;s d'un probl&egrave;me m&eacute;tier (ex. Client et Commande dans une application
+        de commerce &eacute;lectronique).
+        Toutes les instances d'une classe persistante ne sont pas forc&eacute;ment 
+        dans l'&eacute;tat persistant - au lieu de cela, une instance peut &ecirc;tre &eacute;ph&eacute;m&egrave;re (NdT : transient) ou d&eacute;tach&eacute;e.
+    </p><p>
+        Hibernate fonctionne de mani&egrave;re optimale lorsque ces classes suivent quelques r&egrave;gles
+        simples, aussi connues comme le mod&egrave;le de programmation Plain Old Java Object
+        (POJO). Cependant, aucune de ces r&egrave;gles ne sont des besoins absolus. En effet, Hibernate3 suppose tr&egrave;s peu de choses &agrave; propos
+        de la nature de vos objets persistants. Vous pouvez exprimer un mod&egrave;le de domaine par d'autres moyens : utiliser des arbres
+        d'instances de <tt class="literal">Map</tt>, par exemple.
+    </p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="persistent-classes-pojo"></a>4.1.&nbsp;Un exemple simple de POJO</h2></div></div><div></div></div><p>
+            Toute bonne application Java n&eacute;cessite une classe persistante
+            repr&eacute;sentant les f&eacute;lins.
+        </p><pre class="programlisting">package eg;
+import java.util.Set;
+import java.util.Date;
+
+public class Cat {
+    private Long id; // identifier
+
+    private Date birthdate;
+    private Color color;
+    private char sex;
+    private float weight;
+    private int litterId;
+
+    private Cat mother;
+    private Set kittens = new HashSet();
+
+    private void setId(Long id) {
+        this.id=id;
+    }
+    public Long getId() {
+        return id;
+    }
+
+    void setBirthdate(Date date) {
+        birthdate = date;
+    }
+    public Date getBirthdate() {
+        return birthdate;
+    }
+
+    void setWeight(float weight) {
+        this.weight = weight;
+    }
+    public float getWeight() {
+        return weight;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+    void setColor(Color color) {
+        this.color = color;
+    }
+
+    void setSex(char sex) {
+        this.sex=sex;
+    }
+    public char getSex() {
+        return sex;
+    }
+
+    void setLitterId(int id) {
+        this.litterId = id;
+    }
+    public int getLitterId() {
+        return litterId;
+    }
+
+    void setMother(Cat mother) {
+        this.mother = mother;
+    }
+    public Cat getMother() {
+        return mother;
+    }
+    void setKittens(Set kittens) {
+        this.kittens = kittens;
+    }
+    public Set getKittens() {
+        return kittens;
+    }
+
+    // addKitten not needed by Hibernate
+    public void addKitten(Cat kitten) {
+        kitten.setMother(this);
+    kitten.setLitterId( kittens.size() );
+        kittens.add(kitten);
+    }
+}</pre><p>
+            Il y a quatre r&egrave;gles &agrave; suivre ici :
+        </p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="persistent-classes-pojo-constructor"></a>4.1.1.&nbsp;Impl&eacute;menter un constructeur sans argument</h3></div></div><div></div></div><p>
+                <tt class="literal">Cat</tt> a un constructeur sans argument. Toutes les classes persistantes doivent avoir un
+                constructeur par d&eacute;faut (lequel peut ne pas &ecirc;tre public) pour qu'Hibernate puissent les instancier en utilisant
+                <tt class="literal">Constructor.newInstance()</tt>. Nous recommandons fortement d'avoir un constructeur par d&eacute;faut avec 
+                au moins une visibilit&eacute; <span class="emphasis"><em>paquet</em></span> pour la g&eacute;n&eacute;ration du proxy &agrave; l'ex&eacute;cution dans Hibernate.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="persistent-classes-pojo-identifier"></a>4.1.2.&nbsp;Fournir une propri&eacute;t&eacute; d'indentifiant (optionnel)</h3></div></div><div></div></div><p>
+                <tt class="literal">Cat</tt> poss&egrave;de une propri&eacute;t&eacute; appel&eacute;e <tt class="literal">id</tt>.
+                Cette propri&eacute;t&eacute; mappe la valeur de la colonne de cl&eacute; primaire de la table
+                d'une base de donn&eacute;es.La propri&eacute;t&eacute; aurait pu s'appeler compl&egrave;tement autrement,
+                et son type aurait pu &ecirc;tre n'importe quel type primitif, n'importe quel "encapsuleur"
+                de type primitif, <tt class="literal">java.lang.String</tt> ou <tt class="literal">java.util.Date</tt>.
+                (Si votre base de donn&eacute;es h&eacute;rit&eacute;e poss&egrave;de des cl&eacute;s composites, elles peuvent &ecirc;tre mapp&eacute;es
+                en utilisant une classe d&eacute;finie par l'utilisateur et poss&eacute;dant les propri&eacute;t&eacute;s associ&eacute;es aux
+                types de la cl&eacute; composite - voir la section concernant les identifiants composites plus tard).
+            </p><p>
+                La propri&eacute;t&eacute; d'identifiant est strictement optionnelle. Vous pouver l'oublier et laisser Hibernate
+                s'occuper des identifiants de l'objet en interne. Toutefois, nous ne le recommandons pas.
+            </p><p>
+                En fait, quelques fonctionnalit&eacute;s ne sont disponibles que pour les classes
+                d&eacute;clarant un identifiant de propri&eacute;t&eacute; :
+            </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                        Les r&eacute;attachements transitifs pour les objets d&eacute;tach&eacute;s (mise &agrave; jour en cascade ou fusion en cascade) - 
+                        voir <a href="objectstate.html#objectstate-transitive" title="10.11.&nbsp;Persistance transitive">Section&nbsp;10.11, &laquo;&nbsp;Persistance transitive&nbsp;&raquo;</a>
+                    </p></li><li><p>
+                        <tt class="literal">Session.saveOrUpdate()</tt>
+                    </p></li><li><p>
+                        <tt class="literal">Session.merge()</tt>
+                    </p></li></ul></div><p>
+                Nous recommandons que vous d&eacute;clariez les propri&eacute;t&eacute;s d'identifiant de mani&egrave;re
+                uniforme. Nous recommandons &eacute;galement que vous utilisiez un type nullable
+                (ie. non primitif).
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="persistent-classes-pojo-final"></a>4.1.3.&nbsp;Favoriser les classes non finales (optionnel)</h3></div></div><div></div></div><p>
+                Une fonctionnalit&eacute; clef d'Hibernate, les <span class="emphasis"><em>proxies</em></span>, n&eacute;cessitent
+                que la classe persistente soit non finale ou qu'elle soit l'impl&eacute;mentation d'une
+                interface qui d&eacute;clare toutes les m&eacute;thodes publiques.
+            </p><p>
+                Vous pouvez persister, gr&acirc;ce &agrave; Hibernate, les classes <tt class="literal">final</tt>
+                qui n'impl&eacute;mentent pas d'interface, mais vous ne pourrez pas utiliser les proxies pour les chargements d'associations paresseuses
+                - ce qui limitera vos possibilit&eacute;s d'ajustement des performances.
+            </p><p>
+                Vous devriez aussi &eacute;viter de d&eacute;clarer des m&eacute;thodes <tt class="literal">public final</tt> sur des classes
+                non-finales. Si vous voulez utiliser une classe avec une m&eacute;thode <tt class="literal">public final</tt>, vous devez
+                explicitement d&eacute;sactiver les proxies en param&eacute;trant
+                <tt class="literal">lazy="false"</tt>.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="persistent-classes-pojo-accessors"></a>4.1.4.&nbsp;D&eacute;clarer les accesseurs et mutateurs des attributs persistants (optionnel)</h3></div></div><div></div></div><p>
+                <tt class="literal">Cat</tt> d&eacute;clare des mutateurs pour toutes ses champs persistants. Beaucoup d'autres
+                solutions de mapping Objet/relationnel persistent directement les variables d'instance. Nous pensons
+                qu'il est bien mieux de fournir une indirection entre le sch&eacute;ma relationnel et les structures de donn&eacute;es internes de la classe.
+                Par d&eacute;faut, Hibernate persiste les propri&eacute;t&eacute;s suivant le style JavaBean, et reconna&icirc;t les noms de m&eacute;thodes de la forme <tt class="literal">
+                getFoo</tt>, <tt class="literal">isFoo</tt> et
+                <tt class="literal">setFoo</tt>. Nous pouvons changer pour un acc&egrave;s direct aux champs pour des propri&eacute;t&eacute;s particuli&egrave;res, si besoin est.
+            </p><p>
+                Les propri&eacute;t&eacute;s <span class="emphasis"><em>n'ont pas</em></span> &agrave; &ecirc;tre d&eacute;clar&eacute;es publiques -
+                Hibernate peut persister une propri&eacute;t&eacute; avec un paire de getter/setter de
+                visibilit&eacute; par d&eacute;fault, <tt class="literal">protected</tt> ou <tt class="literal">
+                private</tt>.
+            </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="persistent-classes-inheritance"></a>4.2.&nbsp;Impl&eacute;menter l'h&eacute;ritage</h2></div></div><div></div></div><p>
+            Une sous-classe doit &eacute;galement suivre la premi&egrave;re et la seconde r&egrave;gle.
+            Elle h&eacute;rite sa propri&eacute;t&eacute; d'identifiant de <tt class="literal">Cat</tt>.
+        </p><pre class="programlisting">package eg;
+
+public class DomesticCat extends Cat {
+        private String name;
+
+        public String getName() {
+                return name;
+        }
+        protected void setName(String name) {
+                this.name=name;
+        }
+}</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="persistent-classes-equalshashcode"></a>4.3.&nbsp;Impl&eacute;menter <tt class="literal">equals()</tt> et <tt class="literal">hashCode()</tt></h2></div></div><div></div></div><p>
+            Vous devez surcharger les m&eacute;thodes <tt class="literal">equals()</tt> et
+            <tt class="literal">hashCode()</tt> si vous
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                    avez l'intention de mettre des instances de classes persistantes dans un <tt class="literal">Set</tt>
+                    (la mani&egrave;re recommand&eacute;e pour repr&eacute;senter des associations pluri-valu&eacute;es)
+                    <span class="emphasis"><em>et</em></span>
+                </p></li><li><p>
+                    avez l'intention d'utiliser le r&eacute;attachement d'instances d&eacute;tach&eacute;es
+                </p></li></ul></div><p>
+            Hibernate garantit l'&eacute;quivalence de l'identit&eacute; persistante (ligne de base de donn&eacute;es) et l'identit&eacute; Java seulement
+            &agrave; l'int&eacute;rieur de la port&eacute;e d'une session particuli&egrave;re. Donc d&egrave;s que nous m&eacute;langeons des instances venant de diff&eacute;rentes
+            sessions, nous devons impl&eacute;menter <tt class="literal">equals()</tt> et
+            <tt class="literal">hashCode()</tt> si nous souhaitons avoir une s&eacute;mantique correcte pour les <tt class="literal">Set</tt>s.
+        </p><p>
+            La mani&egrave;re la plus &eacute;vidente est d'impl&eacute;menter <tt class="literal">equals()</tt>/<tt class="literal">hashCode()</tt>
+            en comparant la valeur de l'identifiant des deux objets. Si cette valeur est identique, les deux
+            doivent repr&eacute;senter la m&ecirc;me ligne de base de donn&eacute;es, ils sont donc &eacute;gaux (si les deux sont
+            ajout&eacute;s &agrave; un <tt class="literal">Set</tt>, nous n'aurons qu'un seul &eacute;l&eacute;ment dans le
+            <tt class="literal">Set</tt>). Malheureusement, nous ne pouvons pas utiliser cette approche avec 
+            des identifiants g&eacute;n&eacute;r&eacute;s ! Hibernate n'assignera de
+            valeur d'identifiant qu'aux objets qui sont persistants, une instance nouvellement cr&eacute;&eacute;e n'aura
+            donc pas de valeur d'identifiant ! De plus, si une instance est non sauvegard&eacute;e et actuellement dans un <tt class="literal">Set</tt>,
+            le sauvegarder assignera une valeur d'identifiant &agrave; l'objet. Si <tt class="literal">equals()</tt> et <tt class="literal">hashCode()</tt>
+            sont bas&eacute;es sur la valeur de l'identifiant, le code de hachage devrait changer, rompant le contrat du <tt class="literal">Set</tt>. 
+            Regardez sur le site web d'Hibernate pour une discussion compl&egrave;te de ce probl&egrave;me. 
+            Notez que ceci n'est pas un probl&egrave;me d'Hibernate, mais la s&eacute;mantique normale de Java pour l'identit&eacute; d'un objet et l'&eacute;galit&eacute;.
+        </p><p>
+            Nous recommandons donc d'impl&eacute;menter
+            <tt class="literal">equals()</tt> et <tt class="literal">hashCode()</tt> en utilisant <span class="emphasis"><em>
+            l'&eacute;galit&eacute; par cl&eacute; m&eacute;tier</em></span>.L'&eacute;galit&eacute; par cl&eacute; m&eacute;tier signifie que la m&eacute;thode <tt class="literal">equals()</tt>
+            compare uniquement les propri&eacute;t&eacute;s qui forment une cl&eacute; m&eacute;tier, une cl&eacute; qui
+            identifierait notre instance dans le monde r&eacute;el (une cl&eacute; candidate
+            <span class="emphasis"><em>naturelle</em></span>) :
+        </p><pre class="programlisting">public class Cat {
+
+    ...
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if ( !(other instanceof Cat) ) return false;
+
+        final Cat cat = (Cat) other;
+
+        if ( !cat.getLitterId().equals( getLitterId() ) ) return false;
+        if ( !cat.getMother().equals( getMother() ) ) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = getMother().hashCode();
+        result = 29 * result + getLitterId();
+        return result;
+    }
+
+}</pre><p>
+            Notez qu'une clef m&eacute;tier ne doit pas &ecirc;tre solide comme une clef primaire de base de donn&eacute;es 
+            (voir <a href="transactions.html#transactions-basics-identity" title="11.1.3.&nbsp;L'identit&eacute; des objets">Section&nbsp;11.1.3, &laquo;&nbsp;L'identit&eacute; des objets&nbsp;&raquo;</a>). Les propri&eacute;t&eacute;s
+            immuables ou uniques sont g&eacute;n&eacute;ralement de bonnes candidates pour une clef m&eacute;tier.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="persistent-classes-dynamicmodels"></a>4.4.&nbsp;Mod&egrave;les dynamiques</h2></div></div><div></div></div><p>
+            <span class="emphasis"><em>Notez que la fonctionnalit&eacute;s suivantes sont actuellement consid&eacute;r&eacute;es
+            comme exp&eacute;rimentales et peuvent changer dans un futur proche.</em></span>
+        </p><p>
+            Les entit&eacute;s persistantes ne doivent pas n&eacute;cessairement &ecirc;tre repr&eacute;sent&eacute;es comme
+            des classes POJO ou des objets JavaBean &agrave; l'ex&eacute;cution. Hibernate supporte aussi les
+            mod&egrave;les dynamiques (en utilisant des <tt class="literal">Map</tt>s de <tt class="literal">Map</tt>s
+            &agrave; l'ex&eacute;cution) et la repr&eacute;sentation des entit&eacute;s comme des arbres DOM4J. Avec cette
+            approche, vous n'&eacute;crivez pas de classes persistantes, seulement des fichiers de mapping.
+        </p><p>
+            Par d&eacute;faut, Hibernate fonctionne en mode POJO normal. Vous pouvez param&eacute;trer
+            un mode de repr&eacute;sentation d'entit&eacute; par d&eacute;faut pour une <tt class="literal">SessionFactory</tt>
+            particuli&egrave;re en utilisant l'option de configuration <tt class="literal">default_entity_mode</tt>
+            (voir <a href="session-configuration.html#configuration-optional-properties" title="Tableau&nbsp;3.3.&nbsp;Propri&eacute;t&eacute;s de configuration d'Hibernate">Tableau&nbsp;3.3, &laquo;&nbsp;Propri&eacute;t&eacute;s de configuration d'Hibernate&nbsp;&raquo;</a>).
+        </p><p>
+            Les exemples suivants d&eacute;montrent la repr&eacute;sentation utilisant des <tt class="literal">Map</tt>s.
+            D'abord, dans le fichier de mapping, un <tt class="literal">entity-name</tt> doit &ecirc;tre d&eacute;clar&eacute;
+            au lieu (ou en plus) d'un nom de classe :
+        </p><pre class="programlisting">&lt;hibernate-mapping&gt;
+
+    &lt;class entity-name="Customer"&gt;
+
+        &lt;id name="id"
+            type="long"
+            column="ID"&gt;
+            &lt;generator class="sequence"/&gt;
+        &lt;/id&gt;
+
+        &lt;property name="name"
+            column="NAME"
+            type="string"/&gt;
+
+        &lt;property name="address"
+            column="ADDRESS"
+            type="string"/&gt;
+
+        &lt;many-to-one name="organization"
+            column="ORGANIZATION_ID"
+            class="Organization"/&gt;
+
+        &lt;bag name="orders"
+            inverse="true"
+            lazy="false"
+            cascade="all"&gt;
+            &lt;key column="CUSTOMER_ID"/&gt;
+            &lt;one-to-many class="Order"/&gt;
+        &lt;/bag&gt;
+
+    &lt;/class&gt;
+
+&lt;/hibernate-mapping&gt;</pre><p>
+            Notez que m&ecirc;me si des associations sont d&eacute;clar&eacute;es en utilisant des noms de classe cible,
+            le type de cible d'une association peut aussi &ecirc;tre une entit&eacute; dynamique au lieu d'un POJO.
+        </p><p>
+            Apr&egrave;s avoir configur&eacute; le mode d'entit&eacute; par d&eacute;faut &agrave; <tt class="literal">dynamic-map</tt>
+            pour la <tt class="literal">SessionFactory</tt>, nous pouvons lors de l'ex&eacute;cution fonctionner
+            avec des <tt class="literal">Map</tt>s de <tt class="literal">Map</tt>s :
+        </p><pre class="programlisting">Session s = openSession();
+Transaction tx = s.beginTransaction();
+Session s = openSession();
+
+// Create a customer
+Map david = new HashMap();
+david.put("name", "David");
+
+// Create an organization
+Map foobar = new HashMap();
+foobar.put("name", "Foobar Inc.");
+
+// Link both
+david.put("organization", foobar);
+
+// Save both
+s.save("Customer", david);
+s.save("Organization", foobar);
+
+tx.commit();
+s.close();</pre><p>
+            Les avantages d'un mapping dynamique sont un gain de temps pour le prototypage
+            sans la n&eacute;cessit&eacute; d'impl&eacute;menter les classes d'entit&eacute;. Pourtant, vous perdez la
+            v&eacute;rification du typage au moment de la compilation et aurez plus d'exceptions &agrave;
+            g&eacute;rer lors de l'ex&eacute;cution. Gr&acirc;ce au mapping d'Hibernate, le sch&eacute;ma de la base de
+            donn&eacute;es peut facilement &ecirc;tre normalis&eacute; et solidifi&eacute;, permettant de rajouter une
+            impl&eacute;mentation propre du mod&egrave;le de domaine plus tard.
+        </p><p>
+            Les modes de repr&eacute;sentation d'une entit&eacute; peut aussi &ecirc;tre configur&eacute; par <tt class="literal">Session</tt> :
+        </p><pre class="programlisting">Session dynamicSession = pojoSession.getSession(EntityMode.MAP);
+
+// Create a customer
+Map david = new HashMap();
+david.put("name", "David");
+dynamicSession.save("Customer", david);
+...
+dynamicSession.flush();
+dynamicSession.close()
+...
+// Continue on pojoSession
+</pre><p>
+            Veuillez noter que l'appel &agrave; <tt class="literal">getSession()</tt> en utilisant un
+            <tt class="literal">EntityMode</tt> se fait sur l'API <tt class="literal">Session</tt>, pas
+            <tt class="literal">SessionFactory</tt>. De cette mani&egrave;re, la nouvelle <tt class="literal">Session</tt>
+            partage les connexions JDBC, transactions et autres informations de contexte sous-jacentes.
+            Cela signifie que vous n'avez pas &agrave; appeler <tt class="literal">flush()</tt> et <tt class="literal">close()</tt>
+            sur la <tt class="literal">Session</tt> secondaire, et laissez aussi la gestion de la transaction
+            et de la connexion &agrave; l'unit&eacute; de travail primaire.
+        </p><p>
+            Plus d'informations &agrave; propos de la repr&eacute;sentation XML peuvent &ecirc;tre trouv&eacute;es dans
+            <a href="xml.html" title="Chapitre&nbsp;18.&nbsp;Mapping XML">Chapitre&nbsp;18, <i>Mapping XML</i></a>.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="persistent-classes-tuplizers"></a>4.5.&nbsp;Tuplizers</h2></div></div><div></div></div><p>
+            <tt class="literal">org.hibernate.tuple.Tuplizer</tt>, et ses sous-interfaces, sont responsables
+            de la gestion d'une repr&eacute;sentation particuli&egrave;re d'un morceau de donn&eacute;es, en fonction du
+            <tt class="literal">org.hibernate.EntityMode</tt> de r&eacute;pr&eacute;sentation. Si un morceau donn&eacute; de donn&eacute;es
+            est pens&eacute; comme une structure de donn&eacute;es, alors un tuplizer est la chose qui sait comment
+            cr&eacute;er une telle structure de donn&eacute;es, comment extraire des valeurs et injecter des valeurs dans
+            une telle structure de donn&eacute;es. Par exemple, pour le mode d'entit&eacute; POJO, le tuplizer correspondant
+            sait comment cr&eacute;er le POJO &agrave; travers son constructeur et comment acc&eacute;der aux propri&eacute;t&eacute;s du POJO
+            utilisant les accesseurs de la propri&eacute;t&eacute; d&eacute;finie. Il y a deux types de Tuplizers haut niveau,
+            repr&eacute;sent&eacute; par les interfaces <tt class="literal">org.hibernate.tuple.EntityTuplizer</tt> et
+            <tt class="literal">org.hibernate.tuple.ComponentTuplizer</tt>. Les <tt class="literal">EntityTuplizer</tt>s
+            sont responsables de la gestion des contrats mentionn&eacute;s ci-dessus pour les entit&eacute;s, alors que
+            les <tt class="literal">ComponentTuplizer</tt>s s'occupent des composants.
+        </p><p>
+            Les utilisateurs peuvent aussi brancher leurs propres tuplizers. Peut-&ecirc;tre vous est-il n&eacute;cessaire qu'une
+            impl&eacute;mentation de <tt class="literal">java.util.Map</tt> autre que <tt class="literal">java.util.HashMap</tt>
+            soit utilis&eacute;e dans le mode d'entit&eacute; dynamic-map ; ou peut-&ecirc;tre avez-vous besoin de d&eacute;finir une
+            stat&eacute;gie de g&eacute;n&eacute;ration de proxy diff&eacute;rente de celle utilis&eacute;e par d&eacute;faut. Les deux devraient &ecirc;tre
+            effectu&eacute;es en d&eacute;finissant une impl&eacute;mentation de tuplizer utilisateur. Les d&eacute;finitions de tuplizers
+            sont attach&eacute;es au mapping de l'entit&eacute; ou du composant qu'ils sont cens&eacute;s g&eacute;rer. Retour &agrave; l'exemple de
+            notre entit&eacute; utilisateur :
+        </p><pre class="programlisting">&lt;hibernate-mapping&gt;
+    &lt;class entity-name="Customer"&gt;
+        &lt;!--
+            Override the dynamic-map entity-mode
+            tuplizer for the customer entity
+        --&gt;
+        &lt;tuplizer entity-mode="dynamic-map"
+                class="CustomMapTuplizerImpl"/&gt;
+
+        &lt;id name="id" type="long" column="ID"&gt;
+            &lt;generator class="sequence"/&gt;
+        &lt;/id&gt;
+
+        &lt;!-- other properties --&gt;
+        ...
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;
+
+
+public class CustomMapTuplizerImpl
+        extends org.hibernate.tuple.DynamicMapEntityTuplizer {
+    // override the buildInstantiator() method to plug in our custom map...
+    protected final Instantiator buildInstantiator(
+            org.hibernate.mapping.PersistentClass mappingInfo) {
+        return new CustomMapInstantiator( mappingInfo );
+    }
+
+    private static final class CustomMapInstantiator
+            extends org.hibernate.tuple.DynamicMapInstantitor {
+        // override the generateMap() method to return our custom map...
+        protected final Map generateMap() {
+            return new CustomMap();
+        }
+    }
+}</pre></div><p>
+        TODO: Document user-extension framework in the property and proxy packages
+    </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="session-configuration.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="mapping.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;3.&nbsp;Configuration&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;5.&nbsp;Mapping O/R basique</td></tr></table></div></body></html>

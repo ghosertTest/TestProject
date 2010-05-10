@@ -1,0 +1,39 @@
+public class MySashForm extends SashForm
+{
+    public MySashForm( Composite parent )
+    {
+        super( parent, SWT.NONE );
+        
+        SashForm sf = new SashForm( this, SWT.VERTICAL );
+        sf.setSize( 120, 80 );
+        
+        Button button1 = new Button( sf, SWT.ARROW | SWT.UP );
+        button1.setSize( 120, 40 );
+        Button button2 = new Button( sf, SWT.ARROW | SWT.DOWN );
+        button2.setBounds( 0, 40, 120, 40 );
+        
+    }
+}
+
+// above is right
+
+public class MySashForm extends Composite
+{
+    public MySashForm( Composite parent )
+    {
+        super( parent, SWT.NONE );
+        
+        SashForm sf = new SashForm( this, SWT.VERTICAL );
+        sf.setSize( 120, 80 );
+        
+        Button button1 = new Button( sf, SWT.ARROW | SWT.UP );
+        button1.setSize( 120, 40 );
+        Button button2 = new Button( sf, SWT.ARROW | SWT.DOWN );
+        button2.setBounds( 0, 40, 120, 40 );
+        
+    }
+}
+
+// above is wrong, why?
+
+// sovled! move the statement "sf.setSize( 120, 80 );" to the last line.

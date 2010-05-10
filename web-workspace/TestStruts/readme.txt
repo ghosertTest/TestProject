@@ -1,0 +1,1 @@
+Please compare TestStruts.xml with the same file located at TOMCAT_HOME\conf\catalina\localhost\ and sure they are the same and copy this xml file to TOMCAT_HOME\conf\catalina\localhost\ for running the web app with Tomcat

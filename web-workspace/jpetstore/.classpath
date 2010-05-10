@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/axis.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/burlap-2.1.12.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-beanutils.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-collections.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-dbcp.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-digester.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-discovery.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-pool.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-validator.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/hessian-2.1.12.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/hsqldb.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/ibatis-common-2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/ibatis-sqlmap-2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jpetstore.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jstl.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/saaj.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/spring.jar" sourcepath="E:/Project/Eclipse/TestWorkspace/spring-framework-1.2.6/src"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/standard.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/struts.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/wsdl4j.jar"/>
+	<classpathentry kind="lib" path="lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>

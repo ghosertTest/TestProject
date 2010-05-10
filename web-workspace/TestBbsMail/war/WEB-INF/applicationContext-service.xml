@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Root application context for the Countries application.
+  - Web-specific beans are defined in "countries-servlet.xml".
+  -->
+<beans>
+
+    <bean id="txProxyTemplate" abstract="true"
+        class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="save*">PROPAGATION_REQUIRED</prop>
+                <prop key="remove*">PROPAGATION_REQUIRED</prop>
+                <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="manager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="com.loadtrend.bbs.service.impl.BaseManager">
+                <property name="DAO" ref="dao"/>
+            </bean>
+        </property>
+    </bean>
+    
+	<bean id="noteManager" parent="txProxyTemplate" >
+        <property name="target">
+            <bean class="com.loadtrend.bbs.service.impl.NoteManagerImpl">
+                <property name="noteDAO" ref="noteDAO"/>
+            </bean>
+        </property>
+    </bean>
+    
+	<bean id="replyNoteManager" parent="txProxyTemplate" >
+        <property name="target">
+            <bean class="com.loadtrend.bbs.service.impl.ReplyNoteManagerImpl">
+                <property name="replyNoteDAO" ref="replyNoteDAO"/>
+            </bean>
+        </property>
+    </bean>
+    
+	<bean id="postMailInfo" class="com.loadtrend.bbs.util.PostMailInfo" >
+	    <property name="hostName" value="smtp.163.com"/>
+	    <property name="username" value="ghoster_e"/>
+	    <property name="password" value="273450"/>
+	    <property name="addressList">
+	        <list>
+	            <value>ghoster_e@163.com</value>
+	        </list>
+	    </property>
+	    <property name="fromAddress" value="ghoster_e@163.com"/>
+	    <property name="mailContentEncoding" value="text/plain;charset=UTF-8"/>
+	    <property name="mailTitleEncoding" value="UTF-8"/>
+	</bean>
+	
+</beans>

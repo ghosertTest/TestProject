@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entities.Company" table="COMPANY">
+        <cache usage="read-only"/>
+        <id name="id" type="integer">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="80" />
+        </property>
+        <set name="employees" table="EMPLOYEE" cascade="none" inverse="true">
+            <key column="company_id">
+            </key>
+            <one-to-many class="entities.Employee"/>
+        </set>
+    </class>
+</hibernate-mapping>

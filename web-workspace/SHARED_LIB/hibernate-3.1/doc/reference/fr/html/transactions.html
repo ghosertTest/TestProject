@@ -1,0 +1,683 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;11.&nbsp;Transactions et acc&egrave;s concurrents</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="objectstate.html" title="Chapitre&nbsp;10.&nbsp;Travailler avec des objets"><link rel="next" href="events.html" title="Chapitre&nbsp;12.&nbsp;Les intercepteurs et les &eacute;v&eacute;nements"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;11.&nbsp;Transactions et acc&egrave;s concurrents</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="objectstate.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="events.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="transactions"></a>Chapitre&nbsp;11.&nbsp;Transactions et acc&egrave;s concurrents</h2></div></div><div></div></div><p>
+        L'un des principaux avantages du m&eacute;canisme de contr&ocirc;le des acc&egrave;s concurrents d'Hibernate est qu'il est tr&egrave;s
+        facile &agrave; comprendre. Hibernate utilise directement les connexions JDBC ainsi que les ressources JTA sans y
+        ajouter davantage de m&eacute;canisme de blocage. Nous vous recommandons de vous familiariser avec les sp&eacute;cifications
+        JDBC, ANSI et d'isolement de transaction de la base de donn&eacute;es que vous utilisez.
+    </p><p>
+        Hibernate ne v&eacute;rouille pas vos objets en m&eacute;moire. Votre application peut suivre le
+        comportement d&eacute;fini par le niveau d'isolation de vos transactions de base de donn&eacute;es.
+        Notez que gr&acirc;ce &agrave; la <tt class="literal">Session</tt>, qui est aussi un cache de scope transaction, Hibernate
+        fournit des lectures r&eacute;p&eacute;t&eacute;es pour les r&eacute;cup&eacute;ration par identifiants et les requ&ecirc;tes
+        d'entit&eacute;s (pas celle de valeurs scalaires).
+    </p><p>
+        En addition au versionning pour le controle automatique de concurrence, Hibernate fournit
+        une API (mineure) pour le verrouillage perssimiste des enregistrements, en g&eacute;n&eacute;rant
+        une syntaxe <tt class="literal">SELECT FOR UPDATE</tt>. Le controle de concurrence optimiste
+        et cette API seront d&eacute;taill&eacute;s plus tard dans ce chapitre.
+    </p><p>
+        Nous aborderons la gestion des acc&egrave;s concurrents en discutant de la granularit&eacute; des objets <tt class="literal">Configuration</tt>,
+        <tt class="literal">SessionFactory</tt>, et <tt class="literal">Session</tt>, ainsi que de certains concepts relatifs &agrave; la base de donn&eacute;es
+        et aux longues transactions applicatives.
+    </p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="transactions-basics"></a>11.1.&nbsp;Gestion de session et d&eacute;limitation de transactions</h2></div></div><div></div></div><p>Il est important de savoir qu'un objet <tt class="literal">SessionFactory</tt> est un objet complexe et optimis&eacute; pour
+            fonctionner avec les threads(thread- safe). Il est co&ucirc;teux &agrave; cr&eacute;er et est ainsi pr&eacute;vu pour n'&ecirc;tre instanci&eacute; qu?une
+            seule fois via un objet <tt class="literal">Configuration</tt> au d&eacute;marrage de l'application, 
+            et &ecirc;tre partag&eacute; par tous les threads d'une application.
+        </p><p>Un objet <tt class="literal">Session</tt> est relativement simple et n'est threadsafe. Il est &eacute;galement peu
+            co&ucirc;teux &agrave; cr&eacute;er. Il devrait n'&ecirc;tre utilis&eacute; qu'une seule fois, pour un processus d'affaire ou une unit&eacute; de
+            travail ou une conversation et ensuite &ecirc;tre rel&acirc;ch&eacute;. Un objet <tt class="literal">Session</tt> ne tentera pas 
+            d'obtenir de connexion ( <tt class="literal">Connection</tt> ) 
+            JDBC (ou de <tt class="literal">Datasource</tt> ) si ce n'est pas n&eacute;cessaire.             
+        </p><p>Afin de compl&eacute;ter ce tableau, vous devez &eacute;galement penser aux transactions de base de donn&eacute;es. Une
+            transaction de base de donn&eacute;es se doit d'&ecirc;tre la plus courte possible afin de r&eacute;duire les risques de
+            collision sur des enregistrements verrouill&eacute;s. De longues transactions &agrave; la base de donn&eacute;es nuiront &agrave;
+            l'extensibilit&eacute; de vos applications lorsque confront&eacute;es &agrave; de hauts niveaux de charge. Par cons&eacute;quent,
+            il n'est jamais bon de maintenir une transaction ouverte pendant la dur&eacute;e de reflexion de l'utilisateur,
+            jusqu'a ce que l'unit&eacute; de travail soit achev&eacute;e.
+        </p><p>Maintenant, comment d&eacute;limiter une unit&eacute; de travail? Est-ce qu'une instance de <tt class="literal">Session</tt> peut avoir une dur&eacute;e
+            de vie d&eacute;passant plusieurs transactions &agrave; la base de donn&eacute;es, ou bien est-ce que celles-ci doivent &ecirc;tre li&eacute;es une &agrave; une?
+            Quand faut-il ouvrir et fermer une <tt class="literal">Session</tt> ? Comment d&eacute;finir la d&eacute;marcation de vos transactions &agrave; la base de donn&eacute;es?
+        </p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-basics-uow"></a>11.1.1.&nbsp;Unit&eacute; de travail</h3></div></div><div></div></div><p>
+                Il est important de mentionner que d'utiliser un paradigme <span class="emphasis"><em>session-par-operation</em></span>
+                est un anti-pattern. Autrement dit: n'ouvrez et ne fermez pas la
+                <tt class="literal">Session</tt> &agrave; chacun de vos acc&egrave;s simples &agrave; la base de donn&eacute;es dans un m&ecirc;me thread! Bien s&ucirc;r, le m&ecirc;me raisonnement
+                s'applique sur la gestion des transactions &agrave; la base de donn&eacute;es. Les appels &agrave; la base de donn&eacute;es
+                devraient &ecirc;tre faits en ordre et selon une s&eacute;quence d&eacute;finie. Ils devraient &eacute;galement &ecirc;tre regroup&eacute;s en
+                des unit&eacute;s de travail atomiques. (Notez que l?utilisation d?une connexion auto-commit constitue le m&ecirc;me
+                anti-pattern. Ce mode de fonctionnement existe pour les applications &eacute;mettant des commandes SQL &agrave; partir
+                d?une console. Hibernate d&eacute;sengage le mode auto-commit et s'attend &agrave; ce qu'un serveur d'applications le
+                fasse &eacute;galement.)
+                Les transactions avec la base de donn&eacute;es ne sont jamais optionnelles, toute communication
+                avec une base de donn&eacute;es doit se d&eacute;rouler dans une transaction, peu importe si vous lisez
+                ou &eacute;crivez des donn&eacute;es. Comme &eacute;voqu&eacute;, le comportement auto-commit pour lire les
+                donn&eacute;es devrait &ecirc;tre &eacute;vit&eacute;, puisque plusieurs petites transactions ne seront jamais
+                aussi efficaces qu'une seule plus grosse clairement d&eacute;finie comme unit&eacute; de travail.
+                Ce dernier choix et en plus beaucoup plus facile a maintenir et &agrave; faire &eacute;voluer.
+            </p><p>
+                Le pattern d'utilisation le plus fr&eacute;quemment rencontr&eacute; dans des applications clients serveur
+                multi-usagers est le <span class="emphasis"><em>session-per-request</em></span>
+                (litt&eacute;ralement : Session par requ&ecirc;te). Dans ce mod&egrave;le, la requ&ecirc;te d'un client est envoy&eacute;e &agrave; un serveur
+                (O&ugrave; la couche de persistance est impl&eacute;ment&eacute;e via Hibernate), une nouvelle
+                <tt class="literal">Session</tt> est ouverte et toutes les op&eacute;rations d'acc&egrave;s &agrave; la base de donn&eacute;es sont ex&eacute;cut&eacute;es &agrave; l'int&eacute;rieur de
+                celle-ci. Lorsque le travail est termin&eacute; (et que les r&eacute;ponses &agrave; envoyer au client ont &eacute;t&eacute; pr&eacute;par&eacute;es), la
+                session est flush&eacute;e et ferm&eacute;e. Une seule transaction &agrave; la base de donn&eacute;es peut &ecirc;tre utilis&eacute;e pour r&eacute;pondre
+                &agrave; la requ&ecirc;te du client. La transaction est d&eacute;marr&eacute;e et valid&eacute;e au m&ecirc;me moment o&ugrave; la Session est ouverte 
+                et ferm&eacute;e. La relation entre la <tt class="literal">Session</tt> et la <tt class="literal">Transaction</tt> est donc one-to-one. 
+                Ce mod&egrave;le permet de r&eacute;pondre parfaitement aux attentes de la grande majorit&eacute; des
+                applications.
+            </p><p>
+                Le d&eacute;fi r&eacute;side dans l'impl&eacute;mentation. Hibernate fournit une fonction de gestion de
+                la "session courante" pour simplifier ce pattern. Tout ce que vous devez faire
+                est d&eacute;marrer une transaction lorsqu'une requ&ecirc;te est trait&eacute;e par le serveur, et
+                la terminer avant que la r&eacute;ponse ne soit envoy&eacute;e au client. Vous pouvez le faire
+                de la mani&egrave;re que vous voulez, les solutions communes sont un <tt class="literal">ServletFilter</tt>, 
+                l'interception via AOP avec une pointcut sur les m&eacute;thodes de type "service", ou un conteneur
+                avec interception/proxy. Un conteneur EJB est un moyen standard d'impl&eacute;menter ce genre d'acpect
+                tranverse comme la d&eacute;marcation des transactions sur les EJBs session, de mani&egrave;re d&eacute;clarative
+                avec CMT. Si vous d&eacute;cidez d'utiliser la d&eacute;marcation programmatique des transactions, pr&eacute;ferrez
+                l'API Hibernate <tt class="literal">Transaction</tt> d&eacute;taill&eacute;e plus tard dans ce chapitre, afin de
+                facilit&eacute; l'utilisation et la portabilit&eacute; du code.
+            </p><p>
+                Votre application peut acc&eacute;der la "session courante" pour ex&eacute;cuter une requ&ecirc;te
+                en invoquant simplement <tt class="literal">sessionFactory.getCurrentSession()</tt> n'importe o&ugrave;
+                et autant de fois que souhait&eacute;. Vous obtiendrez toujours une <tt class="literal">Session</tt> 
+                dont le scope est la transaction courante avec la base de donn&eacute;es. Ceci doit &ecirc;tre configur&eacute; 
+                soit dans les ressources local ou dans l'environnement JTA, voir <a href="architecture.html#architecture-current-session" title="2.5.&nbsp;Sessions Contextuelles">Section&nbsp;2.5, &laquo;&nbsp;Sessions Contextuelles&nbsp;&raquo;</a>.
+            </p><p>
+                Il est parfois utile d'&eacute;tendre le scope d'une <tt class="literal">Session</tt> et d'une transaction
+                &agrave; la base de donn&eacute;es jusqu'&agrave; ce que "la vue soit rendue". Ceci est particuli&egrave;rement
+                utile dans des applications &agrave; base de servlet qui utilisent une phase de rendue s&eacute;par&eacute;e une fois
+                que la r&eacute;ponse a &eacute;t&eacute; pr&eacute;par&eacute;e. Etendre la transaction avec la base de donn&eacute;es jusqu'&agrave; la fin du
+                rendering de la vue est ais&eacute; si vous impl&eacute;mentez  votre propre intercepteur. Cependant,
+                ce n'est pas facile si vous vous appuyez sur les EJBs avec CMT, puisqu'une transaction sera
+                achev&eacute;e au retour de la m&eacute;thode EJB, avant le rendu de la vue. Rendez vous sur le site
+                Hibernate et sur le forum pour des astuces et des exemples sur le pattern
+                <span class="emphasis"><em>Open Session in View</em></span> pattern..
+             </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-basics-apptx"></a>11.1.2.&nbsp;Longue conversation</h3></div></div><div></div></div><p>Le paradigme
+                <span class="emphasis"><em>session-per-request</em></span>
+                n'est pas le seul &eacute;l&eacute;ment &agrave; utiliser dans le design de vos unit&eacute;s de travail. Plusieurs processus
+                d'affaire requi&egrave;rent toute une s&eacute;rie d'interactions avec l'utilisateur, entrelac&eacute;es d'acc&egrave;s &agrave; la base de
+                donn&eacute;e. Dans une application Web ou une application d'entreprise, il serait inacceptable que la dur&eacute;e de
+                vie d'une transaction s'&eacute;tale sur plusieurs interactions avec l'usager. Consid&eacute;rez l'exemple suivant:
+            </p><div class="itemizedlist"><ul type="disc"><li><p>Un &eacute;cran s'affiche. Les donn&eacute;es vues par l'usager ont &eacute;t&eacute; charg&eacute;es dans l'instance d'un objet
+                        <tt class="literal">Session</tt> , dans le cadre d'une transaction de base de donn&eacute;es. L'usager est libre de modifier ces objets.
+                    </p></li><li><p>L'usager clique "Sauvegarder" apr&egrave;s 5 minutes et souhaite persister les modifications qu'il a
+                        apport&eacute;es. Il s'attend &agrave; &ecirc;tre la seule personne a avoir modifi&eacute; ces donn&eacute;es et qu'aucune
+                        modification conflictuelle ne se soit produite durant ce laps de temps.</p></li></ul></div><p>Ceci s'appelle une unit&eacute; de travail. Du point de vue de l'utilisateur: une
+                <span class="emphasis"><em>conversation</em></span> (ou <span class="emphasis"><em>transaction d'application</em></span>).
+                Il y a plusieurs fa&ccedil;on de mettre ceci en place dans votre application.
+            </p><p>Une premi&egrave;re impl&eacute;mentation na&iuml;ve pourrait consister &agrave; garder la
+                <tt class="literal">Session</tt> et la transaction &agrave; la base de donn&eacute;es ouvertes durant le temps de travail de l'usager, &agrave; maintenir les
+                enregistrements verrouill&eacute;s dans la base de donn&eacute;es afin d'&eacute;viter des modifications concurrentes et de
+                maintenir l'isolation et l'atomicit&eacute; de la transaction de l'usager. Ceci est un anti-pattern &agrave; &eacute;viter,
+                puisque le verrouillage des enregistrements dans la base de donn&eacute;es ne permettrait pas &agrave; l'application
+                de g&eacute;rer un grand nombre d'usagers concurrents.
+            </p><p>Il appara&icirc;t donc &eacute;vident qu'il faille utiliser plusieurs transactions BDD afin d'impl&eacute;menter la
+                conversation. Dans ce cas, maintenir l'isolation des processus d'affaire devient
+                partiellement la responsabilit&eacute; de la couche applicative. Ainsi, la dur&eacute;e de vie d'une conversation
+                devrait englober celle d'une ou de plusieurs transactions de base de donn&eacute;es. Celle-ci sera
+                atomique seulement si l'&eacute;criture des donn&eacute;es mises &agrave; jour est faite exclusivement par la derni&egrave;re
+                transaction BDD la composant. Toutes les autres sous transactions BD ne doivent faire que la lecture de
+                donn&eacute;es. Ceci est relativement facile &agrave; mettre en place, surtout avec l'utilisation de certaines
+                fonctionnalit&eacute;s d'Hibernate:
+            </p><div class="itemizedlist"><ul type="disc"><li><p>
+                        <span class="emphasis"><em>Versionnage Automatique</em></span>
+                        - Hibernate peut g&eacute;rer automatiquement les acc&egrave;s concurrents de mani&egrave;re optimiste et d&eacute;tecter si
+                        une modification concurrente s'est produite durant le temps de r&eacute;flexion d'un usager.
+                    </p></li><li><p>
+                        <span class="emphasis"><em>Objets D&eacute;tach&eacute;s</em></span>
+                        - Si vous d&eacute;cidez d'utiliser le paradigme
+                        <span class="emphasis"><em>session-par-requ&ecirc;te</em></span>
+                        discut&eacute; plus haut, toutes les entit&eacute;s charg&eacute;es en m&eacute;moire deviendront des objets d&eacute;tach&eacute;s durant
+                        le temps de r&eacute;flexion de l'usager. Hibernate vous permet de rattacher ces objets et de persister
+                        les modifications y ayant &eacute;t&eacute; apport&eacute;es. Ce pattern est appel&eacute;:
+                        <span class="emphasis"><em>session-per- request-with-detached-objects</em></span>
+                        (litt&eacute;ralement: session- par-requ&ecirc;te-avec-objets-d&eacute;tach&eacute;s). Le versionnage automatique est
+                        utilis&eacute; afin d'isoler les modifications concurrentes.
+                    </p></li><li><p>
+                        <span class="emphasis"><em>Session Longues (conversation)</em></span>
+                        - Une
+                        <tt class="literal">Session</tt> Hibernate peut &ecirc;tre d&eacute;connect&eacute;e de la couche JDBC sous-jacente apr&egrave;s que commit() ait &eacute;t&eacute; appel&eacute;
+                        sur une transaction &agrave; la base de donn&eacute;es et reconnect&eacute;e lors d'une nouvelle requ&ecirc;te-client. Ce
+                        pattern s'appelle:
+                        <span class="emphasis"><em>session-per-conversation</em></span>
+                        (Litt&eacute;ralement: session-par- conversation) et rend superflu le rattachement des
+                        objets. Le versionnage automatique est utilis&eacute; afin d'isoler les modifications concurrentes.
+                    </p></li></ul></div><p>Les deux patterns
+                <span class="emphasis"><em>session-per-request-with- detached- objects</em></span>
+                (session-par-requ&ecirc;te-avec-objets- d&eacute;tach&eacute;s) et
+                <span class="emphasis"><em>session-per-conversation</em></span>
+                (session-par-conversation) ont chacun leurs avantages et d&eacute;savantages qui seront expos&eacute;s
+                dans ce m&ecirc;me chapitre, dans la section au sujet du contr&ocirc;le optimiste de concurrence.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-basics-identity"></a>11.1.3.&nbsp;L'identit&eacute; des objets</h3></div></div><div></div></div><p>Une application peut acc&eacute;der &agrave; la m&ecirc;me entit&eacute; persistante de mani&egrave;re concurrente dans deux
+                <tt class="literal">Session</tt> s diff&eacute;rentes. Toutefois, une instance d'une classe persistante n'est jamais partag&eacute;e par deux instances
+                distinctes de la classe
+                <tt class="literal">Session</tt> . Il existe donc deux notions de l'identit&eacute; d'un objet:
+            </p><div class="variablelist"><dl><dt><span class="term">Identit&eacute; BD</span></dt><dd><p>
+                            <tt class="literal">foo.getId().equals( bar.getId() )</tt> </p></dd><dt><span class="term">Identit&eacute; JVM</span></dt><dd><p>
+                            <tt class="literal">foo==bar</tt> </p></dd></dl></div><p>Ainsi, pour des objets attach&eacute;s &agrave; une
+                <tt class="literal">Session</tt> <span class="emphasis"><em>pr&eacute;cise</em></span>
+                (dans la cadre d'ex&eacute;cution (scope) d'une instance de
+                <tt class="literal">Session</tt> ), ces deux notions d'identit&eacute; sont &eacute;quivalentes et garanties par Hibernate. Par contre, si une
+                application peut acc&eacute;der de mani&egrave;re concurrente &agrave; la m&ecirc;me entit&eacute; persistante dans deux sessions
+                diff&eacute;rentes, les deux instances seront en fait diff&eacute;rentes (en ce qui a trait &agrave; l'identit&eacute; JVM). Les
+                conflits sont r&eacute;solus automatiquement par approche optimiste gr&acirc;ce au syst&egrave;me de versionnage automatique
+                lorsque
+                <tt class="literal">Session.flush()</tt> ou
+                <tt class="literal">Transaction.commit()</tt> est appel&eacute;.
+            </p><p>Cette approche permet de rel&eacute;guer &agrave; Hibernate et &agrave; la base de donn&eacute;es sous-jacente le soin de g&eacute;rer
+                les probl&egrave;mes d'acc&egrave;s concurrents. Cette mani&egrave;re de faire assure &eacute;galement une meilleure extensibilit&eacute;
+                de l'application puisque assurer l'identit&eacute; JVM dans un thread ne n&eacute;cessite pas de m&eacute;canismes de
+                verrouillage co&ucirc;teux ou d'autres dispositifs de synchronisation. Une application n'aura jamais le besoin
+                de synchroniser des objets d'affaire tant qu'elle peut garantir qu'un seul thread aura acc&egrave;s &agrave; une
+                instance de
+                <tt class="literal">Session</tt> . Dans le cadre d'ex&eacute;cution d'un objet
+                <tt class="literal">Session</tt> , l'application peut utiliser en toute s&eacute;curit&eacute; <tt class="literal">==
+            </tt> pour comparer des objets.
+        </p><p>
+            Une application qui utiliserait <tt class="literal">==</tt> &agrave; l'ext&eacute;rieur du cadre d'ex&eacute;cution d'une <tt class="literal">Session</tt> 
+            pourrait obtenir des r&eacute;sultats inattendus et causer certains effets de bords. Par exemple, si vous mettez 2
+            objets dans le m&ecirc;me <tt class="literal">Set</tt> , ceux-ci pourraient avoir la m&ecirc;me identit&eacute; BD (i.e. ils repr&eacute;sentent le m&ecirc;me enregistrement), mais leur
+            identit&eacute; JVM pourrait &ecirc;tre diff&eacute;rente (elle ne peut, par d&eacute;finition, pas &ecirc;tre garantie sur deux objets
+            d&eacute;tach&eacute;s). Le d&eacute;veloppeur doit donc red&eacute;finir l'impl&eacute;mentation des m&eacute;thodes <tt class="literal">equals()</tt> et <tt class="literal">hashcode()</tt> 
+            dans les classes persistantes et y adjoindre sa propre notion d'identit&eacute;. Il existe toutefois une
+            restriction: Il ne faut jamais utiliser uniquement l'identifiant de la base de donn&eacute;es dans l'impl&eacute;mentation
+            de l'&eacute;galit&eacute;; Il faut utiliser une cl&eacute; d'affaire, g&eacute;n&eacute;ralement une combinaison de plusieurs attributs
+            uniques, si possible immuables. Les identifiants de base de donn&eacute;es vont changer si un objet transitoire
+            (transient) devient persistant. Si une instance transitoire est contenue dans un <tt class="literal">Set</tt> ,
+            changer le hashcode brisera le contrat du <tt class="literal">Set</tt> . Les attributs pour les cl&eacute;s d'affaire 
+            n'ont pas &agrave; &ecirc;tre aussi stables que des cl&eacute;s primaires de bases de
+            donn&eacute;es. Il suffit simplement qu'elles soient stables tant et aussi longtemps que les objets sont dans le
+            m&ecirc;me <tt class="literal">Set</tt> . Veuillez consulter le site web Hibernate pour des discussions plus pointues &agrave; ce sujet. Notez que ce
+            concept n'est pas propre &agrave; Hibernate mais bien g&eacute;n&eacute;ral &agrave; l'impl&eacute;mentation de l'identit&eacute; et de l'&eacute;galit&eacute; en
+            Java.
+        </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-basics-issues"></a>11.1.4.&nbsp;Probl&egrave;mes communs</h3></div></div><div></div></div><p>Bien qu'il puisse y avoir quelques rares exceptions &agrave; cette r&egrave;gle, il est recommand&eacute; de ne jamais utiliser
+            les anti-patterns
+            <span class="emphasis"><em>session-per- user-session</em></span>
+            et
+            <span class="emphasis"><em>session-per-application</em></span>
+            . Vous trouverez ici- bas quelques probl&egrave;mes que vous risquez de rencontrer si vous en faite l?utilisation.
+            (Ces probl&egrave;mes pourraient quand m&ecirc;me survenir avec des patterns recommand&eacute;s) Assurez-vous de bien comprendre
+            les implications de chacun des patterns avant de prendre votre d&eacute;cision.
+        </p><div class="itemizedlist"><ul type="disc"><li><p>L'objet
+                    <tt class="literal">Session</tt> n?est pas con&ccedil;u pour &ecirc;tre utilis&eacute; par de multiples threads. En cons&eacute;quence, les objets
+                    potentiellement multi-thread comme les requ&ecirc;tes HTTP, les EJB Session et Swing Worker, risquent de
+                    provoquer des conditions de course dans la
+                    <tt class="literal">Session</tt> si celle-ci est partag&eacute;e. Dans un environnement web classique, il serait pr&eacute;f&eacute;rable de synchroniser
+                    les acc&egrave;s &agrave; la session http afin d?&eacute;viter qu?un usager ne recharge une page assez rapidement pour
+                    que deux requ&ecirc;tes s?ex&eacute;cutant dans des threads concurrents n?utilisent la m&ecirc;me
+                    <tt class="literal">Session</tt> .
+                </p></li><li><p>Lorsque Hibernate lance une exception, le roll back de la transaction en cours doit &ecirc;tre effectu&eacute;
+                    et la
+                    <tt class="literal">Session</tt> doit &ecirc;tre imm&eacute;diatement ferm&eacute;e. (Ceci sera explor&eacute; plus tard dans le chapitre.) Si la
+                    <tt class="literal">Session</tt> est directement associ&eacute;e &agrave; une application, il faut arr&ecirc;ter l?application. Le roll back de la
+                    transaction ne remettra pas les objets dans leur &eacute;tat du d&eacute;but de la transaction. Ainsi, ceux-ci
+                    pourraient &ecirc;tre d&eacute;synchronis&eacute;s d?avec les enregistrements. (G&eacute;n&eacute;ralement, cela ne cause pas de r&eacute;els
+                    probl&egrave;mes puisque la plupart des exceptions sont non traitables et requi&egrave;rent la reprise du
+                    processus d?affaire ayant &eacute;chou&eacute;.)
+                </p></li><li><p>La
+                    <tt class="literal">Session</tt> met en m&eacute;moire cache tous les objets persistants (les objets surveill&eacute;s et dont l'&eacute;tat est g&eacute;r&eacute; par
+                    Hibernate.) Si la
+                    <tt class="literal">Session</tt> est ouverte ind&eacute;finiment ou si une trop grande quantit&eacute; d'objets y est charg&eacute;e, l?utilisation de la
+                    m&eacute;moire peut potentiellement cro&icirc;tre jusqu?&agrave; atteindre le maximum allouable &agrave; l?application
+                    (java.lang.OutOfMemoryError.) Une solution &agrave; ce probl&egrave;me est d?appeler les m&eacute;thodes
+                    <tt class="literal">Session.clear()</tt> et
+                    <tt class="literal">Session.evict()</tt> pour g&eacute;rer la m&eacute;moire cache de la
+                    <tt class="literal">Session</tt> . Vous pouvez &eacute;galement utiliser des stored procedures si vous devez lancer des traitements sur de
+                    grandes quantit&eacute;s d?informations. Certaines solutions sont d&eacute;crites ici :
+                    <a href="batch.html" title="Chapitre&nbsp;13.&nbsp;Traitement par paquet">Chapitre&nbsp;13, <i>Traitement par paquet</i></a>
+                    . Garder une
+                    <tt class="literal">Session</tt> ouverte pour toute la dur&eacute;e d?une session usager augmente &eacute;galement consid&eacute;rablement le risque de
+                    travailler avec de l?information p&eacute;rim&eacute;e.
+                </p></li></ul></div></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="transactions-demarcation"></a>11.2.&nbsp;D&eacute;marcation des transactions</h2></div></div><div></div></div><p>La d&eacute;marcation des transactions est importante dans le design d?une application. Aucune communication avec la
+        base de donn&eacute;es ne peut &ecirc;tre effectu&eacute;e &agrave; l?ext&eacute;rieur du cadre d?une transaction. (Il semble que ce concept soit
+        mal compris par plusieurs d&eacute;veloppeurs trop habitu&eacute;s &agrave; utiliser le mode auto-commit.) M&ecirc;me si certains niveaux
+        d'isolation et certaines possibilit&eacute;s offertes par les bases de donn&eacute;es permettent de l?&eacute;viter, il n'est jamais
+        d&eacute;savantageux de toujours explicitement indiquer les bornes de transaction pour les op&eacute;rations complexes comme
+        pour les op&eacute;rations simples de lecture.</p><p>Une application utilisant Hibernate peut s'ex&eacute;cuter dans un environnement l&eacute;ger n?offrant pas la gestion
+        automatique des transactions (application autonome, application web simple ou applications Swing) ou dans un
+        environnement J2EE offrant des services de gestion automatique des transactions JTA. Dans un environnement
+        simple, Hibernate a g&eacute;n&eacute;ralement la responsabilit&eacute; de la gestion de son propre pool de connexions &agrave; la base de
+        donn&eacute;es. Le d&eacute;veloppeur de l'application doit manuellement d&eacute;limiter les transactions. En d'autres mots, il
+        appartient au d&eacute;veloppeur de g&eacute;rer les appels &agrave;
+        <tt class="literal">Transaction.begin()</tt>
+        ,
+        <tt class="literal">Transaction.commit()</tt>
+        et
+        <tt class="literal">Transaction.rollback()</tt>
+        . Un environnement transactionnel J2EE (serveur d'application J2EE) doit offrir la gestion des transactions au
+        niveau du container J2EE. Les bornes de transaction peuvent normalement &ecirc;tre d&eacute;finies de mani&egrave;re d&eacute;clarative
+        dans les descripteurs de d&eacute;ploiement d'EJB Session, par exemple. La gestion programmatique des transactions n'y
+        est donc pas n&eacute;cessaire. M&ecirc;me les appels &agrave;
+        <tt class="literal">Session.flush()</tt>
+        sont faits automatiquement.
+    </p><p>Il peut &ecirc;tre requis d'avoir une couche de persistance portable. Hibernate offre donc une API appel&eacute;e
+        <tt class="literal">Transaction</tt>
+        qui sert d'enveloppe pour le syst&egrave;me de transaction natif de l'environnement de d&eacute;ploiement. Il n'est pas
+        obligatoire d'utiliser cette API mais il est fortement conseill&eacute; de le faire, sauf lors de l'utilisation de CMT
+        Session Bean (EJB avec transactions g&eacute;r&eacute;es automatiquement par le container EJB).
+    </p><p>Il existe quatre &eacute;tapes disctinctes lors de la fermeture d'une
+        <tt class="literal">Session</tt>
+    </p><div class="itemizedlist"><ul type="disc" compact><li><p>flush de la session</p></li><li><p>commit de la transaction</p></li><li><p>Fermeture de la session (Close)</p></li><li><p>Gestion des exceptions</p></li></ul></div><p>La synchronisation de bdd depuis la session (flush) a d&eacute;j&agrave; &eacute;t&eacute; expliqu&eacute;, nous nous attarderons maintenant &agrave; la d&eacute;marcation des
+        transactions et &agrave; la gestion des exceptions dans les environnements l&eacute;gers et les environnements J2EE.</p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-demarcation-nonmanaged"></a>11.2.1.&nbsp;Environnement non manag&eacute;</h3></div></div><div></div></div><p>
+            Si la couche de persistance Hibernate s'ex&eacute;cute dans un environnement non manag&eacute;, les connexions &agrave; la base de
+            donn&eacute;es seront g&eacute;n&eacute;ralement prises en charge par le m&eacute;canisme de pool d'Hibernate. La gestion de la session
+            et de la transaction se fera donc de la mani&egrave;re suivante:</p><pre class="programlisting">// Non-managed environment idiom
+Session sess = factory.openSession();
+Transaction tx = null;
+try {
+    tx = sess.beginTransaction();
+
+    // do some work
+    ...
+
+    tx.commit();
+}
+catch (RuntimeException e) {
+    if (tx != null) tx.rollback();
+    throw e; // or display error message
+}
+finally {
+    sess.close();
+}</pre><p>
+                Vous n'avez pas &agrave; invoquer <tt class="literal">flush()</tt> explicitement sur la <tt class="literal">Session</tt> -
+                l'appel de <tt class="literal">commit()</tt> d&eacute;clenchera automatiquement la synchronisation (selon le <a href="objectstate.html#objectstate-flushing" title="10.10.&nbsp;Flush de la session">Section&nbsp;10.10, &laquo;&nbsp;Flush de la session&nbsp;&raquo;</a> 
+                de la session. Un appel &agrave; <tt class="literal">close()</tt> marque la fin de la session.
+                La cons&eacute;quence directe est que la connexion &agrave; la base de donn&eacute;es sera relach&eacute;e par la session.
+                Ce code est portable est fonctionne dans les environnements non manag&eacute; ET les environnements JTA.
+            </p><p>
+                Une solution plus flexible est la gestion par contexte fourni par Hibernate que nous avons
+                d&eacute;j&agrave; rencontr&eacute;:
+            </p><pre class="programlisting">// Non-managed environment idiom with getCurrentSession()
+try {
+    factory.getCurrentSession().beginTransaction();
+
+    // do some work
+    ...
+
+    factory.getCurrentSession().getTransaction().commit();
+}
+catch (RuntimeException e) {
+    factory.getCurrentSession().getTransaction().rollback();
+    throw e; // or display error message
+}</pre><p>
+                Vous ne verrez probablement jamais ces exemples de code dans les applications;
+                les exceptions fatales (exceptions du syst&egrave;me) ne devraient &ecirc;tre trait&eacute;es que
+                dans la couche la plus "haute". En d'autres termes, le code qui ex&eacute;cute les appels
+                &agrave; Hibernate (&agrave; la couche de persistance) et le code qui g&egrave;re les
+                <tt class="literal">RuntimeException</tt> (qui ne peut g&eacute;n&eacute;ralement effectuer qu'un nettoyage et une sortie) 
+                sont dans des couches diff&eacute;rentes. La gestion du contexte courant par Hibernate peut
+                simplifier notablement ce design, puisque vous devez acc&eacute;der &agrave; la gestion des exceptions
+                de la <tt class="literal">SessionFactory</tt>, ce qui est d&eacute;crit plus tard dans ce chapitre.
+            </p><p>
+                Notez que vous devriez s&eacute;lectionner <tt class="literal">org.hibernate.transaction.JDBCTransactionFactory</tt>
+                (le d&eacute;faut), pour le second exemple <tt class="literal">"thread"</tt> comme
+                <tt class="literal">hibernate.current_session_context_class</tt>.
+            </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-demarcation-jta"></a>11.2.2.&nbsp;Utilisation de JTA</h3></div></div><div></div></div><p>Si votre couche de persistance s'ex&eacute;cute dans un serveur d'application (par exemple, derri&egrave;re un EJB
+            Session Bean), toutes les datasource utilis&eacute;es par Hibernate feront automatiquement partie de transactions
+            JTA globales. Hibernate propose deux strat&eacute;gies pour r&eacute;ussir cette int&eacute;gration.</p><p>
+            Si vous utilisez des transactions g&eacute;r&eacute;es par un EJB (bean managed transactions - BMT), Hibernate informera
+            le serveur d'application du d&eacute;but et de la fin des transactions si vous utilisez l'API <tt class="literal">Transaction</tt> . 
+            Ainsi, le code de gestion des transactions sera identique dans les deux types d'environnements.
+        </p><pre class="programlisting">// BMT idiom
+Session sess = factory.openSession();
+Transaction tx = null;
+try {
+    tx = sess.beginTransaction();
+
+    // do some work
+    ...
+
+    tx.commit();
+}
+catch (RuntimeException e) {
+    if (tx != null) tx.rollback();
+    throw e; // or display error message
+}
+finally {
+    sess.close();
+}</pre><p>Ou encore, avec la gestion automatique de contexte:</p><pre class="programlisting">// BMT idiom with getCurrentSession()
+try {
+    factory.getCurrentSession().beginTransaction();
+
+    // do some work
+    ...
+
+    factory.getCurrentSession().getTransaction().commit();
+}
+catch (RuntimeException e) {
+    factory.getCurrentSession().getTransaction().rollback();
+    throw e; // or display error message
+}</pre><p>
+            Avec CMT, la d&eacute;marcation des transactions est faite dans les descripteurs de d&eacute;ploiement des Beans Sessions et non
+            de mani&egrave;re programmmatique, ceci r&eacute;duit le code:
+        </p><pre class="programlisting">// CMT idiom
+ Session sess = factory.getCurrentSession();
+
+ // do some work
+ ...
+</pre><p>
+            Dans un EJB CMT m&ecirc;me le rollback intervient automatiquement, puisqu'une <tt class="literal">RuntimeException</tt>
+            non trait&eacute;e et soulev&eacute;e par une m&eacute;thode d'un bean session indique au conteneur d'annuler la transaction
+            globale. <span class="emphasis"><em>Ceci veut donc dire que vous n'avez pas &agrave; utiliser l'API <tt class="literal">Transaction</tt> d'Hibernate
+            dans CMT.</em></span>
+        </p><p>
+            Notez que le fichier de configuration Hibernate devrait contenir les valeurs 
+            <tt class="literal">org.hibernate.transaction.JTATransactionFactory</tt> dans un environnement BMT ou 
+            <tt class="literal">org.hibernate.transaction.CMTTransactionFactory</tt> dans un environnement CMT l&agrave;  o&ugrave; vous
+            configurez votre transaction factory Hibernate. 
+            N'oubliez pas non plus de sp&eacute;cifier le param&egrave;tre <tt class="literal">org.hibernate.transaction.manager_lookup_class</tt> .
+            De plus, assurez vous de fixez votre <tt class="literal">hibernate.current_session_context_class</tt> soit &agrave; <tt class="literal">"jta"</tt>
+            ou de ne pas le configurer (compatibilit&eacute; avec les versions pr&eacute;c&eacute;dentes).
+        </p><p>
+            La m&eacute;thode <tt class="literal">getCurrentSession()</tt> a un inconv&eacute;nient dans les environnement JTA.
+            Il y a une astuce qui est d'utiliser un mode de lib&eacute;ration de connexion <tt class="literal">after_statement</tt> ,
+            qui est alors utilis&eacute; par d&eacute;faut. Du &agrave; une &eacute;trange limitation de la spec JTA, il n'est pas possible
+            pour Hibernate de nettoyer et ferme automatiquement un <tt class="literal">ScrollableResults</tt> ouvert
+            ou une instance d'<tt class="literal">Iterator</tt> retourn&eacute;s <tt class="literal">scroll()</tt> ou
+            <tt class="literal">iterate()</tt>. Vous <span class="emphasis"><em>devez</em></span> lib&eacute;rer le curseur base de donn&eacute;es
+            sous jacent ou invoquer <tt class="literal">Hibernate.close(Iterator)</tt> explicitement depuis un
+            bloc <tt class="literal">finally</tt>. (Bien sur, la plupart des applications peuvent &eacute;viter
+            d'uiliser <tt class="literal">scroll()</tt> ou <tt class="literal">iterate()</tt> dans un code CMT.)
+        </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-demarcation-exceptions"></a>11.2.3.&nbsp;Gestion des exceptions</h3></div></div><div></div></div><p>
+            Si une <tt class="literal">Session</tt> lance une exception (incluant les exceptions du type <tt class="literal">SQLException</tt> 
+            ou d'un sous-type), vous devez imm&eacute;diatement faire le rollback de la transaction, appeler <tt class="literal">Session.close()</tt> 
+            et rel&acirc;cher les r&eacute;f&eacute;rences sur l'objet <tt class="literal">Session</tt> . La <tt class="literal">Session</tt> contient des m&eacute;thodes 
+            pouvant la mettre dans un &eacute;tat inutilisable. Vous devez consid&eacute;rer qu'<span class="emphasis"><em>aucune</em></span>
+            exception lanc&eacute;e par Hibernate n'est traitable. Assurez-vous de fermer la session en faisant l'appel &agrave; 
+            <tt class="literal">close()</tt> dans un bloc <tt class="literal">finally</tt> .
+        </p><p>
+            L'exception <tt class="literal">HibernateException</tt> , qui englobe la plupart des exceptions pouvant survenir dans la 
+            couche de persistance Hibernate, est une exception non v&eacute;rifi&eacute;e (Ceci n'&eacute;tait pas le cas dans certaines versions ant&eacute;rieures de Hibernate.) Il est de
+            notre avis que nous ne devrions pas forcer un d&eacute;veloppeur &agrave; g&eacute;rer une exception qu'il ne peut de toute fa&ccedil;on
+            pas traiter dans une couche technique. Dans la plupart des applications, les exceptions non v&eacute;rifi&eacute;es et les
+            exceptions fatales sont g&eacute;r&eacute;es en amont du processus (dans les couches hautes) et un message d'erreur est
+            alors affich&eacute; &agrave; l'usager (ou un traitement alternatif est invoqu&eacute;.) Veuillez noter qu'Hibernate peut
+            &eacute;galement lancer des exceptions non v&eacute;rifi&eacute;es d'un autre type que <tt class="literal">HibernateException</tt> . Celles-ci sont 
+            &eacute;galement non traitables et vous devez les traiter comme telles.
+        </p><p>
+            Hibernate englobe les <tt class="literal">SQLException</tt> s lanc&eacute;es lors des interactions directes avec la base de donn&eacute;es 
+            dans des exceptions de type: <tt class="literal">JDBCException</tt> . En fait, Hibernate essaiera de convertir l'exception dans 
+            un sous-type plus significatif de <tt class="literal">JDBCException</tt> . L'exception <tt class="literal">SQLException</tt> sous-jacente 
+            est toujours disponible via la m&eacute;thode <tt class="literal">JDBCException.getCause()</tt> . Cette conversion est faite par un objet 
+            de type <tt class="literal">SQLExceptionConverter</tt> , qui est rattach&eacute; &agrave; l'objet <tt class="literal">SessionFactory</tt> . 
+            Par d&eacute;faut, le <tt class="literal">SQLExceptionConverter</tt> est associ&eacute; au dialecte de BD configur&eacute; dans Hibernate. Toutefois, 
+            il est possible de fournir sa propre impl&eacute;mentation de l'interface. (Veuillez vous r&eacute;f&eacute;rer &agrave; la javadoc sur la classe 
+            <tt class="literal">SQLExceptionConverterFactory</tt> pour plus de d&eacute;tails. Les sous-types standard de <tt class="literal">JDBCException</tt> sont:
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                    <tt class="literal">JDBCConnectionException</tt> - Indique une erreur de communication avec la couche JDBC sous-jacente.
+                </p></li><li><p>
+                    <tt class="literal">SQLGrammarException</tt> - Indique un probl&egrave;me de grammaire ou de syntaxe avec la requ&ecirc;te SQL envoy&eacute;e.
+                </p></li><li><p>
+                    <tt class="literal">ConstraintViolationException</tt> - Indique une violation de contrainte d'int&eacute;grit&eacute;.
+                </p></li><li><p>
+                    <tt class="literal">LockAcquisitionException</tt> - Indique une erreur de verrouillage lors de l'&eacute;x&eacute;cution de la requ&ecirc;te.
+                </p></li><li><p>
+                    <tt class="literal">GenericJDBCException</tt> - Indique une erreur g&eacute;n&eacute;rique JDBC d'une autre cat&eacute;gorie.
+                </p></li></ul></div></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-demarcation-timeout"></a>11.2.4.&nbsp;Timeout de transaction</h3></div></div><div></div></div><p>L'un des avantages fournis par les environnements transactionnels JTA (tels les containers EJB) est la
+            gestion du timeout de transaction. La gestion des d&eacute;passements de temps de transaction vise &agrave; s'assurer
+            qu'une transaction agissant incorrectement ne viendra pas bloquer ind&eacute;finiment les ressources de
+            l'application. Hibernate ne peut fournir cette fonctionnalit&eacute; dans un environnement transactionnel non-JTA.
+            Par contre, Hibernate g&egrave;re les op&eacute;rations d'acc&egrave;s aux donn&eacute;es en allouant un temps maximal aux requ&ecirc;tes pour
+            s'ex&eacute;cuter. Ainsi, une requ&ecirc;te cr&eacute;ant de l'inter blocage ou retournant de tr&egrave;s grandes quantit&eacute;s
+            d'information pourrait &ecirc;tre interrompue. Dans un environnement transactionnel JTA, Hibernate peut d&eacute;l&eacute;guer
+            au gestionnaire de transaction le soin de g&eacute;rer les d&eacute;passements de temps. Cette fonctionnalit&eacute; est
+            abstraite par l'objet <tt class="literal">Transaction</tt> .
+        </p><pre class="programlisting">
+        Session sess = factory.openSession();
+        try {
+            //mettre le timeout &agrave; 3 secondes.
+            sess.getTransaction().setTimeout(3);
+            sess.getTransaction().begin();
+
+            // Effectuer le travail ...
+
+            sess.getTransaction().commit()
+        }
+        catch (RuntimeException e) {
+            if ( sess.getTransaction().isActive() ) {
+                sess.getTransaction().rollback();
+            }
+            throw e;
+            // ou afficher le message d'erreur.
+        }
+        finally {
+            sess.close();
+        }</pre><p>
+            Notez que <tt class="literal">setTimeout()</tt> ne peut pas &ecirc;tre appel&eacute; d'un EJB CMT, puisque le timeout 
+            des transaction doit &ecirc;tre sp&eacute;cifi&eacute; de mani&egrave;re d&eacute;clarative.
+        </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="transactions-optimistic"></a>11.3.&nbsp;Contr&ocirc;le de consurrence optimiste</h2></div></div><div></div></div><p>La gestion optimiste des acc&egrave;s concurrents avec versionnage est la seule approche pouvant garantir
+        l'extensibilit&eacute; des applications &agrave; haut niveau de charge. Le syst&egrave;me de versionnage utilise des num&eacute;ros de
+        version ou l'horodatage pour d&eacute;tecter les mises &agrave; jour causant des conflits avec d'autres actualisations
+        ant&eacute;rieures. Hibernate propose trois approches pour l'&eacute;criture de code applicatif utilisant la gestion optimiste
+        d'acc&egrave;s concurrents. Le cas d'utilisation d&eacute;crit plus bas fait mention de conversation,
+        mais le versionnage peut &eacute;galement am&eacute;liorer la qualit&eacute; d'une application en pr&eacute;venant la perte de mises &agrave;
+        jour.</p><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-optimistic-manual"></a>11.3.1.&nbsp;Gestion du versionnage au niveau applicatif</h3></div></div><div></div></div><p>Dans cet exemple d'impl&eacute;mentation utilisant peu les fonctionnalit&eacute;s d'Hibernate, chaque interaction avec
+            la base de donn&eacute;es se fait en utilisant une nouvelle <tt class="literal">Session</tt> et le d&eacute;veloppeur doit recharger 
+            les donn&eacute;es persistantes &agrave; partir de la BD avant de les manipuler. Cette
+            impl&eacute;mentation force l'application &agrave; v&eacute;rifier la version des objets afin de maintenir l'isolation
+            transactionnelle. Cette approche, semblable &agrave; celle retrouv&eacute;e pour les EJB, est la moins efficace de celles
+            pr&eacute;sent&eacute;es dans ce chapitre.
+        </p><pre class="programlisting">
+            // foo est une instance charg&eacute;e ant&eacute;rieurement par une autre
+            Session session = factory.openSession();
+            Transaction t = session.beginTransaction();
+
+            int oldVersion = foo.getVersion();
+            session.load( foo, foo.getKey() ); // Charger l'&eacute;tat courant
+
+            if ( oldVersion!=foo.getVersion )
+                throw new StaleObjectStateException();
+
+            foo.setProperty("bar");
+            t.commit();
+            session.close();</pre><p>Le mapping de la propri&eacute;t&eacute; <tt class="literal">version</tt> est fait via <tt class="literal">&lt;version&gt;</tt> et 
+        Hibernate l'incr&eacute;mentera automatiquement &agrave; chaque flush() si l'entit&eacute; doit &ecirc;tre mise &agrave; jour.
+        </p><p>Bien s&ucirc;r, si votre application ne fait pas face &agrave; beaucoup d'acc&egrave;s concurrents et ne n&eacute;cessite pas
+            l'utilisation du versionnage, cette approche peut &eacute;galement &ecirc;tre utilis&eacute;e, il n'y a qu'&agrave; ignorer le code
+            reli&eacute; au versionnage. Dans ce cas, la strat&eacute;gie du
+            <span class="emphasis"><em>last commit wins</em></span>
+            (litt&eacute;ralement: le dernier commit l'emporte) sera utilis&eacute;e pour les conversations (longues transactions applicatives).
+            Gardez &agrave; l'esprit que cette approche pourrait rendre perplexe les utilisateurs de l'application car ils
+            pourraient perdre des donn&eacute;es mises &agrave; jour sans qu'aucun message d'erreur ne leur soit pr&eacute;sent&eacute; et sans
+            avoir la possibilit&eacute; de fusionner les donn&eacute;es.
+        </p><p>Il est clair que la gestion manuelle de la v&eacute;rification du versionnage des objets ne peut &ecirc;tre effectu&eacute;e
+            que dans certains cas triviaux et que cette approche n'est pas valable pour la plupart des applications. De
+            mani&egrave;re g&eacute;n&eacute;rale, les applications ne cherchent pas &agrave; actualiser de simples objets sans relations, elles le
+            font g&eacute;n&eacute;ralement pour de larges graphes d'objets. Pour toute application utilisant le paradigme des conversations
+             ou des objets d&eacute;tach&eacute;s, Hibernate peut g&eacute;rer automatiquement la v&eacute;rification des versions
+            d'objets.</p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-optimistic-longsession"></a>11.3.2.&nbsp;Les sessions longues et le versionnage automatique.</h3></div></div><div></div></div><p>Dans ce sc&eacute;nario, une seule instance de <tt class="literal">Session</tt> et des objets persistants est utilis&eacute;e 
+            pour toute l'application. Hibernate v&eacute;rifie la version des objets
+            persistants avant d'effectuer le flush() et lance une exception si une modification concurrente est
+            d&eacute;tect&eacute;e. Il appartient alors au d&eacute;veloppeur de g&eacute;rer l'exception. Les traitements alternatifs g&eacute;n&eacute;ralement
+            propos&eacute;s sont alors de permettre &agrave; l'usager de faire la fusion des donn&eacute;es ou de lui offrir de recommencer
+            son travail &agrave; partie des donn&eacute;es les plus r&eacute;centes dans la BD.
+        </p><p>Il est &agrave; noter que lorsqu'une application est en attente d'une action de la part de l?usager, La <tt class="literal">Session</tt> 
+            n'est pas connect&eacute;e &agrave; la couche JDBC sous-jacente. C'est la mani&egrave;re la plus efficace de g&eacute;rer les acc&egrave;s &agrave; la
+            base de donn&eacute;es. L'application ne devrait pas se pr&eacute;occuper du versionnage des objets, de la r&eacute;association
+            des objets d&eacute;tach&eacute;s, ni du rechargement de tous les objets &agrave; chaque transaction.
+        </p><pre class="programlisting">
+            // foo est une instance charg&eacute;e ant&eacute;rieurement par une autre session
+
+            session.reconnect();// Obtention d'une nouvelle connexion JDBC
+            Transaction t = session.beginTransaction();
+            foo.setProperty("bar");
+            t.commit(); //Terminer la transaction, propager les changements et v&eacute;rifier les versions.
+            session.disconnect(); // Retourner la connexion JDBC
+            </pre><p>L'objet <tt class="literal">foo</tt> sait quel objet <tt class="literal">Session</tt> l'a charg&eacute;. <tt class="literal">Session.reconnect()</tt> 
+            obtient une nouvelle connexion (celle-ci peut &ecirc;tre &eacute;galement fournie) et permet &agrave; la session de continuer
+            son travail. La m&eacute;thode <tt class="literal">Session.disconnect()</tt> d&eacute;connecte la session de la connexion JDBC et 
+            retourne celle-ci au pool de connexion (&agrave; moins que vous ne
+            lui ayez fourni vous m&ecirc;me la connexion.) Apr&egrave;s la reconnexion, afin de forcer la v&eacute;rification du versionnage
+            de certaines entit&eacute;s que vous ne cherchez pas &agrave; actualiser, vous pouvez faire un appel &agrave; <tt class="literal">Session.lock()</tt> 
+            en mode <tt class="literal">LockMode.READ</tt> pour tout objet ayant pu &ecirc;tre modifi&eacute; par une autre transaction. Il n'est pas n&eacute;cessaire de verrouiller les
+            donn&eacute;es que vous d&eacute;sirez mettre &agrave; jour.
+        </p><p>Si des appels implicites aux m&eacute;thodes <tt class="literal">disconnect()</tt> et <tt class="literal">reconnect()</tt> sont trop 
+        co&ucirc;teux, vous pouvez les &eacute;viter en utilisant <tt class="literal">hibernate.connection.release_mode</tt> .
+        </p><p>Ce pattern peut pr&eacute;senter des probl&egrave;mes si la <tt class="literal">Session</tt> est trop volumineuse pour &ecirc;tre 
+            stock&eacute;e entre les actions de l'usager. Plus sp&eacute;cifiquement, une session <tt class="literal">HttpSession</tt> se doit 
+            d'&ecirc;tre la plus petite possible. Puisque la <tt class="literal">Session</tt> joue obligatoirement le r&ocirc;le de m&eacute;moire 
+            cache de premier niveau et contient &agrave; ce titre tous les objets
+            charg&eacute;s, il est pr&eacute;f&eacute;rable de n'utiliser cette strat&eacute;gie que pour quelques cycles de requ&ecirc;tes car les objets
+            risquent d'y &ecirc;tre rapidement p&eacute;rim&eacute;s.
+        </p><p>Notez que la <tt class="literal">Session</tt> d&eacute;connect&eacute;e devrait &ecirc;tre conserv&eacute;e pr&egrave;s de la couche de persistance. Autrement dit, utilisez un EJB stateful
+            pour conserver la <tt class="literal">Session</tt> et &eacute;vitez de la s&eacute;rialiser et de la transf&eacute;rer &agrave; la couche de pr&eacute;sentation (i.e. Il est pr&eacute;f&eacute;rable de ne pas
+            la conserver dans la session <tt class="literal">HttpSession</tt> .)
+        </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-optimistic-detached"></a>11.3.3.&nbsp;Les objets d&eacute;tach&eacute;s et le versionnage automatique</h3></div></div><div></div></div><p>Chaque interaction avec le syst&egrave;me de persistance se fait via une nouvelle <tt class="literal">Session</tt> . 
+            Toutefois, les m&ecirc;mes instances d'objets persistants sont r&eacute;utilis&eacute;es pour chacune de ces interactions.
+            L'application doit pouvoir manipuler l'&eacute;tat des instances d&eacute;tach&eacute;es ayant &eacute;t&eacute; charg&eacute;es ant&eacute;rieurement via
+            une autre session. Pour ce faire, ces objets persistants doivent &ecirc;tre rattach&eacute;s &agrave; la <tt class="literal">Session</tt> 
+            courante en utilisant <tt class="literal">Session.update()</tt> , <tt class="literal">Session.saveOrUpdate()</tt> , ou <tt class="literal">Session.merge()</tt> .
+        </p><pre class="programlisting">
+            // foo est une instance charg&eacute;e ant&eacute;rieurement par une autre session
+
+            foo.setProperty("bar");
+            session = factory.openSession();
+            Transaction t = session.beginTransaction();
+            session.saveOrUpdate(foo);  //Utiliser merge() si "foo" pourrait avoir &eacute;t&eacute; charg&eacute; pr&eacute;c&eacute;dement
+            t.commit();
+            session.close(); </pre><p>Encore une fois, Hibernate v&eacute;rifiera la version des instances devant &ecirc;tre actualis&eacute;es durant le flush().
+            Une exception sera lanc&eacute;e si des conflits sont d&eacute;tect&eacute;s.</p><p>Vous pouvez &eacute;galement utiliser <tt class="literal">lock()</tt> au lieu de <tt class="literal">update()</tt> et 
+            utiliser le mode <tt class="literal">LockMode.READ</tt> (qui lancera une v&eacute;rification de version, en ignorant tous les niveaux de m&eacute;moire cache) si vous &ecirc;tes
+            certain que l'objet n'a pas &eacute;t&eacute; modifi&eacute;.
+        </p></div><div class="sect2" lang="fr"><div class="titlepage"><div><div><h3 class="title"><a name="transactions-optimistic-customizing"></a>11.3.4.&nbsp;Personnaliser le versionnage automatique</h3></div></div><div></div></div><p>Vous pouvez d&eacute;sactiver l'incr&eacute;mentation automatique du num&eacute;ro de version de certains attributs et
+            collections en mettant la valeur du param&egrave;tre de mapping <tt class="literal">optimistic-lock</tt> &agrave;
+            false. Hibernate cessera ainsi d'incr&eacute;menter leur num&eacute;ro de version s'ils sont mis &agrave; jour.
+        </p><p>Certaines entreprises poss&egrave;dent de vieux syst&egrave;mes dont les sch&eacute;mas de bases de donn&eacute;es sont statiques et
+            ne peuvent &ecirc;tre modifi&eacute;s. Il existe aussi des cas o&ugrave; plusieurs applications doivent acc&eacute;der &agrave; la m&ecirc;me base
+            de donn&eacute;es, mais certaines d'entre elles ne peuvent g&eacute;rer les num&eacute;ros de version ou les champs horodat&eacute;s.
+            Dans les deux cas, le versionnage ne peut &ecirc;tre implant&eacute; par le rajout d'une colonne dans la base de donn&eacute;es.
+            Afin de forcer la v&eacute;rification de version dans un syst&egrave;me sans en faire le mapping, mais en for&ccedil;ant une
+            comparaison des &eacute;tats de tous les attributs d'une entit&eacute;, vous pouvez utiliser l'attribut <tt class="literal">optimistic- lock="all"</tt> 
+            sous l'&eacute;l&eacute;ment <tt class="literal">&lt;class&gt;</tt> . Veuillez noter que cette mani&egrave;re de g&eacute;rer le versionnage ne peut &ecirc;tre utilis&eacute;e que si l'application
+            utilises de longues sessions, lui permettant de comparer l'ancien &eacute;tat et le nouvel &eacute;tat d'une entit&eacute;.
+            L'utilisation d'un pattern <tt class="literal">session-per-request-with-detached- objects</tt> devient alors impossible.
+        </p><p>Il peut &ecirc;tre souhaitable de permettre les modifications concurrentes lorsque des champs distincts sont
+            modifi&eacute;s. En mettant la propri&eacute;t&eacute; <tt class="literal">optimistic-lock="dirty"</tt> dans l'&eacute;l&eacute;ment <tt class="literal">&lt;class&gt;</tt> , 
+            Hibernate ne fera la comparaison que des champs devant &ecirc;tre actualis&eacute;s lors du flush().
+        </p><p>Dans les deux cas: en utilisant une colonne de version/horodat&eacute;e ou via la comparaison de l'&eacute;tat complet
+            de l'objet ou de ses champs modifi&eacute;s, Hibernate ne cr&eacute;era qu'une seule commande d'UPDATE par entit&eacute; avec la
+            clause WHERE appropri&eacute;e pour mettre &agrave; jour l'entit&eacute;
+            <span class="emphasis"><em>ET</em></span>
+            en v&eacute;rifier la version. Si vous utilisez la persistance transitive pour propager l'&eacute;v&egrave;nement de rattachement
+            &agrave; des entit&eacute;s associ&eacute;es, il est possible qu'Hibernate g&eacute;n&egrave;re des commandes d'UPDATE inutiles. Ceci n'est
+            g&eacute;n&eacute;ralement pas un probl&egrave;me, mais certains d&eacute;clencheurs
+            <span class="emphasis"><em>on update</em></span>
+            dans la base de donn&eacute;es pourraient &ecirc;tre activ&eacute;s m&ecirc;me si aucun changement n'&eacute;tait r&eacute;ellement persist&eacute; sur des
+            objets associ&eacute;s. Vous pouvez personnaliser ce comportement en indiquant <tt class="literal">select-before- update="true"</tt>
+            dans l'&eacute;l&eacute;ment de mapping <tt class="literal">&lt;class&gt;</tt> . Ceci forcera Hibernate &agrave; faire le SELECT de l'instance 
+            afin de s'assurer que l'entit&eacute; doit r&eacute;ellement &ecirc;tre
+            actualis&eacute;e avant de lancer la commande d'UPDATE.
+        </p></div></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="transactions-locking"></a>11.4.&nbsp;Verouillage pessimiste</h2></div></div><div></div></div><p>Il n'est n&eacute;cessaire de s'attarder &agrave; la strat&eacute;gie de verrouillage des entit&eacute;s dans une application utilisant
+        Hibernate. Il est g&eacute;n&eacute;ralement suffisant de d&eacute;finir le niveau d'isolation pour les connexions JDBC et de laisser
+        ensuite la base de donn&eacute;e effectuer son travail. Toutefois, certains utilisateurs avanc&eacute;s peuvent vouloir
+        obtenir un verrouillage pessimiste exclusif sur un enregistrement et le r&eacute;obtenir au lancement d'une nouvelle
+        transaction.</p><p>Hibernate utilisera toujours le m&eacute;canisme de verrouillage de la base de donn&eacute;es et ne verrouillera jamais les
+        objets en m&eacute;moire!</p><p>La classe
+        <tt class="literal">LockMode</tt>
+        d&eacute;finit les diff&eacute;rents niveaux de verrouillage pouvant &ecirc;tre obtenus par Hibernate. Le verrouillage est obtenu
+        par les m&eacute;canismes suivants:
+    </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                <tt class="literal">LockMode.WRITE</tt> est obtenu automatiquement quand Hibernate actualise ou insert un enregistrement.
+            </p></li><li><p>
+                <tt class="literal">LockMode.UPGRADE</tt> peut &ecirc;tre obtenu de mani&egrave;re explicite via la requ&ecirc;te en utilisant
+                <tt class="literal">SELECT ... FOR UPDATE</tt> sur une base de donn&eacute;es supportant cette syntaxe.
+            </p></li><li><p>
+                <tt class="literal">LockMode.UPGRADE_NOWAIT</tt> peut &ecirc;tre obtenu de mani&egrave;re explicite en utilisant
+                <tt class="literal">SELECT ... FOR UPDATE NOWAIT</tt> sur Oracle.
+            </p></li><li><p>
+                <tt class="literal">LockMode.READ</tt> est obtenu automatiquement quand Hibernate lit des donn&eacute;es dans un contexte d'isolation
+                <tt class="literal">Repeatable Read</tt> ou
+                <tt class="literal">Serializable</tt> . Peut &ecirc;tre r&eacute;obtenu explicitement via une requ&ecirc;te.
+            </p></li><li><p>
+                <tt class="literal">LockMode.NONE</tt> repr&eacute;sente l'absence de verouillage. Tous les objets migrent vers ce mode a la fin d'une
+                <tt class="literal">Transaction</tt> . Les objets associ&eacute;s &agrave; une session via un appel &agrave;
+                <tt class="literal">saveOrUpdate()</tt> commencent &eacute;galement leur cycle de vie dans cet &eacute;tat.
+            </p></li></ul></div><p>Les niveaux de verrouillage peuvent &ecirc;tre explicitement obtenus de l'une des mani&egrave;res suivantes:</p><div class="itemizedlist"><ul type="disc" compact><li><p>Un appel &agrave;
+                <tt class="literal">Session.load()</tt> , en sp&eacute;cifiant un niveau verrouillage
+                <tt class="literal">LockMode</tt> .
+            </p></li><li><p>Un appel &agrave;
+                <tt class="literal">Session.lock()</tt> .
+            </p></li><li><p>Une appel &agrave;
+                <tt class="literal">Query.setLockMode()</tt> .
+            </p></li></ul></div><p>Si
+        <tt class="literal">Session.load()</tt>
+        est appel&eacute; avec le param&egrave;tre de niveau de verouillage
+        <tt class="literal">UPGRADE</tt>
+        ou
+        <tt class="literal">UPGRADE_NOWAIT</tt>
+        et que l'objet demand&eacute; n'est pas pr&eacute;sent dans la session, celui-ci sera charg&eacute; &agrave; l'aide d'une requ&ecirc;te
+        <tt class="literal">SELECT ... FOR UPDATE</tt>
+        . Si la m&eacute;thode
+        <tt class="literal">load()</tt>
+        est appel&eacute;e pour un objet d&eacute;j&agrave; en session avec un verrouillage moindre que celui demand&eacute;, Hibernate appellera la
+        m&eacute;thode
+        <tt class="literal">lock()</tt>
+        pour cet objet.
+    </p><p>
+        <tt class="literal">Session.lock()</tt>
+        effectue une v&eacute;rification de version si le niveau de verrouillage est
+        <tt class="literal">READ</tt>
+        ,
+        <tt class="literal">UPGRADE</tt>
+        ou
+        <tt class="literal">UPGRADE_NOWAIT</tt>
+        . (Dans le cas des niveaux
+        <tt class="literal">UPGRADE</tt>
+        ou
+        <tt class="literal">UPGRADE_NOWAIT</tt>
+        , une requ&ecirc;te
+        <tt class="literal">SELECT ... FOR UPDATE</tt>
+        sera utilis&eacute;e.)
+    </p><p>Si une base de donn&eacute;es ne supporte pas le niveau de verrouillage demand&eacute;, Hibernate utilisera un niveau
+        alternatif convenable au lieux de lancer une exception. Ceci assurera la portabilit&eacute; de votre
+        application.</p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="transactions-connection-release"></a>11.5.&nbsp;Mode de lib&eacute;ration de Connection</h2></div></div><div></div></div><p>
+            Le comportement original (2.x) d'Hibernate pour la gestion des connexions JDBC
+            &eacute;tait que la <tt class="literal">Session</tt> obtenait une connexion d&egrave;s qu'elle en avait
+            besoin et la lib&eacute;rait une fois la session ferm&eacute;e.
+            Hibernate 3 a introduit les modes de lib&eacute;ration de connexion pour indiquer &agrave; la session
+            comment g&eacute;rer les transactions JDBC. Notez que la discussion suivante n'est pertinente 
+            que pour des connexions fournies par un <tt class="literal">ConnectionProvider</tt>, celles g&eacute;r&eacute;es 
+            par l'utilisateur sont en dehors du scope de cette discussion. Les diff&eacute;rents modes
+            sont d&eacute;finies par <tt class="literal">org.hibernate.ConnectionReleaseMode</tt>:
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                    <tt class="literal">ON_CLOSE</tt> - est essentiellement le comportement pass&eacute;.
+                    La session Hibernate obtient une connexion lorsqu'elle en a besoin et la garde
+                    jusqu'&agrave; ce que la session se ferme.
+                </p></li><li><p>
+                    <tt class="literal">AFTER_TRANSACTION</tt> - indique de relacher la connexion apr&egrave;s qu'une
+                    <tt class="literal">org.hibernate.Transaction</tt> se soit achev&eacute;e.
+                </p></li><li><p>
+                    <tt class="literal">AFTER_STATEMENT</tt> (aussi appel&eacute; lib&eacute;ration brutale) - indique de relacher
+                    les connexions apr&egrave;s chaque ex&eacute;cution d'un statement. Ce relachement aggressif est annul&eacute;
+                    si ce statement laisse des ressources associ&eacute;es &agrave; une session donn&eacute;e ouvertes, actuellement
+                    ceci n'arrive que lors de l'utilisation de <tt class="literal">org.hibernate.ScrollableResults</tt>.
+                </p></li></ul></div><p>
+            Le param&egrave;tre de configuration <tt class="literal">hibernate.connection.release_mode</tt> est utilis&eacute;
+            pour sp&eacute;cifier quel mode de lib&eacute;ration doit &ecirc;tre utiliser. Les valeurs possibles sont:
+        </p><div class="itemizedlist"><ul type="disc" compact><li><p>
+                    <tt class="literal">auto</tt> (valeur par d&eacute;faut) - ce choix d&eacute;l&egrave;gue le choix de lib&eacute;ration
+                    &agrave; la m&eacute;thode <tt class="literal">org.hibernate.transaction.TransactionFactory.getDefaultReleaseMode()</tt>
+                    Pour la JTATransactionFactory, elle retourne ConnectionReleaseMode.AFTER_STATEMENT; pour
+                    JDBCTransactionFactory, elle retourne ConnectionReleaseMode.AFTER_TRANSACTION. C'est rarement
+                    une bonne id&eacute;e de changer ce comportement par d&eacute;faut puisque les erreurs soulev&eacute;es par ce
+                    param&eacute;trage tend &agrave; prouver une erreur dans le code de l'utilisateur.
+                </p></li><li><p>
+                    <tt class="literal">on_close</tt> - indique d'utiliser ConnectionReleaseMode.ON_CLOSE.  Ce param&eacute;trage
+                    existe pour garantir la compatibilit&eacute; avec les versions pr&eacute;c&eacute;dentes, mais ne devrait plus &ecirc;tre utilis&eacute;.
+                </p></li><li><p>
+                    <tt class="literal">after_transaction</tt> - indique d'utiliser ConnectionReleaseMode.AFTER_TRANSACTION.
+                    Ne devrait pas &ecirc;tre utilis&eacute; dans les environnements JTA. Notez aussi qu'avec 
+                    ConnectionReleaseMode.AFTER_TRANSACTION, si une session est consid&eacute;r&eacute;e comme &eacute;tant en mode auto-commit
+                    les connexions seront relach&eacute;es comme si le mode &eacute;tait AFTER_STATEMENT.
+                </p></li><li><p>
+                    <tt class="literal">after_statement</tt> - indique d'utiliser ConnectionReleaseMode.AFTER_STATEMENT.
+                    Additonnellement, le <tt class="literal">ConnectionProvider</tt> utilis&eacute; est consult&eacute; pour savoir s'il supporte
+                    ce param&eacute;trage (<tt class="literal">supportsAggressiveRelease()</tt>). Si ce n'est pas le cas, le mode de
+                    lib&eacute;ration est r&eacute; initialis&eacute; &agrave; ConnectionReleaseMode.AFTER_TRANSACTION.  
+                    Ce param&eacute;trage n'est s&ucirc;r que dans les environnements o&ugrave; il est possible d'obtenir &agrave; nouveau
+                    la m&ecirc;me connexion JDBC &agrave; chaque fois que l'on fait un appel de <tt class="literal">ConnectionProvider.getConnection()</tt> 
+                    ou dans les envrionnements auto-commit o&ugrave; il n'est pas important d'obtenir plusieurs fois la 
+                    m&ecirc;me connexion.
+                </p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="objectstate.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="events.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;10.&nbsp;Travailler avec des objets&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;12.&nbsp;Les intercepteurs et les &eacute;v&eacute;nements</td></tr></table></div></body></html>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<description>Spring Quick Start</description>
+
+	<bean id="TheAction"
+	      class="com.loadtrend.actions.UpperAction"
+		  singleton="true">
+		<!--
+		  init-method="init"
+	      destroy-method="cleanup"
+		  depends-on="ActionManager"
+		-->
+
+		<property name="message">
+			<value>HeLLo</value>
+		</property>
+
+        <!--
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		-->
+
+	</bean>
+	
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<!--org.springframework.context.support.ReloadableResourceBundleMessageSource:
+			supports reload the resource without restart system.-->
+		<property name="basenames">
+			<list>
+				<value>messages</value>
+			</list>
+		</property>
+	</bean>
+
+    <!-- Design for listener & events -->
+	<bean id="loginAction" class="com.loadtrend.beans.LoginAction" />
+
+	<bean id="listener" class="com.loadtrend.beans.ActionListener" />
+	
+	<!-- Design for database relation -->
+	
+	<!-- Config the datasource in JNDI in the container like Tomcat.
+	<bean id="dataSource"
+		class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/sample</value>
+		</property>
+	</bean>
+	-->
+	
+	<!-- Config the datasource using APACHE DBCP component -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	    
+	    <property name="driverClassName">
+	        <value>com.mysql.jdbc.Driver</value>
+	    </property>
+	    
+	    <property name="url">
+	        <value>jdbc:mysql://localhost:3306/test_spring?autoReconnect=true</value>
+	    </property>
+	
+	    <property name="username">
+	        <value>root</value>
+	    </property>
+	
+	    <property name="password">
+	        <value>1234</value>
+	    </property>
+	    
+	</bean>
+	
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref local="dataSource" />
+        </property>
+    </bean>
+    
+    <bean id="userDAOProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        
+        <!-- 自动确定目标类是否有接口，如果有接口就采用Dynamic Proxy，无接口则采用CGLib生成代理类，
+               这一点的描述与本XML最后的AOP配置中的描述有所不同，TransactionProxyFactoryBean 是 AOP ProxyFactoryBean 的配置特例,
+               简化版本 -->
+        <property name="target">
+            <ref local="userDAO" />
+        </property>
+        
+        <property name="transactionAttributes">
+            <props>
+                <prop key="insert*">PROPAGATION_REQUIRED</prop>
+                <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+            </props>
+        </property>
+    
+    </bean>
+
+    <bean id="userDAO" class="com.loadtrend.daos.UserDAO">
+        <property name="dataSource">
+            <ref local="dataSource" />
+        </property>
+    </bean>
+    
+    
+    <!-- For Using Spring AOP framework -->
+    <!-- 我们可以通过以下节点，为我们的组件设定触发条件 -->
+    <bean id="myPointcutAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice">
+            <ref local="MyInterceptor" />
+        </property>
+        <property name="patterns">
+            <list>
+                <value>.*do.*</value>
+                <value>.*execute.*</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="MyInterceptor" class="com.loadtrend.aop.MethodTimeCostInterceptor"/>
+    
+    <!-- 除此之外，我们还需要定义一个Spring AOP ProxyFactory用以加载执行AOP组件 -->
+    <bean id="myAOPProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <!-- 不配置接口类型可能隐式的会采用CGLIB来生成代理类，制定后应该采用J2SE Dynamic Proxy生成代理接口 -->
+        <property name="proxyInterfaces">
+            <value>com.loadtrend.aop.ITest</value>
+        </property>
+        <!-- 是否强制使用CGLIB进行动态代理
+        <property name="proxyTargetClass">
+            <value>true</value>
+        </property>
+        -->
+        <property name="target">
+            <ref local="test" />
+        </property>
+        <property name="interceptorNames">
+            <value>myPointcutAdvisor</value>
+            <!-- 可配置多个Advisor
+            <list>
+                <value>xxxxAdvisor1</value>
+                <value>xxxxAdvisor2</value>
+            </list>
+            -->
+            <!-- 可直接配置Interceptor表示所有方法都是该拦截器的切入点
+            <value>MyInterceptor</value>
+            -->
+        </property>    
+    </bean>
+    
+    <bean id="test" class="com.loadtrend.aop.Test"/>
+
+</beans>

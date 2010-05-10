@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.eclipse.ui.tutorials.rcp.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.ui.tutorials.rcp.Perspective"
+            id="org.eclipse.ui.tutorials.rcp.perspective"
+            name="Rcp Perspective">
+      </perspective>
+   </extension>
+   <extension
+         id="RCP"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.tutorials.rcp.application"
+            name="RCP"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.eclipse.ui.tutorials.rcp"
+            name="Sample Category"/>
+      <view
+            category="org.eclipse.ui.tutorials.rcp"
+            class="org.eclipse.ui.tutorials.rcp.views.SampleView"
+            icon="icons/sample.gif"
+            id="org.eclipse.ui.tutorials.rcp.views.SampleView"
+            name="Sample View"/>
+      <view
+            allowMultiple="true"
+            category="org.eclipse.ui.tutorials.rcp"
+            class="org.eclipse.ui.tutorials.rcp.views.SampleView2"
+            icon="icons/sample.gif"
+            id="org.eclipse.ui.tutorials.rcp.views.SampleView2"
+            name="Sample View2"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.ui.tutorials.rcp.editors.SampleEditor"
+            icon="icons/sample.gif"
+            id="org.eclipse.ui.tutorials.rcp.editors.SampleEditor"
+            name="Sample Editor"/>
+   </extension>
+
+</plugin>

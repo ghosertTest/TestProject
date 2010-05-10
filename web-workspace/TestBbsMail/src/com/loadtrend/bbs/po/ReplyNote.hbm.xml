@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.loadtrend.bbs.po.ReplyNote" table="REPLYNOTE" catalog="bbs">
+    
+        <id name="id" type="string">
+            <column name="id" />
+            <generator class="uuid.hex">
+	        </generator>
+        </id>
+        
+        <property name="content" type="string">
+            <column name="content" length="1000" />
+        </property>
+        
+        <property name="postTime" type="timestamp">
+            <column name="post_time" />
+        </property>
+        
+        <property name="author" type="string">
+            <column name="author" length="50" />
+        </property>
+        
+        <property name="email" type="string">
+            <column name="email" length="50" />
+        </property>
+        
+        <many-to-one name="note" class="com.loadtrend.bbs.po.Note" column="note_id" cascade="none">
+        </many-to-one>
+    
+    </class>
+    
+</hibernate-mapping>

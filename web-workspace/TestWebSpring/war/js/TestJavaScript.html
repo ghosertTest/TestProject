@@ -1,0 +1,304 @@
+<html>
+
+<head>
+<title>This is my first javascript web.</title>
+<script language = "javascript">
+
+// JavaScript appears here.
+alert("This is my first javascript web.");
+document.write("This is my first javascript web.");
+document.close();
+
+// an effect
+var msg = "This is an effect.";  //变量声明不一样，统一var
+var interval = 100;
+var spacelen = 120;
+var space10 = " ";
+var seq = 0;
+function Scroll() {   // 函数声明不一样，public void scroll() {}
+
+    len = msg.length; // 和java有区别，java里msg.length();
+	window.status = msg.substring(0, seq + 1);
+	seq++;
+
+	if (seq >= len) {
+	    //seq = spacelen;
+		//window.setTimeout("Scroll2()", interval);
+	}
+	else {
+	    window.setTimeout("Scroll()", interval);
+	}
+}
+Scroll();
+
+// function
+function TestFunction(s1, s2, s3) {  // public void testFunction(int s1, int s2, int s3) {}
+    var Num = arguments.length;
+	document.write("<br>");
+	document.write("Here is " + Num + " in TestFunction");
+	document.close();
+}
+
+TestFunction(1, 2, 3);
+
+
+</script>
+
+</head>
+
+<!--
+可将<Script>...</Script>标识放入head>.. </Head>或<Body> ...</Body>之间。将JavaScript标识放置<Head>... </Head>在头部之间，使之在主页和其余部分代码之前装载，从而可使代码的功能更强大；可以将JavaScript标识放置在<Body>... </Body>主体之间以实现某些部分动态地创建文档。
+-->
+<body OnLoad = alert("welcome") onUnload = alert("ByeBye")>
+
+<!-- Events -->
+<form>
+<input type="button" value="ShowAlert" onClick=alert("ddd")>
+<input type="button" value="GetParam" onClick="TestFunction()">
+<!--当利用text或texturea元素输入字符值改变时发该事件，同时当在select表格项中一个选项状态改变后也会引发该事件-->
+<Input type="text" name="Test" value="ChangeMe" onChange=alert("Changed")>
+<Input type="text" name="Test" value="SelectMe" onSelect=alert("Selected")>
+<Input type="text" name="FocusMe" value="FocusMe" onFocus=alert("Focused")>
+<Input type="text" name="LeaveMe" value="LeaveMe" onBlur=alert("Left")>
+</form>
+
+
+<script language = "javascript">
+
+function getExplorerInfo() {
+
+    document.write("<font size=4 face=隶书><CENTER><p>");
+    document.write("浏览器名称: "+navigator.appName+"<br>");
+    document.write("版本号: "+navigator.appVersion+"<br>");
+    document.write("代码名字: "+navigator.appCodeName+"<br>");
+    document.write("用户代理标识: "+navigator.userAgent);
+    document.write("</CENTER></font>");
+
+	with (Math) {
+	    document.write("<p>" + PI + "<p>");
+	}
+
+    // Array Example:
+	a = new Array(4);                // int[] a = new int[4];
+    for (i=0; i < 4; i++) {
+        a[i] = new Array(4);
+        for (j=0; j < 4; j++) {
+            a[i][j] = "["+i+","+j+"]";
+        }
+    }
+    for (i=0; i < 4; i++) {
+        str = "Row "+i+":";
+        for (j=0; j < 4; j++) {
+            str += a[i][j];
+        }
+        document.write(str,"<p>");
+	}
+	document.write(a.length,"<p>");
+
+	document.write(window.location.href);
+    
+	document.close();
+}
+
+getExplorerInfo();
+
+// eval(codeString)
+//必选项 codestring 参数是包含有效 JScript 代码的字符串值。这个字符串将由 JScript //分析器进行分析和执行。eval用来执行代码
+
+eval("var mydate = new Date();");
+document.write("<p>" + mydate);
+
+</script>
+
+
+<!--区域刷新测试div id标记实现-->
+
+<div id = "refreshpage">
+</div>
+<script language = "javascript">
+// test Date object
+function getNowTime() {               // getNowTimer() 也可以理解为对象 gnt = new getNowTime();
+
+    now = new Date();                 // Date now = new Date();
+    var sNow = "<p>" + "现在是北京时间: " + now.getYear() + "年" + now.getMonth() + 1 + "月"
+               + now.getDate() + "日" + now.getHours() + "时" + now.getMinutes() + "分" + now.getSeconds() + "秒";
+    refreshpage.innerHTML = sNow;
+	window.setTimeout("getNowTime()",1000);
+}
+getNowTime();
+</script>
+<input type = "button" name = "time" value = "refresh" onClick = getNowTime()>
+
+
+
+<!--// test some system function-->
+<script languaga="JavaScript">
+
+function newWindow(url) {
+    window.open(url,"",	"toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=620,height=400");
+}
+
+function showPrompt() {
+    var test=window.prompt("请输入数据:","");             // window.可以省略也可以不省略
+    document.write(test + " JavaScript输入输出的例子");
+	document.close();
+}
+
+function showConfirm() {
+    var test = window.confirm("Yes to agree and no to now agree.");
+	if (test) {
+	    alert("Yes!");
+	}
+	else {
+	    alert("No!");
+	}
+}
+
+</script>
+
+<input type = "button" name = "time" value = "open" onClick = newWindow("http://www.realrecorder.net")>
+<input type = "button" name = "prompt" value = "prompt" onClick = showPrompt()>
+<input type = "button" name = "confirm" value = "confirm" onClick = showConfirm()>
+
+<!--Get value from user 通过表单form完成-->
+<p>
+<form name = "getUserPass"> <!--form name "getUerPass" method = "post" action = "dispatcher"-->
+<table>
+<tr>
+    <td>UserName:</td>
+    <td><input type = "username" name = "username" value=""></td>
+</tr>
+<tr>
+    <td>PassWord:</td>
+    <td><input type = "password" name = "password" value=""></td>
+</tr>
+<tr>
+    <td></td>
+    <td><input type = "button" name = "submit" value= "submit" onClick = showValue()></td>
+</tr>
+</table>
+</form>
+<!--
+<form Name=Form1>
+<INPUT type=text...>
+<Input type=text...>
+<Inpup byne=text...>
+</form>
+<form Name=Form2>
+<INPUT type=text...>
+<Input type=text...>
+</form>
+在Forms[0]中共有三个基本元素，而Forms[1]中只有两个元素。
+-->
+<!--引用窗体的先决条件
+　　在JavaScript中要对窗体引用的条件是：必须先在页面中用标识创建窗体，并将定义窗体部分放在引用之前。
+-->
+<script language = "javascript">
+function showValue() {
+    alert(document.forms[0].Test[0].value);      // 有多个同name时用数组依次表示
+	alert(document.forms[0].elements[1].value);  // 由元素数组访问value
+    alert(document.forms[0].LeaveMe.value);      // "Test","LeaveMe"等name参数区分大小
+    alert(document.getUserPass.username.value);
+	alert(document.forms[1].password.value);
+}
+</script>
+
+<!-- elements examples-->
+<form name = "te">
+<input type = "text" name = "text" value = "text1">
+<input type = "password" name = "password" value = "password1">
+<input type = "button" name = "button" value = "clickMe" onClick = "testElements()">
+<input type = "submit" name = "submit" value = "submit">
+<input type = "checkbox" name = "checkbox" value = "checkbox" checked=true >
+<input type = "radio" name = "radio" value = "radio" checked>
+
+<textarea name = "textarea" rows="5" cols = "30">textarea</textarea>
+
+<select size = "1" name = "select">
+<option>Shanghai</option>
+<option value="BJ">Beijing</option>
+<option>Guangzhou</option>
+<option>Hongkong</option>
+</select>
+
+</form>
+
+<script language = "javascript">
+function testElements() {
+    with (te.select) {
+    var s = "name:" + name + "\n" + "length:" + length + "\n"
+	        + "options.length:" + options.length + "\n"
+	        + "selectedIndex:" + selectedIndex + "\n"
+	        + "options[0].text:" + options[0].text + "\n"
+			+ "options[1].value" + options[1].value + "\n"
+			+ "options[2].selected:" + options[2].selected + "\n"
+			+ "options[3].index:" + options[3].index;
+	}
+	te.textarea.value = s;
+}
+</script>
+
+<!-- Other way to get Value -->
+<!-- input 语句用this传递信息-->
+<input type = "text" name = "text111" value = "text1" onFocus = "iChanged(this)" onChange = "iiChanged(this.value)">
+<!--input语句用它的name调用改name的方法属性等-->
+<input type = "button" name = "button" value = "clickMe" onClick = "iiChanged()">
+<script language = "javascript">
+function iChanged(s) {
+	alert(s.value);
+}
+function iiChanged(s) {
+	alert(s);
+}
+function iiChanged() {
+	alert(text111.value);
+}
+</script>
+
+
+</body>
+</html>
+
+
+<p>动态显示技巧：把文本框做显示，设只读属性
+<script language="javascript">
+	function textCounter(field, maxlimit) { 
+		if (field.value.length > maxlimit) 
+			field.value = field.value.substring(0, maxlimit); 
+		else 
+			remLen.value = maxlimit - field.value.length;
+	}
+</script>
+
+<font color=46A718>剩余字数:<input name=remLen value=500 readonly type=text size=4 maxlength=3 style="background-color: #eaffe0; border: 0; color: red"></font>
+
+<textarea name=words cols=60 rows=3 class=input1 onPropertyChange="textCounter(words, 500)"></textarea>
+<!-- 基本元素举列：
+OnClick代表事件，click()代表方法，name代表属性
+
+"passowrd","submit"
+"text", "textarea": OnFocus, onChange, onBlur, OnSelect, blur(), select(), name, value, defaultvalue
+"button": OnClick, click(), name, value
+"checkbox": onClick, click(), name, value, checked
+"radio": OnClick, click(), name, value, length, checked, index, defaultchecked
+"select": OnBur, OnFocus, OnChange, name, length, selectedIndex, text, selected, index, defaultselected
+
+-->
+
+
+<!-- applet code example
+<html>
+<head>
+<title> A Simple Program </title>
+<SCRIPT language="VBSCRIPT"
+src="http://java.sun.com/products/plugin/1.4/autodl/autodownload.vbs">
+</SCRIPT>
+</head>
+<body>
+<hr/>
+<applet code = "MyFirstApplet.class" width = 300 height = 200 >
+</applet>
+<hr/>
+</body>
+</html>
+-->

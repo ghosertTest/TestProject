@@ -1,0 +1,194 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapitre&nbsp;12.&nbsp;Les intercepteurs et les &eacute;v&eacute;nements</title><link rel="stylesheet" href="../shared/css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="up" href="index.html" title="HIBERNATE - Persistance relationnelle en Java standard"><link rel="previous" href="transactions.html" title="Chapitre&nbsp;11.&nbsp;Transactions et acc&egrave;s concurrents"><link rel="next" href="batch.html" title="Chapitre&nbsp;13.&nbsp;Traitement par paquet"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapitre&nbsp;12.&nbsp;Les intercepteurs et les &eacute;v&eacute;nements</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="transactions.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="batch.html">Suivant</a></td></tr></table><hr></div><div class="chapter" lang="fr"><div class="titlepage"><div><div><h2 class="title"><a name="events"></a>Chapitre&nbsp;12.&nbsp;Les intercepteurs et les &eacute;v&eacute;nements</h2></div></div><div></div></div><p>
+        Il est souvent utile pour l'application de r&eacute;agir &agrave; certains &eacute;v&eacute;nements
+        qui surviennent dans Hibernate. Cela autorise l'impl&eacute;mentation de certaines sortes de
+        fonctionnalit&eacute;s g&eacute;n&eacute;riques, et d'extensions de fonctionnalit&eacute;s d'Hibernate.
+    </p><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="objectstate-interceptors"></a>12.1.&nbsp;Intercepteurs</h2></div></div><div></div></div><p>
+            L'interface <tt class="literal">Interceptor</tt> fournit des "callbacks" de la session vers l'application 
+            et permettent &agrave; l'application de consulter et/ou de manipuler des propri&eacute;t&eacute;s
+            d'un objet persistant avant qu'il soit sauvegard&eacute;, mis &agrave; jour, supprim&eacute; ou charg&eacute;.
+            Une utilisation possible de cette fonctionnalit&eacute; est de tracer l'acc&egrave;s &agrave; l'information.
+            Par exemple, l'<tt class="literal">Interceptor</tt> suivant positionne
+            <tt class="literal">createTimestamp</tt> quand un <tt class="literal">Auditable</tt> est cr&eacute;&eacute;
+            et met &agrave; jour la propri&eacute;t&eacute; <tt class="literal">lastUpdateTimestamp</tt> quand un
+            <tt class="literal">Auditable</tt> est mis &agrave; jour.
+        </p><p>
+            Vous pouvez soit impl&eacute;menter <tt class="literal">Interceptor</tt> directement ou (mieux)
+            &eacute;tendre <tt class="literal">EmptyInterceptor</tt>.
+        </p><pre class="programlisting">package org.hibernate.test;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Iterator;
+
+import org.hibernate.EmptyInterceptor;
+import org.hibernate.Transaction;
+import org.hibernate.type.Type;
+
+public class AuditInterceptor extends EmptyInterceptor {
+
+    private int updates;
+    private int creates;
+    private int loads;
+
+    public void onDelete(Object entity,
+                         Serializable id,
+                         Object[] state,
+                         String[] propertyNames,
+                         Type[] types) {
+        // ne fait rien
+    }
+
+    public boolean onFlushDirty(Object entity,
+                                Serializable id,
+                                Object[] currentState,
+                                Object[] previousState,
+                                String[] propertyNames,
+                                Type[] types) {
+
+        if ( entity instanceof Auditable ) {
+            updates++;
+            for ( int i=0; i &lt; propertyNames.length; i++ ) {
+                if ( "lastUpdateTimestamp".equals( propertyNames[i] ) ) {
+                    currentState[i] = new Date();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean onLoad(Object entity,
+                          Serializable id,
+                          Object[] state,
+                          String[] propertyNames,
+                          Type[] types) {
+        if ( entity instanceof Auditable ) {
+            loads++;
+        }
+        return false;
+    }
+
+    public boolean onSave(Object entity,
+                          Serializable id,
+                          Object[] state,
+                          String[] propertyNames,
+                          Type[] types) {
+
+        if ( entity instanceof Auditable ) {
+            creates++;
+            for ( int i=0; i&lt;propertyNames.length; i++ ) {
+                if ( "createTimestamp".equals( propertyNames[i] ) ) {
+                    state[i] = new Date();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void postFlush(Iterator entities) {
+        System.out.println("Creations: " + creates + ", Updates: " + updates);
+    }
+
+    public void afterTransactionCompletion(Transaction tx) {
+        if ( tx.wasCommitted() ) {
+            System.out.println("Creations: " + creates + ", Updates: " + updates, "Loads: " + loads);
+        }
+        updates=0;
+        creates=0;
+        loads=0;
+    }
+
+}</pre><p>
+            L'intercepteur doit &ecirc;tre sp&eacute;cifi&eacute; quand une session est cr&eacute;&eacute;e.
+        </p><pre class="programlisting">Session session = sf.openSession( new AuditInterceptor() );</pre><p>
+            Vous pouvez aussi mettre un intercepteur au niveau global, en utilisant l'objet <tt class="literal">Configuration</tt>.
+            Dans ce cas, l'intercepteur doit &ecirc;tre "threadsafe".
+        </p><pre class="programlisting">new Configuration().setInterceptor( new AuditInterceptor() );</pre></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="objectstate-events"></a>12.2.&nbsp;Syst&egrave;me d'&eacute;v&eacute;nements</h2></div></div><div></div></div><p>
+            Si vous devez r&eacute;agir &agrave; des &eacute;v&eacute;nements particuliers dans votre couche de persistance,
+            vous pouvez aussi utiliser l'architecture d'<span class="emphasis"><em>&eacute;v&eacute;nements</em></span> d'Hibernate3.
+            Le syst&egrave;me d'&eacute;v&eacute;nements peut &ecirc;tre utilis&eacute; en suppl&eacute;ment ou en remplacement des interceptors.
+        </p><p>
+            Essentiellement toutes les m&eacute;thodes de l'interface <tt class="literal">Session</tt> sont corr&eacute;l&eacute;es &agrave;
+            un &eacute;v&eacute;nement. Vous avez un <tt class="literal">LoadEvent</tt>, un <tt class="literal">FlushEvent</tt>, etc
+            (consultez la DTD du fichier de configuration XML ou le paquet <tt class="literal">org.hibernate.event</tt>
+            pour avoir la liste compl&egrave;te des types d'&eacute;v&eacute;nement d&eacute;finis).
+            Quand une requ&ecirc;te est faite &agrave; partir d'une de ces m&eacute;thodes, la
+            <tt class="literal">Session</tt> Hibernate g&eacute;n&egrave;re un &eacute;v&eacute;nement appropri&eacute; et le passe
+            au listener configur&eacute; pour ce type.
+            Par d&eacute;faut, ces listeners impl&eacute;mentent le m&ecirc;me traitement dans lequel ces m&eacute;thodes
+            aboutissent toujours.
+            Cependant, vous &ecirc;tes libre d'impl&eacute;menter une version personnalis&eacute;e d'une de ces
+            interfaces de listener (c'est-&agrave;-dire, le <tt class="literal">LoadEvent</tt> est trait&eacute; par
+            l'impl&eacute;mentation de l'interface <tt class="literal">LoadEventListener</tt> d&eacute;clar&eacute;e), dans
+            quel cas leur impl&eacute;mentation devrait &ecirc;tre responsable du traitement des
+            requ&ecirc;tes <tt class="literal">load()</tt> faites par la <tt class="literal">Session</tt>.
+        </p><p>
+            Les listeners devraient effectivement &ecirc;tre consid&eacute;r&eacute;s comme des singletons ; dans le sens
+            o&ugrave; ils sont partag&eacute;s entre des requ&ecirc;tes, et donc ne devraient pas sauvegarder des &eacute;tats
+            de variables d'instance.
+        </p><p>
+            Un listener personnalis&eacute; devrait impl&eacute;menter l'interface appropri&eacute;e pour l'&eacute;v&eacute;nement
+            qu'il veut traiter et/ou &eacute;tendre une des classes de base (ou m&ecirc;me l'&eacute;v&eacute;nement pr&ecirc;t &agrave;
+            l'emploi utilis&eacute; par Hibernate comme ceux d&eacute;clar&eacute;s non-finaux &agrave; cette intention). Les
+            listeners personnalis&eacute;s peuvent &ecirc;tre soit inscrits par programmation &agrave; travers l'objet
+            <tt class="literal">Configuration</tt>, ou sp&eacute;cifi&eacute;s la configuration XML d'Hibernate
+            (la configuration d&eacute;clarative &agrave; travers le fichier de propri&eacute;t&eacute;s n'est pas support&eacute;e).
+            Voici un exemple de listener personnalis&eacute; pour l'&eacute;v&eacute;nement de chargement :
+        </p><pre class="programlisting">public class MyLoadListener implements LoadEventListener {
+    // C'est une simple m&eacute;thode d&eacute;finie par l'interface LoadEventListener
+    public void onLoad(LoadEvent event, LoadEventListener.LoadType loadType)
+            throws HibernateException {
+        if ( !MySecurity.isAuthorized( event.getEntityClassName(), event.getEntityId() ) ) {
+            throw MySecurityException("Unauthorized access");
+        }
+    }
+}</pre><p>
+            Vous avez aussi besoin d'une entr&eacute;e de configuration disant &agrave; Hibernate d'utiliser
+            ce listener en plus du listener par d&eacute;faut :
+        </p><pre class="programlisting">&lt;hibernate-configuration&gt;
+    &lt;session-factory&gt;
+        ...
+        &lt;event type="load"&gt;
+            &lt;listener class="com.eg.MyLoadListener"/&gt;
+            &lt;listener class="org.hibernate.event.def.DefaultLoadEventListener"/&gt;
+        &lt;/event&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre><p>
+            Vous pouvez aussi l'inscrire par programmation :
+        </p><pre class="programlisting">Configuration cfg = new Configuration();
+LoadEventListener[] stack = { new MyLoadListener(), new DefaultLoadEventListener() };
+cfg.EventListeners().setLoadEventListeners(stack);</pre><p>
+            Les listeners inscrits d&eacute;clarativement ne peuvent pas partager d'instances. Si le m&ecirc;me
+            nom de classe est utilis&eacute;e dans plusieurs &eacute;l&eacute;ments <tt class="literal">&lt;listener/&gt;</tt>,
+            chaque r&eacute;f&eacute;rence sera une instance distincte de cette classe. Si vous avez besoin de la
+            facult&eacute; de partager des instances de listener entre plusieurs types de listener, vous devez
+            utiliser l'approche d'inscription par programmation.
+        </p><p>
+            Pourquoi impl&eacute;menter une interface et d&eacute;finir le type sp&eacute;cifique durant la configuration ?
+            Une impl&eacute;mentation de listener pourrait impl&eacute;menter plusieurs interfaces de listener
+            d'&eacute;v&eacute;nements. Avoir en plus le type d&eacute;fini durant l'inscription rend plus facile
+            l'activation ou la d&eacute;sactivation pendant la configuration.
+        </p></div><div class="sect1" lang="fr"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="objectstate-decl-security"></a>12.3.&nbsp;S&eacute;curit&eacute; d&eacute;clarative d'Hibernate</h2></div></div><div></div></div><p>
+            G&eacute;n&eacute;ralement, la s&eacute;curit&eacute; d&eacute;clarative dans les applications Hibernate est g&eacute;r&eacute;e dans la
+            couche de session. Maintenant, Hibernate3 permet &agrave; certaines actions d'&ecirc;tre approuv&eacute;es
+            via JACC, et autoris&eacute;es via JAAS. Cette fonctionnalit&eacute; optionnelle est construite
+            au dessus de l'architecture d'&eacute;v&eacute;nements.
+        </p><p>
+            D'abord, vous devez configurer les listeners d'&eacute;v&eacute;nements appropri&eacute;s pour permettre
+            l'utilisation d'autorisations JAAS.
+        </p><pre class="programlisting">&lt;listener type="pre-delete" class="org.hibernate.secure.JACCPreDeleteEventListener"/&gt;
+&lt;listener type="pre-update" class="org.hibernate.secure.JACCPreUpdateEventListener"/&gt;
+&lt;listener type="pre-insert" class="org.hibernate.secure.JACCPreInsertEventListener"/&gt;
+&lt;listener type="pre-load" class="org.hibernate.secure.JACCPreLoadEventListener"/&gt;</pre><p>
+            Notez que <tt class="literal">&lt;listener type="..." class="..."/&gt;</tt> est juste un raccourci
+            pour <tt class="literal">&lt;event type="..."&gt;&lt;listener class="..."/&gt;&lt;/event&gt;</tt>
+            quand il y a exactement un listener pour un type d'&eacute;v&eacute;nement particulier.
+        </p><p>
+            Ensuite, toujours dans <tt class="literal">hibernate.cfg.xml</tt>, lier les permissions aux r&ocirc;les :
+        </p><pre class="programlisting">&lt;grant role="admin" entity-name="User" actions="insert,update,read"/&gt;
+&lt;grant role="su" entity-name="User" actions="*"/&gt;</pre><p>
+            Les noms de r&ocirc;le sont les r&ocirc;les compris par votre fournisseur JAAC.
+        </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="transactions.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="batch.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">Chapitre&nbsp;11.&nbsp;Transactions et acc&egrave;s concurrents&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;Chapitre&nbsp;13.&nbsp;Traitement par paquet</td></tr></table></div></body></html>

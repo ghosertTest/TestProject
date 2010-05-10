@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+	- DispatcherServlet application context for the Countries web tier.
+-->
+<beans>
+
+	<!--Definition of View Resolver -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass">
+			<value>org.springframework.web.servlet.view.JstlView</value>
+		</property>
+		<property name="prefix">
+			<value>/jsp/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+	<!--
+	    通过SimpleMappingExceptionResolver我们可以将不同的异常映射到不同的jsp页
+	    面（通过exceptionMappings属性的配置），同时我们也可以为所有的异常指定一个默认的异
+	    常提示页面（通过defaultErrorView属性的配置），如果所抛出的异常在exceptionMappings
+	    中没有对应的映射，则Spring将用此默认配置显示异常信息（注意这里配置的异常显示界面均
+	    仅包括主文件名，至于文件路径和后缀已经在viewResolver中指定）
+	-->
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+	    <property name="defaultErrorView">
+	        <value>failure</value>
+        </property>
+        <property name="exceptionMappings">
+        <props>
+        <prop key="java.sql.SQLException">showDBError</prop>
+        <prop key="java.lang.RuntimeException">showError</prop>
+        </props>
+        </property>
+    </bean>
+    
+    <!-- Internationalization Support -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename">
+            <value>messages</value>
+        </property>
+    </bean>
+
+    <!--Register Validation-->
+	<bean id="RegisterValidator" class="com.loadtrend.validator.RegisterValidator" />
+
+	<!--Request Mapping -->
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/login.do">LoginAction</prop>
+				<prop key="/register.do">RegisterAction</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!---Action Definition-->
+	<bean id="LoginAction" class="com.loadtrend.action.LoginAction">
+		<property name="commandClass">
+			<value>com.loadtrend.info.LoginInfo</value>
+		</property>
+		<property name="fail_view">
+			<value>loginfail</value>
+		</property>
+		<property name="success_view">
+			<value>main</value>
+		</property>
+	</bean>
+	
+	<bean id="RegisterAction" class="com.loadtrend.action.RegisterAction">
+		<property name="commandClass">
+			<value>com.loadtrend.info.RegisterInfo</value>
+		</property>
+		<!--
+			Used to instead of the string 'command' in register.jsp page.
+			<property name="commandName">
+			    <value>RegisterInfo</value>
+			</property>
+		-->
+		<property name="validator">
+			<ref local="RegisterValidator" />
+		</property>
+		<!--
+		    这里即用户访问register.do时将显示的注册界面 
+		-->
+		<property name="formView">
+			<value>register</value>
+		</property>
+		<property name="successView">
+			<value>RegisterSuccess</value>
+		</property>
+	</bean>
+	
+</beans>

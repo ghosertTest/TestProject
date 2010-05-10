@@ -1,0 +1,35 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+	<head>
+		<title>
+			Celebrity Collector: ${celebrity.firstName}
+			${celebrity.lastName}
+		</title>
+	</head>
+	<body>
+		<h1>Celebrity Details</h1>
+		<table>
+			<tr>
+				<td>First Name:</td>
+				<td>${celebrity.firstName}</td>
+			</tr>
+			<tr>
+				<td>Last Name:</td>
+				<td>${celebrity.lastName}</td>
+			</tr>
+			<tr>
+				<td>Date of Birth:</td>
+				<td>
+					<t:output t:format="dateFormat"
+						t:value="celebrity.dateOfBirth" />
+				</td>
+			</tr>
+			<tr>
+				<td>Occupation:</td>
+				<td>${celebrity.occupation}</td>
+			</tr>
+		</table>
+		<a href="#" t:type="PageLink" t:page="ShowAll">
+			Back to All Celebrities
+		</a>
+	</body>
+</html>

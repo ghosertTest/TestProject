@@ -1,0 +1,1469 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0061)http://www.blogjava.net/martinx/archive/2005/09/29/14386.html -->
+<HTML><HEAD id=Head><TITLE>BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=utf-8">
+<META 
+content="<% = Dottext.Framework.Configuration.Config.CurrentBlog().MetaKeywords %>" 
+name=keywords><LINK id=MainCss 
+href="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/style.css" 
+type=text/css rel=stylesheet><LINK id=RSSLink title=RSS 
+href="http://www.blogjava.net/martinx/rss.aspx" type=application/rss+xml 
+rel=alternate>
+<META content="MSHTML 6.00.2800.1528" name=GENERATOR></HEAD>
+<BODY>
+<FORM id=Form1 name=Form1 onsubmit="javascript:return WebForm_OnSubmit();" 
+action=14386.html method=post>
+<DIV><INPUT id=__EVENTTARGET type=hidden name=__EVENTTARGET> <INPUT 
+id=__EVENTARGUMENT type=hidden name=__EVENTARGUMENT> <INPUT 
+id="&#13;&#10;__VIEWSTATE" type=hidden name=__VIEWSTATE> </DIV>
+<SCRIPT type=text/javascript>
+<!--
+var theForm = document.forms['Form1'];
+if (!theForm) {
+    theForm = document.Form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+// -->
+</SCRIPT>
+
+<SCRIPT 
+src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/WebResource.axd" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript>
+									function ctlent()
+											{
+												if(event.ctrlKey && event.keyCode == 13)
+												{	
+													try
+													{
+														TempSave('AnonymousPostComment1_tbComment');
+													}
+													catch(ex)
+													{
+													}
+													finally
+													{
+													__doPostBack('AnonymousPostComment1$btnSubmit','')
+													}
+												}
+		
+												}</SCRIPT>
+
+<SCRIPT language=JavaScript>function SetReplyAuhor(author){document.getElementById('AnonymousPostComment1_tbComment').value+="@"+author+"\n";document.getElementById('AnonymousPostComment1_tbComment').focus();return false}</SCRIPT>
+
+<SCRIPT 
+src="C:\Documents and Settings\jiawei.zhang\桌面\JAVAMAIL\BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files\WebResource(1).axd" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT type=text/javascript>
+<!--
+function WebForm_OnSubmit() {
+if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+return true;
+}
+// -->
+</SCRIPT>
+
+<TABLE style="BORDER-BOTTOM: #cccccc 1px solid" cellSpacing=0 cellPadding=5 
+width="90%" align=center bgColor=white border=0>
+  <TBODY>
+  <TR>
+    <TD class=banner 
+    background="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/bg_banner.jpg" 
+    colSpan=2 height=100>
+      <DIV id=header><SPAN><A id=Header2_HeaderTitle 
+      href="http://www.blogjava.net/martinx/">躺在沙滩上的小猪</A><BR>
+      <DIV class=sub>快乐的每一天</DIV></SPAN></DIV></TD></TR>
+  <TR>
+    <TD style="PADDING-LEFT: 10px" height=35><B></B>| <B><A class=listitem 
+      id=MyLinks2_MyHomeLink href="http://www.blogjava.net/martinx/">首页</A></B> 
+      | <B><A class=listitem id=MyLinks2_NewPostLink 
+      href="http://www.blogjava.net/martinx/admin/EditPosts.aspx?opt=1">发新随笔</A></B> 
+      | <B><A class=listitem id=MyLinks2_NewArticleLink 
+      href="http://www.blogjava.net/EnterMyBlog.aspx?NewArticle=1">发新文章</A></B> 
+      | <B><A class=listitem id=MyLinks2_ContactLink accessKey=9 
+      href="http://www.blogjava.net/martinx/contact.aspx">联系</A></B> | <B><A 
+      class=listitem id=MyLinks2_Syndication 
+      href="http://www.blogjava.net/martinx/Rss.aspx">聚合</A></B><A 
+      id=MyLinks2_XMLLink href="http://www.blogjava.net/martinx/Rss.aspx"><IMG 
+      style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+      src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/xml.gif"></A> 
+      | <B><A class=listitem id=MyLinks2_Admin 
+      href="http://www.blogjava.net/martinx/admin/default.aspx">管理</A></B> </TD>
+    <TD style="PADDING-RIGHT: 20px" align=right width="30%">随笔：130 文章：45 
+      评论：134 引用：0 </TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width="90%" align=center border=0>
+  <TBODY>
+  <TR>
+    <TD 
+    style="PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; PADDING-TOP: 0px" 
+    vAlign=top width="75%">
+      <TABLE class=index height=1400 cellSpacing=0 cellPadding=5 width="100%" 
+      align=center bgColor=white border=0>
+        <TBODY>
+        <TR>
+          <TD class=banner vAlign=top>
+            <DIV class=block>
+            <H1 class=block_title><A id=viewpost1_TitleUrl 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html">简化JavaMail：小巧 
+            Jakarta Commons-Email 简单教程</A></H1>
+            <DIV class=post>
+            <DIV class=postcontent>Jakarta发布了Commons Emails 1.0 released 
+            版本，目的是为了简化JavaMail。<BR><BR>知道有它几个class吗？你一定想不到，只有8个！<BR><BR>好了，开始我们的jakarta 
+            commons emails 之旅：）<BR><BR>一：Quick Start<BR>通过SimpleEmail发送邮件<BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN 
+            style="COLOR: #000000">java.lang.Object<BR></SPAN><SPAN 
+            style="COLOR: #008080">2</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>&nbsp;&nbsp;org.apache.commons.mail.Email<BR></SPAN><SPAN 
+            style="COLOR: #008080">3</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.apache.commons.mail.SimpleEmail</SPAN></DIV><BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN 
+            style="COLOR: #000000">SimpleEmail&nbsp;email&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">=</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;</SPAN><SPAN 
+            style="COLOR: #0000ff">new</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;SimpleEmail();<BR></SPAN><SPAN 
+            style="COLOR: #008080">2</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setHostName(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">mail.4ya.cn</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">3</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setAuthentication(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">&lt;username&gt;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">,</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">&lt;password&gt;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">)<BR></SPAN><SPAN 
+            style="COLOR: #008080">4</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.addTo(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin.xus@gmail.com</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">,&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">5</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setFrom(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin@4ya.cn</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">,&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">6</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setSubject(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">测试主题</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">7</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setMsg(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">这里是邮件内容</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">8</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.send();</SPAN></DIV><BR>就如代码里字面上的意思一样简单:<BR>1：创建以SimpleEmail对象<BR>2：设定发送信件的smtp服务器，如果没有设定，会寻找系统变量中mail.host值。<BR>3：设定smtp的用户和密码<BR>4：收件人<BR>5：发件人<BR>6：主题<BR>7：内容<BR>8：发送<BR><BR>二：发送带附件的邮件<BR>我们可以发送本机的附件，当然我们也可以发送非本机的附件，如果发送的是一个存在网络上的附件的url,则邮件发送的时候会自动下载，添加到附件中。<BR><BR>&nbsp;&nbsp; 
+            1：）发送本地附件：<BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN 
+            style="COLOR: #000000">EmailAttachment&nbsp;attachment&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">=</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;</SPAN><SPAN 
+            style="COLOR: #0000ff">new</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;EmailAttachment();<BR></SPAN><SPAN 
+            style="COLOR: #008080">2</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>attachment.setPath(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">test/test.rar</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">3</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>attachment.setDisposition(EmailAttachment.ATTACHMENT);<BR></SPAN><SPAN 
+            style="COLOR: #008080">4</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>attachment.setDescription(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">python&nbsp;resource</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">5</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>attachment.setName(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">resource</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);</SPAN></DIV><BR>&nbsp;&nbsp; 
+            2：）发送不存在本地的附件<BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN 
+            style="COLOR: #000000">EmailAttachment&nbsp;attachment&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">=</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;</SPAN><SPAN 
+            style="COLOR: #0000ff">new</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;EmailAttachment();<BR></SPAN><SPAN 
+            style="COLOR: #008080">2</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>attachment.setURL(</SPAN><SPAN 
+            style="COLOR: #0000ff">new</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;URL(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">http://www.smilinglibrary.org/sldoc/pics/index03.jpg</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">));<BR></SPAN><SPAN 
+            style="COLOR: #008080">3</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>attachment.setDisposition(EmailAttachment.ATTACHMENT);<BR></SPAN><SPAN 
+            style="COLOR: #008080">4</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>attachment.setDescription(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">微笑图书馆</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">5</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>attachment.setName(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">微笑图书馆</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);</SPAN></DIV><BR><BR>next,添加附件到我们的邮件中<BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">&nbsp;1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN 
+            style="COLOR: #000000">MultiPartEmail&nbsp;email&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">=</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;</SPAN><SPAN 
+            style="COLOR: #0000ff">new</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;MultiPartEmail();<BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;2</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setHostName(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">mail.4ya.cn</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR>&nbsp;3&nbsp;&nbsp;&nbsp; 
+            email.setAuthentication(<SPAN style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">&lt;username&gt;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">,</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">&lt;password&gt;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">)</SPAN><BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;4</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.addTo(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin.xus@gmail.com</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">,&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;5</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setFrom(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin@4ya.cn</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">,&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;6</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setSubject(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">邮件主题</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;7</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setMsg(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">邮件内容</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;8</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN style="COLOR: #008000">//</SPAN><SPAN 
+            style="COLOR: #008000">添加附件</SPAN><SPAN 
+            style="COLOR: #008000"><BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;9</SPAN><SPAN 
+            style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN 
+            style="COLOR: #000000">email.attach(attachment);<BR></SPAN><SPAN 
+            style="COLOR: #008080">10</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><BR></SPAN><SPAN style="COLOR: #008080">11</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN style="COLOR: #008000">//</SPAN><SPAN 
+            style="COLOR: #008000">发送邮件</SPAN><SPAN 
+            style="COLOR: #008000"><BR></SPAN><SPAN 
+            style="COLOR: #008080">12</SPAN><SPAN style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN 
+            style="COLOR: #000000">email.send();</SPAN></DIV><BR>如果需要发送多个附件，只需创建多个EmailAttachement,即可<BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN 
+            style="COLOR: #000000">email.attach(attachment1)<BR></SPAN><SPAN 
+            style="COLOR: #008080">2</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.attach(attachment2)</SPAN></DIV><BR>三：发送html格式的邮件<BR>通过HtmlEmail我们可以发送Html格式的邮件：<BR><BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN 
+            style="COLOR: #000000">java.lang.Object<BR></SPAN><SPAN 
+            style="COLOR: #008080">2</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>&nbsp;&nbsp;org.apache.commons.mail.Email<BR></SPAN><SPAN 
+            style="COLOR: #008080">3</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.apache.commons.mail.MultiPartEmail<BR></SPAN><SPAN 
+            style="COLOR: #008080">4</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.apache.commons.mail.HtmlEmail<BR></SPAN><SPAN 
+            style="COLOR: #008080">5</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN></DIV><BR>如下：<BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">&nbsp;1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN style="COLOR: #008000">//</SPAN><SPAN 
+            style="COLOR: #008000">HtmlEmail!</SPAN><SPAN 
+            style="COLOR: #008000"><BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;2</SPAN><SPAN 
+            style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN 
+            style="COLOR: #000000">HtmlEmail&nbsp;email&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">=</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;</SPAN><SPAN 
+            style="COLOR: #0000ff">new</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;HtmlEmail();<BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;3</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setHostName(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">mail.4ya.cn</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR>&nbsp;3&nbsp;&nbsp;&nbsp;email.setAuthentication(<SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">&lt;username&gt;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">,</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">&lt;password&gt;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">)</SPAN><BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;5</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.addTo("martin@4ya.cn</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;6</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setFrom("martin.xus@gmail.com</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">martin</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;7</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setSubject(</SPAN><SPAN 
+            style="COLOR: #000000">"主题：该邮件包括html格式内容</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;8</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN style="COLOR: #008000">//</SPAN><SPAN 
+            style="COLOR: #008000">&nbsp;embed&nbsp;the&nbsp;image&nbsp;and&nbsp;get&nbsp;the&nbsp;content&nbsp;id<BR></SPAN><SPAN 
+            style="COLOR: #008080">&nbsp;9</SPAN><SPAN 
+            style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN style="COLOR: #008000">//</SPAN><SPAN 
+            style="COLOR: #008000">&nbsp;注意这里：embed&nbsp;将帮助我们创建标签如：cid:xxx&nbsp;url</SPAN><SPAN 
+            style="COLOR: #008000"><BR></SPAN><SPAN 
+            style="COLOR: #008080">10</SPAN><SPAN style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN 
+            style="COLOR: #000000">URL&nbsp;url&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">=</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;</SPAN><SPAN 
+            style="COLOR: #0000ff">new</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;URL(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">http://www.apache.org/images/asf_logo_wide.gif</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">11</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>String&nbsp;cid&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">=</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;email.embed(url,&nbsp;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">Apache&nbsp;logo</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">12</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><BR></SPAN><SPAN style="COLOR: #008080">13</SPAN><SPAN 
+            style="COLOR: #000000"><IMG id=Codehighlighter1_419_557_Open_Image 
+            onclick="this.style.display='none'; Codehighlighter1_419_557_Open_Text.style.display='none'; Codehighlighter1_419_557_Closed_Image.style.display='inline'; Codehighlighter1_419_557_Closed_Text.style.display='inline';" 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/ExpandedBlockStart.gif" 
+            align=top><IMG id=Codehighlighter1_419_557_Closed_Image 
+            style="DISPLAY: none" 
+            onclick="this.style.display='none'; Codehighlighter1_419_557_Closed_Text.style.display='none'; Codehighlighter1_419_557_Open_Image.style.display='inline'; Codehighlighter1_419_557_Open_Text.style.display='inline';" 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/ContractedBlock.gif" 
+            align=top></SPAN><SPAN id=Codehighlighter1_419_557_Closed_Text 
+            style="BORDER-RIGHT: #808080 1px solid; BORDER-TOP: #808080 1px solid; DISPLAY: none; BORDER-LEFT: #808080 1px solid; BORDER-BOTTOM: #808080 1px solid; BACKGROUND-COLOR: #ffffff">/**&nbsp;*/</SPAN><SPAN 
+            id=Codehighlighter1_419_557_Open_Text><SPAN 
+            style="COLOR: #008000">/**</SPAN><SPAN 
+            style="COLOR: #008000"><BR></SPAN><SPAN 
+            style="COLOR: #008080">14</SPAN><SPAN style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/InBlock.gif" 
+            align=top>set&nbsp;the&nbsp;html&nbsp;message<BR></SPAN><SPAN 
+            style="COLOR: #008080">15</SPAN><SPAN style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/InBlock.gif" 
+            align=top>我们看到HtmlEmail&nbsp;extends&nbsp;Email的，它依然有setMsg()，但是这里发送的邮件包括了插入在邮件内容中的图片，所以不能在使用了setMsg(),而要以setHtmlMsg&nbsp;或setTextMsg代码<BR></SPAN><SPAN 
+            style="COLOR: #008080">16</SPAN><SPAN style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/ExpandedBlockEnd.gif" 
+            align=top>*</SPAN><SPAN style="COLOR: #008000">*/</SPAN></SPAN><SPAN 
+            style="COLOR: #000000"><BR></SPAN><SPAN 
+            style="COLOR: #008080">17</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>email.setHtmlMsg(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">&lt;html&gt;The&nbsp;apache&nbsp;logo&nbsp;-&nbsp;&lt;img&nbsp;src=\</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">cid:</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">+cid+</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">\</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">&gt;&lt;/html&gt;</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">18</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><BR></SPAN><SPAN style="COLOR: #008080">19</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN style="COLOR: #008000">//</SPAN><SPAN 
+            style="COLOR: #008000">&nbsp;set&nbsp;the&nbsp;alternative&nbsp;message</SPAN><SPAN 
+            style="COLOR: #008000"><BR></SPAN><SPAN 
+            style="COLOR: #008080">20</SPAN><SPAN style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN 
+            style="COLOR: #000000">email.setTextMsg(</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">Your&nbsp;email&nbsp;client&nbsp;does&nbsp;not&nbsp;support&nbsp;HTML&nbsp;messages</SPAN><SPAN 
+            style="COLOR: #000000">"</SPAN><SPAN 
+            style="COLOR: #000000">);<BR></SPAN><SPAN 
+            style="COLOR: #008080">21</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><BR></SPAN><SPAN style="COLOR: #008080">22</SPAN><SPAN 
+            style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN style="COLOR: #008000">//</SPAN><SPAN 
+            style="COLOR: #008000">set&nbsp;mail</SPAN><SPAN 
+            style="COLOR: #008000"><BR></SPAN><SPAN 
+            style="COLOR: #008080">23</SPAN><SPAN style="COLOR: #008000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN><SPAN 
+            style="COLOR: #000000">email.send();<BR></SPAN><SPAN 
+            style="COLOR: #008080">24</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top></SPAN></DIV><BR>四：最后一步 <BR><FONT 
+            face="Courier New">如果需要实现更复杂authenticator 你可以extends 
+            javax.mail.Authenticator</FONT> ,实现你自己的东西，然后调用<FONT 
+            face=Courier>Email.setAuthenticator(javax.mail.Authenticator&nbsp;newAuthenticator)即可<BR><BR>这一点jakarta也做了，给我们提供了一个defaultAuthenticator<BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN 
+            style="COLOR: #000000">java.lang.Object<BR></SPAN><SPAN 
+            style="COLOR: #008080">2</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>&nbsp;&nbsp;javax.mail.Authenticator<BR></SPAN><SPAN 
+            style="COLOR: #008080">3</SPAN><SPAN style="COLOR: #000000"><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.apache.commons.mail.DefaultAuthenticator</SPAN></DIV><BR>覆盖掉该方法，实现你自己的东东 
+            o_o<BR>
+            <DIV 
+            style="BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; BORDER-LEFT: #cccccc 1px solid; WIDTH: 98%; WORD-BREAK: break-all; PADDING-TOP: 4px; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #eeeeee"><SPAN 
+            style="COLOR: #008080">1</SPAN><IMG 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/None.gif" 
+            align=top><SPAN style="COLOR: #0000ff">protected</SPAN><SPAN 
+            style="COLOR: #000000">&nbsp;javax.mail.PasswordAuthentication&nbsp;getPasswordAuthentication()</SPAN></DIV><BR><BR>五：any 
+            more?<BR>当然有了 o_o 以后再写.<BR></FONT></DIV>
+            <DIV class=itemdesc>发表于 2005-09-29 10:34 <A 
+            href="http://www.blogjava.net/martinx/">martin xus</A> 阅读(1741) <A 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#Post">评论(20)</A> 
+            &nbsp;<A 
+            href="http://www.blogjava.net/martinx/admin/EditPosts.aspx?postid=14386">编辑</A>&nbsp;<A 
+            href="http://www.blogjava.net/martinx/AddToFavorite.aspx?id=14386">收藏</A> 
+            <A title=功能强大的网络收藏夹，一秒钟操作就可以轻松实现保存带来的价值、分享带来的快乐 
+            href="javascript:d=document;t=d.selection?(d.selection.type!='None'?d.selection.createRange().text:''):(d.getSelection?d.getSelection():'');void(keyit=window.open('http://www.365key.com/storeit.aspx?t='+escape(d.title)+'&amp;u='+escape(d.location.href)+'&amp;c='+escape(t),'keyit','scrollbars=no,width=475,height=575,left=75,top=20,status=no,resizable=yes'));keyit.focus();">收藏至365Key</A> 
+            所属分类: <A 
+            href="http://www.blogjava.net/martinx/category/3475.html">java</A> 
+            </DIV></DIV>
+            <DIV class=seperator>&nbsp;</DIV><IMG height=1 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/14386.html" 
+            width=1> <!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+<rdf:Description
+rdf:about="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html"
+dc:identifier="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html"
+dc:title="简化JavaMail：小巧 Jakarta Commons-Email 简单教程"
+trackback:ping="http://www.blogjava.net/martinx/services/trackbacks/14386.aspx" />
+</rdf:RDF>
+-->
+            <DIV class=post><A name=评论>
+            <DIV class=moreinfo>
+            <DIV class=moreinfotitle>评论 </DIV>
+            <DIV class=comments>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#14388">#</A>&nbsp;<A 
+            name=14388></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>试试如何： <BR><A 
+            href="http://jakarta.apache.org/commons/email/index.html" 
+            target=_new>http://jakarta.apache.org/commons/email/index.html</A> 
+            <BR></DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl01_NameLink 
+            href="http://www.blogjava.net/martinx/" target=_blank>martin xus</A> 
+            评论于 2005-09-29 11:15&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("martin xus")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl01_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl01$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl01_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#14524">#</A>&nbsp;<A 
+            name=14524></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>还是用了javax.mail和javax.activation包</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl02_NameLink 
+            target=_blank>aqiang</A> 评论于 2005-09-30 17:35&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("aqiang")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl02_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl02$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl02_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#14525">#</A>&nbsp;<A 
+            name=14525></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>底层调用无所谓, 不须了解javamail就可以直接使用了</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl03_NameLink 
+            href="http://www.blogjava.net/waterye/" 
+            target=_blank>http://www.blogjava.net/waterye/</A> 评论于 2005-09-30 
+            17:44&nbsp;&nbsp;<A onclick='return SetReplyAuhor("Water Ye@ITO")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl03_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl03$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl03_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15112">#</A>&nbsp;<A 
+            name=15112></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>请问乱码问题怎样解决? 
+            <BR>email.setCharset("UTF-8"); <BR>只能解决标题乱码问题,内容乱码怎样解决? 
+            <BR><BR>谢谢了!</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl04_NameLink 
+            target=_blank>jbas</A> 评论于 2005-10-10 11:12&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("jbas")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl04_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl04$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl04_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15126">#</A>&nbsp;<A 
+            name=15126></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>// email.setMsg("测试邮件"); 
+            <BR>email.setCharset("UTF-8"); <BR>email.setContent("测试邮件", 
+            "text/plain;charset=GBK"); <BR><BR>SimpleEmail封得太过简单, 看代码就知道了.</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl05_NameLink 
+            href="http://www.blogjava.net/waterye/" 
+            target=_blank>http://www.blogjava.net/waterye/</A> 评论于 2005-10-10 
+            12:05&nbsp;&nbsp;<A onclick='return SetReplyAuhor("Water Ye@ITO")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl05_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl05$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl05_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15139">#</A>&nbsp;<A 
+            name=15139></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV 
+            class=comment_content>谢谢了,已经成功,真不知道为什么email.setCharset("UTF-8"); 
+            <BR>只对邮件标题有用,对文件内容没有用处.望指教!</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl06_NameLink 
+            target=_blank>jbas</A> 评论于 2005-10-10 15:26&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("jbas")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl06_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl06$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl06_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15144">#</A>&nbsp;<A 
+            name=15144></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>-</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl07_NameLink 
+            href="http://www.blogjava.net/martinx/" target=_blank>martin xus</A> 
+            评论于 2005-10-10 16:34&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("martin xus")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl07_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl07$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl07_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15145">#</A>&nbsp;<A 
+            name=15145></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>谢谢了,我下载源代码看了.</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl08_NameLink 
+            target=_blank>jbas</A> 评论于 2005-10-10 16:47&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("jbas")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl08_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl08$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl08_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15146">#</A>&nbsp;<A 
+            name=15146></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>当然,如果你采用 <BR>email.setContent("测试邮件", 
+            "text/plain;charset=GBK"); 
+            <BR><BR>那么charset就是你"text/plain;charset=GBK"指定的GBK了,而不是UTF-8 
+            <BR><BR>所以你在上面的email.setCharset("UTF-8"),是无效的,去掉和保留完全不影响邮件的. 
+            <BR>代码见:setContent(...) <BR><BR>ps: 
+            <BR>回复好乱,不能排版,我把它整理一下,待会发到页面上.</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl09_NameLink 
+            href="http://www.blogjava.net/martinx/" target=_blank>martin xus</A> 
+            评论于 2005-10-10 16:48&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("martin xus")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl09_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl09$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl09_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15148">#</A>&nbsp;<A 
+            name=15148></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV 
+            class=comment_content>请问一下,我email时,有附件,附件名称是中文时,也会有乱码,请问怎样解决,谢谢了.</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl10_NameLink 
+            target=_blank>jbas</A> 评论于 2005-10-10 17:22&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("jbas")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl10_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl10$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl10_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15153">#</A>&nbsp;<A 
+            name=15153></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>这样就可以了;: 
+            <BR><BR>attachment.setName(MimeUtility.encodeText(&lt;fileName&gt;)); 
+            <BR><BR>&lt;fileName&gt; 替换为你的文件名即可..</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl11_NameLink 
+            href="http://www.blogjava.net/martinx/" target=_blank>martin xus</A> 
+            评论于 2005-10-10 18:42&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("martin xus")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl11_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl11$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl11_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15155">#</A>&nbsp;<A 
+            name=15155></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>谢谢了,可是还是不行呀 <BR><BR>try { 
+            <BR>attachment.setName(MimeUtility.encodeText("中文测试")); <BR>} catch 
+            (UnsupportedEncodingException e1) { <BR>// TODO Auto-generated catch 
+            block <BR>e1.printStackTrace(); <BR>} <BR>我接到的附件名称还是乱码. <BR>ÖÐÎÄ²âÊÔ 
+            <BR>62K 下载 
+            <BR><BR>而且如果我的文件名称如果是a.rar,a.exe都不行呀，都收不到信了，在163.com的信箱上提示文件无效，不知道是什么原因了。 
+            <BR>谢谢帮助！</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl12_NameLink 
+            target=_blank>jbas</A> 评论于 2005-10-10 19:37&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("jbas")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl12_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl12$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl12_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15156">#</A>&nbsp;<A 
+            name=15156></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>我估计是163邮箱的问题吧,我在我本地测试,,没有任何问题的,mail 
+            server是内部的. <BR><BR>public class MultiPartEmailTest extends TestCase 
+            { <BR>public void testSend() throws EmailException, 
+            UnsupportedEncodingException { <BR>EmailAttachment attachment = new 
+            EmailAttachment(); 
+            <BR>attachment.setPath("d:\\soft\\googletalk-setup.exe"); 
+            <BR>attachment.setDisposition(EmailAttachment.ATTACHMENT); 
+            <BR>attachment.setDescription("测试文件"); <BR>String name = "测试文件.exe"; 
+            <BR><BR>attachment.setName(MimeUtility.encodeText(name)); 
+            <BR><BR>MultiPartEmail email = new MultiPartEmail(); 
+            <BR>email.setHostName("192.168.0.3"); 
+            <BR>email.setAuthentication("martinx", "1234"); 
+            <BR>email.addTo("martinx@192.168.0.3", "martin"); 
+            <BR>email.setFrom("martinx@192.168.0.3", "martin"); 
+            <BR><BR>email.setSubject("测试带附件"); <BR>email.setMsg("该邮件含附件"); 
+            <BR>//添加附件 <BR>email.attach(attachment); <BR>//发送邮件 
+            <BR>email.send(); <BR>} <BR>} <BR><BR><BR>收到的附件完全可以下载下来安装的.</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl13_NameLink 
+            href="http://www.blogjava.net/martinx/" target=_blank>martin xus</A> 
+            评论于 2005-10-10 19:47&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("martin xus")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl13_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl13$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl13_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15158">#</A>&nbsp;<A 
+            name=15158></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>你的mail server是什么呀，我可以装上后，用这个向外发邮件吗？</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl14_NameLink 
+            target=_blank>jbas</A> 评论于 2005-10-10 19:54&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("jbas")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl14_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl14$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl14_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15159">#</A>&nbsp;<A 
+            name=15159></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>可以发的,具体什么,我就不太清楚了:) 
+            <BR><BR>这个是地税提供给我们公司用的,是他们自己的东西,非我们公司的. <BR></DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl15_NameLink 
+            href="http://www.blogjava.net/martinx/" target=_blank>martin xus</A> 
+            评论于 2005-10-10 19:59&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("martin xus")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl15_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl15$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl15_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15160">#</A>&nbsp;<A 
+            name=15160></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>谢谢你的热情解答，我再试试别的邮箱。 <BR></DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl16_NameLink 
+            target=_blank>jbas</A> 评论于 2005-10-10 20:01&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("jbas")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl16_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl16$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl16_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15299">#</A>&nbsp;<A 
+            name=15299></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>不好意思,怎样用这个SimpleEmail 收邮件呀!</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl17_NameLink 
+            target=_blank>jbas</A> 评论于 2005-10-12 08:35&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("jbas")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl17_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl17$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl17_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15304">#</A>&nbsp;<A 
+            name=15304></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>SimpleEmail里面没有邮件收取的东东。 <BR>Jakarta 
+            Commons Email 的目的是提供一组简单发送邮件的API。如果你想编写接收邮件的代码，需要自己编写. <BR><BR>可以参考: 
+            <BR><BR>一：<A 
+            href="http://www.blogjava.net/martinx/archive/2005/10/11/15163.html" 
+            target=_new> 
+            <BR>http://www.blogjava.net/martinx/archive/2005/10/11/15163.html</A> 
+            中 1：邮件的收取。 <BR><BR>二：其他的资源这里也有一些： <BR><A 
+            href="http://www.blogjava.net/martinx/archive/2005/10/10/15154.aspx" 
+            target=_new>http://www.blogjava.net/martinx/archive/2005/10/10/15154.aspx</A> 
+            <BR>developerworks 提供了一个简明的教程。 <BR><BR>当然最有用的就是javamail refrence了。 
+            <BR><A href="http://java.sun.com/products/javamail/index.jsp" 
+            target=_new>http://java.sun.com/products/javamail/index.jsp</A> 
+            <BR></DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl18_NameLink 
+            href="http://www.blogjava.net/martinx/" target=_blank>martin xus</A> 
+            评论于 2005-10-12 09:08&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("martin xus")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl18_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl18$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl18_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#15322">#</A>&nbsp;<A 
+            name=15322></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程 </DIV>
+            <DIV class=comment_content>非常感谢!</DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl19_NameLink 
+            target=_blank>jbas</A> 评论于 2005-10-12 13:43&nbsp;&nbsp;<A 
+            onclick='return SetReplyAuhor("jbas")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl19_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl19$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl19_EditLink></A></DIV></DIV>
+            <DIV class=comment>
+            <DIV class=comment_title><A 
+            title="permalink: re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#18976">#</A>&nbsp;<A 
+            name=18976></A>re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程<A 
+            name=Post></A> </DIV>
+            <DIV class=comment_content>相让邮件的内容显示为中文的： 
+            <BR>email.setCharset("GBK"); <BR><BR>想让邮件的附件显示中文名： <BR>File file=new 
+            File("D:\\中文.doc"); <BR>email.attach(new FileDataSource(file), 
+            <BR>MimeUtility.encodeText(file.getName()), 
+            <BR>MimeUtility.encodeText(file.getName())); <BR><BR>想要附加多个附件: 
+            <BR>email.attach(new FileDataSource(file1), 
+            <BR>MimeUtility.encodeText(file1.getName()), 
+            <BR>MimeUtility.encodeText(file1.getName())); <BR>email.attach(new 
+            FileDataSource(file2), <BR>MimeUtility.encodeText(file2.getName()), 
+            <BR>MimeUtility.encodeText(file2.getName())); <BR>//..... <BR></DIV>
+            <DIV class=comment_footer><A id=Comments1_CommentList_ctl20_NameLink 
+            href="http://guoguo/" target=_blank>guoguo</A> 评论于 2005-11-09 
+            14:08&nbsp;&nbsp;<A onclick='return SetReplyAuhor("guoguo")' 
+            href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#post">回复</A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl20_DeleteLink 
+            href="javascript:__doPostBack('Comments1$CommentList$ctl20$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+            id=Comments1_CommentList_ctl20_EditLink></A></DIV></DIV></DIV></DIV></DIV>
+            <DIV class=seperator>&nbsp;</DIV>
+            <STYLE>TD {
+	FONT-SIZE: 12px
+}
+.commentTextBox {
+	FONT-SIZE: 13px; FONT-FAMILY: Verdana
+}
+</STYLE>
+<!--Beging Temp Save-->
+            <STYLE>.userData {
+	BEHAVIOR: url(#default#userdata)
+}
+</STYLE>
+
+            <DIV class=userData id=CommentsPersistDiv></DIV>
+            <SCRIPT>
+			function TempSave(ElementID)
+			{
+				
+				CommentsPersistDiv.setAttribute("CommentContent",document.getElementById(ElementID).value);
+				CommentsPersistDiv.save("CommentXMLStore");
+				
+			}
+			function Restore(ElementID)
+			{
+				CommentsPersistDiv.load("CommentXMLStore");
+				document.getElementById(ElementID).value=CommentsPersistDiv.getAttribute("CommentContent");
+			}
+			
+			
+		
+</SCRIPT>
+<!--Ene TempSave-->
+            <DIV class=commentform>
+            <TABLE cellSpacing=1 cellPadding=1 border=0>
+              <TBODY>
+              <TR>
+                <TD width=75></TD>
+                <TD></TD>
+                <TD></TD></TR>
+              <TR>
+                <TD width=55>标题</TD>
+                <TD><INPUT id=AnonymousPostComment1_tbTitle 
+                  style="WIDTH: 320px" 
+                  value="re: 简化JavaMail：小巧 Jakarta Commons-Email 简单教程" 
+                  name=AnonymousPostComment1$tbTitle></TD>
+                <TD><SPAN id=AnonymousPostComment1_RequiredFieldValidator1 
+                  style="VISIBILITY: hidden; COLOR: red">请输入标题</SPAN></TD></TR>
+              <TR>
+                <TD>姓名</TD>
+                <TD><INPUT id=AnonymousPostComment1_tbName 
+                  style="WIDTH: 320px" name=AnonymousPostComment1$tbName></TD>
+                <TD><SPAN id=AnonymousPostComment1_RequiredFieldValidator2 
+                  style="VISIBILITY: hidden; COLOR: red">请输入你的姓名</SPAN></TD></TR>
+              <TR>
+                <TD>主页</TD>
+                <TD><INPUT id=AnonymousPostComment1_tbUrl style="WIDTH: 320px" 
+                  name=AnonymousPostComment1$tbUrl></TD>
+                <TD><FONT face=宋体></FONT></TD></TR>
+              <TR>
+                <TD align=left colSpan=3>
+                  <TABLE class=CommentForm 
+                  id=AnonymousPostComment1_tbCaptchaImage cellSpacing=0 
+                  cellPadding=0 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD colSpan=3><SPAN 
+                        id=AnonymousPostComment1_Requiredfieldvalidator4 
+                        style="DISPLAY: none; COLOR: red">请输入验证码</SPAN> <SPAN 
+                        id=AnonymousPostComment1_lblImage 
+                        style="FONT-WEIGHT: bold; COLOR: red"></SPAN></TD></TR>
+                    <TR>
+                      <TD width=78>验证码</TD>
+                      <TD><INPUT id=AnonymousPostComment1_CodeNumberTextBox 
+                        name=AnonymousPostComment1$CodeNumberTextBox>*</TD>
+                      <TD align=left><IMG id=AnonymousPostComment1_Img1 
+                        src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/JpegImage.aspx"> 
+                      </TD></TR></TBODY></TABLE></TD></TR>
+              <TR>
+                <TD colSpan=3>内容(提交失败后,可以通过“恢复上次提交”恢复刚刚提交的内容) <SPAN 
+                  id=AnonymousPostComment1_RequiredFieldValidator3 
+                  style="VISIBILITY: hidden; COLOR: red">请输入评论内容</SPAN><BR><TEXTAREA class=commentTextBox id=AnonymousPostComment1_tbComment onkeydown=ctlent() style="WIDTH: 480px; HEIGHT: 220px" name=AnonymousPostComment1$tbComment rows=10 cols=50></TEXTAREA></TD></TR>
+              <TR>
+                <TD colSpan=3><SPAN id=AnonymousPostComment1_Message 
+                  style="COLOR: red"></SPAN></TD>
+              <TR>
+                <TD colSpan=3><INPUT id=AnonymousPostComment1_chkRemember 
+                  tabIndex=-1 type=checkbox CHECKED 
+                  name=AnonymousPostComment1$chkRemember><LABEL 
+                  for=AnonymousPostComment1_chkRemember>Remember 
+              Me?</LABEL></TD></TR>
+              <TR>
+                <TD height=23><INPUT class=commentTextBox id=AnonymousPostComment1_btnSubmit onclick="TempSave('AnonymousPostComment1_tbComment');WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;AnonymousPostComment1$btnSubmit&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" type=submit value=提交 name=AnonymousPostComment1$btnSubmit> 
+                </TD>
+                <TD colSpan=2 height=23>&nbsp; <A 
+                  id=AnonymousPostComment1_lnkLogin 
+                  href="http://www.blogjava.net/login.aspx?ReturnURL=http://www.blogjava.net/martinx/archive/2005/09/29/14386.html&amp;SourceURL=/martinx/archive/2005/09/29/14386.html">登录</A>&nbsp;&nbsp;<A 
+                  id=AnonymousPostComment1_linkLoginComment 
+                  onclick="if(document.getElementById('AnonymousPostComment1_tbComment').value != '') return confirm('未提交的评论内容将会丢失, 你真的要进入高级评论吗?');" 
+                  href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html?login=1#Post">使用高级评论</A>&nbsp;&nbsp;<A 
+                  href="http://www.blogjava.net/RequireRegister.aspx">新用户注册</A>&nbsp;&nbsp;<A 
+                  href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#Top">返回页首</A>&nbsp;&nbsp;<A 
+                  id=AnonymousPostComment1_lbRestore 
+                  onclick="Restore('AnonymousPostComment1_tbComment'); return false;" 
+                  href="http://www.blogjava.net/martinx/archive/2005/09/29/14386.html#Post">恢复上次提交</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                </TD></TR>
+              <TR>
+                <TD colSpan=3>[使用Ctrl+Enter键可以直接提交]</TD></TR>
+              <TR>
+                <TD colSpan=3 height=5>&nbsp;</TD></TR>
+              <TR>
+                <TD colSpan=3></TD></TR></TBODY></TABLE></DIV>
+            <DIV id=AnonymousPostComment1_ValidationSummary1 
+            style="DISPLAY: none; COLOR: red"></DIV></DIV></TD></TR></TBODY></TABLE></TD>
+    <TD style="BORDER-LEFT: #cccccc 1px solid" vAlign=top>
+      <TABLE height=1400 cellSpacing=0 cellPadding=5 width="100%" align=center 
+      bgColor=white border=0>
+        <TBODY>
+        <TR>
+          <TD class=banner style="PADDING-TOP: 0px" vAlign=top>
+            <TABLE height=200 width="100%">
+              <TBODY>
+              <TR>
+                <TD>
+                  <TABLE id=Calendar2_entryCal title=Calendar 
+                  style="BORDER-RIGHT: white 1px solid; BORDER-TOP: white 1px solid; FONT-SIZE: 12px; BORDER-LEFT: white 1px solid; WIDTH: 100%; COLOR: #cc0099; BORDER-BOTTOM: white 1px solid; FONT-FAMILY: Verdana; BORDER-COLLAPSE: collapse; HEIGHT: 100%" 
+                  cellSpacing=0 cellPadding=1 border=0>
+                    <TBODY>
+                    <TR>
+                      <TD style="BACKGROUND-COLOR: white" colSpan=7>
+                        <TABLE 
+                        style="FONT-SIZE: 12px; WIDTH: 100%; COLOR: #ff6600; FONT-FAMILY: Verdana; BORDER-COLLAPSE: collapse" 
+                        cellSpacing=0 border=0>
+                          <TBODY>
+                          <TR>
+                            <TD style="WIDTH: 15%" vAlign=bottom><A 
+                              title="Go to the previous month" 
+                              style="COLOR: #cc0099" 
+                              href="javascript:__doPostBack('Calendar2$entryCal','V2039')">&lt;</A></TD>
+                            <TD style="WIDTH: 70%" align=middle>2005年9月</TD>
+                            <TD style="WIDTH: 15%" vAlign=bottom 
+                              align=right><A title="Go to the next month" 
+                              style="COLOR: #cc0099" 
+                              href="javascript:__doPostBack('Calendar2$entryCal','V2100')">&gt;</A></TD></TR></TBODY></TABLE></TD></TR>
+                    <TR>
+                      <TH 
+                      style="FONT-WEIGHT: normal; FONT-SIZE: 12px; FONT-FAMILY: Arial; BACKGROUND-COLOR: white" 
+                      scope=col align=middle abbr=日>日</TH>
+                      <TH 
+                      style="FONT-WEIGHT: normal; FONT-SIZE: 12px; FONT-FAMILY: Arial; BACKGROUND-COLOR: white" 
+                      scope=col align=middle abbr=一>一</TH>
+                      <TH 
+                      style="FONT-WEIGHT: normal; FONT-SIZE: 12px; FONT-FAMILY: Arial; BACKGROUND-COLOR: white" 
+                      scope=col align=middle abbr=二>二</TH>
+                      <TH 
+                      style="FONT-WEIGHT: normal; FONT-SIZE: 12px; FONT-FAMILY: Arial; BACKGROUND-COLOR: white" 
+                      scope=col align=middle abbr=三>三</TH>
+                      <TH 
+                      style="FONT-WEIGHT: normal; FONT-SIZE: 12px; FONT-FAMILY: Arial; BACKGROUND-COLOR: white" 
+                      scope=col align=middle abbr=四>四</TH>
+                      <TH 
+                      style="FONT-WEIGHT: normal; FONT-SIZE: 12px; FONT-FAMILY: Arial; BACKGROUND-COLOR: white" 
+                      scope=col align=middle abbr=五>五</TH>
+                      <TH 
+                      style="FONT-WEIGHT: normal; FONT-SIZE: 12px; FONT-FAMILY: Arial; BACKGROUND-COLOR: white" 
+                      scope=col align=middle abbr=六>六</TH></TR>
+                    <TR>
+                      <TD style="WIDTH: 14%; COLOR: #303030" 
+align=middle>28</TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" 
+align=middle>29</TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" 
+align=middle>30</TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" 
+align=middle>31</TD>
+                      <TD style="WIDTH: 14%" align=middle>1</TD>
+                      <TD style="WIDTH: 14%" align=middle>2</TD>
+                      <TD style="WIDTH: 14%" align=middle>3</TD></TR>
+                    <TR>
+                      <TD style="WIDTH: 14%" align=middle>4</TD>
+                      <TD style="WIDTH: 14%" align=middle>5</TD>
+                      <TD style="WIDTH: 14%" align=middle>6</TD>
+                      <TD style="WIDTH: 14%" align=middle>7</TD>
+                      <TD style="WIDTH: 14%" align=middle>8</TD>
+                      <TD style="WIDTH: 14%" align=middle>9</TD>
+                      <TD style="WIDTH: 14%" align=middle>10</TD></TR>
+                    <TR>
+                      <TD style="WIDTH: 14%" align=middle>11</TD>
+                      <TD style="WIDTH: 14%" align=middle>12</TD>
+                      <TD style="WIDTH: 14%" align=middle>13</TD>
+                      <TD style="WIDTH: 14%" align=middle>14</TD>
+                      <TD style="WIDTH: 14%" align=middle>15</TD>
+                      <TD style="WIDTH: 14%" align=middle>16</TD>
+                      <TD style="WIDTH: 14%" align=middle>17</TD></TR>
+                    <TR>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/18.html"><U>18</U></A></TD>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/19.html"><U>19</U></A></TD>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/20.html"><U>20</U></A></TD>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/21.html"><U>21</U></A></TD>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/22.html"><U>22</U></A></TD>
+                      <TD style="WIDTH: 14%" align=middle>23</TD>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/24.html"><U>24</U></A></TD></TR>
+                    <TR>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/25.html"><U>25</U></A></TD>
+                      <TD style="WIDTH: 14%" align=middle>26</TD>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/27.html"><U>27</U></A></TD>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/28.html"><U>28</U></A></TD>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/29.html"><U>29</U></A></TD>
+                      <TD style="WIDTH: 14%" align=middle><A 
+                        href="http://www.blogjava.net/martinx/archive/2005/09/30.html"><U>30</U></A></TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" 
+                    align=middle>1</TD></TR>
+                    <TR>
+                      <TD style="WIDTH: 14%; COLOR: #303030" align=middle>2</TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" align=middle>3</TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" align=middle>4</TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" align=middle>5</TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" align=middle>6</TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" align=middle>7</TD>
+                      <TD style="WIDTH: 14%; COLOR: #303030" 
+                    align=middle>8</TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+            <H1>公告</H1>
+            <DIV style="MARGIN-TOP: 10px" align=center>我在看的书： <BR>
+            <SCRIPT 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/martinx" 
+            type=text/javascript></SCRIPT>
+            </DIV>
+            <H3>留言簿</H3>
+            <UL>
+              <LI><A id=SingleColumn1__b68e4594cdf_lnkMessages 
+              href="http://www.blogjava.net/martinx/Contact.aspx?id=1">给我留言</A> 
+              <LI><A id=SingleColumn1__b68e4594cdf_lnkPublicMsgView 
+              href="http://www.blogjava.net/martinx/default.aspx?opt=msg">查看公开留言</A> 
+
+              <LI><A id=SingleColumn1__b68e4594cdf_lnkPrivateMsgView 
+              href="http://www.blogjava.net/martinx/admin/MyMessages.aspx">查看私人留言</A> 
+              </LI></UL>
+            <H1 class=listtitle>随笔档案</H1>
+            <UL class=list type=square>
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl01_Link 
+              href="http://www.blogjava.net/martinx/archive/2006/05.html">2006年5月 
+              (6)</A> 
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl02_Link 
+              href="http://www.blogjava.net/martinx/archive/2006/04.html">2006年4月 
+              (7)</A> 
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl03_Link 
+              href="http://www.blogjava.net/martinx/archive/2006/03.html">2006年3月 
+              (17)</A> 
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl04_Link 
+              href="http://www.blogjava.net/martinx/archive/2006/02.html">2006年2月 
+              (14)</A> 
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl05_Link 
+              href="http://www.blogjava.net/martinx/archive/2006/01.html">2006年1月 
+              (18)</A> 
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl06_Link 
+              href="http://www.blogjava.net/martinx/archive/2005/12.html">2005年12月 
+              (13)</A> 
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl07_Link 
+              href="http://www.blogjava.net/martinx/archive/2005/11.html">2005年11月 
+              (12)</A> 
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl08_Link 
+              href="http://www.blogjava.net/martinx/archive/2005/10.html">2005年10月 
+              (14)</A> 
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl09_Link 
+              href="http://www.blogjava.net/martinx/archive/2005/09.html">2005年9月 
+              (29)</A> </LI></UL>
+            <H1 class=listtitle>朋友站点</H1>
+            <UL class=list type=square>
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl01_LinkList_ctl01_Link 
+              href="http://www.blogjava.net/sunnygu" target=_blank>Sunny</A> 
+              <LI class=listitem><A class=listitem 
+              id=SingleColumn1_Categories_CatList_ctl01_LinkList_ctl02_Link 
+              href="http://www.blogjava.net/walkingundersunshine" 
+              target=_blank>行者</A> </LI></UL>
+            <SCRIPT language=JavaScript>
+function SearchGoogle(key,evt,site)
+		{
+			if(evt.keyCode==13 || evt.keyCode==0)
+			{
+				key.focus();
+				var keystr = encodeURIComponent(key.value);
+				//url ="http://www.google.com/custom?domains="+site+"&q=";
+				//url += keystr+"&sitesearch="+site+"&client=pub-4210569241504288&forid=1&ie=UTF-8&oe=GB2312&cof=GALT%3A%23008000%3BGL%3A1%3BDIV%3A%23EEEEFF%3BVLC%3A663399%3BAH%3Acenter%3BBGC%3AFFFFFF%3BLBGC%3AEEEEFF%3BALC%3A0000FF%3BLC%3A0000FF%3BT%3A000000%3BGFNT%3A0000FF%3BGIMP%3A0000FF%3BLH%3A28%3BLW%3A100%3BL%3Ahttp%3A%2F%2Fwww.cnblogs.com%2Fimages%2Fsearchlogo.gif%3BS%3Ahttp%3A%2F%2Fwww.cnblogs.com%3BLP%3A1%3BFORID%3A1%3B&hl=zh-CN";
+				url = "http://www.google.com/search?q=";
+				url = url+keystr;
+				url += "&ie=UTF-8&oe=GB2312&hl=zh-CN&domains=blogjava.net&sitesearch=http://www.blogjava.net/martinx/";
+				window.location=url;
+				return false;
+			}
+		}
+</SCRIPT>
+
+            <H3>搜索</H3>
+            <UL>
+              <LI>
+              <LI><INPUT id=q 
+              onkeydown="return SearchGoogle(document.getElementById('q'),event,'http://www.blogjava.net/martinx/')" 
+              style="WIDTH: 130px" name=q>&nbsp;<INPUT onclick="SearchGoogle(document.getElementById('q'),event,'http://www.blogjava.net/martinx/')" type=button value=搜索 name=sa> 
+              </LI></UL>
+            <H3>最新评论 <A id=SingleColumn1__438480a618f4_RSSHyperlink1 
+            href="http://www.blogjava.net/martinx/CommentsRSS.aspx"><IMG 
+            style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+            src="BlogJava - 躺在沙滩上的小猪 - 简化JavaMail：小巧 Jakarta Commons-Email 简单教程.files/xml.gif"></A></H3>
+            <DIV class=RecentComment>
+            <UL>
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl01_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/05/11/44914.html#45619">1.&nbsp;re: 
+              JIRA 3.6破解</A> 
+              <LI 
+              style="WORD-BREAK: break-all">可以的啊，昨天我有个朋友也是用的这个，没有问题的，要不你留个email我给你重发一份，或者你直接给我mail 
+              <BR>martin.xus@gmail.com 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--martin 
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl02_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/05/11/44914.html#45616">2.&nbsp;re: 
+              JIRA 3.6破解</A> 
+              <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--pan jiancai 
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl03_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/04/02/15036.html#38746">3.&nbsp;re: 
+              共享windows下的文件.</A> 
+              <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--martin xus 
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl04_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/03/20/36318.html#36367">4.&nbsp;re: 
+              nop</A> 
+              <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--1111 
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl05_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/03/20/36318.html#36366">5.&nbsp;re: 
+              nop</A> 
+              <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--1111 
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl06_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/03/14/27662.html#35267">6.&nbsp;re: 
+              Windows Live Messenger Beta 邀请</A> 
+              <LI style="WORD-BREAK: break-all">everwiner@msn.com 
+              <BR>blue_babyface@hotmail.com <BR>ivy_zyb@msn.com <BR><BR>done! 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--martin xus 
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl07_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/03/14/27662.html#35262">7.&nbsp;re: 
+              Windows Live Messenger Beta 邀请</A> 
+              <LI style="WORD-BREAK: break-all">我也要啊。。给一个吧。 <BR>ivy_zyb@msn.com 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--路上人 
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl08_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/03/14/27662.html#35199">8.&nbsp;re: 
+              Windows Live Messenger Beta 邀请</A> 
+              <LI style="WORD-BREAK: break-all">blue_babyface@hotmail.com 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--xuzf 
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl09_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/03/09/27662.html#34553">9.&nbsp;re: 
+              Windows Live Messenger Beta 邀请</A> 
+              <LI style="WORD-BREAK: break-all">有的话,送一个:everwiner@msn.com,tks! 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--stevending 
+              <LI style="WORD-BREAK: break-all"><A 
+              id=SingleColumn1__438480a618f4_CommentList_ctl10_Hyperlink1 
+              href="http://www.blogjava.net/martinx/archive/2006/03/09/27662.html#34406">10.&nbsp;re: 
+              Windows Live Messenger Beta 邀请</A> 
+              <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 
+              <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--martin xus 
+            </LI></UL></DIV><BR>
+            <DIV class=footer>Powered by: <A 
+            href="http://www.cnblogs.com/">博客园</A><BR>模板提供：<A 
+            href="http://blog.hjenglish.com/">沪江博客</A><BR>Copyright ©2006 martin 
+            xus </DIV></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><BR><!-- 页面内因素 -->
+<SCRIPT language=javascript>
+							
+			if(document.getElementById('cnblogsgooglead') != null)
+				{
+					document.getElementById('cnblogsgooglead').innerHTML = document.getElementById('cnblogsgoogleadcode').innerHTML;
+					document.getElementById('cnblogsgoogleadcode').innerHTML = '';
+				}
+		
+			if(document.getElementById('leftcontent') != null)
+				{
+					if(document.getElementById('leftcontent').style.display == 'none')
+					{
+						document.getElementById('leftcontent').style.display='inline';
+					}
+				}
+			if(document.getElementById('Blogleftcontent') != null)
+				{
+					if(document.getElementById('cnblogsleftcontent').style.display == 'none')
+					{
+						document.getElementById('cnblogsleftcontent').style.display='inline';
+					}
+				}
+			
+			if(document.getElementById('cnblogsleftcontent') != null)
+				{
+					if(document.getElementById('cnblogsleftcontent').style.display == 'none')
+					{
+						document.getElementById('cnblogsleftcontent').style.display='inline';
+					}
+				}
+			
+			if(document.getElementById('rightmenu') != null)
+				{
+					if(document.getElementById('rightmenu').style.display == 'none')
+					{
+						document.getElementById('rightmenu').style.display='inline';
+					}
+				}
+			if(document.getElementById('leftmenu') != null)
+				{
+					if(document.getElementById('leftmenu').style.display == 'none')
+					{
+						document.getElementById('leftmenu').style.display='inline';
+					}
+					if(document.getElementById('lefttemp') != null)
+					{
+						document.getElementById('leftmenu').innerHTML = document.getElementById('lefttemp').innerHTML;
+						document.getElementById('lefttemp').innerHTML = '';
+					}
+				}
+			
+			if(document.getElementById('left') != null)
+				{
+					if(document.getElementById('left').style.display == 'none')
+					{
+						document.getElementById('left').style.display='inline';
+					}
+				}
+				
+			if(document.getElementById('cnblogsleftmenu') != null)
+				{
+					if(document.getElementById('cnblogsleftmenu').style.display == 'none')
+					{
+						document.getElementById('cnblogsleftmenu').style.display='inline';
+					}
+				}
+				
+			if(document.getElementById('menu') != null)
+				{
+					if(document.getElementById('menu').style.display == 'none')
+					{
+						document.getElementById('menu').style.display='inline';
+					}
+				}
+			
+			if(document.getElementById('cnblogsmenu') != null)
+				{
+					if(document.getElementById('cnblogsmenu').style.display == 'none')
+					{
+						document.getElementById('cnblogsmenu').style.display='inline';
+					}
+				}
+				
+			</SCRIPT>
+
+<SCRIPT type=text/javascript>
+<!--
+var Page_ValidationSummaries =  new Array(document.getElementById("AnonymousPostComment1_ValidationSummary1"));
+var Page_Validators =  new Array(document.getElementById("AnonymousPostComment1_RequiredFieldValidator1"), document.getElementById("AnonymousPostComment1_RequiredFieldValidator2"), document.getElementById("AnonymousPostComment1_Requiredfieldvalidator4"), document.getElementById("AnonymousPostComment1_RequiredFieldValidator3"));
+// -->
+</SCRIPT>
+
+<SCRIPT type=text/javascript>
+<!--
+var AnonymousPostComment1_RequiredFieldValidator1 = document.all ? document.all["AnonymousPostComment1_RequiredFieldValidator1"] : document.getElementById("AnonymousPostComment1_RequiredFieldValidator1");
+AnonymousPostComment1_RequiredFieldValidator1.controltovalidate = "AnonymousPostComment1_tbTitle";
+AnonymousPostComment1_RequiredFieldValidator1.errormessage = "请输入标题";
+AnonymousPostComment1_RequiredFieldValidator1.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AnonymousPostComment1_RequiredFieldValidator1.initialvalue = "";
+var AnonymousPostComment1_RequiredFieldValidator2 = document.all ? document.all["AnonymousPostComment1_RequiredFieldValidator2"] : document.getElementById("AnonymousPostComment1_RequiredFieldValidator2");
+AnonymousPostComment1_RequiredFieldValidator2.controltovalidate = "AnonymousPostComment1_tbName";
+AnonymousPostComment1_RequiredFieldValidator2.errormessage = "请输入你的姓名";
+AnonymousPostComment1_RequiredFieldValidator2.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AnonymousPostComment1_RequiredFieldValidator2.initialvalue = "";
+var AnonymousPostComment1_Requiredfieldvalidator4 = document.all ? document.all["AnonymousPostComment1_Requiredfieldvalidator4"] : document.getElementById("AnonymousPostComment1_Requiredfieldvalidator4");
+AnonymousPostComment1_Requiredfieldvalidator4.controltovalidate = "AnonymousPostComment1_CodeNumberTextBox";
+AnonymousPostComment1_Requiredfieldvalidator4.errormessage = "请输入验证码";
+AnonymousPostComment1_Requiredfieldvalidator4.display = "Dynamic";
+AnonymousPostComment1_Requiredfieldvalidator4.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AnonymousPostComment1_Requiredfieldvalidator4.initialvalue = "";
+var AnonymousPostComment1_RequiredFieldValidator3 = document.all ? document.all["AnonymousPostComment1_RequiredFieldValidator3"] : document.getElementById("AnonymousPostComment1_RequiredFieldValidator3");
+AnonymousPostComment1_RequiredFieldValidator3.controltovalidate = "AnonymousPostComment1_tbComment";
+AnonymousPostComment1_RequiredFieldValidator3.errormessage = "请输入评论内容";
+AnonymousPostComment1_RequiredFieldValidator3.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AnonymousPostComment1_RequiredFieldValidator3.initialvalue = "";
+var AnonymousPostComment1_ValidationSummary1 = document.all ? document.all["AnonymousPostComment1_ValidationSummary1"] : document.getElementById("AnonymousPostComment1_ValidationSummary1");
+AnonymousPostComment1_ValidationSummary1.showmessagebox = "True";
+AnonymousPostComment1_ValidationSummary1.showsummary = "False";
+// -->
+</SCRIPT>
+
+<DIV><INPUT id=__EVENTVALIDATION type=hidden 
+value=/wEWSAL+raDpAgLr0em8BALQyvXlCgK1uaG/CgKaqM2YCgL/zMutBALkxdfWCgLJtIOwCgKuo6+JCgLz6/qhDwLqrO8CAs/R7ZcKArTK+UACmbmlGgL+p9HzDwLjzM+ICgLIxdsxAq20hwsCkqOz5A8C1+v+/AQC56zz2QYCxKGypAsCq5zkgAcCrYWCwwQCkPGOugMCm5vMygEC/fanuggCtsv3swYC59OYwAsC0+zC+Q8C/N30rwIC/N2IwwoC/N3cqwgC/N3wTgLT9uLXDQLT9vaKBALT9oquDwLT9p7BBwLT9rLkDgLT9safAQLT9tqyCALT9u5VAtP2wr4GAtP21tEOAuacopYEAuactskMAuacyuwHAuac3ocOAuac8roBAuacht4JAuacmnEC5pyulAsC5pyC/Q4C5pyWkAEC3bWAuQIC3bWU3AoC3bWo9w0C3bW8qgQC3bXQzQwC3bXk4AcC3bX4mw4C3bWMvwEC3bXghwQC3bX0ug8Cnta1zAoCntbJ5w0CntbdmgQCntbxvQ8CntaF0QcCntaZ9A4CntatrwECntbBwglhCQaITn74CeELb2ZJNSjCt1EmFg== 
+name=__EVENTVALIDATION> </DIV>
+<SCRIPT type=text/javascript>
+<!--
+var Page_ValidationActive = false;
+if (typeof(ValidatorOnLoad) == "function") {
+    ValidatorOnLoad();
+}
+
+function ValidatorOnSubmit() {
+    if (Page_ValidationActive) {
+        return ValidatorCommonOnSubmit();
+    }
+    else {
+        return true;
+    }
+}
+// -->
+</SCRIPT>
+</FORM></BODY></HTML>
